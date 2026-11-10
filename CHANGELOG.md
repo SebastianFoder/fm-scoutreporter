@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.6.0...v1.7.0) (2026-11-10)
+
+
+### Features
+
+* **views:** rename v1/v2 views to Standard and Hidden Attributes ([fbddba0](https://github.com/SebastianFoder/fm-scoutreporter/commit/fbddba098cb39f562dc88213108fcd7f8eff00b0))
+
 # [1.6.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.5.0...v1.6.0) (2026-11-10)
 
 
