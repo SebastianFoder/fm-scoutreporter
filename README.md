@@ -36,6 +36,31 @@ bun dev
 
 Open `http://localhost:3000`.
 
+### Storybook
+
+Browse and develop UI components in isolation:
+
+```bash
+bun run storybook        # http://localhost:6006
+bun run build-storybook  # static build in storybook-static/
+```
+
+Stories live next to their components as `*.stories.tsx`. Use the toolbar's theme switch to preview light and dark mode.
+
+Every story is wrapped in the app's providers (`.storybook/providers.tsx`), starting from clean storage. Control their state per story with `parameters.appProviders`:
+
+```ts
+parameters: {
+  appProviders: {
+    players: "fm27v2", // pre-import a fixture: "fm26" | "fm27outfield" | "fm27v2" (default: none)
+    storage: { weights, highlights, attributeColors }, // seed the config profiles
+    disable: true, // skip the providers entirely
+  },
+}
+```
+
+For components that take players as props, use `fixturePlayers` / `fixturePlayer` from `.storybook/fixtures.ts`. "Load test data" works in Storybook too, because `/api/fixtures/*` is answered from the bundled fixtures.
+
 ## Usage
 
 - **Import CSV**: Homepage → “Choose CSV file”

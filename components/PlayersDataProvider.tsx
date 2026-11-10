@@ -37,7 +37,8 @@ const LEGACY_SESSION_KEY = "importedPlayersCsv";
 
 const PlayersDataContext = createContext<PlayersDataContextValue | null>(null);
 
-function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText"> {
+/** Parse a CSV export into the grouped dataset the app works with. */
+export function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText"> {
   const parsed = parsePlayersCsv(csvText);
   const potentials = computeDatasetPotentials(parsed);
   return {
