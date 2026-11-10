@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import { Moon, Sun } from "lucide-react";
 import { applyTheme, DEFAULT_THEME_KEY, type ThemeKey } from "@/lib/themes";
-import { Button } from "./Button";
 
 const STORAGE_KEY = "theme";
 const listeners = new Set<() => void>();
@@ -55,13 +55,17 @@ export function ThemeSwitcher() {
     document.body.style.backgroundColor = `oklch(var(--background))`;
   }, [theme]);
 
-  const toggle = () => {
-    setThemeValue(theme === "light" ? "dark" : "light");
-  };
+  const toDark = theme === "light";
 
   return (
-    <Button color="alt" variant="outline" size="sm" onClick={toggle}>
-      {theme === "light" ? "Dark mode" : "Light mode"}
-    </Button>
+    <button
+      type="button"
+      onClick={() => setThemeValue(toDark ? "dark" : "light")}
+      aria-label={toDark ? "Switch to dark theme" : "Switch to light theme"}
+      title={toDark ? "Dark theme" : "Light theme"}
+      className="btn h-8 w-8 text-on-chrome/80 hover:bg-on-chrome/10 hover:text-on-chrome"
+    >
+      {toDark ? <Moon className="h-4 w-4" aria-hidden /> : <Sun className="h-4 w-4" aria-hidden />}
+    </button>
   );
 }

@@ -2,9 +2,9 @@
 
 import type { GroupedAttributes } from "@/types/grouped-attributes";
 import {
-  attributeBandColor,
   getBandForValue,
   useActiveAttributeProfile,
+  type AttributeBand,
 } from "@/components/AttributeColorConfig";
 import type { AttributeKey } from "@/types/weights";
 import { getGroupedAttributeValue } from "@/lib/grouped-attribute-value";
@@ -19,7 +19,7 @@ interface Props {
 function Delta({ value, base }: { value: number; base: number | undefined }) {
   if (base === undefined || value <= base) return null;
   return (
-    <span className="mr-1.5 font-mono text-[11px] font-bold text-[oklch(var(--primary))]">
+    <span className="mr-1.5 text-[12px] font-semibold text-positive" title={`+${value - base} from current`}>
       +{value - base}
     </span>
   );
@@ -84,6 +84,31 @@ function prettyLabel(key: AttributeKey) {
     .join(" ");
 }
 
+/** One FM-style attribute line: label left, banded value cell right. */
+function AttrRow({
+  label,
+  value,
+  band,
+  base,
+}: {
+  label: string;
+  value: number;
+  band: AttributeBand;
+  base: number | undefined;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 border-b border-line/60 py-[3px] last:border-0">
+      <dt className="truncate">{label}</dt>
+      <dd className="flex shrink-0 items-center">
+        <Delta value={value} base={base} />
+        <span className="attr" data-band={band}>
+          {value}
+        </span>
+      </dd>
+    </div>
+  );
+}
+
 export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Props) {
   const profile = useActiveAttributeProfile();
 
@@ -98,14 +123,8 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
 
     return (
       <div>
-        <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-[oklch(var(--text))/0.65]">
-          {title}
-        </h2>
-        <dl
-          className={`grid ${
-            compact ? "gap-y-0.5 text-xs" : "gap-y-1 text-sm"
-          }`}
-        >
+        <h2 className="section-title mb-1.5">{title}</h2>
+        <dl className={compact ? "text-[13px] md:grid md:grid-cols-3 md:gap-x-6" : "text-sm"}>
           {entries.map(([key, value]) => {
             const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
             const pretty = withSpaces
@@ -116,26 +135,14 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
                   : "",
               )
               .join(" ");
-            const band = getBandForValue(value, profile.thresholds);
             return (
-              <div
+              <AttrRow
                 key={key}
-                className="flex items-center justify-between gap-3 border-b border-[oklch(var(--border))]/15 py-0.5 last:border-0"
-              >
-                <dt className="text-[oklch(var(--text))/0.85]">{pretty}</dt>
-                <dd className="flex items-baseline">
-                  <Delta
-                    value={value}
-                    base={baseline ? getValueByKey(baseline, key as AttributeKey) : undefined}
-                  />
-                  <span
-                    className="min-w-[1.75rem] text-right font-mono text-base font-bold"
-                    style={{ color: attributeBandColor(band) }}
-                  >
-                    {value}
-                  </span>
-                </dd>
-              </div>
+                label={pretty}
+                value={value}
+                band={getBandForValue(value, profile.thresholds)}
+                base={baseline ? getValueByKey(baseline, key as AttributeKey) : undefined}
+              />
             );
           })}
         </dl>
@@ -151,36 +158,18 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
     const sorted = [...keys].sort((a, b) => a.localeCompare(b));
     return (
       <div>
-        <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-[oklch(var(--text))/0.65]">
-          {title}
-        </h2>
-        <dl
-          className={`grid ${compact ? "gap-y-0.5 text-xs" : "gap-y-1 text-sm"}`}
-        >
+        <h2 className="section-title mb-1.5">{title}</h2>
+        <dl className={compact ? "text-[13px]" : "text-sm"}>
           {sorted.map((key) => {
             const value = getValueByKey(grouped, key);
-            const band = getBandForValue(value, profile.thresholds);
             return (
-              <div
+              <AttrRow
                 key={key}
-                className="flex items-center justify-between gap-3 border-b border-[oklch(var(--border))]/15 py-0.5 last:border-0"
-              >
-                <dt className="text-[oklch(var(--text))/0.85]">
-                  {prettyLabel(key)}
-                </dt>
-                <dd className="flex items-baseline">
-                  <Delta
-                    value={value}
-                    base={baseline ? getValueByKey(baseline, key) : undefined}
-                  />
-                  <span
-                    className="min-w-[1.75rem] text-right font-mono text-base font-bold"
-                    style={{ color: attributeBandColor(band) }}
-                  >
-                    {value}
-                  </span>
-                </dd>
-              </div>
+                label={prettyLabel(key)}
+                value={value}
+                band={getBandForValue(value, profile.thresholds)}
+                base={baseline ? getValueByKey(baseline, key) : undefined}
+              />
             );
           })}
         </dl>
@@ -189,24 +178,24 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
   };
 
   return (
-    <div className="space-y-3 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-4 py-4 shadow-[4px_4px_0_oklch(var(--border))]">
+    <div className="panel space-y-5 px-4 py-4">
       {isGoalkeeper ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-x-6 gap-y-5 md:grid-cols-3">
           {renderKeyColumn("Goalkeeping", GK_PANEL_KEYS)}
           {renderColumn("Mental", grouped.mental)}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {renderColumn("Physical", grouped.physical)}
             {renderKeyColumn("Technical", GK_TECHNICAL_KEYS, true)}
           </div>
         </div>
       ) : (
         <>
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-5 md:grid-cols-3">
             {renderColumn("Technical", grouped.technical)}
             {renderColumn("Mental", grouped.mental)}
             {renderColumn("Physical", grouped.physical)}
           </div>
-          <div className="mt-3">
+          <div className="border-t border-line pt-4">
             {renderColumn("Goalkeeping", grouped.goalkeeping, true)}
           </div>
         </>

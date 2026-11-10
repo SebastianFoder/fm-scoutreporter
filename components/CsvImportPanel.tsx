@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./Button";
+import { AlertTriangle, Upload } from "lucide-react";
+import { Button, LINK_BUTTON_CLASS } from "./Button";
 import { usePlayersData } from "./PlayersDataProvider";
+import { VIEW_V1_HREF, VIEW_V2_HREF } from "@/lib/view-files";
 
-export const VIEW_V1_HREF = "/SCOUT%20REPORTER%20Attributes%20v1.fmf";
-export const VIEW_V2_HREF = "/SCOUT%20REPORTER%20Attributes%20v2.fmf";
-
-const LINK_BUTTON =
-  "inline-flex items-center rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none";
+export { VIEW_V1_HREF, VIEW_V2_HREF };
 
 /** CSV import + view download, shared by Attribute and Wonderkid mode (both use the same imported data). */
 export function CsvImportPanel({
@@ -19,9 +17,10 @@ export function CsvImportPanel({
   testFixture?: string;
   onImported?: () => void;
 }) {
-  const { setCsvText, clear } = usePlayersData();
+  const { state, setCsvText, clear } = usePlayersData();
   const [error, setError] = useState<string | null>(null);
   const [testDataLoading, setTestDataLoading] = useState(false);
+  const count = state.players.length;
 
   const load = (text: string) => {
     const persisted = setCsvText(text);
@@ -61,19 +60,29 @@ export function CsvImportPanel({
   };
 
   return (
-    <>
-      <section className="flex flex-col items-start gap-4 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-6 py-5 shadow-[4px_4px_0_oklch(var(--border))] sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-wide">Import player CSV</p>
-          <p className="text-xs text-[oklch(var(--text))/0.65]">
-            FM26 (<code>;</code>) or FM27 (<code>,</code>) export of the Scout Reporter view. Columns
-            are matched by name.
+    <section aria-label="Import" className="panel">
+      <div className="flex flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <h2 className="section-title">
+            {count > 0 ? `${count} players imported` : "Import player CSV"}
+          </h2>
+          <p className="text-[13px] text-muted">
+            FM26 (<code>;</code>) or FM27 (<code>,</code>) export of the Scout Reporter view.
+            Columns are matched by name. View file:{" "}
+            <a href={VIEW_V2_HREF} className="link">
+              v2
+            </a>{" "}
+            (adds CA, PA, Professionalism) or{" "}
+            <a href={VIEW_V1_HREF} className="link">
+              v1
+            </a>
+            .
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <Button
             color="alt"
-            variant="outline"
+            variant="ghost"
             size="md"
             onClick={() => {
               clear();
@@ -92,44 +101,30 @@ export function CsvImportPanel({
           >
             {testDataLoading ? "Loading…" : "Load test data"}
           </Button>
-          <label className={`${LINK_BUTTON} cursor-pointer gap-2 px-5 py-2.5`}>
+          <label
+            className={`${LINK_BUTTON_CLASS} cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-series-1`}
+          >
             <input
               type="file"
               accept=".csv,text/csv"
-              className="hidden"
+              className="sr-only"
               onChange={handleFileChange}
             />
+            <Upload className="h-4 w-4" aria-hidden />
             <span>Choose CSV file</span>
           </label>
         </div>
-      </section>
-
-      <section className="flex flex-col items-start gap-3 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-6 py-5 shadow-[4px_4px_0_oklch(var(--border))] sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-wide">Attribute view (.fmf)</p>
-          <p className="text-xs text-[oklch(var(--text))/0.65]">
-            Import a view in FM before exporting. v2 adds Professionalism, CA and PA, which
-            unlock full-potential estimates and Wonderkid mode.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <a href={VIEW_V2_HREF} className={LINK_BUTTON}>
-            Download v2 view
-          </a>
-          <a
-            href={VIEW_V1_HREF}
-            className="inline-flex items-center rounded-lg border-2 border-[oklch(var(--border))] px-4 py-2 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))]"
-          >
-            v1 view
-          </a>
-        </div>
-      </section>
+      </div>
 
       {error && (
-        <div className="rounded-lg border-2 border-[oklch(var(--red-bg))] bg-[oklch(var(--red-bg))/0.1] px-4 py-3 text-sm font-bold text-[oklch(var(--red-bg))]">
+        <div
+          role="alert"
+          className="flex items-start gap-2 border-t border-line bg-red/8 px-4 py-2.5 text-sm text-ink"
+        >
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red" aria-hidden />
           {error}
         </div>
       )}
-    </>
+    </section>
   );
 }

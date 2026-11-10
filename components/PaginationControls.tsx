@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./Button";
 
 export type PageSizeChoice = 10 | 25 | 50 | 100 | "all";
@@ -29,11 +30,10 @@ export function PaginationControls({
   onPageChange,
   onPageSizeChange,
 }: PaginationControlsProps) {
-  const [jumpValue, setJumpValue] = useState(String(page));
-
-  useEffect(() => {
-    setJumpValue(String(page));
-  }, [page]);
+  /* The typed value belongs to the page it was typed on; when the page changes
+     from outside, the field falls back to showing that page. */
+  const [draft, setDraft] = useState<{ page: number; value: string } | null>(null);
+  const jumpValue = draft && draft.page === page ? draft.value : String(page);
 
   if (totalItems === 0) {
     return null;
@@ -44,26 +44,27 @@ export function PaginationControls({
     if (!Number.isFinite(n)) return;
     const next = Math.min(pageCount, Math.max(1, n));
     onPageChange(next);
-    setJumpValue(String(next));
+    setDraft({ page: next, value: String(next) });
   };
 
   return (
     <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-wrap items-center gap-3 text-xs text-[oklch(var(--text))]/70">
-        <span className="font-mono">
-          {showingFrom}–{showingTo} of {totalItems}
+      <div className="flex flex-wrap items-center gap-4 text-[13px] text-muted">
+        <span>
+          <span className="font-semibold text-ink">
+            {showingFrom}–{showingTo}
+          </span>{" "}
+          of {totalItems}
         </span>
-        <label className="inline-flex items-center gap-2">
-          <span className="font-bold uppercase tracking-wide text-[oklch(var(--text))]/55">
-            Rows
-          </span>
+        <label className="inline-flex items-center gap-1.5">
+          Rows
           <select
             value={pageSize === "all" ? "all" : String(pageSize)}
             onChange={(e) => {
               const v = e.target.value;
               onPageSizeChange(v === "all" ? "all" : (Number(v) as PageSizeChoice));
             }}
-            className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-xs font-mono text-[oklch(var(--text))] shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]"
+            className="field h-8 pl-2 text-[13px] text-ink"
           >
             {SIZE_OPTIONS.map((s) => (
               <option key={String(s)} value={s === "all" ? "all" : String(s)}>
@@ -72,18 +73,16 @@ export function PaginationControls({
             ))}
           </select>
         </label>
-        <label className="inline-flex items-center gap-2">
-          <span className="font-bold uppercase tracking-wide text-[oklch(var(--text))]/55">
-            Go to
-          </span>
+        <label className="inline-flex items-center gap-1.5">
+          Go to
           <input
             type="number"
             min={1}
             max={pageCount}
             value={jumpValue}
-            onChange={(e) => setJumpValue(e.target.value)}
+            onChange={(e) => setDraft({ page, value: e.target.value })}
             onKeyDown={(e) => e.key === "Enter" && applyJump()}
-            className="w-14 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-right font-mono text-xs shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]"
+            className="field h-8 w-14 px-2 text-right text-[13px] text-ink"
           />
           <Button color="alt" variant="outline" size="sm" type="button" onClick={applyJump}>
             Go
@@ -91,10 +90,10 @@ export function PaginationControls({
         </label>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1">
         <Button
           color="alt"
-          variant="outline"
+          variant="ghost"
           size="sm"
           disabled={page <= 1}
           onClick={() => onPageChange(1)}
@@ -107,11 +106,12 @@ export function PaginationControls({
           size="sm"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
+          icon={<ChevronLeft className="h-4 w-4" aria-hidden />}
         >
           Prev
         </Button>
-        <span className="px-1 font-mono text-xs font-bold text-[oklch(var(--text))]/70">
-          {page} / {pageCount}
+        <span className="min-w-[4rem] px-1 text-center text-[13px] font-semibold">
+          {page} <span className="font-normal text-muted">/ {pageCount}</span>
         </span>
         <Button
           color="alt"
@@ -119,12 +119,14 @@ export function PaginationControls({
           size="sm"
           disabled={page >= pageCount}
           onClick={() => onPageChange(page + 1)}
+          icon={<ChevronRight className="h-4 w-4" aria-hidden />}
+          iconPosition="right"
         >
           Next
         </Button>
         <Button
           color="alt"
-          variant="outline"
+          variant="ghost"
           size="sm"
           disabled={page >= pageCount}
           onClick={() => onPageChange(pageCount)}

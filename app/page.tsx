@@ -1,56 +1,119 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { VIEW_V1_HREF, VIEW_V2_HREF } from "@/lib/view-files";
+
+const MODES = [
+  {
+    href: "/attribute",
+    name: "Attribute mode",
+    blurb: "Import CSV exports, tune weights, and compare players by attributes.",
+    needs: "v1 or v2 view export",
+    cta: "Open Attribute Mode",
+  },
+  {
+    href: "/wonderkid",
+    name: "Wonderkid mode",
+    blurb:
+      "Import a v2 export (CA, PA, Professionalism) to estimate full-potential attributes and rank prospects on FM27 roles.",
+    needs: "v2 view export (CA, PA, Professionalism)",
+    cta: "Open Wonderkid Mode",
+  },
+] as const;
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[oklch(var(--background))] text-[oklch(var(--text))]">
-      <main className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-10">
-        <header className="space-y-2">
-          <h1 className="text-4xl font-black uppercase tracking-tight">
-            Scout Reporter Modes
-          </h1>
-          <p className="max-w-2xl text-sm text-[oklch(var(--text))/0.75]">
-            Choose a mode to continue. Attribute mode scores and compares players
-            from attribute exports; Wonderkid mode projects them to full potential.
-          </p>
-        </header>
+    <div className="mx-auto max-w-5xl px-5 py-8 text-ink md:py-12">
+      <h1 className="text-[1.75rem] font-bold leading-tight tracking-[-0.01em]">Scout Reporter</h1>
+      <p className="mt-1.5 max-w-2xl text-[15px] text-muted">
+        Score, rank and compare players from a Football Manager player export. Everything runs
+        in your browser; the CSV never leaves your machine.
+      </p>
 
-        <section className="grid gap-5 md:grid-cols-2">
-          <article className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-6 py-5 shadow-[4px_4px_0_oklch(var(--border))]">
-            <h2 className="text-2xl font-black uppercase tracking-tight">
-              Attribute Mode
-            </h2>
-            <p className="mt-2 text-sm text-[oklch(var(--text))/0.8]">
-              Import CSV exports, tune weights, and compare players by
-              attributes.
-            </p>
-            <div className="mt-4">
-              <Link
-                href="/attribute"
-                className="inline-flex rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-              >
-                Open Attribute Mode
-              </Link>
-            </div>
-          </article>
-          <article className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-6 py-5 shadow-[4px_4px_0_oklch(var(--border))]">
-            <h2 className="text-2xl font-black uppercase tracking-tight">
-              Wonderkid Mode
-            </h2>
-            <p className="mt-2 text-sm text-[oklch(var(--text))/0.8]">
-              Import a v2 export (CA, PA, Professionalism) to estimate
-              full-potential attributes and rank prospects on FM27 roles.
-            </p>
-            <div className="mt-4">
-              <Link
-                href="/wonderkid"
-                className="inline-flex rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-              >
-                Open Wonderkid Mode
-              </Link>
-            </div>
-          </article>
-        </section>
-      </main>
+      <section aria-labelledby="modes" className="mt-8">
+        <h2 id="modes" className="section-title mb-2">
+          Modes
+        </h2>
+        <div className="panel overflow-hidden">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-left">Mode</th>
+                <th className="hidden px-4 py-2 text-left md:table-cell">What it does</th>
+                <th className="hidden px-4 py-2 text-left sm:table-cell">Needs</th>
+                <th className="px-4 py-2">
+                  <span className="sr-only">Open</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {MODES.map((m) => (
+                <tr key={m.href}>
+                  <td className="px-4 py-3.5 align-top">
+                    <Link href={m.href} className="whitespace-nowrap text-base font-semibold hover:underline">
+                      {m.name}
+                    </Link>
+                    <p className="mt-0.5 text-sm text-muted md:hidden">{m.blurb}</p>
+                  </td>
+                  <td className="hidden px-4 py-3.5 align-top text-sm text-muted md:table-cell">
+                    {m.blurb}
+                  </td>
+                  <td className="hidden px-4 py-3.5 align-top text-sm sm:table-cell">{m.needs}</td>
+                  <td className="px-4 py-3.5 text-right align-top">
+                    <Link
+                      href={m.href}
+                      aria-label={m.cta}
+                      className="btn h-8 border border-line px-2.5 text-[13px] hover:bg-paper"
+                    >
+                      Open <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="start" className="mt-8 grid gap-6 md:grid-cols-[1fr_18rem]">
+        <div>
+          <h2 id="start" className="section-title mb-2">
+            Getting players out of FM
+          </h2>
+          <ol className="list-decimal space-y-1.5 pl-5 text-[15px] marker:text-muted">
+            <li>Install BepInEx and the FM26 Player CSV Export plugin.</li>
+            <li>
+              Import the Scout Reporter view in FM&apos;s Player Database (right-click a column
+              header, then Import View).
+            </li>
+            <li>
+              Select players and press <kbd className="rounded border border-line bg-surface px-1.5 text-[13px] font-semibold">F9</kbd> to export a CSV.
+            </li>
+            <li>Import that CSV in Attribute or Wonderkid mode.</li>
+          </ol>
+          <p className="mt-3 text-sm">
+            <Link href="/how-to-use" className="link">
+              Full setup guide
+            </Link>
+          </p>
+        </div>
+        <aside className="panel h-fit px-4 py-3.5">
+          <h2 className="section-title">View files (.fmf)</h2>
+          <ul className="mt-2 space-y-1.5 text-sm">
+            <li>
+              <a href={VIEW_V2_HREF} className="link">
+                Scout Reporter Attributes v2
+              </a>
+              <span className="block text-muted">Adds CA, PA and Professionalism. Recommended.</span>
+            </li>
+            <li>
+              <a href={VIEW_V1_HREF} className="link">
+                Scout Reporter Attributes v1
+              </a>
+              <span className="block text-muted">Attributes only.</span>
+            </li>
+          </ul>
+        </aside>
+      </section>
     </div>
   );
 }

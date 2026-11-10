@@ -2,9 +2,10 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp } from "lucide-react";
 import { usePlayersData } from "@/components/PlayersDataProvider";
 import { CsvImportPanel } from "@/components/CsvImportPanel";
+import { PageHeader } from "@/components/PageHeader";
 import { PaginationControls, type PageSizeChoice } from "@/components/PaginationControls";
 import type { PlayerWithGroups } from "@/data/players-store";
 import { fm27PlayerScores, type Fm27PlayerScores } from "@/lib/fm27/player-scores";
@@ -120,13 +121,13 @@ export default function WonderkidClient() {
     <th
       scope="col"
       aria-sort={sort === key ? (dir === "asc" ? "ascending" : "descending") : "none"}
-      className={`border-b-2 border-[oklch(var(--border))] px-2 py-2.5 ${align === "left" ? "text-left" : "text-right"}`}
+      className={align === "left" ? "text-left" : "text-right"}
     >
       <button
         type="button"
         title={title}
         onClick={() => onSort(key)}
-        className={`inline-flex w-full items-center gap-1 rounded-lg px-1 py-0.5 text-xs font-black uppercase tracking-wider hover:bg-[oklch(var(--text))]/10 ${
+        className={`inline-flex w-full cursor-pointer items-center gap-1 px-2.5 py-2 hover:text-ink focus-visible:-outline-offset-2 ${
           align === "right" ? "justify-end" : "justify-start"
         }`}
       >
@@ -137,8 +138,8 @@ export default function WonderkidClient() {
     </th>
   );
 
-  const inputClass =
-    "rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]";
+  const inputClass = "field h-9 px-2.5 text-sm text-ink";
+  const filterLabel = "flex flex-col gap-1 text-[13px] text-muted";
 
   const modelLines: string[] = caModels
     ? [
@@ -152,40 +153,44 @@ export default function WonderkidClient() {
     : [];
 
   return (
-    <div className="min-h-screen bg-[oklch(var(--background))] text-[oklch(var(--text))]">
-      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10">
-        <header className="space-y-2">
-          <h1 className="text-4xl font-black uppercase tracking-tight">Wonderkid Mode</h1>
-          <p className="max-w-3xl text-sm text-[oklch(var(--text))/0.75]">
-            Estimates each player&apos;s attributes at full potential (PA) from a v2 export, then
-            scores them on the FM27 benchmark roles. A potential score of{" "}
-            <span className="font-mono font-bold">{PRIME_BENCHMARK.toFixed(1)}</span> (100% vs
-            prime) is a high-end Championship / low-end Premier League player in their prime.
-          </p>
-        </header>
+    <div className="text-ink">
+      <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
+        <PageHeader title="Wonderkid mode">
+          Estimates each player&apos;s attributes at full potential (PA) from a v2 export, then
+          scores them on the FM27 benchmark roles. A potential score of{" "}
+          <span className="font-semibold text-ink">{PRIME_BENCHMARK.toFixed(1)}</span> (100% vs
+          prime) is a high-end Championship / low-end Premier League player in their prime.
+        </PageHeader>
 
         <CsvImportPanel testFixture="attribute-fm27-v2" onImported={() => setPage(1)} />
 
         {players.length === 0 && (
-          <p className="text-sm font-bold text-[oklch(var(--text))/0.6]">
+          <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
             No CSV imported yet. Export with the v2 view (Professionalism, CA, PA) and import it above.
           </p>
         )}
 
         {players.length > 0 && !caModels && (
-          <div className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-4 py-3 text-sm">
-            <p className="font-bold">This import has no CA / PA columns.</p>
-            <p className="text-[oklch(var(--text))]/70">
-              Current FM27 role scores and vs Age are shown, but full-potential estimates need an
-              export made with the v2 view.
-            </p>
+          <div role="status" className="flex items-start gap-2.5 rounded-md border border-gold bg-gold/12 px-4 py-3 text-sm">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+            <div>
+              <p className="font-semibold">This import has no CA / PA columns.</p>
+              <p className="text-muted">
+                Current FM27 role scores and vs Age are shown, but full-potential estimates need an
+                export made with the v2 view.
+              </p>
+            </div>
           </div>
         )}
 
         {players.length > 0 && (
-          <>
-            <section className="flex flex-wrap items-end gap-4">
-              <label className="flex flex-col gap-1 text-xs font-black uppercase tracking-wider text-[oklch(var(--text))]/60">
+          <section aria-label="Prospects" className="panel">
+            <div
+              role="group"
+              aria-label="Filters"
+              className="flex flex-wrap items-end gap-x-4 gap-y-3 border-b border-line px-4 py-3"
+            >
+              <label className={filterLabel}>
                 Max age
                 <input
                   type="number"
@@ -199,7 +204,7 @@ export default function WonderkidClient() {
                   className={`${inputClass} w-20`}
                 />
               </label>
-              <label className="flex flex-col gap-1 text-xs font-black uppercase tracking-wider text-[oklch(var(--text))]/60">
+              <label className={filterLabel}>
                 Min professionalism
                 <input
                   type="number"
@@ -213,7 +218,7 @@ export default function WonderkidClient() {
                   className={`${inputClass} w-20`}
                 />
               </label>
-              <label className="flex flex-col gap-1 text-xs font-black uppercase tracking-wider text-[oklch(var(--text))]/60">
+              <label className={filterLabel}>
                 Best role
                 <select
                   value={role}
@@ -221,7 +226,7 @@ export default function WonderkidClient() {
                     setRole(e.target.value as "all" | Fm27Role);
                     setPage(1);
                   }}
-                  className={inputClass}
+                  className={`${inputClass} pl-2.5`}
                 >
                   {ROLE_FILTERS.map((r) => (
                     <option key={r.value} value={r.value}>
@@ -230,7 +235,7 @@ export default function WonderkidClient() {
                   ))}
                 </select>
               </label>
-              <label className="flex flex-col gap-1 text-xs font-black uppercase tracking-wider text-[oklch(var(--text))]/60">
+              <label className={`${filterLabel} min-w-48 flex-1 sm:max-w-xs`}>
                 Search
                 <input
                   type="text"
@@ -240,22 +245,20 @@ export default function WonderkidClient() {
                     setPage(1);
                   }}
                   placeholder="Player name"
-                  className={`${inputClass} w-48 font-normal`}
+                  className={`${inputClass} w-full`}
                 />
               </label>
-              <p className="ml-auto font-mono text-sm font-bold">
-                {total} of {players.length} players
+              <p className="ml-auto pb-2 text-sm text-muted">
+                <span className="font-semibold text-ink">{total}</span> of {players.length} players
               </p>
-            </section>
+            </div>
 
-            <div className="overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] shadow-[4px_4px_0_oklch(var(--border))]">
-              <table className="min-w-full text-sm">
-                <thead className="bg-[oklch(var(--border))]/10">
+            <div className="overflow-x-auto">
+              <table className="data-table">
+                <thead>
                   <tr>
                     {th("player", "Player", undefined, "left")}
-                    <th className="border-b-2 border-[oklch(var(--border))] px-2 py-2.5 text-left text-xs font-black uppercase tracking-wider">
-                      Pos
-                    </th>
+                    <th className="px-2.5 py-2 text-left">Pos</th>
                     {th("age", "Age")}
                     {th("prof", "Prof", "Professionalism")}
                     {th("ca", "CA", "Current ability")}
@@ -268,36 +271,36 @@ export default function WonderkidClient() {
                 </thead>
                 <tbody>
                   {pageItems.map(({ p, s }) => (
-                    <tr key={p.raw.uniqueId} className="border-b-2 border-[oklch(var(--border))]/30">
-                      <td className="px-2 py-2">
+                    <tr key={p.raw.uniqueId}>
+                      <td className="px-2.5 py-2">
                         <Link
                           href={`/attribute/players/${p.raw.uniqueId}`}
-                          className="font-bold underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--primary))]"
+                          className="font-semibold hover:text-accent hover:underline"
                         >
                           {p.raw.player}
                         </Link>
                       </td>
-                      <td className="px-2 py-2 font-mono text-xs uppercase">{p.raw.position}</td>
-                      <td className="px-2 py-2 text-right font-mono text-xs">{p.raw.age}</td>
-                      <td className="px-2 py-2 text-right font-mono text-xs">{p.raw.professionalism ?? "–"}</td>
-                      <td className="px-2 py-2 text-right font-mono text-xs">{p.raw.currentAbility ?? "–"}</td>
-                      <td className="px-2 py-2 text-right font-mono text-xs font-bold">{p.raw.potentialAbility ?? "–"}</td>
-                      <td className="px-2 py-2 text-right font-mono text-xs">
+                      <td className="px-2.5 py-2 text-[13px] text-muted">{p.raw.position}</td>
+                      <td className="px-2.5 py-2 text-right">{p.raw.age}</td>
+                      <td className="px-2.5 py-2 text-right">{p.raw.professionalism ?? "–"}</td>
+                      <td className="px-2.5 py-2 text-right">{p.raw.currentAbility ?? "–"}</td>
+                      <td className="px-2.5 py-2 text-right font-semibold">{p.raw.potentialAbility ?? "–"}</td>
+                      <td className="px-2.5 py-2 text-right">
                         {s.best.score.toFixed(1)}{" "}
-                        <span className="text-[oklch(var(--text))]/55">{s.best.role}</span>
+                        <span className="text-[12px] text-muted">{s.best.role}</span>
                       </td>
                       <td
-                        className={`px-2 py-2 text-right font-mono text-xs font-bold ${
-                          s.vsAge >= 1 ? "text-[oklch(var(--primary))]" : ""
+                        className={`px-2.5 py-2 text-right ${
+                          s.vsAge >= 1 ? "font-semibold text-positive" : "text-muted"
                         }`}
                       >
                         {pct(s.vsAge)}
                       </td>
-                      <td className="px-2 py-2 text-right font-mono text-sm font-black">
+                      <td className="px-2.5 py-2 text-right font-bold">
                         {s.bestPotential ? (
                           <>
                             {s.bestPotential.score.toFixed(1)}{" "}
-                            <span className="text-xs font-normal text-[oklch(var(--text))]/55">
+                            <span className="text-[12px] font-normal text-muted">
                               {s.bestPotential.role}
                             </span>
                           </>
@@ -306,8 +309,8 @@ export default function WonderkidClient() {
                         )}
                       </td>
                       <td
-                        className={`px-2 py-2 text-right font-mono text-xs font-bold ${
-                          (s.potentialVsPrime ?? 0) >= 1 ? "text-[oklch(var(--primary))]" : ""
+                        className={`px-2.5 py-2 text-right ${
+                          (s.potentialVsPrime ?? 0) >= 1 ? "font-semibold text-positive" : "text-muted"
                         }`}
                       >
                         {pct(s.potentialVsPrime)}
@@ -318,24 +321,26 @@ export default function WonderkidClient() {
               </table>
             </div>
 
-            <PaginationControls
-              page={currentPage}
-              pageCount={pageCount}
-              pageSize={pageSize}
-              totalItems={total}
-              showingFrom={total === 0 ? 0 : (currentPage - 1) * size + 1}
-              showingTo={Math.min(currentPage * size, total)}
-              onPageChange={setPage}
-              onPageSizeChange={(n) => {
-                setPageSize(n);
-                setPage(1);
-              }}
-            />
-          </>
+            <div className="border-t border-line px-4 py-3">
+              <PaginationControls
+                page={currentPage}
+                pageCount={pageCount}
+                pageSize={pageSize}
+                totalItems={total}
+                showingFrom={total === 0 ? 0 : (currentPage - 1) * size + 1}
+                showingTo={Math.min(currentPage * size, total)}
+                onPageChange={setPage}
+                onPageSizeChange={(n) => {
+                  setPageSize(n);
+                  setPage(1);
+                }}
+              />
+            </div>
+          </section>
         )}
 
-        <section className="space-y-2 rounded-lg border-2 border-[oklch(var(--border))]/50 bg-[oklch(var(--surface))] px-5 py-4 text-xs text-[oklch(var(--text))]/75">
-          <h2 className="text-sm font-black uppercase tracking-wide text-[oklch(var(--text))]">
+        <section aria-labelledby="method" className="max-w-3xl space-y-2.5 text-sm leading-relaxed text-muted">
+          <h2 id="method" className="section-title">
             How the estimate works
           </h2>
           <p>
@@ -345,7 +350,7 @@ export default function WonderkidClient() {
               href="https://github.com/jamiebolden/fm-scoring"
               target="_blank"
               rel="noreferrer"
-              className="font-bold underline"
+              className="link"
             >
               fm-scoring
             </a>
@@ -361,7 +366,7 @@ export default function WonderkidClient() {
             time and training decide how much of it a player realises.
           </p>
           {modelLines.length > 0 && (
-            <p className="font-mono">CA fit on this import: {modelLines.join(" · ")}</p>
+            <p className="codeblock text-ink">CA fit on this import: {modelLines.join(" · ")}</p>
           )}
         </section>
       </main>

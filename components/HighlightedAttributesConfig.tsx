@@ -238,42 +238,44 @@ export function HighlightConfigModal({
 
   const renderGroup = (title: string, keys: AttributeKey[]) => {
     const sorted = [...keys].sort((a, b) => a.localeCompare(b));
+    const used = sorted.filter((k) => active.highlighted.includes(k)).length;
     return (
-      <div>
-        <h3 className="mb-2 text-sm font-black uppercase tracking-wider text-[oklch(var(--text))/0.65]">
+      <section>
+        <h3 className="section-title sticky top-0 z-[1] -mx-5 flex items-baseline justify-between border-y border-line bg-paper px-5 py-1.5">
           {title}
+          <span className="text-[12px] font-normal text-muted">{used} shown</span>
         </h3>
-        <div className="space-y-1">
+        <div className="grid grid-cols-2 gap-x-3 py-1.5">
           {sorted.map((k) => {
             const checked = active.highlighted.includes(k);
             return (
               <label
                 key={k}
-                className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border-2 border-transparent px-2 py-1 hover:border-[oklch(var(--border))]/30 hover:bg-[oklch(var(--primary))]/5"
+                className="flex cursor-pointer items-center gap-2 rounded px-1.5 py-1 hover:bg-ink/5"
               >
-                <span className="text-sm text-[oklch(var(--text))/0.85]">
-                  {titleCaseFromCamel(k)}
-                </span>
                 <input
                   type="checkbox"
-                  className="h-4 w-4 accent-[oklch(var(--primary))]"
+                  className="h-4 w-4 shrink-0 cursor-pointer"
                   checked={checked}
                   onChange={() => toggleKey(k)}
                 />
+                <span className={`truncate text-sm ${checked ? "font-semibold" : "text-muted"}`}>
+                  {titleCaseFromCamel(k)}
+                </span>
               </label>
             );
           })}
         </div>
-      </div>
+      </section>
     );
   };
 
   const footer = useMemo(
     () => (
-      <div className="text-xs text-[oklch(var(--text))/0.7]">
+      <p className="text-[13px] text-muted">
         Selected attributes appear as highlighted columns in the player list and
         comparison.
-      </div>
+      </p>
     ),
     [],
   );
@@ -284,14 +286,15 @@ export function HighlightConfigModal({
       onClose={onClose}
       title="Highlighted Attributes"
       description="Choose which attributes show as highlighted columns, and save sets as profiles."
-      size="xl"
+      placement="side"
       footer={footer}
     >
       <div className="space-y-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="space-y-2">
+          <label className="flex flex-col gap-1 text-[13px] text-muted">
+            Profile
             <select
-              className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))]"
+              className="field h-9 w-full pl-2.5 text-sm font-semibold text-ink"
               value={active.id}
               onChange={(e) =>
                 setState((prev) => ({ ...prev, activeId: e.target.value }))
@@ -303,20 +306,29 @@ export function HighlightConfigModal({
                 </option>
               ))}
             </select>
-            <Button color="alt" variant="solid" size="sm" onClick={createNew}>
+          </label>
+          <label className="flex flex-col gap-1 text-[13px] text-muted">
+            Name
+            <input
+              type="text"
+              className="field h-9 w-full px-2.5 text-sm text-ink"
+              value={active.name}
+              onChange={(e) =>
+                updateActive((p) => ({ ...p, name: e.target.value }))
+              }
+              placeholder="Profile name"
+            />
+          </label>
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <Button color="alt" variant="outline" size="sm" onClick={createNew}>
               Create New
             </Button>
-            <Button
-              color="primary"
-              variant="solid"
-              size="sm"
-              onClick={duplicate}
-            >
+            <Button color="alt" variant="outline" size="sm" onClick={duplicate}>
               Duplicate
             </Button>
             <Button
               color="red"
-              variant="solid"
+              variant="outline"
               size="sm"
               onClick={remove}
               disabled={profiles.length <= 1}
@@ -324,19 +336,9 @@ export function HighlightConfigModal({
               Delete
             </Button>
           </div>
-
-          <input
-            type="text"
-            className="w-full rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-3 py-2 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))] sm:w-64"
-            value={active.name}
-            onChange={(e) =>
-              updateActive((p) => ({ ...p, name: e.target.value }))
-            }
-            placeholder="Profile name"
-          />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div>
           {renderGroup("Technical", TECHNICAL_KEYS)}
           {renderGroup("Mental", MENTAL_KEYS)}
           {renderGroup("Physical", PHYSICAL_KEYS)}

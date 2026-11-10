@@ -18,54 +18,47 @@ function cn(...parts: Array<string | undefined | false | null>) {
   return parts.filter(Boolean).join(" ");
 }
 
-const BRUTAL_SHADOW = "shadow-[2px_2px_0_oklch(var(--border))]";
-const BRUTAL_SHADOW_HOVER = "hover:shadow-[1px_1px_0_oklch(var(--border))]";
-const BRUTAL_PRESS =
-  "hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none";
-
+/*
+ * primary = the one main action on a screen (accent fill).
+ * alt     = everything else: solid is a quiet filled button, outline the default secondary.
+ */
 const COLOR_STYLES: Record<ButtonColor, Record<ButtonVariant, string>> = {
   primary: {
-    solid: `border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] text-[oklch(var(--background))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    outline: `border-2 border-[oklch(var(--primary))] bg-transparent text-[oklch(var(--primary))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    ghost:
-      "border-2 border-transparent bg-transparent text-[oklch(var(--primary))] hover:bg-[oklch(var(--primary))]/10",
+    solid: "border border-accent bg-accent text-on-accent hover:brightness-110",
+    outline: "border border-accent bg-transparent text-accent hover:bg-accent/8",
+    ghost: "border border-transparent bg-transparent text-accent hover:bg-accent/8",
   },
   alt: {
-    solid: `border-2 border-[oklch(var(--border))] bg-[oklch(var(--alt))] text-[oklch(var(--background))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    outline: `border-2 border-[oklch(var(--border))] bg-transparent text-[oklch(var(--text))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    ghost:
-      "border-2 border-transparent bg-transparent text-[oklch(var(--text))] hover:bg-[oklch(var(--text))]/10",
+    solid: "border border-line bg-paper text-ink hover:border-muted/60 hover:bg-line/50",
+    outline: "border border-line bg-surface text-ink hover:border-muted/60 hover:bg-paper",
+    ghost: "border border-transparent bg-transparent text-ink hover:bg-ink/6",
   },
   red: {
-    solid: `border-2 border-[oklch(var(--border))] bg-[oklch(var(--red-bg))] text-[oklch(var(--red-text))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    outline: `border-2 border-[oklch(var(--red-bg))] bg-transparent text-[oklch(var(--red-bg))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    ghost:
-      "border-2 border-transparent bg-transparent text-[oklch(var(--red-bg))] hover:bg-[oklch(var(--red-bg))]/10",
+    solid: "border border-red bg-red text-on-red hover:brightness-110",
+    outline: "border border-line bg-surface text-red hover:border-red hover:bg-red/6",
+    ghost: "border border-transparent bg-transparent text-red hover:bg-red/8",
   },
   gold: {
-    solid: `border-2 border-[oklch(var(--border))] bg-[oklch(var(--gold-bg))] text-[oklch(var(--gold-text))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    outline: `border-2 border-[oklch(var(--gold-bg))] bg-transparent text-[oklch(var(--gold-bg))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    ghost:
-      "border-2 border-transparent bg-transparent text-[oklch(var(--gold-bg))] hover:bg-[oklch(var(--gold-bg))]/10",
+    solid: "border border-gold bg-gold text-on-gold hover:brightness-105",
+    outline: "border border-gold bg-transparent text-ink hover:bg-gold/20",
+    ghost: "border border-transparent bg-transparent text-ink hover:bg-gold/20",
   },
   silver: {
-    solid: `border-2 border-[oklch(var(--border))] bg-[oklch(var(--silver-bg))] text-[oklch(var(--silver-text))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    outline: `border-2 border-[oklch(var(--silver-bg))] bg-transparent text-[oklch(var(--silver-bg))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    ghost:
-      "border-2 border-transparent bg-transparent text-[oklch(var(--silver-bg))] hover:bg-[oklch(var(--silver-bg))]/10",
+    solid: "border border-silver bg-silver text-on-silver hover:brightness-105",
+    outline: "border border-silver bg-transparent text-ink hover:bg-silver/30",
+    ghost: "border border-transparent bg-transparent text-ink hover:bg-silver/30",
   },
   bronze: {
-    solid: `border-2 border-[oklch(var(--border))] bg-[oklch(var(--bronze-bg))] text-[oklch(var(--bronze-text))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    outline: `border-2 border-[oklch(var(--bronze-bg))] bg-transparent text-[oklch(var(--bronze-bg))] ${BRUTAL_SHADOW} ${BRUTAL_SHADOW_HOVER} ${BRUTAL_PRESS}`,
-    ghost:
-      "border-2 border-transparent bg-transparent text-[oklch(var(--bronze-bg))] hover:bg-[oklch(var(--bronze-bg))]/10",
+    solid: "border border-bronze bg-bronze text-on-bronze hover:brightness-105",
+    outline: "border border-bronze bg-transparent text-ink hover:bg-bronze/20",
+    ghost: "border border-transparent bg-transparent text-ink hover:bg-bronze/20",
   },
 };
 
 const sizeClass: Record<ButtonSize, string> = {
-  sm: "h-8 px-3 text-xs",
-  md: "h-10 px-4 text-sm",
-  lg: "h-12 px-5 text-base",
+  sm: "h-8 px-2.5 text-[13px]",
+  md: "h-9 px-3.5 text-sm",
+  lg: "h-11 px-5 text-[15px]",
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -83,37 +76,31 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const base =
-      "inline-flex cursor-pointer select-none items-center justify-center gap-2 rounded-lg font-bold transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[oklch(var(--primary))] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
     const variantClass = COLOR_STYLES[color][variant];
-
-    const content = (
-      <>
-        {icon && iconPosition === "left" && (
-          <span className="inline-flex items-center justify-center">
-            {icon}
-          </span>
-        )}
-        <span className="whitespace-nowrap">{children}</span>
-        {icon && iconPosition === "right" && (
-          <span className="inline-flex items-center justify-center">
-            {icon}
-          </span>
-        )}
-      </>
-    );
 
     return (
       <button
         ref={ref}
         type={type}
-        className={cn(base, sizeClass[size], variantClass, className)}
+        className={cn("btn", sizeClass[size], variantClass, className)}
         {...props}
       >
-        {content}
+        {icon && iconPosition === "left" && (
+          <span className="inline-flex items-center justify-center">{icon}</span>
+        )}
+        {children}
+        {icon && iconPosition === "right" && (
+          <span className="inline-flex items-center justify-center">{icon}</span>
+        )}
       </button>
     );
   },
 );
 
 Button.displayName = "Button";
+
+/** Same look as a solid primary `Button`, for `<a>` / `<label>` / `<Link>` elements. */
+export const LINK_BUTTON_CLASS = `btn ${sizeClass.md} ${COLOR_STYLES.primary.solid}`;
+
+/** Same look as an outline alt `Button`, for non-button elements. */
+export const LINK_BUTTON_OUTLINE_CLASS = `btn ${sizeClass.md} ${COLOR_STYLES.alt.outline}`;

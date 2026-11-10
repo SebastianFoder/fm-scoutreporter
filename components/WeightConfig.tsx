@@ -176,10 +176,11 @@ export function WeightConfigModal({
 
   const [json, setJson] = useState("");
 
-  useEffect(() => {
-    if (!open) return;
+  /* The panel only closes through onClose, so clearing here means it always reopens empty. */
+  const close = () => {
     setJson("");
-  }, [open]);
+    onClose();
+  };
 
   const updateActive = (updater: (p: WeightProfile) => WeightProfile) => {
     setState((prev) => ({
@@ -266,40 +267,57 @@ export function WeightConfigModal({
 
   const renderGroup = (title: string, keys: AttributeKey[]) => {
     const sorted = [...keys].sort((a, b) => a.localeCompare(b));
+    const used = sorted.filter((k) => pWeight(active.weights, k) > 0).length;
     return (
-      <div>
-        <h3 className="mb-2 text-sm font-black uppercase tracking-wider text-[oklch(var(--text))/0.65]">
+      <section>
+        <h3 className="section-title sticky top-0 z-[1] -mx-5 flex items-baseline justify-between border-y border-line bg-paper px-5 py-1.5">
           {title}
+          <span className="text-[12px] font-normal text-muted">{used} weighted</span>
         </h3>
-        <div className="space-y-1">
-          {sorted.map((k) => (
-            <div key={k} className="flex items-center justify-between gap-3 border-b border-[oklch(var(--border))]/15 py-0.5 last:border-0">
-              <div className="text-sm text-[oklch(var(--text))/0.85]">
-                {titleCaseFromCamel(k)}
-              </div>
-              <input
-                type="number"
-                min={0}
-                max={WEIGHT_MAX}
-                step={1}
-                className="w-20 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-right font-mono text-sm shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]"
-                value={pWeight(active.weights, k)}
-                onChange={(e) => setWeight(k, safeNumber(e.target.value))}
-              />
-            </div>
-          ))}
+        <div className="py-1">
+          {sorted.map((k) => {
+            const w = pWeight(active.weights, k);
+            return (
+              <label
+                key={k}
+                className="flex items-center justify-between gap-3 py-[3px]"
+              >
+                <span className={`text-sm ${w > 0 ? "font-semibold" : "text-muted"}`}>
+                  {titleCaseFromCamel(k)}
+                </span>
+                <span className="flex items-center gap-2">
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-16 overflow-hidden rounded-full bg-line/70"
+                  >
+                    <span
+                      className="block h-full rounded-full bg-series-1"
+                      style={{ width: `${(w / WEIGHT_MAX) * 100}%` }}
+                    />
+                  </span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={WEIGHT_MAX}
+                    step={1}
+                    className={`field h-8 w-14 px-2 text-right text-sm ${w > 0 ? "font-semibold" : "text-muted"}`}
+                    value={w}
+                    onChange={(e) => setWeight(k, safeNumber(e.target.value))}
+                  />
+                </span>
+              </label>
+            );
+          })}
         </div>
-      </div>
+      </section>
     );
   };
 
   const footer = useMemo(
     () => (
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-xs text-[oklch(var(--text))/0.7]">
-          Weights are applied to the score immediately.
-        </div>
-      </div>
+      <p className="text-[13px] text-muted">
+        Weights are applied to the score immediately.
+      </p>
     ),
     [],
   );
@@ -307,17 +325,18 @@ export function WeightConfigModal({
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={close}
       title="Attribute Weights"
       description="Adjust how each attribute contributes to the computed score. Higher weight means more impact."
-      size="xl"
+      placement="side"
       footer={footer}
     >
       <div className="space-y-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="space-y-2">
+          <label className="flex flex-col gap-1 text-[13px] text-muted">
+            Profile
             <select
-              className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))]"
+              className="field h-9 w-full pl-2.5 text-sm font-semibold text-ink"
               value={active.id}
               onChange={(e) =>
                 setState((prev) => ({ ...prev, activeId: e.target.value }))
@@ -329,62 +348,43 @@ export function WeightConfigModal({
                 </option>
               ))}
             </select>
-            <Button color="alt" variant="solid" size="sm" onClick={createNew}>
+          </label>
+          <label className="flex flex-col gap-1 text-[13px] text-muted">
+            Name
+            <input
+              type="text"
+              className="field h-9 w-full px-2.5 text-sm text-ink"
+              value={active.name}
+              onChange={(e) =>
+                updateActive((p) => ({ ...p, name: e.target.value }))
+              }
+              placeholder="Profile name"
+            />
+          </label>
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <Button color="alt" variant="outline" size="sm" onClick={createNew}>
               Create New
             </Button>
-            <Button
-              color="primary"
-              variant="solid"
-              size="sm"
-              onClick={duplicate}
-            >
+            <Button color="alt" variant="outline" size="sm" onClick={duplicate}>
               Duplicate
             </Button>
             <Button
               color="red"
-              variant="solid"
+              variant="outline"
               size="sm"
               onClick={remove}
               disabled={profiles.length <= 1}
             >
               Delete
             </Button>
-            <Button
-              color="primary"
-              variant="solid"
-              size="sm"
-              onClick={exportProfile}
-            >
-              Export
-            </Button>
-            <Button
-              color="alt"
-              variant="solid"
-              size="sm"
-              onClick={importProfile}
-            >
-              Import
-            </Button>
           </div>
-
-          <input
-            type="text"
-            className="w-full rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-3 py-2 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))] sm:w-64"
-            value={active.name}
-            onChange={(e) =>
-              updateActive((p) => ({ ...p, name: e.target.value }))
-            }
-            placeholder="Profile name"
-          />
         </div>
 
-        <div className="flex flex-col gap-2 rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <label className="flex flex-wrap items-center gap-2">
-            <span className="font-black uppercase tracking-wider text-[oklch(var(--text))/0.65]">
-              Weighting
-            </span>
+        <div className="space-y-2 rounded-md bg-paper px-3 py-2.5 text-[13px]">
+          <label className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-muted">Weighting</span>
             <select
-              className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))]"
+              className="field h-8 pl-2.5 text-sm"
               value={active.emphasis ?? LEGACY_EMPHASIS}
               onChange={(e) => setEmphasis(Number(e.target.value) as WeightEmphasis)}
             >
@@ -393,34 +393,48 @@ export function WeightConfigModal({
             </select>
           </label>
           {active.builtIn === "fm27" ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[oklch(var(--text))/0.7]">
-                Benchmarked FM27 role weights (fm-scoring).
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-muted">Benchmarked FM27 role weights (fm-scoring).</span>
               <Button color="alt" variant="outline" size="sm" onClick={resetBenchmark}>
                 Reset to benchmark
               </Button>
             </div>
           ) : (
-            <span className="text-[oklch(var(--text))/0.7]">
+            <p className="text-muted">
               Linear matches how the FM27 benchmarks and &ldquo;vs Age&rdquo; are calibrated.
-            </span>
+            </p>
           )}
         </div>
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div>
           {renderGroup("Technical", TECHNICAL_KEYS)}
           {renderGroup("Mental", MENTAL_KEYS)}
           {renderGroup("Physical", PHYSICAL_KEYS)}
           {renderGroup("Goalkeeping", GOALKEEPING_KEYS)}
         </div>
 
-        <textarea
-          className="h-32 w-full rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] p-3 font-mono text-xs shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]"
-          value={json}
-          onChange={(e) => setJson(e.target.value)}
-          placeholder="Exported profile JSON will appear here. Paste JSON here to import."
-        />
+        <details className="group rounded-md border border-line">
+          <summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">
+            Import / export JSON
+          </summary>
+          <div className="space-y-2 border-t border-line px-3 py-3">
+            <div className="flex gap-1.5">
+              <Button color="alt" variant="outline" size="sm" onClick={exportProfile}>
+                Export
+              </Button>
+              <Button color="alt" variant="outline" size="sm" onClick={importProfile}>
+                Import
+              </Button>
+            </div>
+            <textarea
+              aria-label="Profile JSON"
+              className="field h-32 w-full p-2.5 font-[ui-monospace,Consolas,monospace] text-xs"
+              value={json}
+              onChange={(e) => setJson(e.target.value)}
+              placeholder="Exported profile JSON will appear here. Paste JSON here to import."
+            />
+          </div>
+        </details>
       </div>
     </Modal>
   );

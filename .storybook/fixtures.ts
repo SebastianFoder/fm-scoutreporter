@@ -1,4 +1,3 @@
-/// <reference path="./vite-env.d.ts" />
 import { parseAndGroup } from "../components/PlayersDataProvider";
 import type { PlayerWithGroups } from "../data/players-store";
 import { isGoalkeeperPosition } from "../lib/fm27/benchmarks";

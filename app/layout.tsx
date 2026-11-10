@@ -1,26 +1,22 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Mono } from "next/font/google";
+import { Sofia_Sans, Sofia_Sans_Semi_Condensed } from "next/font/google";
 import "./globals.css";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import {
-  AttributeColorConfig,
-  AttributeColorProvider,
-} from "@/components/AttributeColorConfig";
-import Link from "next/link";
+import { AttributeColorProvider } from "@/components/AttributeColorConfig";
 import { WeightProvider } from "@/components/WeightConfig";
 import { PlayersDataProvider } from "@/components/PlayersDataProvider";
 import { HighlightedAttributesProvider } from "@/components/HighlightedAttributesConfig";
+import { SiteHeader } from "@/components/SiteHeader";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+/* Sofia Sans: a UI face with sporty proportions and good tabular figures.
+   The semi-condensed cut is used for table headers and section titles. */
+const ui = Sofia_Sans({
+  variable: "--font-ui",
+  subsets: ["latin", "latin-ext"],
 });
 
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
+const uiCondensed = Sofia_Sans_Semi_Condensed({
+  variable: "--font-ui-condensed",
+  subsets: ["latin", "latin-ext"],
 });
 
 export const metadata: Metadata = {
@@ -69,71 +65,31 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${spaceMono.variable} antialiased`}>
+      <body className={`${ui.variable} ${uiCondensed.variable} antialiased`}>
         <AttributeColorProvider>
           <WeightProvider>
             <PlayersDataProvider>
-                <HighlightedAttributesProvider>
-                  <div className="flex min-h-screen flex-col">
-                    <header className="flex items-center justify-end gap-2 border-b-3 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-4 py-2">
-                        <Link
-                          href="/"
-                          className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
-                        >
-                          Home
-                        </Link>
-                        <Link
-                          href="/attribute"
-                          className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
-                        >
-                          Attribute
-                        </Link>
-                        <Link
-                          href="/wonderkid"
-                          className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
-                        >
-                          Wonderkid
-                        </Link>
-                        <Link
-                          href="/how-to-use"
-                          className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
-                        >
-                          How to use
-                        </Link>
-                      <AttributeColorConfig />
-                      <ThemeSwitcher />
-                    </header>
-                    <main className="flex-1">{children}</main>
-                    <footer className="border-t-3 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-4 py-4">
-                      <div className="mx-auto flex max-w-6xl flex-col gap-2 text-sm text-[oklch(var(--text))] sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                          Developed by{" "}
-                          <span className="font-bold">
-                            Sebastian Foder
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <a
-                            href="https://github.com/SebastianFoder"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
-                          >
-                            GitHub
-                          </a>
-                          <a
-                            href="https://x.com/F1ngs"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
-                          >
-                            Twitter
-                          </a>
-                        </div>
+              <HighlightedAttributesProvider>
+                <div className="flex min-h-screen flex-col">
+                  <SiteHeader />
+                  <main className="flex-1">{children}</main>
+                  <footer className="border-t border-line">
+                    <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4 text-[13px] text-muted">
+                      <p>
+                        Scout Reporter by <span className="font-semibold text-ink">Sebastian Foder</span>
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <a href="https://github.com/SebastianFoder" target="_blank" rel="noreferrer" className="link">
+                          GitHub
+                        </a>
+                        <a href="https://x.com/F1ngs" target="_blank" rel="noreferrer" className="link">
+                          Twitter
+                        </a>
                       </div>
-                    </footer>
-                  </div>
-                </HighlightedAttributesProvider>
+                    </div>
+                  </footer>
+                </div>
+              </HighlightedAttributesProvider>
             </PlayersDataProvider>
           </WeightProvider>
         </AttributeColorProvider>

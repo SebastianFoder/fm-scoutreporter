@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Button } from "./Button";
+import { X } from "lucide-react";
 
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -14,6 +14,11 @@ export interface ModalProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   size?: ModalSize;
+  /**
+   * "center" is a classic dialog. "side" docks a panel to the right and keeps the
+   * page visible, so edits (weights, columns) can be watched re-ranking the table.
+   */
+  placement?: "center" | "side";
   closeOnOverlayClick?: boolean;
   closeOnEsc?: boolean;
 }
@@ -34,6 +39,7 @@ export function Modal({
   children,
   footer,
   size = "md",
+  placement = "center",
   closeOnOverlayClick = true,
   closeOnEsc = true,
 }: ModalProps) {
@@ -79,13 +85,16 @@ export function Modal({
   if (!open) return null;
   if (typeof document === "undefined") return null;
 
+  const side = placement === "side";
+
   return createPortal(
     <div className="fixed inset-0 z-50">
-      {/* Solid overlay -- no blur for neo-brutalist rawness */}
-      <div className="absolute inset-0 bg-[oklch(var(--text))]/50" />
+      <div
+        className={`absolute inset-0 ${side ? "bg-[oklch(0.15_0.01_255/0.18)]" : "bg-[oklch(0.15_0.01_255/0.5)]"}`}
+      />
 
       <div
-        className="absolute inset-0 flex items-center justify-center p-4"
+        className={`absolute inset-0 flex ${side ? "justify-end" : "items-center justify-center p-4"}`}
         onMouseDown={(e) => {
           if (!closeOnOverlayClick) return;
           const target = e.target as Node | null;
@@ -102,45 +111,41 @@ export function Modal({
           aria-describedby={description ? descId : undefined}
           tabIndex={-1}
           ref={panelRef}
-          className={[
-            "w-full",
-            sizeClass[size],
-            "flex max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-lg border-3 border-[oklch(var(--border))] bg-[oklch(var(--background))] shadow-[6px_6px_0_oklch(var(--border))] outline-none",
-          ].join(" ")}
+          className={
+            side
+              ? "flex h-full w-full max-w-md flex-col border-l border-line bg-surface text-ink shadow-[-8px_0_24px_oklch(0.15_0.01_255/0.12)] outline-none"
+              : `flex max-h-[calc(100vh-2rem)] w-full ${sizeClass[size]} flex-col rounded-md border border-line bg-surface text-ink outline-none`
+          }
         >
           {(title || description) && (
-            <div className="flex items-start justify-between gap-4 border-b-3 border-[oklch(var(--border))] px-5 py-4">
-              <div>
+            <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+              <div className="min-w-0">
                 {title && (
-                  <h2 id={titleId} className="text-xl font-black uppercase tracking-tight">
+                  <h2 id={titleId} className="text-lg font-semibold leading-tight">
                     {title}
                   </h2>
                 )}
                 {description && (
-                  <p
-                    id={descId}
-                    className="mt-1 text-sm text-[oklch(var(--text))/0.75]"
-                  >
+                  <p id={descId} className="mt-1 text-sm text-muted">
                     {description}
                   </p>
                 )}
               </div>
-              <Button
-                color="alt"
-                variant="outline"
-                size="sm"
+              <button
+                type="button"
                 onClick={onClose}
                 aria-label="Close modal"
+                className="btn h-8 w-8 shrink-0 text-muted hover:bg-ink/6 hover:text-ink"
               >
-                Close
-              </Button>
+                <X className="h-4 w-4" aria-hidden />
+              </button>
             </div>
           )}
 
           <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
 
           {footer && (
-            <div className="shrink-0 border-t-3 border-[oklch(var(--border))] px-5 py-4">
+            <div className="shrink-0 border-t border-line bg-paper px-5 py-3">
               {footer}
             </div>
           )}

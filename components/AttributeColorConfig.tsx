@@ -8,6 +8,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import { Button } from "./Button";
 import { Modal } from "./Modal";
 
@@ -30,7 +31,7 @@ const ATTR_BAND_VARS: Record<AttributeBand, string> = {
   low: "--attr-low",
 };
 
-/** Resolved text color for an attribute band (follows light/dark theme). */
+/** Resolved fill colour for an attribute band (follows light/dark theme). Cells use the `.attr` class instead. */
 export function attributeBandColor(band: AttributeBand): string {
   return `oklch(var(${ATTR_BAND_VARS[band]}))`;
 }
@@ -231,14 +232,16 @@ export function AttributeColorConfig() {
 
   return (
     <div>
-      <Button
-        color="alt"
-        variant="outline"
-        size="sm"
+      <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
+        title="Attribute thresholds"
+        aria-label="Attribute thresholds"
+        className="btn h-8 gap-1.5 px-2 text-[13px] font-medium text-on-chrome/80 hover:bg-on-chrome/10 hover:text-on-chrome"
       >
-        Attribute thresholds
-      </Button>
+        <SlidersHorizontal className="h-4 w-4" aria-hidden />
+        <span className="hidden sm:inline">Thresholds</span>
+      </button>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -246,11 +249,12 @@ export function AttributeColorConfig() {
         description="Set numeric bands for attribute values (1–20). Colours follow the current light or dark theme. Saved per profile."
         size="lg"
       >
-        <div className="space-y-4">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-2">
+        <div className="space-y-5">
+          <div className="grid gap-2 sm:grid-cols-2">
+            <label className="flex flex-col gap-1 text-[13px] text-muted">
+              Profile
               <select
-                className="w-full rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-2 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))] sm:w-56"
+                className="field h-9 w-full pl-2.5 text-sm font-semibold text-ink"
                 value={active.id}
                 onChange={(e) =>
                   setState((prev) => ({ ...prev, activeId: e.target.value }))
@@ -262,17 +266,26 @@ export function AttributeColorConfig() {
                   </option>
                 ))}
               </select>
-              <Button
-                color="primary"
-                variant="solid"
-                size="sm"
-                onClick={addProfile}
-              >
+            </label>
+            <label className="flex flex-col gap-1 text-[13px] text-muted">
+              Name
+              <input
+                type="text"
+                className="field h-9 w-full px-2.5 text-sm text-ink"
+                value={active.name}
+                onChange={(e) =>
+                  updateActive((p) => ({ ...p, name: e.target.value }))
+                }
+                placeholder="Profile name"
+              />
+            </label>
+            <div className="flex gap-1.5 sm:col-span-2">
+              <Button color="alt" variant="outline" size="sm" onClick={addProfile}>
                 Duplicate
               </Button>
               <Button
                 color="red"
-                variant="solid"
+                variant="outline"
                 size="sm"
                 onClick={deleteProfile}
                 disabled={profiles.length <= 1}
@@ -280,52 +293,51 @@ export function AttributeColorConfig() {
                 Delete
               </Button>
             </div>
-
-            <input
-              type="text"
-              className="w-full rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-3 py-2 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))] focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))] sm:w-64"
-              value={active.name}
-              onChange={(e) =>
-                updateActive((p) => ({ ...p, name: e.target.value }))
-              }
-              placeholder="Profile name"
-            />
           </div>
 
-          <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-2 text-xs sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[oklch(var(--text))]/65">
-              Band
-            </span>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[oklch(var(--text))]/65">
-              Preview
-            </span>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[oklch(var(--text))]/65">
-              Min value
-            </span>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th className="px-3 py-2 text-left">Band</th>
+                <th className="px-3 py-2 text-left">Min value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(
+                ["excellent", "good", "average"] as const satisfies ReadonlyArray<
+                  keyof AttributeColorProfile["thresholds"]
+                >
+              ).map((band) => (
+                <ThresholdRow
+                  key={band}
+                  band={band}
+                  threshold={active.thresholds[band]}
+                  onThresholdChange={(val) =>
+                    updateActive((p) => ({
+                      ...p,
+                      thresholds: { ...p.thresholds, [band]: val },
+                    }))
+                  }
+                />
+              ))}
 
-            {(
-              ["excellent", "good", "average"] as const satisfies ReadonlyArray<
-                keyof AttributeColorProfile["thresholds"]
-              >
-            ).map((band) => (
               <ThresholdRow
-                key={band}
-                band={band}
-                threshold={active.thresholds[band]}
-                onThresholdChange={(val) =>
-                  updateActive((p) => ({
-                    ...p,
-                    thresholds: { ...p.thresholds, [band]: val },
-                  }))
-                }
+                band="low"
+                readOnlyThreshold
+                belowMax={active.thresholds.average}
               />
-            ))}
+            </tbody>
+          </table>
 
-            <ThresholdRow
-              band="low"
-              readOnlyThreshold
-              belowMax={active.thresholds.average}
-            />
+          <div>
+            <p className="mb-1.5 text-[13px] text-muted">Preview, 1 to 20</p>
+            <div className="flex flex-wrap gap-1">
+              {Array.from({ length: 20 }, (_, i) => i + 1).map((v) => (
+                <span key={v} className="attr" data-band={getBandForValue(v, active.thresholds)}>
+                  {v}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </Modal>
@@ -347,34 +359,22 @@ function ThresholdRow(props: {
   const pretty =
     band[0].toUpperCase() + band.slice(1).toLowerCase() + " attribute";
 
-  const swatchStyle = {
-    backgroundColor: attributeBandColor(band),
-  };
-
   return (
-    <>
-      <span className="flex items-center gap-2 py-1 text-[11px]">
-        <span
-          className="h-3 w-3 shrink-0 rounded border-2 border-[oklch(var(--border))] shadow-[1px_1px_0_oklch(var(--border))]"
-          style={swatchStyle}
-          aria-hidden
-        />
-        {pretty}
-      </span>
-      <span className="flex items-center py-1">
-        <span
-          className="rounded-lg border-2 border-[oklch(var(--border))] px-2 py-0.5 font-mono text-[11px] font-bold shadow-[1px_1px_0_oklch(var(--border))]"
-          style={{ color: attributeBandColor(band) }}
-        >
-          Aa
+    <tr>
+      <td className="px-3 py-2">
+        <span className="flex items-center gap-2.5">
+          <span className="attr" data-band={band}>
+            {band === "low" ? Math.max(1, (belowMax ?? 1) - 1) : threshold}
+          </span>
+          {pretty}
         </span>
-      </span>
-      <span className="py-1">
+      </td>
+      <td className="px-3 py-2">
         {readOnlyThreshold ? (
-          <span className="text-[11px] text-[oklch(var(--text))/0.7]">
+          <span className="text-sm text-muted">
             {belowMax !== undefined ? (
               <>
-                Below <span className="font-mono font-bold">{belowMax}</span>
+                Below <span className="font-semibold text-ink">{belowMax}</span>
               </>
             ) : (
               <>—</>
@@ -385,12 +385,13 @@ function ThresholdRow(props: {
             type="number"
             min={0}
             max={20}
-            className="w-14 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-1 py-0.5 text-right font-mono text-[11px] shadow-[1px_1px_0_oklch(var(--border))]"
+            aria-label={`${pretty} minimum value`}
+            className="field h-8 w-16 px-2 text-right text-sm"
             value={threshold}
             onChange={(e) => onThresholdChange?.(Number(e.target.value) || 0)}
           />
         )}
-      </span>
-    </>
+      </td>
+    </tr>
   );
 }

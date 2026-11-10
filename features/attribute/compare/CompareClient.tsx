@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Search, X } from "lucide-react";
 import type { PlayerWithGroups } from "@/data/players-store";
 import type { AttributeKey } from "@/types/weights";
 import { computeScore } from "@/lib/scoring";
@@ -8,7 +9,9 @@ import { useActiveWeightProfile } from "@/components/WeightConfig";
 import { useHighlightedAttributes } from "@/components/HighlightedAttributesConfig";
 import Link from "next/link";
 import { Button } from "@/components/Button";
+import { PageHeader } from "@/components/PageHeader";
 import { getGroupedAttributeValue } from "@/lib/grouped-attribute-value";
+import { attributeLabel } from "@/lib/attribute-labels";
 
 interface Props {
   players: PlayerWithGroups[];
@@ -81,281 +84,302 @@ export default function CompareClient({
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6 text-[oklch(var(--text))]">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-black uppercase tracking-tight">Compare</h1>
-          <p className="text-sm text-[oklch(var(--text))]/75">
-            Pick players to compare. Gold/silver/bronze are awarded per row
-            relative to the selected players.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            color="alt"
-            variant="outline"
-            size="sm"
-            onClick={() => setSelectedIds([])}
-            disabled={selectedIds.length === 0}
-          >
-            Clear selection
-          </Button>
-          <Button
-            color="alt"
-            variant="solid"
-            size="sm"
-            onClick={() => {
-              const top = filteredPlayers
-                .slice(0, 10)
-                .map((p) => p.raw.uniqueId);
-              setSelectedIds(top);
-            }}
-            disabled={filteredPlayers.length === 0}
-          >
-            Select first 10
-          </Button>
-        </div>
-      </header>
-
-      {/* Selection */}
-      <section className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] p-4 shadow-[4px_4px_0_oklch(var(--border))]">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-1">
-            <h2 className="text-sm font-black uppercase tracking-wide">Selected</h2>
-            <p className="font-mono text-xs text-[oklch(var(--text))]/70">
-              {selectedIds.length} selected
-            </p>
+    <div className="mx-auto max-w-7xl space-y-5 px-5 py-6 text-ink md:py-8">
+      <PageHeader
+        title="Compare players"
+        aside={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              color="alt"
+              variant="ghost"
+              size="md"
+              onClick={() => setSelectedIds([])}
+              disabled={selectedIds.length === 0}
+            >
+              Clear selection
+            </Button>
+            <Button
+              color="alt"
+              variant="outline"
+              size="md"
+              onClick={() => {
+                const top = filteredPlayers
+                  .slice(0, 10)
+                  .map((p) => p.raw.uniqueId);
+                setSelectedIds(top);
+              }}
+              disabled={filteredPlayers.length === 0}
+            >
+              Select first 10
+            </Button>
           </div>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name, position, or ID…"
-            className="w-full rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-3 py-2 text-sm outline-none placeholder:text-[oklch(var(--text))]/55 focus:ring-3 focus:ring-[oklch(var(--primary))] sm:max-w-sm"
-          />
-        </div>
+        }
+      >
+        Pick players to compare. Gold, silver and bronze are awarded per row
+        relative to the selected players.
+      </PageHeader>
 
-        {selectedIds.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {selected.map((p) => (
-              <button
-                key={p.raw.uniqueId}
-                type="button"
-                onClick={() => toggleSelected(p.raw.uniqueId)}
-                className="inline-flex items-center gap-2 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-3 py-1 text-xs font-bold shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))]"
-              >
-                <span>{p.raw.player}</span>
-                <span className="font-mono text-[oklch(var(--text))]/65">
-                  {p.raw.position}
-                </span>
-                <span className="font-black text-[oklch(var(--red-bg))]">×</span>
-              </button>
-            ))}
+      <div className="grid gap-5 lg:grid-cols-[20rem_minmax(0,1fr)]">
+        <section
+          aria-label="Choose players"
+          className="panel flex flex-col lg:max-h-[calc(100vh-12rem)] lg:self-start"
+        >
+          <div className="border-b border-line px-3 py-3">
+            <div className="mb-2 flex items-baseline justify-between">
+              <h2 className="section-title">Players</h2>
+              <p className="text-[13px] text-muted">{selectedIds.length} selected</p>
+            </div>
+            <span className="relative block">
+              <Search
+                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+                aria-hidden
+              />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by name, position, or ID…"
+                aria-label="Search players"
+                className="field h-9 w-full py-2 pl-8 pr-3 text-sm"
+              />
+            </span>
           </div>
-        )}
 
-        <div className="mt-4 max-h-72 overflow-y-auto rounded-lg border-2 border-[oklch(var(--border))]">
-          <div className="divide-y-2 divide-[oklch(var(--border))]/20">
-            {pagedPlayers.map((p) => {
-              const checked = selectedIds.includes(p.raw.uniqueId);
-              return (
-                <label
-                  key={p.raw.uniqueId}
-                  className={`flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-[oklch(var(--primary))]/10 ${checked ? "bg-[oklch(var(--primary))]/15" : "bg-[oklch(var(--background))]"}`}
+          <div className="max-h-80 min-h-0 flex-1 overflow-y-auto lg:max-h-none">
+            <div className="divide-y divide-line/70">
+              {pagedPlayers.map((p) => {
+                const checked = selectedIds.includes(p.raw.uniqueId);
+                return (
+                  <label
+                    key={p.raw.uniqueId}
+                    className={`flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-series-1/6 ${checked ? "bg-series-1/12" : ""}`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 shrink-0"
+                      checked={checked}
+                      onChange={() => toggleSelected(p.raw.uniqueId)}
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold">{p.raw.player}</div>
+                      <div className="truncate text-[12px] text-muted">
+                        {p.raw.position} · {p.raw.uniqueId}
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
+
+              {filteredPlayers.length === 0 && (
+                <div className="px-3 py-6 text-center text-sm text-muted">
+                  No players match that search.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {filteredPlayers.length > 0 && (
+            <div className="flex items-center justify-between gap-2 border-t border-line px-3 py-2">
+              <div className="text-[12px] text-muted">
+                {(page - 1) * PAGE_SIZE + 1}–
+                {Math.min(page * PAGE_SIZE, filteredPlayers.length)} of{" "}
+                {filteredPlayers.length}
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  color="alt"
+                  variant="outline"
+                  size="sm"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
                 >
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-bold">
-                      {p.raw.player}
-                    </div>
-                    <div className="truncate font-mono text-xs text-[oklch(var(--text))]/65">
-                      {p.raw.position} · {p.raw.uniqueId}
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 accent-[oklch(var(--primary))]"
-                    checked={checked}
-                    onChange={() => toggleSelected(p.raw.uniqueId)}
-                  />
-                </label>
-              );
-            })}
-
-            {filteredPlayers.length === 0 && (
-              <div className="px-3 py-6 text-center text-sm font-bold text-[oklch(var(--text))]/70">
-                No players match that search.
+                  Prev
+                </Button>
+                <div className="px-1 text-[12px] font-semibold">
+                  {page} <span className="font-normal text-muted">/ {pageCount}</span>
+                </div>
+                <Button
+                  color="alt"
+                  variant="outline"
+                  size="sm"
+                  disabled={page >= pageCount}
+                  onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                >
+                  Next
+                </Button>
               </div>
-            )}
-          </div>
-        </div>
-
-        {filteredPlayers.length > 0 && (
-          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="font-mono text-xs text-[oklch(var(--text))]/70">
-              {(page - 1) * PAGE_SIZE + 1}–
-              {Math.min(page * PAGE_SIZE, filteredPlayers.length)} of{" "}
-              {filteredPlayers.length}
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                color="alt"
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                Prev
-              </Button>
-              <div className="font-mono text-xs font-bold text-[oklch(var(--text))]/70">
-                {page} / {pageCount}
-              </div>
-              <Button
-                color="alt"
-                variant="outline"
-                size="sm"
-                disabled={page >= pageCount}
-                onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-        )}
-      </section>
-
-      {selected.length > 0 && (
-        <section className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] p-4 shadow-[4px_4px_0_oklch(var(--border))]">
-          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-sm font-black uppercase tracking-wide">
-              Comparison ({selected.length})
-            </h2>
-            <p className="font-mono text-xs text-[oklch(var(--text))]/70">
-              score + {highlightedKeys.length} attributes
-            </p>
-          </div>
-
-          <div className="overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]">
-            <table className="min-w-full text-xs">
-              <thead className="bg-[oklch(var(--border))]/10">
-                <tr>
-                  <th className="sticky left-0 z-10 border-b-2 border-r-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-3 py-2.5 text-left text-xs font-black uppercase tracking-wider">
-                    Metric
-                  </th>
-                  {scored.map(({ p }) => (
-                    <th key={p.raw.uniqueId} className="border-b-2 border-[oklch(var(--border))] px-3 py-2.5 text-left">
-                      <div className="font-bold">
-                        <Link
-                          href={`/attribute/players/${p.raw.uniqueId}`}
-                          className="underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--primary))]"
-                        >
-                          {p.raw.player}
-                        </Link>
-                      </div>
-                      <div className="font-mono text-[10px] text-[oklch(var(--text))/0.65]">
-                        {p.raw.position}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b-2 border-[oklch(var(--border))]/30 bg-[oklch(var(--border))]/5">
-                  <td className="sticky left-0 z-10 border-r-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-3 py-2 font-black uppercase text-xs">
-                    Weighted score
-                  </td>
-                  {(() => {
-                    const medals = medalsByPlayerId(
-                      scored.map(({ p, score }) => ({
-                        id: p.raw.uniqueId,
-                        value: score,
-                      })),
-                    );
-
-                    return scored.map(({ p, score }) => {
-                      const medal = medals[p.raw.uniqueId];
-                      return (
-                        <td
-                          key={p.raw.uniqueId}
-                          className="px-3 py-2 text-right"
-                        >
-                          <span
-                            className={[
-                              "font-mono text-sm font-black",
-                              medal ? medalTextClass[medal] : "",
-                            ].join(" ")}
-                          >
-                            {score.toFixed(2)}
-                          </span>
-                        </td>
-                      );
-                    });
-                  })()}
-                </tr>
-
-                {highlightedKeys.map((key, idx) => {
-                  const values = scored.map(({ p }) => {
-                    const value = getGroupedAttributeValue(p.grouped, key);
-                    return { id: p.raw.uniqueId, value };
-                  });
-
-                  const medals = medalsByPlayerId(values);
-
-                  return (
-                    <tr
-                      key={key}
-                      className={[
-                        "border-b-2 border-[oklch(var(--border))]/15 last:border-0",
-                        idx % 2 === 0
-                          ? "bg-transparent"
-                          : "bg-[oklch(var(--border))]/5",
-                      ].join(" ")}
-                    >
-                      <td className="sticky left-0 z-10 border-r-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-3 py-2 font-bold uppercase text-xs">
-                        {key}
-                      </td>
-                      {scored.map(({ p }) => {
-                        const v =
-                          values.find((x) => x.id === p.raw.uniqueId)?.value ??
-                          0;
-                        const medal = medals[p.raw.uniqueId];
-                        return (
-                          <td
-                            key={p.raw.uniqueId + key}
-                            className={[
-                              "px-3 py-2 text-right font-mono text-sm",
-                              medal
-                                ? medalTextClass[medal]
-                                : "text-[oklch(var(--text))]/85",
-                            ].join(" ")}
-                          >
-                            {v}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          )}
         </section>
-      )}
 
-      {selected.length === 0 && (
-        <div className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] p-6 text-sm font-bold text-[oklch(var(--text))]/75 shadow-[4px_4px_0_oklch(var(--border))]">
-          Select at least 2 players above to start comparing.
+        <div className="min-w-0 space-y-3">
+          {selectedIds.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {selected.map((p) => (
+                <button
+                  key={p.raw.uniqueId}
+                  type="button"
+                  onClick={() => toggleSelected(p.raw.uniqueId)}
+                  aria-label={`Remove ${p.raw.player}`}
+                  className="group inline-flex items-center gap-1.5 rounded border border-line bg-surface py-1 pl-2.5 pr-1.5 text-[13px] font-medium hover:border-red/60"
+                >
+                  <span>{p.raw.player}</span>
+                  <X className="h-3.5 w-3.5 text-muted group-hover:text-red" aria-hidden />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {selected.length > 0 && (
+            <section aria-label="Comparison" className="panel overflow-hidden">
+              <div className="flex items-baseline justify-between gap-3 px-4 py-3">
+                <h2 className="section-title">
+                  Comparison <span className="font-normal text-muted">({selected.length})</span>
+                </h2>
+                <p className="text-[13px] text-muted">
+                  Score + {highlightedKeys.length} attributes
+                </p>
+              </div>
+
+              <div className="overflow-x-auto border-t border-line">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th className="sticky left-0 z-10 border-r border-line px-3 py-2 text-left">
+                        Metric
+                      </th>
+                      {scored.map(({ p }) => (
+                        <th key={p.raw.uniqueId} className="px-3 py-2 text-right align-bottom">
+                          <Link
+                            href={`/attribute/players/${p.raw.uniqueId}`}
+                            className="block font-sans text-sm font-semibold text-ink hover:text-accent hover:underline"
+                          >
+                            {p.raw.player}
+                          </Link>
+                          <span className="block text-[12px] font-normal">{p.raw.position}</span>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="sticky left-0 z-10 border-r border-line bg-surface px-3 py-2 font-semibold">
+                        Weighted score
+                      </td>
+                      {(() => {
+                        const medals = medalsByPlayerId(
+                          scored.map(({ p, score }) => ({
+                            id: p.raw.uniqueId,
+                            value: score,
+                          })),
+                        );
+
+                        return scored.map(({ p, score }) => {
+                          const medal = medals[p.raw.uniqueId];
+                          return (
+                            <td key={p.raw.uniqueId} className="px-3 py-2 text-right">
+                              <MedalValue medal={medal} className="font-bold">
+                                {score.toFixed(2)}
+                              </MedalValue>
+                            </td>
+                          );
+                        });
+                      })()}
+                    </tr>
+
+                    {highlightedKeys.map((key) => {
+                      const values = scored.map(({ p }) => {
+                        const value = getGroupedAttributeValue(p.grouped, key);
+                        return { id: p.raw.uniqueId, value };
+                      });
+
+                      const medals = medalsByPlayerId(values);
+
+                      return (
+                        <tr key={key}>
+                          <td className="sticky left-0 z-10 border-r border-line bg-surface px-3 py-2">
+                            {attributeLabel(key)}
+                          </td>
+                          {scored.map(({ p }) => {
+                            const v =
+                              values.find((x) => x.id === p.raw.uniqueId)?.value ??
+                              0;
+                            const medal = medals[p.raw.uniqueId];
+                            return (
+                              <td key={p.raw.uniqueId + key} className="px-3 py-2 text-right">
+                                <MedalValue medal={medal}>{v}</MedalValue>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <ul
+                className="flex flex-wrap items-center gap-4 border-t border-line px-4 py-2 text-[12px] text-muted"
+                aria-label="Legend"
+              >
+                <li className="inline-flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-[2px] bg-gold" aria-hidden /> Best
+                </li>
+                <li className="inline-flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-[2px] bg-silver" aria-hidden /> 2nd
+                </li>
+                <li className="inline-flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-[2px] bg-bronze" aria-hidden /> 3rd
+                </li>
+              </ul>
+            </section>
+          )}
+
+          {selected.length === 0 && (
+            <div className="rounded-md border border-dashed border-line p-8 text-center text-sm text-muted">
+              Select at least 2 players to start comparing.
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
 type Medal = "gold" | "silver" | "bronze";
 
-const medalTextClass: Record<Medal, string> = {
-  gold: "text-[oklch(var(--gold-bg))] font-black",
-  silver: "text-[oklch(var(--silver-bg))] font-black",
-  bronze: "text-[oklch(var(--bronze-bg))] font-black",
+const medalClass: Record<Medal, string> = {
+  gold: "bg-gold text-on-gold",
+  silver: "bg-silver text-on-silver",
+  bronze: "bg-bronze text-on-bronze",
 };
+
+const medalLabel: Record<Medal, string> = {
+  gold: "1st",
+  silver: "2nd",
+  bronze: "3rd",
+};
+
+function MedalValue({
+  medal,
+  className,
+  children,
+}: {
+  medal: Medal | null | undefined;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      className={[
+        "inline-block min-w-[2.25rem] rounded-[3px] px-1.5 py-0.5 text-right",
+        medal ? `${medalClass[medal]} font-bold` : "",
+        className ?? "",
+      ].join(" ")}
+      title={medal ? medalLabel[medal] : undefined}
+    >
+      {children}
+    </span>
+  );
+}
 
 function medalsByPlayerId(
   items: Array<{ id: string; value: number }>,

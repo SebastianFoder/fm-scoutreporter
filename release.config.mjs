@@ -1,7 +1,7 @@
 /**
  * @type {import('semantic-release').GlobalConfig}
  */
-export default {
+const config = {
   branches: ["master"],
   plugins: [
     "@semantic-release/commit-analyzer",
@@ -19,3 +19,5 @@ export default {
     ],
   ],
 };
+
+export default config;

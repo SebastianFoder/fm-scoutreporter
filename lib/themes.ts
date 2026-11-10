@@ -1,21 +1,38 @@
 export type ThemeKey = "light" | "dark";
 
-/** FM attribute value bands (1–20); text color on page surface */
+/** One attribute band: cell fill and the text colour that sits on it. */
+export interface ThemeBand {
+  fill: string;
+  ink: string;
+}
+
+/** FM attribute value bands (1–20) — a one-hue ordinal ramp, lightest = lowest. */
 export interface ThemeAttributeBands {
-  excellent: string;
-  good: string;
-  average: string;
-  low: string;
+  excellent: ThemeBand;
+  good: ThemeBand;
+  average: ThemeBand;
+  low: ThemeBand;
 }
 
 export interface ThemeConfig {
   name: string;
-  primary: string; // oklch triplet "L C H"
-  text: string;
+  /** Interactive accent: primary buttons, links, selected controls. oklch triplet "L C H". */
+  primary: string;
+  onPrimary: string;
+  /** Positive values (≥ benchmark). */
   alt: string;
+  onAlt: string;
+  text: string;
+  /** Secondary text. */
+  muted: string;
   background: string;
   surface: string;
   border: string;
+  /** App bar. */
+  chrome: string;
+  onChrome: string;
+  /** First data series (role bars, focus ring). */
+  series1: string;
   attributeBands: ThemeAttributeBands;
   specials: {
     red: { bg: string; text: string };
@@ -28,46 +45,56 @@ export interface ThemeConfig {
 export const THEMES: Record<ThemeKey, ThemeConfig> = {
   light: {
     name: "Light",
-    /* Warm paper base, stronger surface step, inky borders — poster-like contrast */
-    background: "0.978 0.012 95",
-    surface: "0.932 0.028 100",
-    border: "0.20 0.048 270",
-    text: "0.20 0.045 270",
-    alt: "0.55 0.20 175",
-    primary: "0.50 0.27 285",
+    background: "0.968 0.003 250",
+    surface: "1 0 0",
+    border: "0.885 0.006 250",
+    text: "0.235 0.012 255",
+    muted: "0.52 0.012 255",
+    primary: "0.42 0.12 255",
+    onPrimary: "1 0 0",
+    alt: "0.5 0.12 150",
+    onAlt: "1 0 0",
+    chrome: "0.25 0.035 255",
+    onChrome: "0.97 0.005 255",
+    series1: "0.58 0.15 255",
     attributeBands: {
-      excellent: "0.42 0.19 158",
-      good: "0.48 0.17 72",
-      average: "0.46 0.045 265",
-      low: "0.36 0.035 265",
+      excellent: { fill: "0.53 0.12 150", ink: "1 0 0" },
+      good: { fill: "0.82 0.08 150", ink: "0.235 0.012 255" },
+      average: { fill: "0.945 0.025 150", ink: "0.235 0.012 255" },
+      low: { fill: "1 0 0 / 0", ink: "0.52 0.012 255" },
     },
     specials: {
-      red: { bg: "0.56 0.28 26", text: "0.99 0.008 26" },
-      gold: { bg: "0.78 0.18 88", text: "0.22 0.04 88" },
-      silver: { bg: "0.80 0.04 270", text: "0.22 0.04 270" },
-      bronze: { bg: "0.62 0.18 58", text: "0.99 0.01 58" },
+      red: { bg: "0.55 0.19 27", text: "1 0 0" },
+      gold: { bg: "0.83 0.14 88", text: "0.25 0.04 88" },
+      silver: { bg: "0.86 0.008 255", text: "0.25 0.01 255" },
+      bronze: { bg: "0.7 0.11 55", text: "0.2 0.03 55" },
     },
   },
   dark: {
     name: "Dark",
-    /* Deep tinted void, lifted panels, bright rim — neon brutalism */
-    background: "0.09 0.042 278",
-    surface: "0.16 0.058 282",
-    border: "0.90 0.038 285",
-    text: "0.93 0.028 282",
-    alt: "0.72 0.17 175",
-    primary: "0.67 0.25 290",
+    background: "0.165 0.008 255",
+    surface: "0.205 0.01 255",
+    border: "0.3 0.012 255",
+    text: "0.93 0.005 255",
+    muted: "0.68 0.01 255",
+    primary: "0.74 0.11 255",
+    onPrimary: "0.18 0.02 255",
+    alt: "0.75 0.14 150",
+    onAlt: "0.17 0.03 150",
+    chrome: "0.13 0.012 255",
+    onChrome: "0.95 0.005 255",
+    series1: "0.63 0.15 255",
     attributeBands: {
-      excellent: "0.74 0.16 158",
-      good: "0.84 0.14 88",
-      average: "0.66 0.05 278",
-      low: "0.52 0.04 278",
+      excellent: { fill: "0.75 0.13 150", ink: "0.18 0.03 150" },
+      good: { fill: "0.48 0.09 150", ink: "1 0 0" },
+      average: { fill: "0.32 0.045 150", ink: "0.93 0.005 255" },
+      low: { fill: "0 0 0 / 0", ink: "0.66 0.01 255" },
     },
     specials: {
-      red: { bg: "0.58 0.26 26", text: "0.14 0.025 26" },
-      gold: { bg: "0.78 0.17 88", text: "0.16 0.03 88" },
-      silver: { bg: "0.82 0.04 275", text: "0.16 0.03 275" },
-      bronze: { bg: "0.64 0.17 58", text: "0.14 0.025 58" },
+      red: { bg: "0.62 0.19 27", text: "0.15 0.02 27" },
+      gold: { bg: "0.82 0.14 88", text: "0.2 0.04 88" },
+      silver: { bg: "0.8 0.008 255", text: "0.2 0.01 255" },
+      bronze: { bg: "0.68 0.11 55", text: "0.16 0.03 55" },
     },
   },
 };
@@ -78,27 +105,34 @@ export function applyTheme(key: ThemeKey) {
   if (typeof document === "undefined") return;
   const theme = THEMES[key];
   const root = document.documentElement;
+  const set = (name: string, value: string) => root.style.setProperty(name, value);
 
   root.setAttribute("data-theme", key);
 
-  root.style.setProperty("--primary", theme.primary);
-  root.style.setProperty("--text", theme.text);
-  root.style.setProperty("--alt", theme.alt);
-  root.style.setProperty("--background", theme.background);
-  root.style.setProperty("--surface", theme.surface);
-  root.style.setProperty("--border", theme.border);
+  set("--primary", theme.primary);
+  set("--on-primary", theme.onPrimary);
+  set("--alt", theme.alt);
+  set("--on-alt", theme.onAlt);
+  set("--text", theme.text);
+  set("--muted", theme.muted);
+  set("--background", theme.background);
+  set("--surface", theme.surface);
+  set("--border", theme.border);
+  set("--chrome", theme.chrome);
+  set("--on-chrome", theme.onChrome);
+  set("--series-1", theme.series1);
 
-  root.style.setProperty("--red-bg", theme.specials.red.bg);
-  root.style.setProperty("--red-text", theme.specials.red.text);
-  root.style.setProperty("--gold-bg", theme.specials.gold.bg);
-  root.style.setProperty("--gold-text", theme.specials.gold.text);
-  root.style.setProperty("--silver-bg", theme.specials.silver.bg);
-  root.style.setProperty("--silver-text", theme.specials.silver.text);
-  root.style.setProperty("--bronze-bg", theme.specials.bronze.bg);
-  root.style.setProperty("--bronze-text", theme.specials.bronze.text);
+  set("--red-bg", theme.specials.red.bg);
+  set("--red-text", theme.specials.red.text);
+  set("--gold-bg", theme.specials.gold.bg);
+  set("--gold-text", theme.specials.gold.text);
+  set("--silver-bg", theme.specials.silver.bg);
+  set("--silver-text", theme.specials.silver.text);
+  set("--bronze-bg", theme.specials.bronze.bg);
+  set("--bronze-text", theme.specials.bronze.text);
 
-  root.style.setProperty("--attr-excellent", theme.attributeBands.excellent);
-  root.style.setProperty("--attr-good", theme.attributeBands.good);
-  root.style.setProperty("--attr-average", theme.attributeBands.average);
-  root.style.setProperty("--attr-low", theme.attributeBands.low);
+  for (const band of ["excellent", "good", "average", "low"] as const) {
+    set(`--attr-${band}`, theme.attributeBands[band].fill);
+    set(`--attr-${band}-ink`, theme.attributeBands[band].ink);
+  }
 }

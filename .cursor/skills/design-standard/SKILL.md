@@ -1,170 +1,83 @@
 ---
 name: design-standard
-description: Neo-brutalist design system for FM26 Scout Reporter. Use when creating or styling UI components, adding new pages/views, updating layouts, or when the user asks about design tokens, colors, typography, spacing, or visual styling.
+description: Design system for FM26 Scout Reporter. Use when creating or styling UI components, adding new pages/views, updating layouts, or when the user asks about design tokens, colors, typography, spacing, or visual styling.
 ---
 
-# Neo-Brutalist Design Standard
+# Scout Reporter Design Standard
 
-This project follows a **neo-brutalist** design system: bold borders, hard offset shadows, high-contrast saturated colors, blocky shapes, and intentional "raw" aesthetics -- adapted for a data-dense scouting tool.
+Scout Reporter is a working tool for Football Manager players. They already spend hours in FM's
+profile and list screens, and use Genie Scout, FBref and Transfermarkt alongside it. The UI
+should feel like it belongs among those tools: **quiet chrome, dense well-made tables, and
+colour spent on data**, not on decoration or "branding".
 
-## Tech Stack Context
+Its identity comes from things that only make sense in this product:
 
-- **Tailwind CSS v4** (configured via `app/globals.css`, no `tailwind.config.*`)
-- **OKLCH color system** via CSS custom properties set at runtime by `lib/themes.ts`
-- **Next.js App Router** with `"use client"` for interactive components
-- **Outfit** (400–900) + **Space Mono** fonts
+- **Attribute cells**: FM-style banded value cells (a one-hue ordinal ramp, number always printed).
+- **Position map**: a mini pitch with the player's positions marked (`components/PositionMap.tsx`).
+- **Role chart**: FM27 role scores as bars on a 0–20 axis with age-benchmark and prime markers.
+- **Medals** in Compare: gold/silver/bronze chips per row.
+- **Pitch mark** (`BrandMark`, `app/icon.svg`) and the dark app bar.
 
-## Design Tokens
+## Tech
 
-All colors are OKLCH triplets (`L C H`) stored as CSS custom properties and applied via `oklch(var(--token))` in Tailwind arbitrary values.
+- Tailwind CSS v4, configured in `app/globals.css` (no `tailwind.config.*`).
+- OKLCH triplets as CSS custom properties, set at runtime by `lib/themes.ts` (light/dark).
+- Semantic colours are mapped in `@theme inline`, so write `bg-surface text-muted`, never `bg-[oklch(var(--surface))]`.
+- One typeface family: **Sofia Sans** (UI, `font-sans`) and **Sofia Sans Semi Condensed** (`.section-title`, table headers). Tabular figures and no ligatures globally; FM position strings like `AM (R)` must never become `AM ®`.
 
-### Semantic Tokens
+## Colour utilities
 
-| Token | Purpose |
-|-------|---------|
-| `--primary` | Primary accent (indigo, high chroma) |
-| `--text` | Body text |
-| `--alt` | Secondary accent (teal) |
-| `--background` | Page background |
-| `--surface` | Card/section background (slightly offset from `--background`) |
-| `--border` | Borders and shadow color (high contrast against background) |
+| Utility | Use |
+|---|---|
+| `paper` | Page background, table header background, subtle fills |
+| `surface` | Panels, inputs, table bodies |
+| `ink` / `muted` | Primary / secondary text |
+| `line` | Borders and row rules |
+| `accent` / `on-accent` | The one primary action per screen, links, the selected tab |
+| `positive` | Values at or above benchmark (vs Age ≥ 100%, vs Prime ≥ 100%, potential gains) |
+| `chrome` / `on-chrome` | App bar only |
+| `series-1` | First data series (role bars), focus ring, row hover/selection tint |
+| `red`, `gold`, `silver`, `bronze` (+ `on-*`) | Danger; medals |
 
-### Special Tokens
+Attribute bands are `.attr[data-band="excellent|good|average|low"]`. Their fill and ink are
+per-theme tokens (`--attr-*`, `--attr-*-ink`). The ramp was contrast-checked: every text/fill
+pair passes WCAG AA, and the fills step monotonically away from the surface. Users only edit
+thresholds.
 
-Medal and status colors: `--red-bg`, `--red-text`, `--gold-bg`, `--gold-text`, `--silver-bg`, `--silver-text`, `--bronze-bg`, `--bronze-text`.
+## Component classes (`app/globals.css`)
 
-### Using Tokens in Tailwind
+| Class | What it is |
+|---|---|
+| `.panel` | Surface, 1px line border, 6px radius. No shadow. |
+| `.section-title` | Semi-condensed 650 heading inside panels and pages. Sentence case. |
+| `.data-table` | Paper header row, 1px row rules, `th[aria-sort]` gets a series-1 underline, `tr[data-selected="true"]` gets a tint. |
+| `.attr` | Banded attribute value cell. |
+| `.field` | Input/select/textarea. Selects draw their own chevron; set left padding only. |
+| `.btn` | Button base. Use `Button`, or `LINK_BUTTON_CLASS` / `LINK_BUTTON_OUTLINE_CLASS` on `<a>`/`<label>`. |
+| `.link` | Accent link, underline on hover. |
+| `.codeblock` | Monospace block for paths, formulas and commands. |
 
-```
-bg-[oklch(var(--surface))]
-text-[oklch(var(--text))]
-border-[oklch(var(--border))]
-shadow-[4px_4px_0_oklch(var(--border))]
-```
+Shared components: `PageHeader` (title + one-line description + optional actions), `SiteHeader`,
+`BrandMark`, `PositionMap`, `Modal` (`placement="side"` docks a panel to the right so the table
+stays visible while editing weights or columns).
 
-Opacity modifiers: `text-[oklch(var(--text))]/75` or `text-[oklch(var(--text))/0.75]`.
+## Rules
 
-## Borders
+- **Pages lead with the work.** Title row, then import/filters, then the table. No hero sections.
+- **Type scale is small and steady:** page title 1.6rem bold, section titles ~0.95rem semibold, body 15px, tables 14px, meta 12–13px.
+- **Sentence case** for headings, labels and buttons. No tiny tracked uppercase labels.
+- **Numbers** only where there is a real sequence (setup steps). Not as decoration.
+- **Charts** follow the dataviz rules: bars start at 0, one hue per series, a legend whenever marks need explaining, values printed so colour is never the only cue.
+- **Settings** that need lots of controls go in the side panel, not a centred multi-column dialog.
+- **Empty states:** dashed `border-line` box with centred muted text.
+- **Notices:** small icon + text on a light tint (`bg-red/8`, `bg-gold/12`). No coloured side stripes.
 
-- **Minimum**: `border-2` (2px). Never use `border` (1px).
-- **Emphasis**: `border-3` (3px) for major separators (header/footer borders, modal panels).
-- **Color**: Always `border-[oklch(var(--border))]` unless using a semantic color for outlines.
+## Anti-patterns
 
-## Shadows (hard, no blur)
-
-| Size | Class | Use |
-|------|-------|-----|
-| sm | `shadow-[2px_2px_0_oklch(var(--border))]` | Buttons, tags, small inputs |
-| md | `shadow-[4px_4px_0_oklch(var(--border))]` | Cards, sections, tables |
-| lg | `shadow-[6px_6px_0_oklch(var(--border))]` | Modals, hero elements |
-
-Never use Tailwind's built-in `shadow-sm`/`shadow-md`/`shadow-lg` (they have blur).
-
-## Border Radius
-
-- Default: `rounded-lg` (8px) for buttons, cards, inputs, tables.
-- **Never** use `rounded-full` except for avatar badges.
-- **Never** use `rounded-2xl` or larger -- keep shapes blocky.
-
-## Typography
-
-| Element | Classes |
-|---------|---------|
-| Page heading (h1) | `text-4xl font-black uppercase tracking-tight` |
-| Section heading (h2) | `text-2xl font-black uppercase tracking-tight` |
-| Card heading (h3) | `text-sm font-black uppercase tracking-wide` |
-| Body text | `text-sm` (default weight) |
-| Labels / table headers | `text-xs font-black uppercase tracking-wider` |
-| Data values / scores | `font-mono font-bold` |
-| Links | `font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]` |
-
-Use **Space Mono** (`font-mono`) aggressively for: scores, attribute values, IDs, counts, pagination numbers.
-
-## Component Patterns
-
-### Card
-
-```
-rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] shadow-[4px_4px_0_oklch(var(--border))]
-```
-
-With padding: `px-6 py-5` (generous).
-
-### Button (solid variant)
-
-```
-rounded-lg border-2 border-[oklch(var(--border))] font-bold
-shadow-[2px_2px_0_oklch(var(--border))]
-hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))]
-active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
-transition-all
-```
-
-Use the `Button` component from `components/Button.tsx`. It handles color, variant (solid/outline/ghost), and size (sm/md/lg).
-
-### Input / Select
-
-```
-rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))]
-shadow-[2px_2px_0_oklch(var(--border))]
-focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]
-```
-
-### Modal
-
-Use the `Modal` component from `components/Modal.tsx`. It applies:
-- `border-3` panel border
-- `shadow-[6px_6px_0]` hard shadow
-- Solid overlay (no backdrop blur)
-- `rounded-lg` shape
-- `font-black uppercase` title
-
-### Table
-
-```
-overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] shadow-[4px_4px_0_oklch(var(--border))]
-```
-
-- Headers: `bg-[oklch(var(--border))]/10`, `border-b-2`, uppercase labels
-- Rows: `border-b-2 border-[oklch(var(--border))]/30`
-- Data cells: `font-mono` for numbers
-
-## Interactions
-
-| State | Effect |
-|-------|--------|
-| Hover (buttons) | `translate-x-[1px] translate-y-[1px]` + shadow shrinks to 1px |
-| Active (buttons) | `translate-x-[2px] translate-y-[2px]` + `shadow-none` |
-| Hover (links) | Underline color changes to `--alt` |
-| Hover (nav links) | Border appears (`border-[oklch(var(--border))]`) |
-| Focus | `ring-3 ring-[oklch(var(--primary))]` (thick, no blur) |
-
-## Layout
-
-- Max content width: `max-w-6xl` (or `max-w-5xl` for narrower views)
-- Section padding: `px-6 py-5` minimum
-- Gap between sections: `gap-6` or `gap-8`
-- Header: `border-b-3` thick bottom border, `bg-[oklch(var(--surface))]`
-- Footer: `border-t-3` thick top border, `bg-[oklch(var(--surface))]`
-- Visible structure: use borders between sections, not just whitespace
-
-## Theme System
-
-Themes live in `lib/themes.ts`. Each `ThemeConfig` has: `primary`, `text`, `alt`, `background`, `surface`, `border`, `attributeBands` (FM attribute value text colours), and `specials` (medal colours). `applyTheme()` sets CSS vars on `:root`.
-
-When adding new tokens, update both:
-1. `:root` defaults in `app/globals.css`
-2. `ThemeConfig` interface + both theme objects + `applyTheme()` in `lib/themes.ts`
-
-FM attribute value colours use `--attr-excellent`, `--attr-good`, `--attr-average`, `--attr-low` (set per theme). Users only edit thresholds in `AttributeColorConfig`; do not store per-user colours.
-
-## Anti-Patterns (never do these)
-
-- `shadow-sm`, `shadow-md`, `shadow-lg` (blurred shadows)
-- `rounded-full` on cards/buttons/inputs
-- `rounded-2xl` or larger
-- `border` without a width (`border-2` minimum)
-- `backdrop-blur-*` on overlays
-- `font-light` or `font-thin` (too delicate for neo-brutalism)
-- Subtle hover states with only opacity changes (use borders or translate)
-- Gradients for backgrounds (solid colors only, except rare hero accents)
+- Hero sections, oversized display type, "big number + small label" metric tiles
+- Tiny uppercase tracked kicker labels above headings; numbered section labels with no sequence
+- Gradients, glows, decorative textures or grid backgrounds, glassmorphism
+- Card grids, nested cards, coloured left borders on cards
+- Neo-brutalist offset shadows; hairline border plus big soft shadow
+- Default AI faces (Inter, Geist, JetBrains Mono) or mono fonts used as decoration
+- Raw `oklch(var(--…))` in class names when a semantic utility exists

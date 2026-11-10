@@ -18,16 +18,16 @@ import {
   getPlayerAttributeValue,
   scaleScore,
 } from "@/lib/scoring";
+import { attributeLabel } from "@/lib/attribute-labels";
 import { ageBenchmark } from "@/lib/fm27/benchmarks";
 import {
-  attributeBandColor,
   getBandForValue,
   useActiveAttributeProfile,
 } from "@/components/AttributeColorConfig";
 import { useActiveWeightProfile } from "@/components/WeightConfig";
 import { useHighlightedAttributes } from "@/components/HighlightedAttributesConfig";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, ExternalLink, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ExternalLink, Search, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   PaginationControls,
@@ -264,12 +264,12 @@ function SortableTh({
     <th
       scope="col"
       aria-sort={ariaSort}
-      className={`border-b-2 border-[oklch(var(--border))] px-3 py-2.5 ${align === "left" ? "text-left" : "text-right"}`}
+      className={align === "left" ? "text-left" : "text-right"}
     >
       <button
         type="button"
         onClick={onSort}
-        className={`inline-flex w-full items-center gap-1 rounded-lg px-1 py-0.5 text-xs font-black uppercase tracking-wider text-[oklch(var(--text))] hover:bg-[oklch(var(--text))]/10 focus:outline-none focus-visible:ring-3 focus-visible:ring-[oklch(var(--primary))] ${
+        className={`inline-flex w-full cursor-pointer items-center gap-1 px-3 py-2 hover:text-ink focus-visible:-outline-offset-2 ${
           align === "right" ? "justify-end" : "justify-start"
         }`}
       >
@@ -291,11 +291,11 @@ function NewTabPlayerLink({ uniqueId, name }: { uniqueId: string; name: string }
       href={`/attribute/players/${uniqueId}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex shrink-0 rounded-lg border-2 border-transparent p-1 text-[oklch(var(--text))]/55 hover:border-[oklch(var(--border))] hover:text-[oklch(var(--primary))]"
+      className="inline-flex shrink-0 rounded p-1 text-muted/70 hover:bg-ink/6 hover:text-ink"
       aria-label={`Open ${name} in new tab`}
       title="Open in new tab"
     >
-      <ExternalLink className="h-4 w-4" aria-hidden />
+      <ExternalLink className="h-3.5 w-3.5" aria-hidden />
     </Link>
   );
 }
@@ -340,7 +340,15 @@ function PlayersListClientInner({
     () => getSearchQuery(searchParams),
     [searchParams],
   );
-  const [draft, setDraft] = useState(searchQuery);
+  /* Search box text. It follows the URL's `q` until the user types; typing pins
+     it to the query it was typed against, so back/forward navigation still resets it. */
+  const [draftState, setDraftState] = useState<{ q: string; value: string } | null>(null);
+  const draft =
+    draftState && draftState.q === searchQuery ? draftState.value : searchQuery;
+  const setDraft = useCallback(
+    (value: string) => setDraftState({ q: searchQuery, value }),
+    [searchQuery],
+  );
 
   const urlPage = parsePageParam(searchParams.get("page"));
   const urlPageSize = parsePageSizeParam(searchParams.get("pageSize"));
@@ -390,10 +398,6 @@ function PlayersListClientInner({
     () => ({ page, pageSize, sort: listSort, sortDir: listSortDir, q: searchQuery }),
     [page, pageSize, listSort, listSortDir, searchQuery],
   );
-
-  useEffect(() => {
-    setDraft(searchQuery);
-  }, [searchQuery]);
 
   useEffect(() => {
     const trimmed = draft.trim();
@@ -484,45 +488,51 @@ function PlayersListClientInner({
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5 p-6 text-[oklch(var(--text))]">
-      <h1 className="text-2xl font-black uppercase tracking-tight">Players</h1>
+    <div className="text-ink">
+      <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="section-title">Players</h2>
 
-      <div className="flex items-center gap-3">
-        <label className="text-xs font-black uppercase tracking-wider text-[oklch(var(--text))]/55">
-          Search
-        </label>
-        <div className="relative">
+        <label className="relative block w-full sm:w-96">
+          <span className="sr-only">Search players by name</span>
+          <Search
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+            aria-hidden
+          />
           <input
             type="text"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="First, middle, last — use spaces for several parts"
-            className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-3 py-1.5 pr-8 text-sm text-[oklch(var(--text))] shadow-[2px_2px_0_oklch(var(--border))] placeholder:text-[oklch(var(--text))]/30 focus:outline-none focus:ring-3 focus:ring-[oklch(var(--primary))]"
+            placeholder="Search name: first, middle or last"
+            className="field h-9 w-full py-1.5 pl-8 pr-8 text-sm"
           />
           {draft && (
             <button
               type="button"
               onClick={() => setDraft("")}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-[oklch(var(--text))]/50 hover:text-[oklch(var(--text))]"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:bg-ink/6 hover:text-ink"
               aria-label="Clear search"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
           )}
-        </div>
+        </label>
       </div>
 
       {searchQuery && total === 0 && (
-        <p className="text-sm font-bold text-[oklch(var(--text))]/60">
+        <p className="px-4 pb-3 text-sm text-muted">
           No players match &ldquo;{searchQuery}&rdquo;
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] shadow-[4px_4px_0_oklch(var(--border))]">
-        <table className="min-w-full text-sm">
-          <thead className="bg-[oklch(var(--border))]/10">
+      <div className="overflow-x-auto border-y border-line">
+        <table className="data-table">
+          <thead>
             <tr>
-              {selectable && <th className="border-b-2 border-[oklch(var(--border))] px-3 py-2.5 text-left"></th>}
+              {selectable && (
+                <th className="w-10 px-3 py-2 text-left">
+                  <span className="sr-only">Select</span>
+                </th>
+              )}
               <SortableTh
                 label="Player"
                 align="left"
@@ -576,7 +586,7 @@ function PlayersListClientInner({
               {highlighted.map((key) => (
                 <SortableTh
                   key={key}
-                  label={key}
+                  label={attributeLabel(key)}
                   align="right"
                   columnSort={`attr:${key}`}
                   listSort={listSort}
@@ -590,47 +600,44 @@ function PlayersListClientInner({
             {pageItems.map(({ p, score, vsAge, potential }) => (
               <tr
                 key={p.raw.uniqueId}
-                className={`border-b-2 border-[oklch(var(--border))]/30 ${
-                  selectable && selectedIds.includes(p.raw.uniqueId)
-                    ? "bg-[oklch(var(--primary))]/20"
-                    : ""
-                }`}
+                data-selected={selectable && selectedIds.includes(p.raw.uniqueId)}
               >
                 {selectable && (
                   <td className="px-3 py-2">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 accent-[oklch(var(--primary))]"
+                      className="h-4 w-4 cursor-pointer"
+                      aria-label={`Select ${p.raw.player}`}
                       checked={selectedIds.includes(p.raw.uniqueId)}
                       onChange={() => onToggleSelect?.(p.raw.uniqueId)}
                     />
                   </td>
                 )}
                 <td className="px-3 py-2">
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 whitespace-nowrap">
                     <Link
                       href={`/attribute/players/${p.raw.uniqueId}`}
-                      className="font-bold underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--primary))]"
+                      className="font-semibold hover:text-accent hover:underline"
                     >
                       {p.raw.player}
                     </Link>
                     <NewTabPlayerLink uniqueId={p.raw.uniqueId} name={p.raw.player} />
                   </div>
                 </td>
-                <td className="px-3 py-2 font-mono text-xs uppercase">{p.raw.position}</td>
-                <td className="px-3 py-2 text-right font-mono text-xs">{p.raw.age}</td>
-                <td className="px-3 py-2 text-right font-mono text-sm font-black">
+                <td className="px-3 py-2 text-[13px] text-muted">{p.raw.position}</td>
+                <td className="px-3 py-2 text-right">{p.raw.age}</td>
+                <td className="px-3 py-2 text-right font-bold">
                   {score.toFixed(2)}
                 </td>
                 <td
-                  className={`px-3 py-2 text-right font-mono text-xs font-bold ${
-                    vsAge >= 1 ? "text-[oklch(var(--primary))]" : "text-[oklch(var(--text))]/70"
+                  className={`px-3 py-2 text-right ${
+                    vsAge >= 1 ? "font-semibold text-positive" : "text-muted"
                   }`}
                 >
                   {Math.round(vsAge * 100)}%
                 </td>
                 {hasPotential && (
-                  <td className="px-3 py-2 text-right font-mono text-sm font-bold">
+                  <td className="px-3 py-2 text-right font-semibold">
                     {potential === null ? "–" : potential.toFixed(2)}
                   </td>
                 )}
@@ -638,12 +645,10 @@ function PlayersListClientInner({
                   const value = getPlayerAttributeValue(p, key);
                   const band = getBandForValue(value, profile.thresholds);
                   return (
-                    <td
-                      key={key}
-                      className="px-3 py-2 text-right font-mono text-xs font-bold"
-                      style={{ color: attributeBandColor(band) }}
-                    >
-                      {value}
+                    <td key={key} className="px-2 py-1.5 text-right">
+                      <span className="attr" data-band={band}>
+                        {value}
+                      </span>
                     </td>
                   );
                 })}
@@ -653,6 +658,7 @@ function PlayersListClientInner({
         </table>
       </div>
 
+      <div className="px-4 py-3">
       <PaginationControls
         page={page}
         pageCount={pageCount}
@@ -663,6 +669,7 @@ function PlayersListClientInner({
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
       />
+      </div>
     </div>
   );
 }
@@ -671,7 +678,7 @@ export default function PlayersListClient(props: Props) {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-5xl p-6 text-sm text-[oklch(var(--text))]/70">
+        <div className="px-4 py-6 text-sm text-muted">
           Loading table…
         </div>
       }

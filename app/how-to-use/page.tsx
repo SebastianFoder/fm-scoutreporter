@@ -2,42 +2,60 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { LINK_BUTTON_CLASS } from "@/components/Button";
+import { PageHeader } from "@/components/PageHeader";
 
 type Tab = "setup" | "attribute" | "wonderkid";
 
+/** Collapsible documentation section. Numbered only where the steps are a sequence. */
 function Step({
+  index,
   title,
   children,
   defaultOpen,
 }: {
+  index: string;
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(Boolean(defaultOpen));
+  const numbered = /^\d+$/.test(index);
 
   return (
-    <div className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-5 py-4 shadow-[4px_4px_0_oklch(var(--border))]">
+    <div className="border-b border-line last:border-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between cursor-pointer gap-4 text-left"
+        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left hover:bg-paper"
         aria-expanded={open}
       >
-        <h2 className="text-base font-black uppercase tracking-wide">{title}</h2>
-        <span className="rounded-lg border-2 border-[oklch(var(--border))] px-2 py-0.5 text-xs font-bold">
-          {open ? "Collapse" : "Expand"}
-        </span>
+        {numbered && (
+          <span
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[13px] font-bold ${
+              open ? "bg-accent text-on-accent" : "bg-paper text-muted ring-1 ring-line"
+            }`}
+          >
+            {Number(index)}
+          </span>
+        )}
+        <h2 className="flex-1 text-base font-semibold">{title}</h2>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-muted transition-transform duration-150 ${open ? "rotate-180" : ""}`}
+          aria-hidden
+        />
+        <span className="sr-only">{open ? "Collapse" : "Expand"}</span>
       </button>
 
       <div
         className={[
-          "mt-3 grid transition-[grid-template-rows] duration-200 ease-out",
+          "grid transition-[grid-template-rows] duration-150 ease-out",
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
         ].join(" ")}
       >
         <div className="overflow-hidden">
-          <div className="space-y-3 text-sm text-[oklch(var(--text))/0.9]">
+          <div className={`space-y-3 px-4 pb-5 text-[15px] leading-relaxed ${numbered ? "sm:pl-13" : ""}`}>
             {children}
           </div>
         </div>
@@ -54,11 +72,9 @@ function MiniStep({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border-2 border-[oklch(var(--border))]/50 bg-[oklch(var(--background))] p-4">
-      <h3 className="text-sm font-bold">{title}</h3>
-      <div className="mt-2 text-sm text-[oklch(var(--text))/0.85]">
-        {children}
-      </div>
+    <div className="pt-1">
+      <h3 className="font-semibold">{title}</h3>
+      <div className="mt-1 text-ink/85">{children}</div>
     </div>
   );
 }
@@ -71,19 +87,17 @@ function InfoBox({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border-2 border-[oklch(var(--border))]/50 bg-[oklch(var(--background))] p-4">
-      <p className="text-xs font-black uppercase tracking-wider text-[oklch(var(--text))]/60 mb-1">
-        {label}
-      </p>
-      <div className="text-sm text-[oklch(var(--text))/0.85]">{children}</div>
+    <div className="pt-1">
+      <h3 className="font-semibold">{label}</h3>
+      <div className="mt-1 text-ink/85">{children}</div>
     </div>
   );
 }
 
 function SetupGuideTab() {
   return (
-    <div className="space-y-4">
-      <Step title="Step 1: Install BepInEx" defaultOpen>
+    <div>
+      <Step index="01" title="Install BepInEx" defaultOpen>
         <MiniStep title="1.1 Download BepInEx">
           <p>
             Go to{" "}
@@ -91,7 +105,7 @@ function SetupGuideTab() {
               href="https://new.thunderstore.io/c/football-manager-26/p/BepInEx/BepInExPack_FootballManager26/"
               target="_blank"
               rel="noreferrer"
-              className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
+              className="link"
             >
               BepInExPack_FootballManager26
             </a>
@@ -101,8 +115,8 @@ function SetupGuideTab() {
 
         <MiniStep title="1.2 Copy files to your FM26 folder">
           <p className="mb-2">Open your FM26 installation folder.</p>
-          <div className="rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
-            <div className="text-[oklch(var(--text))/0.8]">
+          <div className="codeblock">
+            <div className="text-ink/80">
               Steam: Right-click FM26 → Properties → Installed Files →
               Browse
             </div>
@@ -110,7 +124,7 @@ function SetupGuideTab() {
           <p className="mt-3">
             Paste the unzipped files there. Your folder should look like:
           </p>
-          <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+          <pre className="codeblock mt-2">
             {`.../Steam/steamapps/common/Football Manager 26/
 ├── BepInEx/
 ├── changelog.txt
@@ -127,7 +141,7 @@ function SetupGuideTab() {
             Right-click FM26 in Steam → Properties → Launch Options, and
             paste:
           </p>
-          <pre className="overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+          <pre className="codeblock">
             {`WINEDLLOVERRIDES="winhttp=n,b" %command%`}
           </pre>
         </MiniStep>
@@ -135,51 +149,51 @@ function SetupGuideTab() {
         <MiniStep title="1.4 First launch">
           <p>
             Launch FM26 once so BepInEx can initialize. Confirm that the{" "}
-            <code className="font-mono font-bold">BepInEx/plugins/</code> folder now
+            <code className="font-semibold">BepInEx/plugins/</code> folder now
             exists before continuing.
           </p>
         </MiniStep>
       </Step>
 
-      <Step title="Step 2: Install the Plugin">
+      <Step index="02" title="Install the Plugin">
         <p>
           Download the plugin from{" "}
           <a
             href="https://www.fmscout.com/a-fm26-player-csv-export.html"
             target="_blank"
             rel="noreferrer"
-            className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
+            className="link"
           >
             FM26 Player CSV Export
           </a>
           .
         </p>
         <p className="mt-2">
-          Copy <code className="font-mono font-bold">FMDataExport.dll</code> from the
+          Copy <code className="font-semibold">FMDataExport.dll</code> from the
           ZIP into:
         </p>
-        <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+        <pre className="codeblock mt-2">
           {`.../Steam/steamapps/common/Football Manager 26/BepInEx/plugins/`}
         </pre>
       </Step>
 
-      <Step title="Step 3: Install the View">
+      <Step index="03" title="Install the View">
         <p className="mb-2">Download the view file:</p>
         <div className="flex flex-wrap gap-2">
           <a
             href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
-            className="inline-flex items-center rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))]"
+            className={LINK_BUTTON_CLASS}
           >
             Download Attribute View
           </a>
         </div>
         <p className="mt-3">Move it to:</p>
-        <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+        <pre className="codeblock mt-2">
           {`Documents\\Sports Interactive\\Football Manager 26\\views\\`}
         </pre>
       </Step>
 
-      <Step title="Step 4: Export Players from FM26">
+      <Step index="04" title="Export Players from FM26">
         <ol className="list-decimal space-y-2 pl-5">
           <li>
             Open your FM26 save and go to{" "}
@@ -199,28 +213,28 @@ function SetupGuideTab() {
           </li>
           <li>Select the players you want to export</li>
           <li>
-            Press <span className="font-mono font-bold">F9</span> to export
+            Press <span className="font-semibold">F9</span> to export
           </li>
         </ol>
       </Step>
 
-      <Step title="Step 5: Import the CSV">
+      <Step index="05" title="Import the CSV">
         <p>
           Go to{" "}
           <Link
             href="/attribute"
-            className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
+            className="link"
           >
             this site&apos;s importer
           </Link>{" "}
           and click <span className="font-bold">Choose CSV file</span>.
         </p>
         <p className="mt-2">Navigate to:</p>
-        <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+        <pre className="codeblock mt-2">
           {`Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
         </pre>
         <p className="mt-2">Select your exported file and import.</p>
-        <p className="mt-3 font-bold text-[oklch(var(--text))/0.85]">
+        <p className="mt-3 font-semibold text-ink">
           You&apos;re done — enjoy your scouting data!
         </p>
       </Step>
@@ -230,8 +244,8 @@ function SetupGuideTab() {
 
 function AttributeTab() {
   return (
-    <div className="space-y-6">
-      <Step title="How to Use — Attribute Mode" defaultOpen>
+    <div>
+      <Step index="Use" title="How to use Attribute mode" defaultOpen>
         <p>
           Attribute mode lets you import a player export and instantly rank players by
           a weighted average of their FM26 attributes. No baseline required — just
@@ -244,15 +258,15 @@ function AttributeTab() {
           </p>
           <a
             href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
-            className="inline-flex items-center rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))]"
+            className={LINK_BUTTON_CLASS}
           >
             Download Attribute View (v2)
           </a>
-          <p className="mt-2 text-xs text-[oklch(var(--text))]/65">
+          <p className="mt-2 text-sm text-muted">
             v2 adds Professionalism, CA and PA columns, which enable full-potential estimates
             and Wonderkid mode. v1 exports still import fine.
           </p>
-          <p className="mt-2 text-xs text-[oklch(var(--text))]/65">
+          <p className="mt-2 text-sm text-muted">
             See the Setup Guide tab for full BepInEx + plugin install instructions.
           </p>
         </MiniStep>
@@ -268,7 +282,7 @@ function AttributeTab() {
               load the Attribute View
             </li>
             <li>Select the Attribute View from the Custom Views dropdown</li>
-            <li>Select the players you want, then press <span className="font-mono font-bold">F9</span></li>
+            <li>Select the players you want, then press <span className="font-semibold">F9</span></li>
           </ol>
         </MiniStep>
 
@@ -277,13 +291,13 @@ function AttributeTab() {
             Go to{" "}
             <Link
               href="/attribute"
-              className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
+              className="link"
             >
               Attribute Mode
             </Link>
             , click <span className="font-bold">Choose CSV file</span>, and navigate to:
           </p>
-          <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+          <pre className="codeblock mt-2">
             {`Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
           </pre>
           <p className="mt-2">
@@ -309,7 +323,7 @@ function AttributeTab() {
         </MiniStep>
       </Step>
 
-      <Step title="How it Works — Attribute Mode" defaultOpen>
+      <Step index="Math" title="How Attribute mode scores players" defaultOpen>
         <p>
           Attribute mode scores players using a weighted average of their raw FM26
           attribute values (1–20 scale), then normalises that average to a 100-point scale.
@@ -321,7 +335,7 @@ function AttributeTab() {
             The score is the weighted mean of all attribute values across every attribute
             with a non-zero weight. Each profile picks a weighting:
           </p>
-          <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+          <pre className="codeblock mt-2">
             {`Linear:      weighted_avg = Σ(attr × weight)  / Σ(weight)
 Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
           </pre>
@@ -341,7 +355,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
               href="https://github.com/jamiebolden/fm-scoring"
               target="_blank"
               rel="noreferrer"
-              className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2"
+              className="link"
             >
               fm-scoring
             </a>
@@ -367,12 +381,12 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
         <InfoBox label="100-point normalisation">
           <p>
             The weighted average sits on the FM 1–20 attribute scale. It is normalised so
-            that a weighted average of <span className="font-mono font-bold">13</span> (considered
-            a solid professional) maps to exactly <span className="font-mono font-bold">100</span>.
+            that a weighted average of <span className="font-semibold">13</span> (considered
+            a solid professional) maps to exactly <span className="font-semibold">100</span>.
             Scores above 100 indicate above-average players for your weight profile; below 100
             means below average.
           </p>
-          <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+          <pre className="codeblock mt-2">
             {`score = (weighted_avg / 13) × 100`}
           </pre>
         </InfoBox>
@@ -401,8 +415,8 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 
 function WonderkidTab() {
   return (
-    <div className="space-y-6">
-      <Step title="How to Use — Wonderkid Mode" defaultOpen>
+    <div>
+      <Step index="Use" title="How to use Wonderkid mode" defaultOpen>
         <MiniStep title="1. Export with the v2 view">
           <p>
             Import the Attribute View (v2) in FM and export as usual. It adds{" "}
@@ -416,7 +430,7 @@ function WonderkidTab() {
             Open{" "}
             <Link
               href="/wonderkid"
-              className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2"
+              className="link"
             >
               Wonderkid Mode
             </Link>{" "}
@@ -432,7 +446,7 @@ function WonderkidTab() {
         </MiniStep>
       </Step>
 
-      <Step title="How it Works — Full Potential Estimate" defaultOpen>
+      <Step index="Math" title="How the full-potential estimate works" defaultOpen>
         <InfoBox label="CA is a cost-weighted attribute sum">
           <p>
             Each attribute point costs a position-specific amount of CA (fm-scoring&apos;s FM27 CA
@@ -440,7 +454,7 @@ function WonderkidTab() {
             keepers, CA fits the cost-weighted sum almost exactly (r = 0.99, error ≈ 2.5 CA). The
             fit is recalibrated on every import that has CA.
           </p>
-          <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+          <pre className="codeblock mt-2">
             {`A       = Σ(cost × attr) / Σ(cost)
 CA      ≈ slope × A + intercept
 A at PA = A + (PA − CA) / slope`}
@@ -487,7 +501,7 @@ export default function HowToUsePage() {
     },
     attribute: {
       title: "Attribute Mode",
-      description: "Score and rank players by a weighted average of their FM26 attributes — no baseline needed, just import and go.",
+      description: "Score and rank players by a weighted average of their FM26 attributes. No baseline needed: import and go.",
       link: { href: "/attribute", label: "Go to Attribute Mode" },
     },
     wonderkid: {
@@ -500,53 +514,44 @@ export default function HowToUsePage() {
   const info = headerInfo[activeTab];
 
   return (
-    <div className="min-h-screen bg-[oklch(var(--background))] text-[oklch(var(--text))]">
-      <main className="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-10">
-        <header className="space-y-3">
-          <h1 className="text-4xl font-black uppercase tracking-tight">
-            {info.title}
-          </h1>
-          <p className="text-sm text-[oklch(var(--text))/0.75]">
-            {info.description}
-          </p>
+    <div className="text-ink">
+      <main className="mx-auto flex max-w-4xl flex-col gap-5 px-5 py-6 md:py-8">
+        <PageHeader title={info.title}>
+          {info.description}{" "}
           {info.link && (
-            <div className="text-sm">
-              <Link
-                href={info.link.href}
-                className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2 hover:decoration-[oklch(var(--alt))]"
-              >
-                {info.link.label}
-              </Link>
-            </div>
+            <Link href={info.link.href} className="link">
+              {info.link.label}
+            </Link>
           )}
-        </header>
+        </PageHeader>
 
-        {/* Tab bar */}
-        <nav
-          className="flex gap-1 rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] p-1 shadow-[4px_4px_0_oklch(var(--border))]"
-          aria-label="Page sections"
-        >
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={[
-                "flex-1 rounded-lg border-2 px-4 py-2 text-xs font-black uppercase tracking-wide transition-all",
-                activeTab === tab.id
-                  ? "border-[oklch(var(--border))] bg-[oklch(var(--primary))] text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))]"
-                  : "border-transparent text-[oklch(var(--text))]/65 hover:border-[oklch(var(--border))]/50 hover:text-[oklch(var(--text))]",
-              ].join(" ")}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <nav className="flex overflow-x-auto border-b border-line" aria-label="Page sections">
+          {TABS.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                aria-current={active ? "page" : undefined}
+                className={[
+                  "-mb-px shrink-0 cursor-pointer border-b-2 px-4 py-2 text-sm",
+                  active
+                    ? "border-accent font-semibold text-ink"
+                    : "border-transparent text-muted hover:text-ink",
+                ].join(" ")}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Tab content */}
-        {activeTab === "setup" && <SetupGuideTab />}
-        {activeTab === "attribute" && <AttributeTab />}
-        {activeTab === "wonderkid" && <WonderkidTab />}
+        <div className="panel overflow-hidden">
+          {activeTab === "setup" && <SetupGuideTab />}
+          {activeTab === "attribute" && <AttributeTab />}
+          {activeTab === "wonderkid" && <WonderkidTab />}
+        </div>
       </main>
     </div>
   );
