@@ -94,7 +94,213 @@ function InfoBox({
   );
 }
 
+type GameVersion = "fm27" | "fm26";
+
+const EXPORTER_URL = "https://github.com/ElectroHugin/FM-View-Exporter";
+const EXPORTER_RELEASES_URL = `${EXPORTER_URL}/releases`;
+
 function SetupGuideTab() {
+  const [version, setVersion] = useState<GameVersion>("fm27");
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
+        <span className="text-sm text-muted">Game version</span>
+        <div className="inline-flex overflow-hidden rounded-md ring-1 ring-line" role="group" aria-label="Game version">
+          {(["fm27", "fm26"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setVersion(v)}
+              aria-pressed={version === v}
+              className={`cursor-pointer px-3 py-1 text-sm ${
+                version === v ? "bg-accent font-semibold text-on-accent" : "text-muted hover:bg-paper hover:text-ink"
+              }`}
+            >
+              {v.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+      {version === "fm27" ? <Fm27SetupGuide /> : <Fm26SetupGuide />}
+    </div>
+  );
+}
+
+function Fm27SetupGuide() {
+  return (
+    <div>
+      <Step index="01" title="Install FM View Exporter" defaultOpen>
+        <p>
+          We recommend{" "}
+          <a href={EXPORTER_URL} target="_blank" rel="noreferrer" className="link">
+            FM View Exporter
+          </a>
+          . It exports any player list in FM27 (squad, player database or shortlist) to CSV
+          with one key press, and it ships with BepInEx, so there is nothing else to install.
+          It needs FM27 on Steam and Windows 10 or 11.
+        </p>
+
+        <MiniStep title="1.1 Option A: Setup program (recommended)">
+          <ol className="list-decimal space-y-1 pl-5">
+            <li>
+              Download <code className="font-semibold">FMViewExporter-…-setup.exe</code> from
+              the{" "}
+              <a href={EXPORTER_RELEASES_URL} target="_blank" rel="noreferrer" className="link">
+                Releases page
+              </a>{" "}
+              and run it.
+            </li>
+            <li>
+              It finds FM27 in your Steam libraries. If it doesn&apos;t, pick the folder that
+              contains <code className="font-semibold">fm.exe</code>.
+            </li>
+            <li>
+              Keep the output format on CSV and the CSV style on the default comma separator,
+              then click <span className="font-bold">Install</span>.
+            </li>
+          </ol>
+          <p className="mt-2 text-sm text-muted">
+            To update later, run the new setup and click Update. Your settings are kept.
+          </p>
+        </MiniStep>
+
+        <MiniStep title="1.2 Option B: Manual install">
+          <p className="mb-2">
+            Download <code className="font-semibold">FMViewExporter-…-komplettpaket.zip</code>{" "}
+            from the{" "}
+            <a href={EXPORTER_RELEASES_URL} target="_blank" rel="noreferrer" className="link">
+              Releases page
+            </a>{" "}
+            and open your FM27 installation folder:
+          </p>
+          <div className="codeblock">
+            <div className="text-ink/80">
+              Steam: Right-click FM27 → Manage → Browse local files
+            </div>
+          </div>
+          <p className="mt-3">
+            Extract the contents of the ZIP (not the ZIP itself) into that folder. It should
+            look like:
+          </p>
+          <pre className="codeblock mt-2">
+            {`.../Steam/steamapps/common/Football Manager 27/
+├── BepInEx/
+├── doorstop_config.ini
+├── fm.exe
+├── fm_data/
+└── winhttp.dll`}
+          </pre>
+        </MiniStep>
+
+        <MiniStep title="1.3 First launch">
+          <p>
+            Start FM27. The first launch takes a few minutes while BepInEx sets itself up;
+            later starts are normal speed. To check the plugin loaded, open this file in the
+            game folder and look for a line mentioning{" "}
+            <span className="font-semibold">FM View Exporter</span>:
+          </p>
+          <pre className="codeblock mt-2">{`BepInEx\\LogOutput.log`}</pre>
+        </MiniStep>
+      </Step>
+
+      <Step index="02" title="Install the View">
+        <p className="mb-2">Download the view file:</p>
+        <div className="flex flex-wrap gap-2">
+          <a
+            href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
+            className={LINK_BUTTON_CLASS}
+          >
+            Download Attribute View
+          </a>
+        </div>
+        <p className="mt-3">Move it to:</p>
+        <pre className="codeblock mt-2">
+          {`Documents\\Sports Interactive\\Football Manager 27\\views\\`}
+        </pre>
+      </Step>
+
+      <Step index="03" title="Export Players from FM27">
+        <ol className="list-decimal space-y-2 pl-5">
+          <li>
+            Open your FM27 save and go to{" "}
+            <span className="font-bold">Recruitment → Player Database</span> (a squad or
+            shortlist works too)
+          </li>
+          <li>
+            Right-click any column header and select{" "}
+            <span className="font-bold">Import View</span>
+          </li>
+          <li>Import the view you downloaded in Step 2</li>
+          <li>
+            Select that view from the{" "}
+            <span className="font-bold">Custom Views</span> dropdown
+            (top-right of the player list)
+          </li>
+          <li>
+            Filter the list down to the players you want. The exporter takes every row in the
+            list, not just the ones on screen.
+          </li>
+          <li>
+            Press <span className="font-semibold">F9</span> and don&apos;t click anything until
+            it finishes. The plugin scrolls the list itself; large searches can take a few
+            minutes.
+          </li>
+        </ol>
+      </Step>
+
+      <Step index="04" title="Import the CSV">
+        <p>
+          Go to{" "}
+          <Link
+            href="/attribute"
+            className="link"
+          >
+            this site&apos;s importer
+          </Link>{" "}
+          and click <span className="font-bold">Choose CSV file</span>.
+        </p>
+        <p className="mt-2">Navigate to:</p>
+        <pre className="codeblock mt-2">
+          {`Documents\\Sports Interactive\\FM View Exporter\\`}
+        </pre>
+        <p className="mt-2">
+          Pick the newest file, e.g.{" "}
+          <code className="font-semibold">player-database_20261030_192739.csv</code>, and
+          import.
+        </p>
+        <p className="mt-3 font-semibold text-ink">
+          You&apos;re done — enjoy your scouting data!
+        </p>
+      </Step>
+
+      <Step index="Help" title="Troubleshooting">
+        <InfoBox label="F9 does nothing">
+          <p>
+            Check <code className="font-semibold">BepInEx\LogOutput.log</code> in the game
+            folder. &ldquo;No player list found&rdquo; means no player table was open when you
+            pressed F9.
+          </p>
+        </InfoBox>
+        <InfoBox label="The game won't start">
+          <p>
+            Rename or delete <code className="font-semibold">winhttp.dll</code> in the game
+            folder to start without mods, or uninstall with the setup program. Your saves are
+            not affected.
+          </p>
+        </InfoBox>
+        <InfoBox label="Antivirus warning">
+          <p>
+            Some virus scanners flag the setup because it isn&apos;t code-signed yet and
+            installs BepInEx. Use the manual ZIP install if you prefer.
+          </p>
+        </InfoBox>
+      </Step>
+    </div>
+  );
+}
+
+function Fm26SetupGuide() {
   return (
     <div>
       <Step index="01" title="Install BepInEx" defaultOpen>
@@ -254,7 +460,7 @@ function AttributeTab() {
 
         <MiniStep title="1. Download and import the Attribute View">
           <p className="mb-2">
-            Download the Attribute View and place it in your FM26 views folder:
+            Download the Attribute View and place it in your FM26 or FM27 views folder:
           </p>
           <a
             href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
@@ -267,11 +473,11 @@ function AttributeTab() {
             and Wonderkid mode. v1 exports still import fine.
           </p>
           <p className="mt-2 text-sm text-muted">
-            See the Setup Guide tab for full BepInEx + plugin install instructions.
+            See the Setup Guide tab for full exporter install instructions for each game version.
           </p>
         </MiniStep>
 
-        <MiniStep title="2. Export players from FM26">
+        <MiniStep title="2. Export players from FM">
           <ol className="list-decimal space-y-1 pl-5">
             <li>
               Open your save and go to{" "}
@@ -295,10 +501,12 @@ function AttributeTab() {
             >
               Attribute Mode
             </Link>
-            , click <span className="font-bold">Choose CSV file</span>, and navigate to:
+            , click <span className="font-bold">Choose CSV file</span>, and navigate to your
+            exporter&apos;s output folder:
           </p>
           <pre className="codeblock mt-2">
-            {`Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
+            {`FM27: Documents\\Sports Interactive\\FM View Exporter\\
+FM26: Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
           </pre>
           <p className="mt-2">
             Players are scored and sorted immediately after import.
@@ -496,7 +704,7 @@ export default function HowToUsePage() {
   const headerInfo: Record<Tab, { title: string; description: string; link?: { href: string; label: string } }> = {
     setup: {
       title: "Setup Guide",
-      description: "Follow these steps to export a player list from Football Manager 26 and import it into this app.",
+      description: "Follow these steps to export a player list from Football Manager 27 or 26 and import it into this app.",
       link: { href: "/attribute", label: "Go to the importer" },
     },
     attribute: {
