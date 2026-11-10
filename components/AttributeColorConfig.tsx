@@ -377,7 +377,7 @@ function ThresholdRow(props: {
                 Below <span className="font-semibold text-ink">{belowMax}</span>
               </>
             ) : (
-              <>—</>
+              <>–</>
             )}
           </span>
         ) : (

@@ -87,5 +87,5 @@ ci: add semantic-release workflow on push to main
 - Use `fix` for anything a user would notice as broken behavior being corrected
 - Use `chore` for dependency bumps, config tweaks, tooling
 - Never use vague subjects like `fix bug` or `update stuff`
-- One logical change per commit — don't mix feat + fix in one commit
+- One logical change per commit: don't mix feat + fix in one commit
 - If unsure whether something is a `feat` or `refactor`, ask: does it change observable behavior for the end user? If yes → `feat` or `fix`

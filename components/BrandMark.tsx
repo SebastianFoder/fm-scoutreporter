@@ -1,5 +1,5 @@
 /**
- * Scout Reporter mark: a pitch seen from above, with one position marked —
+ * Scout Reporter mark: a pitch seen from above, with one position marked:
  * the thing a scout report is about. Keep in sync with app/icon.svg.
  */
 export function BrandMark({ className = "h-6 w-6" }: { className?: string }) {

@@ -41,7 +41,7 @@ export type TransferValue =
 export function parseTransferValue(text: string | null): TransferValue {
   if (text === null || text.trim() === "") return { kind: "none" };
   const amounts = text
-    .split(/\s+[-–—]\s+/)
+    .split(/\s+[-\u2013]\s+/)
     .map(parseMoney)
     .filter((n): n is number => n !== null);
   if (amounts.length === 0) return { kind: "unavailable" };

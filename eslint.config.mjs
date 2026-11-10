@@ -2,11 +2,38 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import storybook from "eslint-plugin-storybook";
+import { EM_DASH_MESSAGE, findEmDashes } from "./scripts/no-em-dash.mjs";
+
+/** Flags every em dash in the source, in any form (character, escape or entity), including comments. */
+const noEmDash = {
+  meta: {
+    type: "problem",
+    schema: [],
+    messages: { emDash: EM_DASH_MESSAGE },
+  },
+  create(context) {
+    const { sourceCode } = context;
+    return {
+      Program() {
+        for (const { index, length } of findEmDashes(sourceCode.text)) {
+          context.report({
+            loc: { start: sourceCode.getLocFromIndex(index), end: sourceCode.getLocFromIndex(index + length) },
+            messageId: "emDash",
+          });
+        }
+      },
+    };
+  },
+};
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   ...storybook.configs["flat/recommended"],
+  {
+    plugins: { local: { rules: { "no-em-dash": noEmDash } } },
+    rules: { "local/no-em-dash": "error" },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

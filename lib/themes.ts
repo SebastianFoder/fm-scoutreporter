@@ -6,7 +6,7 @@ export interface ThemeBand {
   ink: string;
 }
 
-/** FM attribute value bands (1–20) — a one-hue ordinal ramp, lightest = lowest. */
+/** FM attribute value bands (1–20): a one-hue ordinal ramp, lightest = lowest. */
 export interface ThemeAttributeBands {
   excellent: ThemeBand;
   good: ThemeBand;
