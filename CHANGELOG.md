@@ -1,3 +1,11 @@
+# [1.5.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.4.2...v1.5.0) (2026-11-10)
+
+
+### Features
+
+* add FM27 benchmark profiles and wonderkid mode ([04b1f04](https://github.com/SebastianFoder/fm-scoutreporter/commit/04b1f040d7089d66c7fbc435eaa910aa3493bf90))
+* **ui:** redesign the interface as a data-first scouting tool ([3f3c17c](https://github.com/SebastianFoder/fm-scoutreporter/commit/3f3c17c2af361a42d2f79bb7a43d3f357b9a5419))
+
 ## [1.4.2](https://github.com/SebastianFoder/fm26-scoutreporter/compare/v1.4.1...v1.4.2) (2026-11-10)
 
 
