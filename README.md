@@ -30,8 +30,8 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 Install dependencies and run the dev server:
 
 ```bash
-pnpm install
-pnpm dev
+bun install
+bun dev
 ```
 
 Open `http://localhost:3000`.
