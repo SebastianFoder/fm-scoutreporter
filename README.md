@@ -19,6 +19,11 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
   - Comparison table
   - Per-row medal ranking (gold/silver/bronze)
 - **How to use** page with step-by-step exporter setup guide
+- **FM27 benchmark profiles** (CB, WB/DM, AM/Winger, Striker, GK) and a **vs Age** column, from
+  [jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring)'s FM27 weights and age benchmarks
+- **Wonderkid mode** (`/wonderkid`): with the v2 view (`public/SCOUT REPORTER Attributes v2.fmf`, adds
+  Professionalism, CA and PA) it estimates each player's attributes at full potential using the FM27
+  CA-cost table, then ranks prospects on the benchmark roles
 
 ## Getting started
 

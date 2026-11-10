@@ -1,11 +1,11 @@
 import type { PlayerWithGroups } from "@/data/players-store";
-import type { AttributeWeights, AttributeKey } from "@/types/weights";
+import type { AttributeWeights, AttributeKey, WeightEmphasis } from "@/types/weights";
+import { weightedAverage } from "@/lib/fm27/benchmarks";
 
-const DEFAULT_WEIGHT = 0;
 const BASELINE_AVG_ATTRIBUTE = 13;
 
-/** >1 makes high/low weight ratios affect the score more strongly (flat profiles unchanged). */
-const WEIGHT_EMPHASIS = 2;
+/** Profiles saved before the emphasis option keep their squared weighting. */
+export const LEGACY_EMPHASIS: WeightEmphasis = 2;
 
 export function getPlayerAttributeValue(
   p: PlayerWithGroups,
@@ -19,25 +19,33 @@ export function getPlayerAttributeValue(
   return 0;
 }
 
+/** Weighted average attribute on FM's 1–20 scale. */
+export function computeWeightedAverage(
+  player: PlayerWithGroups,
+  weights: AttributeWeights,
+  emphasis: WeightEmphasis = LEGACY_EMPHASIS,
+): number {
+  return weightedAverage((k) => getPlayerAttributeValue(player, k), weights, emphasis);
+}
+
+/** Weighted average for an arbitrary attribute set (e.g. projected potential attributes). */
+export function computeWeightedAverageOf(
+  attributes: Record<AttributeKey, number>,
+  weights: AttributeWeights,
+  emphasis: WeightEmphasis = LEGACY_EMPHASIS,
+): number {
+  return weightedAverage((k) => attributes[k] ?? 0, weights, emphasis);
+}
+
+/** Weighted average scaled so 13 = 100 (e.g. 10 → 76.9, 16 → 123.1). */
+export function scaleScore(weightedAvg: number): number {
+  return (weightedAvg / BASELINE_AVG_ATTRIBUTE) * 100;
+}
+
 export function computeScore(
   player: PlayerWithGroups,
   weights: AttributeWeights,
+  emphasis: WeightEmphasis = LEGACY_EMPHASIS,
 ): number {
-  let sum = 0;
-  let totalWeight = 0;
-
-  for (const key of Object.keys(weights) as AttributeKey[]) {
-    const w = weights[key] ?? DEFAULT_WEIGHT;
-    const wEff = Math.pow(w, WEIGHT_EMPHASIS);
-    const v = getPlayerAttributeValue(player, key);
-    sum += v * wEff;
-    totalWeight += wEff;
-  }
-
-  if (totalWeight === 0) return 0;
-  const weightedAvg = sum / totalWeight; // 1–20 scale
-
-  // Scale so a weighted average of 13 becomes 100.
-  // Example: 13 => 100, 10 => 76.92, 16 => 123.08
-  return (weightedAvg / BASELINE_AVG_ATTRIBUTE) * 100;
+  return scaleScore(computeWeightedAverage(player, weights, emphasis));
 }

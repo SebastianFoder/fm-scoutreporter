@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test lib/parser/csv-parser.test.ts",
+    "test": "tsx --test lib/parser/csv-parser.test.ts lib/fm27/fm27.test.ts",
     "release": "semantic-release"
   },
   "dependencies": {

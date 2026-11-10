@@ -4,10 +4,13 @@ import { parsePlayersCsv } from "@/lib/parser/csv-parser";
 import { groupPlayerAttributes } from "@/lib/parser/attribute-grouper";
 import type { PlayerAttributes } from "@/types/player-attributes";
 import type { GroupedAttributes } from "@/types/grouped-attributes";
+import type { PotentialProjection } from "@/lib/fm27/potential";
 
 export interface PlayerWithGroups {
   raw: PlayerAttributes;
   grouped: GroupedAttributes;
+  /** Projected attributes at PA; only for v2 exports (CA + PA columns). */
+  potential?: PotentialProjection | null;
 }
 
 let cache: PlayerWithGroups[] | null = null;

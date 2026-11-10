@@ -12,17 +12,16 @@ import {
 } from "react";
 import { parsePlayersCsv } from "@/lib/parser/csv-parser";
 import { groupPlayerAttributes } from "@/lib/parser/attribute-grouper";
-import type { PlayerAttributes } from "@/types/player-attributes";
-import type { GroupedAttributes } from "@/types/grouped-attributes";
+import { computeDatasetPotentials, type CaModelSet } from "@/lib/fm27/potential";
+import type { PlayerWithGroups } from "@/data/players-store";
 
-export interface PlayerWithGroups {
-  raw: PlayerAttributes;
-  grouped: GroupedAttributes;
-}
+export type { PlayerWithGroups };
 
 type PlayersDataState = {
   csvText: string | null;
   players: PlayerWithGroups[];
+  /** CA model used for potential projections; null when the import has no CA/PA (v1 view). */
+  caModels: CaModelSet | null;
 };
 
 type PlayersDataContextValue = {
@@ -38,10 +37,20 @@ const LEGACY_SESSION_KEY = "importedPlayersCsv";
 
 const PlayersDataContext = createContext<PlayersDataContextValue | null>(null);
 
-function parseAndGroup(csvText: string): PlayerWithGroups[] {
+function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText"> {
   const parsed = parsePlayersCsv(csvText);
-  return parsed.map((p) => ({ raw: p, grouped: groupPlayerAttributes(p) }));
+  const potentials = computeDatasetPotentials(parsed);
+  return {
+    players: parsed.map((p) => ({
+      raw: p,
+      grouped: groupPlayerAttributes(p),
+      potential: potentials.byId.get(p.uniqueId) ?? null,
+    })),
+    caModels: potentials.available ? potentials.models : null,
+  };
 }
+
+const EMPTY: PlayersDataState = { csvText: null, players: [], caModels: null };
 
 function readStoredCsv(): string | null {
   try {
@@ -65,18 +74,14 @@ export function PlayersDataProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [state, setState] = useState<PlayersDataState>({
-    csvText: null,
-    players: [],
-  });
+  const [state, setState] = useState<PlayersDataState>(EMPTY);
 
   /* eslint-disable react-hooks/set-state-in-effect -- post-SSR localStorage hydration */
   useEffect(() => {
     try {
       const stored = readStoredCsv();
       if (!stored) return;
-      const players = parseAndGroup(stored);
-      setState({ csvText: stored, players });
+      setState({ csvText: stored, ...parseAndGroup(stored) });
     } catch {
       // ignore
     }
@@ -88,13 +93,12 @@ export function PlayersDataProvider({
       if (e.key !== STORAGE_KEY) return;
       if (e.newValue) {
         try {
-          const players = parseAndGroup(e.newValue);
-          setState({ csvText: e.newValue, players });
+          setState({ csvText: e.newValue, ...parseAndGroup(e.newValue) });
         } catch {
-          setState({ csvText: null, players: [] });
+          setState(EMPTY);
         }
       } else {
-        setState({ csvText: null, players: [] });
+        setState(EMPTY);
       }
     };
     window.addEventListener("storage", onStorage);
@@ -103,8 +107,7 @@ export function PlayersDataProvider({
 
   const setCsvText = useCallback(
     (csvText: string) => {
-      const players = parseAndGroup(csvText);
-      setState({ csvText, players });
+      setState({ csvText, ...parseAndGroup(csvText) });
       let persisted = true;
       try {
         window.localStorage.setItem(STORAGE_KEY, csvText);
@@ -118,7 +121,7 @@ export function PlayersDataProvider({
   );
 
   const clear = useCallback(() => {
-    setState({ csvText: null, players: [] });
+    setState(EMPTY);
     try {
       window.localStorage.removeItem(STORAGE_KEY);
       window.sessionStorage.removeItem(LEGACY_SESSION_KEY);

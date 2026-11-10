@@ -48,3 +48,26 @@ test("splitCsvLine keeps quoted commas together", () => {
   assert.deepEqual(splitCsvLine('Jo,"AM (R), ST (C)",21', ","), ["Jo", "AM (R), ST (C)", "21"]);
   assert.deepEqual(splitCsvLine('a,"say ""hi""",b', ","), ["a", 'say "hi"', "b"]);
 });
+
+test("parsePlayersCsv reads the v2 view (Professionalism, CA, PA) by header", () => {
+  const rows = parsePlayersCsv(fixture("attribute-fm27-v2.csv"));
+  assert.equal(rows.length, 109);
+  const first = rows[0];
+  assert.equal(first.player, "Morgan Maliska");
+  assert.equal(first.professionalism, 15);
+  assert.equal(first.currentAbility, 106);
+  assert.equal(first.potentialAbility, 124);
+  assert.equal(first.position, "GK");
+  assert.equal(first.uniqueId, "2002083443");
+  assert.equal(first.technique, 8);
+  assert.equal(first.aerialReach, 14);
+  assert.equal(rows[1].wage, "€150 p/w");
+  assert.equal(rows[1].transferValueRange, "€6K - €60K");
+});
+
+test("parsePlayersCsv leaves v2 fields null for v1 exports", () => {
+  const rows = parsePlayersCsv(fixture("attribute.csv"));
+  assert.equal(rows[0].currentAbility, null);
+  assert.equal(rows[0].potentialAbility, null);
+  assert.equal(rows[0].professionalism, null);
+});

@@ -1,97 +1,169 @@
 import { PlayerAttributes } from "@/types/player-attributes";
 import { csvLines, detectDelimiter, splitCsvLine } from "./csv-utils";
 
+type NumKey = {
+  [K in keyof PlayerAttributes]: PlayerAttributes[K] extends number ? K : never;
+}[keyof PlayerAttributes];
+
+/** Header (normalised) → numeric attribute field. */
+const NUMERIC_COLUMNS: Record<string, NumKey> = {
+  crossing: "crossing",
+  handling: "handling",
+  concentration: "concentration",
+  aggression: "aggression",
+  leadership: "leadership",
+  positioning: "positioning",
+  teamwork: "teamWork",
+  acceleration: "acceleration",
+  penaltytaking: "penaltyTaking",
+  age: "age",
+  technique: "technique",
+  tackling: "tackling",
+  heading: "heading",
+  marking: "marking",
+  longthrows: "longThrows",
+  pace: "pace",
+  corners: "corners",
+  stamina: "stamina",
+  strength: "strength",
+  reflexes: "reflexes",
+  naturalfitness: "naturalFitness",
+  balance: "balance",
+  jumpingreach: "jumpingReach",
+  agility: "agility",
+  workrate: "workRate",
+  decisions: "decisions",
+  determination: "determination",
+  rushingouttendency: "rushingOutTendency",
+  rushingout: "rushingOutTendency",
+  anticipation: "anticipation",
+  composure: "composure",
+  bravery: "bravery",
+  throwing: "throwing",
+  punching: "punching",
+  punchingtendency: "punching",
+  oneonones: "oneOnOnes",
+  kicking: "kicking",
+  eccentricity: "eccentricity",
+  dribbling: "dribbling",
+  freekicktaking: "freeKickTaking",
+  finishing: "finishing",
+  firsttouch: "firstTouch",
+  flair: "flair",
+  longshots: "longShots",
+  offtheball: "offTheBall",
+  passing: "passing",
+  vision: "vision",
+  commandofarea: "commandOfArea",
+  communication: "communication",
+  aerialreach: "aerialReach",
+};
+
+const OPTIONAL_NUMERIC_COLUMNS: Record<string, "professionalism" | "currentAbility" | "potentialAbility"> = {
+  professionalism: "professionalism",
+  ca: "currentAbility",
+  currentability: "currentAbility",
+  pa: "potentialAbility",
+  potentialability: "potentialAbility",
+};
+
+/**
+ * Column order of the v1 view (SCOUT REPORTER Attributes v1), used when a header can't be matched.
+ * Index → normalised header.
+ */
+const V1_ORDER = [
+  "player", "crossing", "handling", "concentration", "aggression", "leadership", "positioning", "teamwork",
+  "acceleration", "penaltytaking", "expires", "wage", "rightfoot", "leftfoot", "age", "eunational", "position",
+  "uniqueid", "technique", "tackling", "heading", "marking", "longthrows", "pace", "corners", "stamina",
+  "strength", "reflexes", "naturalfitness", "balance", "jumpingreach", "agility", "workrate", "decisions",
+  "determination", "rushingouttendency", "anticipation", "composure", "bravery", "throwing", "punching",
+  "oneonones", "kicking", "eccentricity", "dribbling", "freekicktaking", "finishing", "firsttouch", "flair",
+  "longshots", "offtheball", "passing", "vision", "commandofarea", "transfervalue", "communication",
+  "aerialreach",
+];
+
+const ALIASES: Record<string, string> = {
+  salary: "wage",
+  name: "player",
+  uid: "uniqueid",
+};
+
+function normalizeHeader(h: string): string {
+  const n = h.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return ALIASES[n] ?? n;
+}
+
+function numeric(v: string): number {
+  const n = Number(v.replace(/[^\d.-]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+}
+
+/** CA/PA/Professionalism: null when missing, hidden ("-", "?") or a range FM shows for unknown values. */
+function optionalNumeric(v: string | undefined): number | null {
+  if (v === undefined) return null;
+  const t = v.trim();
+  if (!/^-?\d+(\.\d+)?$/.test(t)) return null;
+  const n = Number(t);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 export function parsePlayersCsv(csv: string): PlayerAttributes[] {
   const lines = csvLines(csv);
 
   if (lines.length <= 1) return [];
 
-  // We rely on the fixed column order from your export
-  // L1: Player;Crossing;Handling;...;Transfer Value;Communication;Aerial Reach
   // FM26 exports are `;`-delimited, FM27 exports are `,`-delimited (and call "Wage" "Salary").
+  // Columns are matched by header so both the v1 and v2 (+ Professionalism, CA, PA) views work.
   const delimiter = detectDelimiter(lines[0]);
-  const dataLines = lines.slice(1);
+  const headers = splitCsvLine(lines[0], delimiter).map(normalizeHeader);
+  const index = new Map<string, number>();
+  headers.forEach((h, i) => {
+    if (!index.has(h)) index.set(h, i);
+  });
+  // Fall back to the v1 fixed order for anything the header didn't name.
+  V1_ORDER.forEach((h, i) => {
+    if (!index.has(h) && headers.length === V1_ORDER.length) index.set(h, i);
+  });
 
-  return dataLines.map((line) => {
+  return lines.slice(1).map((line) => {
     const cols = splitCsvLine(line, delimiter);
-
-    const get = (index: number) => (cols[index] ?? "").trim();
-    const num = (index: number): number => {
-      const v = get(index);
-      const n = Number(v.replace(/[^\d.-]/g, "")); // strip non-numeric
-      return Number.isFinite(n) ? n : 0;
+    const get = (key: string): string => {
+      const i = index.get(key);
+      return i === undefined ? "" : (cols[i] ?? "").trim();
     };
-    const boolFromTrueFalse = (index: number): boolean => get(index) === "True";
-    const strOrNull = (index: number): string | null => {
-      const v = get(index);
+    const strOrNull = (key: string): string | null => {
+      const v = get(key);
       if (!v || v === "N/A" || v === "€0") return null;
       return v;
     };
 
-    return {
-      player: get(0),
+    const row = {
+      player: get("player"),
+      expires: get("expires"),
+      wage: strOrNull("wage"),
+      rightFoot: get("rightfoot"),
+      leftFoot: get("leftfoot"),
+      euNational: get("eunational") === "True",
+      position: get("position"),
+      uniqueId: get("uniqueid"),
+      transferValueRange: strOrNull("transfervalue"),
+      professionalism: null,
+      currentAbility: null,
+      potentialAbility: null,
+    } as unknown as PlayerAttributes;
 
-      crossing: num(1),
-      handling: num(2),
-      concentration: num(3),
-      aggression: num(4),
-      leadership: num(5),
-      positioning: num(6),
-      teamWork: num(7),
-      acceleration: num(8),
-      penaltyTaking: num(9),
+    // Two headers can alias one field (e.g. "Rushing Out" / "Rushing Out (Tendency)"): the first present wins.
+    for (const [header, field] of Object.entries(NUMERIC_COLUMNS)) {
+      if (row[field] === undefined && index.has(header)) row[field] = numeric(get(header));
+    }
+    for (const field of Object.values(NUMERIC_COLUMNS)) {
+      if (row[field] === undefined) row[field] = 0;
+    }
+    for (const [header, field] of Object.entries(OPTIONAL_NUMERIC_COLUMNS)) {
+      if (!index.has(header) || row[field] !== null) continue;
+      row[field] = optionalNumeric(cols[index.get(header)!]);
+    }
 
-      expires: get(10),
-      wage: strOrNull(11),
-
-      rightFoot: get(12),
-      leftFoot: get(13),
-      age: num(14),
-      euNational: boolFromTrueFalse(15),
-
-      position: get(16),
-      uniqueId: get(17),
-
-      technique: num(18),
-      tackling: num(19),
-      heading: num(20),
-      marking: num(21),
-      longThrows: num(22),
-      pace: num(23),
-      corners: num(24),
-      stamina: num(25),
-      strength: num(26),
-      reflexes: num(27),
-      naturalFitness: num(28),
-      balance: num(29),
-      jumpingReach: num(30),
-      agility: num(31),
-      workRate: num(32),
-      decisions: num(33),
-      determination: num(34),
-      rushingOutTendency: num(35),
-      anticipation: num(36),
-      composure: num(37),
-      bravery: num(38),
-      throwing: num(39),
-      punching: num(40),
-      oneOnOnes: num(41),
-      kicking: num(42),
-      eccentricity: num(43),
-      dribbling: num(44),
-      freeKickTaking: num(45),
-      finishing: num(46),
-      firstTouch: num(47),
-      flair: num(48),
-      longShots: num(49),
-      offTheBall: num(50),
-      passing: num(51),
-      vision: num(52),
-      commandOfArea: num(53),
-      transferValueRange: strOrNull(54),
-
-      communication: num(55),
-      aerialReach: num(56),
-    };
+    return row;
   });
 }

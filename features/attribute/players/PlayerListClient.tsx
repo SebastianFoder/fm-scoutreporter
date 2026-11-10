@@ -12,13 +12,19 @@ import {
 } from "react";
 import type { PlayerWithGroups } from "@/data/players-store";
 import type { AttributeKey } from "@/types/weights";
-import { computeScore, getPlayerAttributeValue } from "@/lib/scoring";
+import {
+  computeWeightedAverage,
+  computeWeightedAverageOf,
+  getPlayerAttributeValue,
+  scaleScore,
+} from "@/lib/scoring";
+import { ageBenchmark } from "@/lib/fm27/benchmarks";
 import {
   attributeBandColor,
   getBandForValue,
   useActiveAttributeProfile,
 } from "@/components/AttributeColorConfig";
-import { useActiveWeights } from "@/components/WeightConfig";
+import { useActiveWeightProfile } from "@/components/WeightConfig";
 import { useHighlightedAttributes } from "@/components/HighlightedAttributesConfig";
 import Link from "next/link";
 import { ArrowDown, ArrowUp, ExternalLink, X } from "lucide-react";
@@ -39,7 +45,14 @@ interface Props {
 
 type SortDir = "asc" | "desc";
 
-type Row = { p: PlayerWithGroups; score: number };
+type Row = {
+  p: PlayerWithGroups;
+  score: number;
+  /** Weighted average ÷ FM27 age benchmark (1 = on track for a prime high-end Championship / low-end PL player). */
+  vsAge: number;
+  /** Score with the projected attributes at PA; null without a v2 export. */
+  potential: number | null;
+};
 
 const DEFAULT_SORT = "score";
 const DEFAULT_SORT_DIR: SortDir = "desc";
@@ -85,7 +98,14 @@ function parseListSort(
     return { sort: DEFAULT_SORT, sortDir: DEFAULT_SORT_DIR };
   }
 
-  if (rawSort === "player" || rawSort === "position" || rawSort === "score") {
+  if (
+    rawSort === "player" ||
+    rawSort === "position" ||
+    rawSort === "score" ||
+    rawSort === "vsAge" ||
+    rawSort === "potential" ||
+    rawSort === "age"
+  ) {
     return { sort: rawSort, sortDir };
   }
 
@@ -183,6 +203,15 @@ function compareRows(a: Row, b: Row, sort: string, sortDir: SortDir): number {
   if (sort === "score") {
     return m * (a.score - b.score);
   }
+  if (sort === "vsAge") {
+    return m * (a.vsAge - b.vsAge);
+  }
+  if (sort === "age") {
+    return m * (a.p.raw.age - b.p.raw.age);
+  }
+  if (sort === "potential") {
+    return m * ((a.potential ?? -1) - (b.potential ?? -1));
+  }
   if (sort.startsWith("attr:")) {
     const key = sort.slice(5) as AttributeKey;
     return (
@@ -205,7 +234,7 @@ function nextSortFromClick(
     };
   }
   const defaultDir: SortDir =
-    column === "player" || column === "position" ? "asc" : "desc";
+    column === "player" || column === "position" || column === "age" ? "asc" : "desc";
   return { sort: column, sortDir: defaultDir };
 }
 
@@ -278,7 +307,7 @@ function PlayersListClientInner({
   onToggleSelect,
 }: Props) {
   const highlighted = useHighlightedAttributes();
-  const weights = useActiveWeights();
+  const { weights, emphasis } = useActiveWeightProfile();
   const profile = useActiveAttributeProfile();
   const pathname = usePathname();
   const router = useRouter();
@@ -317,14 +346,22 @@ function PlayersListClientInner({
   const urlPageSize = parsePageSizeParam(searchParams.get("pageSize"));
   const pageSize: PageSizeChoice = urlPageSize;
 
-  const rows = useMemo(
+  const rows = useMemo<Row[]>(
     () =>
-      players.map((p) => ({
-        p,
-        score: computeScore(p, weights),
-      })),
-    [players, weights],
+      players.map((p) => {
+        const avg = computeWeightedAverage(p, weights, emphasis);
+        return {
+          p,
+          score: scaleScore(avg),
+          vsAge: avg / ageBenchmark(p.raw.age),
+          potential: p.potential
+            ? scaleScore(computeWeightedAverageOf(p.potential.attributes, weights, emphasis))
+            : null,
+        };
+      }),
+    [players, weights, emphasis],
   );
+  const hasPotential = useMemo(() => rows.some((r) => r.potential !== null), [rows]);
 
   const filteredRows = useMemo(() => {
     if (!searchQuery) return rows;
@@ -503,6 +540,14 @@ function PlayersListClientInner({
                 onSort={() => onColumnSort("position")}
               />
               <SortableTh
+                label="Age"
+                align="right"
+                columnSort="age"
+                listSort={listSort}
+                listSortDir={listSortDir}
+                onSort={() => onColumnSort("age")}
+              />
+              <SortableTh
                 label="Score"
                 align="right"
                 columnSort="score"
@@ -510,6 +555,24 @@ function PlayersListClientInner({
                 listSortDir={listSortDir}
                 onSort={() => onColumnSort("score")}
               />
+              <SortableTh
+                label={<span title="Weighted average vs the FM27 benchmark for the player's age">vs Age</span>}
+                align="right"
+                columnSort="vsAge"
+                listSort={listSort}
+                listSortDir={listSortDir}
+                onSort={() => onColumnSort("vsAge")}
+              />
+              {hasPotential && (
+                <SortableTh
+                  label={<span title="Score with attributes projected to PA (v2 export)">Potential</span>}
+                  align="right"
+                  columnSort="potential"
+                  listSort={listSort}
+                  listSortDir={listSortDir}
+                  onSort={() => onColumnSort("potential")}
+                />
+              )}
               {highlighted.map((key) => (
                 <SortableTh
                   key={key}
@@ -524,7 +587,7 @@ function PlayersListClientInner({
             </tr>
           </thead>
           <tbody>
-            {pageItems.map(({ p, score }) => (
+            {pageItems.map(({ p, score, vsAge, potential }) => (
               <tr
                 key={p.raw.uniqueId}
                 className={`border-b-2 border-[oklch(var(--border))]/30 ${
@@ -555,9 +618,22 @@ function PlayersListClientInner({
                   </div>
                 </td>
                 <td className="px-3 py-2 font-mono text-xs uppercase">{p.raw.position}</td>
+                <td className="px-3 py-2 text-right font-mono text-xs">{p.raw.age}</td>
                 <td className="px-3 py-2 text-right font-mono text-sm font-black">
                   {score.toFixed(2)}
                 </td>
+                <td
+                  className={`px-3 py-2 text-right font-mono text-xs font-bold ${
+                    vsAge >= 1 ? "text-[oklch(var(--primary))]" : "text-[oklch(var(--text))]/70"
+                  }`}
+                >
+                  {Math.round(vsAge * 100)}%
+                </td>
+                {hasPotential && (
+                  <td className="px-3 py-2 text-right font-mono text-sm font-bold">
+                    {potential === null ? "–" : potential.toFixed(2)}
+                  </td>
+                )}
                 {highlighted.map((key) => {
                   const value = getPlayerAttributeValue(p, key);
                   const band = getBandForValue(value, profile.thresholds);

@@ -12,10 +12,20 @@ import {
 import type {
   AttributeKey,
   AttributeWeights,
+  WeightEmphasis,
   WeightProfile,
 } from "@/types/weights";
 import { Modal } from "./Modal";
 import { Button } from "./Button";
+import {
+  ALL_ATTRIBUTE_KEYS as ALL_KEYS,
+  GOALKEEPING_KEYS,
+  MENTAL_KEYS,
+  PHYSICAL_KEYS,
+  TECHNICAL_KEYS,
+} from "@/lib/attribute-keys";
+import { fm27BenchmarkProfiles } from "@/lib/fm27/benchmarks";
+import { LEGACY_EMPHASIS } from "@/lib/scoring";
 
 const STORAGE_KEY = "weightProfiles";
 
@@ -26,11 +36,17 @@ const DEFAULT_PROFILE: WeightProfile = {
   id: "default",
   name: "Default",
   weights: {},
+  emphasis: 1,
 };
+
+/** Bump to seed newly added benchmark profiles into existing users' saved profiles once. */
+const SEED_VERSION = 1;
+const FIRST_RUN_ACTIVE_ID = "fm27-10";
 
 type StoredConfig = {
   activeId: string;
   profiles: WeightProfile[];
+  seeded?: number;
 };
 
 type WeightContextValue = {
@@ -40,49 +56,55 @@ type WeightContextValue = {
 
 const WeightContext = createContext<WeightContextValue | null>(null);
 
+function initialConfig(): StoredConfig {
+  return {
+    activeId: FIRST_RUN_ACTIVE_ID,
+    profiles: [DEFAULT_PROFILE, ...fm27BenchmarkProfiles()].map(withNormalizedWeights),
+    seeded: SEED_VERSION,
+  };
+}
+
+/** Add benchmark profiles the user hasn't had yet (deleted ones stay deleted after the first seed). */
+function seedBenchmarks(config: StoredConfig): StoredConfig {
+  if ((config.seeded ?? 0) >= SEED_VERSION) return config;
+  const ids = new Set(config.profiles.map((p) => p.id));
+  const missing = fm27BenchmarkProfiles()
+    .filter((p) => !ids.has(p.id))
+    .map(withNormalizedWeights);
+  return { ...config, profiles: [...config.profiles, ...missing], seeded: SEED_VERSION };
+}
+
 function loadFromStorage(): StoredConfig {
-  if (typeof window === "undefined") {
-    return {
-      activeId: DEFAULT_PROFILE.id,
-      profiles: [withNormalizedWeights(DEFAULT_PROFILE)],
-    };
-  }
+  if (typeof window === "undefined") return initialConfig();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw)
-      return {
-        activeId: DEFAULT_PROFILE.id,
-        profiles: [withNormalizedWeights(DEFAULT_PROFILE)],
-      };
+    if (!raw) return initialConfig();
     const parsed = JSON.parse(raw) as StoredConfig;
-    if (!parsed.profiles?.length) {
-      return {
-        activeId: DEFAULT_PROFILE.id,
-        profiles: [withNormalizedWeights(DEFAULT_PROFILE)],
-      };
-    }
-    return {
+    if (!parsed.profiles?.length) return initialConfig();
+    return seedBenchmarks({
       activeId: parsed.activeId ?? DEFAULT_PROFILE.id,
       profiles: parsed.profiles.map(withNormalizedWeights),
-    };
+      seeded: parsed.seeded,
+    });
   } catch {
-    return {
-      activeId: DEFAULT_PROFILE.id,
-      profiles: [withNormalizedWeights(DEFAULT_PROFILE)],
-    };
+    return initialConfig();
   }
 }
 
 function saveToStorage(config: StoredConfig) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  } catch {
+    // storage full or blocked: keep the in-memory profiles
+  }
 }
 
 function useWeightContext(): WeightContextValue {
   const ctx = useContext(WeightContext);
   if (!ctx) {
     return {
-      state: { activeId: DEFAULT_PROFILE.id, profiles: [DEFAULT_PROFILE] },
+      state: initialConfig(),
       setState: () => {},
     };
   }
@@ -90,20 +112,19 @@ function useWeightContext(): WeightContextValue {
 }
 
 export function WeightProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<StoredConfig>({
-    activeId: DEFAULT_PROFILE.id,
-    profiles: [withNormalizedWeights(DEFAULT_PROFILE)],
-  });
+  const [state, setState] = useState<StoredConfig>(initialConfig);
+  const [hydrated, setHydrated] = useState(false);
 
   /* eslint-disable react-hooks/set-state-in-effect -- post-SSR localStorage hydration */
   useEffect(() => {
     setState(loadFromStorage());
+    setHydrated(true);
   }, []);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
-    saveToStorage(state);
-  }, [state]);
+    if (hydrated) saveToStorage(state);
+  }, [state, hydrated]);
 
   return (
     <WeightContext.Provider value={{ state, setState }}>
@@ -112,80 +133,18 @@ export function WeightProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useActiveWeights(): AttributeWeights {
+export function useActiveWeightProfile(): WeightProfile & { emphasis: WeightEmphasis } {
   const { state } = useWeightContext();
   const active =
     state.profiles.find((p) => p.id === state.activeId) ??
     state.profiles[0] ??
     withNormalizedWeights(DEFAULT_PROFILE);
-  return active.weights;
+  return { ...active, emphasis: active.emphasis ?? LEGACY_EMPHASIS };
 }
 
-const GOALKEEPING_KEYS: AttributeKey[] = [
-  "aerialReach",
-  "commandOfArea",
-  "communication",
-  "eccentricity",
-  "handling",
-  "kicking",
-  "oneOnOnes",
-  "punching",
-  "reflexes",
-  "rushingOutTendency",
-  "throwing",
-];
-
-const TECHNICAL_KEYS: AttributeKey[] = [
-  "corners",
-  "crossing",
-  "dribbling",
-  "finishing",
-  "firstTouch",
-  "freeKickTaking",
-  "penaltyTaking",
-  "heading",
-  "longShots",
-  "longThrows",
-  "marking",
-  "passing",
-  "tackling",
-  "technique",
-];
-
-const MENTAL_KEYS: AttributeKey[] = [
-  "aggression",
-  "anticipation",
-  "bravery",
-  "composure",
-  "concentration",
-  "decisions",
-  "determination",
-  "flair",
-  "leadership",
-  "offTheBall",
-  "positioning",
-  "teamWork",
-  "vision",
-  "workRate",
-];
-
-const PHYSICAL_KEYS: AttributeKey[] = [
-  "acceleration",
-  "agility",
-  "balance",
-  "jumpingReach",
-  "naturalFitness",
-  "pace",
-  "stamina",
-  "strength",
-];
-
-const ALL_KEYS: AttributeKey[] = [
-  ...TECHNICAL_KEYS,
-  ...MENTAL_KEYS,
-  ...PHYSICAL_KEYS,
-  ...GOALKEEPING_KEYS,
-];
+export function useActiveWeights(): AttributeWeights {
+  return useActiveWeightProfile().weights;
+}
 
 function titleCaseFromCamel(key: string) {
   const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
@@ -224,7 +183,7 @@ export function WeightConfigModal({
 
   const updateActive = (updater: (p: WeightProfile) => WeightProfile) => {
     setState((prev) => ({
-      activeId: prev.activeId,
+      ...prev,
       profiles: prev.profiles.map((p) => (p.id === active.id ? updater(p) : p)),
     }));
   };
@@ -235,8 +194,10 @@ export function WeightConfigModal({
       id,
       name: "New Profile",
       weights: defaultWeights(),
+      emphasis: 1,
     };
     setState((prev) => ({
+      ...prev,
       activeId: id,
       profiles: [...prev.profiles, next],
     }));
@@ -249,14 +210,15 @@ export function WeightConfigModal({
       id,
       name: `${active.name} Copy`,
       weights: { ...active.weights },
+      builtIn: undefined,
     };
-    setState((prev) => ({ activeId: id, profiles: [...prev.profiles, next] }));
+    setState((prev) => ({ ...prev, activeId: id, profiles: [...prev.profiles, next] }));
   };
 
   const remove = () => {
     if (profiles.length <= 1) return;
     const remaining = profiles.filter((p) => p.id !== active.id);
-    setState({ activeId: remaining[0].id, profiles: remaining });
+    setState((prev) => ({ ...prev, activeId: remaining[0].id, profiles: remaining }));
   };
 
   const exportProfile = () => {
@@ -269,16 +231,27 @@ export function WeightConfigModal({
       if (!parsed?.id || !parsed?.name || !parsed?.weights) {
         throw new Error("invalid");
       }
+      const normalized = withNormalizedWeights(parsed);
       setState((prev) => {
         const exists = prev.profiles.some((p) => p.id === parsed.id);
         const nextProfiles = exists
-          ? prev.profiles.map((p) => (p.id === parsed.id ? parsed : p))
-          : [...prev.profiles, parsed];
-        return { activeId: parsed.id, profiles: nextProfiles };
+          ? prev.profiles.map((p) => (p.id === parsed.id ? normalized : p))
+          : [...prev.profiles, normalized];
+        return { ...prev, activeId: parsed.id, profiles: nextProfiles };
       });
     } catch {
       alert("Invalid profile JSON");
     }
+  };
+
+  const resetBenchmark = () => {
+    const original = fm27BenchmarkProfiles().find((p) => p.id === active.id);
+    if (!original) return;
+    updateActive(() => withNormalizedWeights(original));
+  };
+
+  const setEmphasis = (emphasis: WeightEmphasis) => {
+    updateActive((p) => ({ ...p, emphasis }));
   };
 
   const setWeight = (key: AttributeKey, value: number) => {
@@ -405,6 +378,36 @@ export function WeightConfigModal({
           />
         </div>
 
+        <div className="flex flex-col gap-2 rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
+          <label className="flex flex-wrap items-center gap-2">
+            <span className="font-black uppercase tracking-wider text-[oklch(var(--text))/0.65]">
+              Weighting
+            </span>
+            <select
+              className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--background))] px-2 py-1 text-sm font-bold shadow-[2px_2px_0_oklch(var(--border))]"
+              value={active.emphasis ?? LEGACY_EMPHASIS}
+              onChange={(e) => setEmphasis(Number(e.target.value) as WeightEmphasis)}
+            >
+              <option value={1}>Linear (FM27 benchmark)</option>
+              <option value={2}>Emphasized (weights squared)</option>
+            </select>
+          </label>
+          {active.builtIn === "fm27" ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[oklch(var(--text))/0.7]">
+                Benchmarked FM27 role weights (fm-scoring).
+              </span>
+              <Button color="alt" variant="outline" size="sm" onClick={resetBenchmark}>
+                Reset to benchmark
+              </Button>
+            </div>
+          ) : (
+            <span className="text-[oklch(var(--text))/0.7]">
+              Linear matches how the FM27 benchmarks and &ldquo;vs Age&rdquo; are calibrated.
+            </span>
+          )}
+        </div>
+
         <div className="grid gap-4 md:grid-cols-4">
           {renderGroup("Technical", TECHNICAL_KEYS)}
           {renderGroup("Mental", MENTAL_KEYS)}
@@ -446,5 +449,11 @@ function withNormalizedWeights(profile: WeightProfile): WeightProfile {
     normalized[k] = clampWeight(typeof raw === "number" ? raw : 0);
   }
 
-  return { ...profile, weights: normalized };
+  const emphasis: WeightEmphasis =
+    profile.emphasis === 1 || profile.emphasis === 2
+      ? profile.emphasis
+      : profile.builtIn
+        ? 1
+        : LEGACY_EMPHASIS;
+  return { ...profile, weights: normalized, emphasis };
 }

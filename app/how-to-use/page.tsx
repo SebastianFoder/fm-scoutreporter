@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-type Tab = "setup" | "attribute";
+type Tab = "setup" | "attribute" | "wonderkid";
 
 function Step({
   title,
@@ -167,7 +167,7 @@ function SetupGuideTab() {
         <p className="mb-2">Download the view file:</p>
         <div className="flex flex-wrap gap-2">
           <a
-            href="/SCOUT%20REPORTER%20Attributes%20v1.fmf"
+            href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
             className="inline-flex items-center rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))]"
           >
             Download Attribute View
@@ -243,11 +243,15 @@ function AttributeTab() {
             Download the Attribute View and place it in your FM26 views folder:
           </p>
           <a
-            href="/SCOUT%20REPORTER%20Attributes%20v1.fmf"
+            href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
             className="inline-flex items-center rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))]"
           >
-            Download Attribute View
+            Download Attribute View (v2)
           </a>
+          <p className="mt-2 text-xs text-[oklch(var(--text))]/65">
+            v2 adds Professionalism, CA and PA columns, which enable full-potential estimates
+            and Wonderkid mode. v1 exports still import fine.
+          </p>
           <p className="mt-2 text-xs text-[oklch(var(--text))]/65">
             See the Setup Guide tab for full BepInEx + plugin install instructions.
           </p>
@@ -315,15 +319,48 @@ function AttributeTab() {
           <p>
             For each attribute you assign a weight (0 = ignore, higher = more important).
             The score is the weighted mean of all attribute values across every attribute
-            with a non-zero weight:
+            with a non-zero weight. Each profile picks a weighting:
           </p>
           <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
-            {`weighted_avg = Σ(attr_value × weight²) / Σ(weight²)`}
+            {`Linear:      weighted_avg = Σ(attr × weight)  / Σ(weight)
+Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
           </pre>
           <p className="mt-2">
-            Weights are squared before use — this is the <span className="font-bold">weight emphasis</span> mechanic.
-            It means doubling a weight more than doubles that attribute&apos;s influence, sharpening
-            the separation between high-priority and low-priority attributes.
+            <span className="font-bold">Linear</span> is how the FM27 benchmarks were calibrated
+            and is the default for new profiles. <span className="font-bold">Emphasized</span>{" "}
+            squares weights so doubling a weight more than doubles its influence; profiles made
+            before this option keep it.
+          </p>
+        </InfoBox>
+
+        <InfoBox label="FM27 benchmark profiles">
+          <p>
+            The Weights panel ships with five role profiles (Centre-back, Wing-back / DM (6),
+            Attacker / Winger (10), Striker (9) and Goalkeeper) taken from{" "}
+            <a
+              href="https://github.com/jamiebolden/fm-scoring"
+              target="_blank"
+              rel="noreferrer"
+              className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2"
+            >
+              fm-scoring
+            </a>
+            &apos;s FM27 weights, which are tuned toward harvestgreen22&apos;s FM27 match-engine
+            attribute test (pace, acceleration and jumping reach matter most). Edit them freely;
+            &ldquo;Reset to benchmark&rdquo; restores the originals.
+          </p>
+        </InfoBox>
+
+        <InfoBox label="vs Age and Potential">
+          <p>
+            <span className="font-bold">vs Age</span> divides the weighted average by the FM27
+            benchmark for the player&apos;s age (10.3 at 15 up to 13.8 at 24+). 100% means on track
+            to be a high-end Championship / low-end Premier League player in their prime.
+          </p>
+          <p className="mt-2">
+            With a v2 export a <span className="font-bold">Potential</span> column appears: the
+            same score using attributes projected to PA. The Wonderkid tab explains the
+            projection.
           </p>
         </InfoBox>
 
@@ -362,9 +399,81 @@ function AttributeTab() {
   );
 }
 
+function WonderkidTab() {
+  return (
+    <div className="space-y-6">
+      <Step title="How to Use — Wonderkid Mode" defaultOpen>
+        <MiniStep title="1. Export with the v2 view">
+          <p>
+            Import the Attribute View (v2) in FM and export as usual. It adds{" "}
+            <span className="font-bold">Professionalism</span>, <span className="font-bold">CA</span>{" "}
+            and <span className="font-bold">PA</span>. Players without CA/PA are still scored on
+            their current attributes.
+          </p>
+        </MiniStep>
+        <MiniStep title="2. Import and filter">
+          <p>
+            Open{" "}
+            <Link
+              href="/wonderkid"
+              className="font-bold text-[oklch(var(--primary))] underline decoration-2 underline-offset-2"
+            >
+              Wonderkid Mode
+            </Link>{" "}
+            (it shares the import with Attribute mode). Filter by max age, minimum
+            professionalism and best role; sort by Potential, vs Prime or vs Age.
+          </p>
+        </MiniStep>
+        <MiniStep title="3. Inspect a prospect">
+          <p>
+            Click a player and switch to <span className="font-bold">Full potential</span> to see
+            the estimated attributes at PA, with the gain per attribute.
+          </p>
+        </MiniStep>
+      </Step>
+
+      <Step title="How it Works — Full Potential Estimate" defaultOpen>
+        <InfoBox label="CA is a cost-weighted attribute sum">
+          <p>
+            Each attribute point costs a position-specific amount of CA (fm-scoring&apos;s FM27 CA
+            cost table, e.g. Decisions 10 and Agility 8 for a keeper). On a v2 export of 109
+            keepers, CA fits the cost-weighted sum almost exactly (r = 0.99, error ≈ 2.5 CA). The
+            fit is recalibrated on every import that has CA.
+          </p>
+          <pre className="mt-2 overflow-x-auto rounded-lg border-2 border-[oklch(var(--border))]/40 bg-[oklch(var(--background))] p-3 font-mono text-xs">
+            {`A       = Σ(cost × attr) / Σ(cost)
+CA      ≈ slope × A + intercept
+A at PA = A + (PA − CA) / slope`}
+          </pre>
+        </InfoBox>
+        <InfoBox label="Spreading the growth">
+          <p>
+            The extra points are spread over attributes that can still grow, in proportion to
+            their room below 20. Attributes that cost CA for the player&apos;s positions grow at
+            full rate, others at half. Physicals slow down after 21 (¾ rate to 24, then 0.4).
+            Determination, Flair, Aggression, Bravery, Leadership, Natural Fitness and the
+            keeper tendencies stay put. Multi-position players use the average cost of their
+            positions.
+          </p>
+        </InfoBox>
+        <InfoBox label="Reading the numbers">
+          <p>
+            <span className="font-bold">Now</span> and <span className="font-bold">Potential</span>{" "}
+            are the best FM27 benchmark role score (1–20). <span className="font-bold">vs Prime</span>{" "}
+            compares the potential score to 13.8, the fully developed benchmark. It is an estimate
+            of the ceiling: professionalism, minutes and training decide how much of PA a player
+            reaches.
+          </p>
+        </InfoBox>
+      </Step>
+    </div>
+  );
+}
+
 const TABS: { id: Tab; label: string }[] = [
   { id: "setup", label: "Setup Guide" },
   { id: "attribute", label: "Attribute" },
+  { id: "wonderkid", label: "Wonderkid" },
 ];
 
 export default function HowToUsePage() {
@@ -380,6 +489,11 @@ export default function HowToUsePage() {
       title: "Attribute Mode",
       description: "Score and rank players by a weighted average of their FM26 attributes — no baseline needed, just import and go.",
       link: { href: "/attribute", label: "Go to Attribute Mode" },
+    },
+    wonderkid: {
+      title: "Wonderkid Mode",
+      description: "Estimate full-potential attributes from a v2 export (CA, PA, Professionalism) and rank prospects on benchmarked FM27 roles.",
+      link: { href: "/wonderkid", label: "Go to Wonderkid Mode" },
     },
   };
 
@@ -432,6 +546,7 @@ export default function HowToUsePage() {
         {/* Tab content */}
         {activeTab === "setup" && <SetupGuideTab />}
         {activeTab === "attribute" && <AttributeTab />}
+        {activeTab === "wonderkid" && <WonderkidTab />}
       </main>
     </div>
   );

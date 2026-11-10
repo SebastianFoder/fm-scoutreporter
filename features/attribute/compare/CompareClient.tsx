@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { PlayerWithGroups } from "@/data/players-store";
 import type { AttributeKey } from "@/types/weights";
 import { computeScore } from "@/lib/scoring";
-import { useActiveWeights } from "@/components/WeightConfig";
+import { useActiveWeightProfile } from "@/components/WeightConfig";
 import { useHighlightedAttributes } from "@/components/HighlightedAttributesConfig";
 import Link from "next/link";
 import { Button } from "@/components/Button";
@@ -29,7 +29,7 @@ export default function CompareClient({
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(1);
-  const weights = useActiveWeights();
+  const { weights, emphasis } = useActiveWeightProfile();
   const highlighted = useHighlightedAttributes();
 
   const highlightedKeys =
@@ -69,9 +69,9 @@ export default function CompareClient({
     () =>
       selected.map((p) => ({
         p,
-        score: computeScore(p, weights),
+        score: computeScore(p, weights, emphasis),
       })),
-    [selected, weights],
+    [selected, weights, emphasis],
   );
 
   const toggleSelected = (id: string) => {

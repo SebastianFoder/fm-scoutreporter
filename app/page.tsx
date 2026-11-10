@@ -10,7 +10,7 @@ export default function Home() {
           </h1>
           <p className="max-w-2xl text-sm text-[oklch(var(--text))/0.75]">
             Choose a mode to continue. Attribute mode scores and compares players
-            from attribute exports.
+            from attribute exports; Wonderkid mode projects them to full potential.
           </p>
         </header>
 
@@ -29,6 +29,23 @@ export default function Home() {
                 className="inline-flex rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
                 Open Attribute Mode
+              </Link>
+            </div>
+          </article>
+          <article className="rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-6 py-5 shadow-[4px_4px_0_oklch(var(--border))]">
+            <h2 className="text-2xl font-black uppercase tracking-tight">
+              Wonderkid Mode
+            </h2>
+            <p className="mt-2 text-sm text-[oklch(var(--text))/0.8]">
+              Import a v2 export (CA, PA, Professionalism) to estimate
+              full-potential attributes and rank prospects on FM27 roles.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/wonderkid"
+                className="inline-flex rounded-lg border-2 border-[oklch(var(--border))] bg-[oklch(var(--primary))] px-4 py-2 text-sm font-bold text-[oklch(var(--background))] shadow-[2px_2px_0_oklch(var(--border))] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_oklch(var(--border))] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              >
+                Open Wonderkid Mode
               </Link>
             </div>
           </article>

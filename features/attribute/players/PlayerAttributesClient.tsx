@@ -12,6 +12,17 @@ import { getGroupedAttributeValue } from "@/lib/grouped-attribute-value";
 interface Props {
   grouped: GroupedAttributes;
   isGoalkeeper?: boolean;
+  /** When set, values above the baseline show their gain (e.g. projected potential vs current). */
+  baseline?: GroupedAttributes;
+}
+
+function Delta({ value, base }: { value: number; base: number | undefined }) {
+  if (base === undefined || value <= base) return null;
+  return (
+    <span className="mr-1.5 font-mono text-[11px] font-bold text-[oklch(var(--primary))]">
+      +{value - base}
+    </span>
+  );
 }
 
 const LABEL_OVERRIDES: Partial<Record<AttributeKey, string>> = {
@@ -73,7 +84,7 @@ function prettyLabel(key: AttributeKey) {
     .join(" ");
 }
 
-export function PlayerAttributesClient({ grouped, isGoalkeeper }: Props) {
+export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Props) {
   const profile = useActiveAttributeProfile();
 
   const renderColumn = (
@@ -112,11 +123,17 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper }: Props) {
                 className="flex items-center justify-between gap-3 border-b border-[oklch(var(--border))]/15 py-0.5 last:border-0"
               >
                 <dt className="text-[oklch(var(--text))/0.85]">{pretty}</dt>
-                <dd
-                  className="min-w-[1.75rem] text-right font-mono text-base font-bold"
-                  style={{ color: attributeBandColor(band) }}
-                >
-                  {value}
+                <dd className="flex items-baseline">
+                  <Delta
+                    value={value}
+                    base={baseline ? getValueByKey(baseline, key as AttributeKey) : undefined}
+                  />
+                  <span
+                    className="min-w-[1.75rem] text-right font-mono text-base font-bold"
+                    style={{ color: attributeBandColor(band) }}
+                  >
+                    {value}
+                  </span>
                 </dd>
               </div>
             );
@@ -151,11 +168,17 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper }: Props) {
                 <dt className="text-[oklch(var(--text))/0.85]">
                   {prettyLabel(key)}
                 </dt>
-                <dd
-                  className="min-w-[1.75rem] text-right font-mono text-base font-bold"
-                  style={{ color: attributeBandColor(band) }}
-                >
-                  {value}
+                <dd className="flex items-baseline">
+                  <Delta
+                    value={value}
+                    base={baseline ? getValueByKey(baseline, key) : undefined}
+                  />
+                  <span
+                    className="min-w-[1.75rem] text-right font-mono text-base font-bold"
+                    style={{ color: attributeBandColor(band) }}
+                  >
+                    {value}
+                  </span>
                 </dd>
               </div>
             );
