@@ -10,7 +10,6 @@ import Link from "next/link";
 import { WeightProvider } from "@/components/WeightConfig";
 import { PlayersDataProvider } from "@/components/PlayersDataProvider";
 import { HighlightedAttributesProvider } from "@/components/HighlightedAttributesConfig";
-import { MoneyballDataProvider } from "@/features/moneyball/MoneyballDataProvider";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -74,7 +73,6 @@ export default function RootLayout({
         <AttributeColorProvider>
           <WeightProvider>
             <PlayersDataProvider>
-              <MoneyballDataProvider>
                 <HighlightedAttributesProvider>
                   <div className="flex min-h-screen flex-col">
                     <header className="flex items-center justify-end gap-2 border-b-3 border-[oklch(var(--border))] bg-[oklch(var(--surface))] px-4 py-2">
@@ -89,18 +87,6 @@ export default function RootLayout({
                           className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
                         >
                           Attribute
-                        </Link>
-                        <Link
-                          href="/moneyball"
-                          className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
-                        >
-                          Moneyball
-                        </Link>
-                        <Link
-                          href="/mustermann"
-                          className="rounded-lg border-2 border-transparent px-3 py-1 text-sm font-bold uppercase tracking-wide text-[oklch(var(--text))] hover:border-[oklch(var(--border))] hover:bg-[oklch(var(--background))]"
-                        >
-                          Mustermann
                         </Link>
                         <Link
                           href="/how-to-use"
@@ -142,7 +128,6 @@ export default function RootLayout({
                     </footer>
                   </div>
                 </HighlightedAttributesProvider>
-              </MoneyballDataProvider>
             </PlayersDataProvider>
           </WeightProvider>
         </AttributeColorProvider>

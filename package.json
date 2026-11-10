@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test lib/parser/csv-parser.test.ts features/moneyball/compute.test.ts features/moneyball/division-key.test.ts features/moneyball/group-percentiles.test.ts features/moneyball/group-presets.test.ts features/moneyball/parser.test.ts features/mustermann/parser.test.ts features/mustermann/mustermann-position-group.test.ts features/mustermann/mustermann-category-percentiles.test.ts features/mustermann/mustermann-effort-percentiles.test.ts features/mustermann/control-score.test.ts features/mustermann/opta-league-power-ratings.test.ts features/mustermann/group-presets.test.ts",
+    "test": "tsx --test lib/parser/csv-parser.test.ts",
     "release": "semantic-release"
   },
   "dependencies": {
