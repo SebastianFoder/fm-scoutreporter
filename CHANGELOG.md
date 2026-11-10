@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.5.0...v1.6.0) (2026-11-10)
+
+
+### Features
+
+* **best-xi:** add best eleven picker with formation and budget limits ([c5a6164](https://github.com/SebastianFoder/fm-scoutreporter/commit/c5a6164a2d4850b8176645865cc59f1217de067f))
+
 # [1.5.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.4.2...v1.5.0) (2026-11-10)
 
 
