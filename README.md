@@ -24,6 +24,9 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 - **Wonderkid mode** (`/wonderkid`): with the v2 view (`public/SCOUT REPORTER Attributes v2.fmf`, adds
   Professionalism, CA and PA) it estimates each player's attributes at full potential using the FM27
   CA-cost table, then ranks prospects on the benchmark roles
+- **Best XI** (`/best-xi`): picks the highest-scoring eleven for a formation from the imported players,
+  with an optional minimum and maximum on the eleven's total transfer value. Each position is scored
+  on a weight profile of your choice (FM27 benchmark roles by default)
 
 ## Getting started
 

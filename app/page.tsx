@@ -18,6 +18,14 @@ const MODES = [
     needs: "v2 view export (CA, PA, Professionalism)",
     cta: "Open Wonderkid Mode",
   },
+  {
+    href: "/best-xi",
+    name: "Best XI",
+    blurb:
+      "Pick the highest-scoring eleven for a formation from your import, within a minimum and maximum total budget.",
+    needs: "v1 or v2 view export",
+    cta: "Open Best XI",
+  },
 ] as const;
 
 export default function Home() {

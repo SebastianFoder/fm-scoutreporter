@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
   weights: "weightProfiles",
   highlights: "highlightProfiles",
   attributeColors: "attributeColorProfiles",
+  bestXi: "bestXiSettings",
 } as const;
 
 export type AppStorageKey = keyof typeof STORAGE_KEYS;

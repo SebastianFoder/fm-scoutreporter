@@ -142,6 +142,11 @@ export function useActiveWeightProfile(): WeightProfile & { emphasis: WeightEmph
   return { ...active, emphasis: active.emphasis ?? LEGACY_EMPHASIS };
 }
 
+/** Every saved weight profile (benchmark and custom), for screens that score with more than one. */
+export function useWeightProfiles(): WeightProfile[] {
+  return useWeightContext().state.profiles;
+}
+
 export function useActiveWeights(): AttributeWeights {
   return useActiveWeightProfile().weights;
 }
