@@ -1,6 +1,6 @@
 {
   "name": "fm26-scoutreporter",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "private": true,
   "packageManager": "pnpm@10.31.0",
   "repository": {

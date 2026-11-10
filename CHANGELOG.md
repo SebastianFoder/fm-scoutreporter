@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/SebastianFoder/fm26-scoutreporter/compare/v1.4.1...v1.4.2) (2026-11-10)
+
+
+### Bug Fixes
+
+* **parser:** support comma-delimited FM27 exports ([192402a](https://github.com/SebastianFoder/fm26-scoutreporter/commit/192402af50d2d455ee5f00c0838aef17be263c25))
+
 ## [1.4.1](https://github.com/SebastianFoder/fm26-scoutreporter/compare/v1.4.0...v1.4.1) (2026-04-10)
 
 
