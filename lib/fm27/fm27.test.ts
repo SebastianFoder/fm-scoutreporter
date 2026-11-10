@@ -28,8 +28,8 @@ test("CA cost table only uses known attribute keys", () => {
   }
 });
 
-test("CA model fits the FM27 v2 export closely", () => {
-  const players = parsePlayersCsv(fixture("attribute-fm27-v2.csv"));
+test("CA model fits the FM27 Hidden Attributes export closely", () => {
+  const players = parsePlayersCsv(fixture("attribute-fm27-hidden.csv"));
   const { global, byGroup } = calibrateCaModel(players);
   const gk = byGroup.GK ?? global;
   assert.equal(gk.n, 109);
@@ -38,7 +38,7 @@ test("CA model fits the FM27 v2 export closely", () => {
 });
 
 test("projectPotential reaches PA and never lowers an attribute", () => {
-  const players = parsePlayersCsv(fixture("attribute-fm27-v2.csv"));
+  const players = parsePlayersCsv(fixture("attribute-fm27-hidden.csv"));
   const { models, byId } = computeDatasetPotentials(players);
   assert.equal(byId.size, players.length);
 
@@ -62,7 +62,7 @@ test("projectPotential reaches PA and never lowers an attribute", () => {
   assert.ok(proj.attributes.reflexes > shirkey.reflexes);
 });
 
-test("projectPotential returns null without CA/PA (v1 export)", () => {
+test("projectPotential returns null without CA/PA (Standard view export)", () => {
   const players = parsePlayersCsv(fixture("attribute-fm27-outfield.csv"));
   const { available } = computeDatasetPotentials(players);
   assert.equal(available, false);

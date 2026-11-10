@@ -20,7 +20,7 @@ export type { PlayerWithGroups };
 type PlayersDataState = {
   csvText: string | null;
   players: PlayerWithGroups[];
-  /** CA model used for potential projections; null when the import has no CA/PA (v1 view). */
+  /** CA model used for potential projections; null when the import has no CA/PA (Standard view). */
   caModels: CaModelSet | null;
 };
 

@@ -20,5 +20,5 @@ export const FM26Import: Story = {
 };
 
 export const FM27V2Import: Story = {
-  parameters: { appProviders: { players: "fm27v2" } },
+  parameters: { appProviders: { players: "fm27hidden" } },
 };

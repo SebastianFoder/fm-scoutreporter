@@ -68,7 +68,7 @@ const OPTIONAL_NUMERIC_COLUMNS: Record<string, "professionalism" | "currentAbili
 };
 
 /**
- * Column order of the v1 view (SCOUT REPORTER Attributes v1), used when a header can't be matched.
+ * Column order of the Standard view (SCOUT REPORTER Standard), used when a header can't be matched.
  * Index → normalised header.
  */
 const V1_ORDER = [
@@ -113,14 +113,14 @@ export function parsePlayersCsv(csv: string): PlayerAttributes[] {
   if (lines.length <= 1) return [];
 
   // FM26 exports are `;`-delimited, FM27 exports are `,`-delimited (and call "Wage" "Salary").
-  // Columns are matched by header so both the v1 and v2 (+ Professionalism, CA, PA) views work.
+  // Columns are matched by header so both the Standard and Hidden Attributes (+ Professionalism, CA, PA) views work.
   const delimiter = detectDelimiter(lines[0]);
   const headers = splitCsvLine(lines[0], delimiter).map(normalizeHeader);
   const index = new Map<string, number>();
   headers.forEach((h, i) => {
     if (!index.has(h)) index.set(h, i);
   });
-  // Fall back to the v1 fixed order for anything the header didn't name.
+  // Fall back to the Standard view fixed order for anything the header didn't name.
   V1_ORDER.forEach((h, i) => {
     if (!index.has(h) && headers.length === V1_ORDER.length) index.set(h, i);
   });

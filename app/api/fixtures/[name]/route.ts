@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
 
-const ALLOWED = new Set(["attribute", "attribute-fm27-v2"]);
+const ALLOWED = new Set(["attribute", "attribute-fm27-hidden"]);
 
 export async function GET(
   _req: Request,

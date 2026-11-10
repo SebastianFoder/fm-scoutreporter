@@ -21,8 +21,8 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 - **How to use** page with step-by-step exporter setup guide
 - **FM27 benchmark profiles** (CB, WB/DM, AM/Winger, Striker, GK) and a **vs Age** column, from
   [jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring)'s FM27 weights and age benchmarks
-- **Wonderkid mode** (`/wonderkid`): with the v2 view (`public/SCOUT REPORTER Attributes v2.fmf`, adds
-  Professionalism, CA and PA) it estimates each player's attributes at full potential using the FM27
+- **Wonderkid mode** (`/wonderkid`): with the Hidden Attributes view (`public/SCOUT REPORTER Hidden Attributes.fmf`, adds
+  the hidden Professionalism, CA and PA) it estimates each player's attributes at full potential using the FM27
   CA-cost table, then ranks prospects on the benchmark roles
 - **Best XI** (`/best-xi`): picks the highest-scoring eleven for a formation from the imported players,
   with an optional minimum and maximum on the eleven's total transfer value. Each position is scored
@@ -55,7 +55,7 @@ Every story is wrapped in the app's providers (`.storybook/providers.tsx`), star
 ```ts
 parameters: {
   appProviders: {
-    players: "fm27v2", // pre-import a fixture: "fm26" | "fm27outfield" | "fm27v2" (default: none)
+    players: "fm27hidden", // pre-import a fixture: "fm26" | "fm27outfield" | "fm27hidden" (default: none)
     storage: { weights, highlights, attributeColors }, // seed the config profiles
     disable: true, // skip the providers entirely
   },

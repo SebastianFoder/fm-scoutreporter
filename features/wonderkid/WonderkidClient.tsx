@@ -156,17 +156,17 @@ export default function WonderkidClient() {
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
         <PageHeader title="Wonderkid mode">
-          Estimates each player&apos;s attributes at full potential (PA) from a v2 export, then
+          Estimates each player&apos;s attributes at full potential (PA) from a Hidden Attributes view export, then
           scores them on the FM27 benchmark roles. A potential score of{" "}
           <span className="font-semibold text-ink">{PRIME_BENCHMARK.toFixed(1)}</span> (100% vs
           prime) is a high-end Championship / low-end Premier League player in their prime.
         </PageHeader>
 
-        <CsvImportPanel testFixture="attribute-fm27-v2" onImported={() => setPage(1)} />
+        <CsvImportPanel testFixture="attribute-fm27-hidden" onImported={() => setPage(1)} />
 
         {players.length === 0 && (
           <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
-            No CSV imported yet. Export with the v2 view (Professionalism, CA, PA) and import it above.
+            No CSV imported yet. Export with the Hidden Attributes view (Professionalism, CA, PA) and import it above.
           </p>
         )}
 
@@ -177,7 +177,7 @@ export default function WonderkidClient() {
               <p className="font-semibold">This import has no CA / PA columns.</p>
               <p className="text-muted">
                 Current FM27 role scores and vs Age are shown, but full-potential estimates need an
-                export made with the v2 view.
+                export made with the Hidden Attributes view.
               </p>
             </div>
           </div>

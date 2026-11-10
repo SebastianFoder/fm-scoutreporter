@@ -49,8 +49,8 @@ test("splitCsvLine keeps quoted commas together", () => {
   assert.deepEqual(splitCsvLine('a,"say ""hi""",b', ","), ["a", 'say "hi"', "b"]);
 });
 
-test("parsePlayersCsv reads the v2 view (Professionalism, CA, PA) by header", () => {
-  const rows = parsePlayersCsv(fixture("attribute-fm27-v2.csv"));
+test("parsePlayersCsv reads the Hidden Attributes view (Professionalism, CA, PA) by header", () => {
+  const rows = parsePlayersCsv(fixture("attribute-fm27-hidden.csv"));
   assert.equal(rows.length, 109);
   const first = rows[0];
   assert.equal(first.player, "Morgan Maliska");
@@ -65,7 +65,7 @@ test("parsePlayersCsv reads the v2 view (Professionalism, CA, PA) by header", ()
   assert.equal(rows[1].transferValueRange, "€6K - €60K");
 });
 
-test("parsePlayersCsv leaves v2 fields null for v1 exports", () => {
+test("parsePlayersCsv leaves hidden fields null for Standard view exports", () => {
   const rows = parsePlayersCsv(fixture("attribute.csv"));
   assert.equal(rows[0].currentAbility, null);
   assert.equal(rows[0].potentialAbility, null);

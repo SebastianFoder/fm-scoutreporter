@@ -3,19 +3,19 @@ import type { PlayerWithGroups } from "../data/players-store";
 import { isGoalkeeperPosition } from "../lib/fm27/benchmarks";
 import fm26Csv from "../fixtures/attribute.csv?raw";
 import fm27OutfieldCsv from "../fixtures/attribute-fm27-outfield.csv?raw";
-import fm27V2Csv from "../fixtures/attribute-fm27-v2.csv?raw";
+import fm27HiddenCsv from "../fixtures/attribute-fm27-hidden.csv?raw";
 
 /**
  * CSV fixtures available to stories.
- * - `fm26`: FM26 v1 export, mixed positions (1 GK), no CA/PA
+ * - `fm26`: FM26 Standard view export, mixed positions (1 GK), no CA/PA
  * - `fm27outfield`: FM27 export, outfield only (all U21), no CA/PA
- * - `fm27v2`: FM27 v2 export with CA/PA/Professionalism (enables potential + Wonderkid).
+ * - `fm27hidden`: FM27 Hidden Attributes view export with CA/PA/Professionalism (enables potential + Wonderkid).
  *   Note: every player in this fixture is a goalkeeper.
  */
 export const FIXTURE_CSV = {
   fm26: fm26Csv,
   fm27outfield: fm27OutfieldCsv,
-  fm27v2: fm27V2Csv,
+  fm27hidden: fm27HiddenCsv,
 } as const;
 
 export type FixtureName = keyof typeof FIXTURE_CSV;
@@ -23,7 +23,7 @@ export type FixtureName = keyof typeof FIXTURE_CSV;
 /** Names served by the app's /api/fixtures/[name] route, mapped to their CSV. */
 export const API_FIXTURES: Record<string, string> = {
   attribute: fm26Csv,
-  "attribute-fm27-v2": fm27V2Csv,
+  "attribute-fm27-hidden": fm27HiddenCsv,
 };
 
 const cache = new Map<FixtureName, ReturnType<typeof parseAndGroup>>();

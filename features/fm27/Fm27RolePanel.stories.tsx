@@ -24,9 +24,9 @@ export const Outfield: Story = {
   args: { player: fixturePlayer("fm27outfield") },
 };
 
-/** v2 export (CA/PA): adds the potential column and "Potential vs prime". */
+/** Hidden Attributes export (CA/PA): adds the potential column and "Potential vs prime". */
 export const WithPotential: Story = {
-  args: { player: fixturePlayer("fm27v2", (p) => !!p.potential) },
+  args: { player: fixturePlayer("fm27hidden", (p) => !!p.potential) },
 };
 
 export const FM26Outfield: Story = {

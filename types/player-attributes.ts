@@ -19,7 +19,7 @@ export interface PlayerAttributes {
   age: number;
   euNational: boolean; // "True" / "False" in CSV
 
-  // Only in v2 exports (SCOUT REPORTER Attributes v2 view); null when the column is missing or hidden.
+  // Only in Hidden Attributes view exports; null when the column is missing or hidden.
   professionalism: number | null;
   currentAbility: number | null; // "CA"
   potentialAbility: number | null; // "PA"

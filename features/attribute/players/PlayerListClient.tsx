@@ -50,7 +50,7 @@ type Row = {
   score: number;
   /** Weighted average ÷ FM27 age benchmark (1 = on track for a prime high-end Championship / low-end PL player). */
   vsAge: number;
-  /** Score with the projected attributes at PA; null without a v2 export. */
+  /** Score with the projected attributes at PA; null without a Hidden Attributes export. */
   potential: number | null;
 };
 
@@ -575,7 +575,7 @@ function PlayersListClientInner({
               />
               {hasPotential && (
                 <SortableTh
-                  label={<span title="Score with attributes projected to PA (v2 export)">Potential</span>}
+                  label={<span title="Score with attributes projected to PA (Hidden Attributes export)">Potential</span>}
                   align="right"
                   columnSort="potential"
                   listSort={listSort}

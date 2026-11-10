@@ -16,5 +16,5 @@ type Story = StoryObj<typeof meta>;
 export const NoImport: Story = {};
 
 export const WithImport: Story = {
-  parameters: { appProviders: { players: "fm27v2" } },
+  parameters: { appProviders: { players: "fm27hidden" } },
 };

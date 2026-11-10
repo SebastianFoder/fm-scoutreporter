@@ -4,9 +4,7 @@ import { useState } from "react";
 import { AlertTriangle, Upload } from "lucide-react";
 import { Button, LINK_BUTTON_CLASS } from "./Button";
 import { usePlayersData } from "./PlayersDataProvider";
-import { VIEW_V1_HREF, VIEW_V2_HREF } from "@/lib/view-files";
-
-export { VIEW_V1_HREF, VIEW_V2_HREF };
+import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
 
 /** CSV import + view download, shared by Attribute and Wonderkid mode (both use the same imported data). */
 export function CsvImportPanel({
@@ -69,14 +67,14 @@ export function CsvImportPanel({
           <p className="text-[13px] text-muted">
             FM26 (<code>;</code>) or FM27 (<code>,</code>) export of the Scout Reporter view.
             Columns are matched by name. View file:{" "}
-            <a href={VIEW_V2_HREF} className="link">
-              v2
+            <a href={VIEW_STANDARD.href} className="link">
+              Standard
             </a>{" "}
-            (adds CA, PA, Professionalism) or{" "}
-            <a href={VIEW_V1_HREF} className="link">
-              v1
-            </a>
-            .
+            or{" "}
+            <a href={VIEW_HIDDEN.href} className="link">
+              Hidden Attributes
+            </a>{" "}
+            (adds Professionalism, CA, PA).
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">

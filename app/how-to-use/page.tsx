@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { LINK_BUTTON_CLASS } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
+import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
 
 type Tab = "setup" | "attribute" | "wonderkid";
 
@@ -90,6 +91,46 @@ function InfoBox({
     <div className="pt-1">
       <h3 className="font-semibold">{label}</h3>
       <div className="mt-1 text-ink/85">{children}</div>
+    </div>
+  );
+}
+
+const VIEW_OPTIONS = [
+  {
+    view: VIEW_HIDDEN,
+    label: "Recommended",
+    detail:
+      "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores and Wonderkid mode.",
+  },
+  {
+    view: VIEW_STANDARD,
+    label: "Attributes only",
+    detail: "Every visible attribute. Enough for Attribute mode and Best XI.",
+  },
+] as const;
+
+/** Download cards for both view files, with what each one unlocks. */
+function ViewDownloads() {
+  return (
+    <div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {VIEW_OPTIONS.map(({ view, label, detail }) => (
+          <div key={view.href} className="rounded-md px-3 py-3 ring-1 ring-line">
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 className="font-semibold">{view.name}</h3>
+              <span className="text-xs text-muted">{label}</span>
+            </div>
+            <p className="mt-1 text-sm text-ink/85">{detail}</p>
+            <a href={view.href} className={`${LINK_BUTTON_CLASS} mt-3`}>
+              Download {view.name}
+            </a>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-sm text-muted">
+        Both views export the same attributes, so imports from either work everywhere. You can
+        install both and switch between them in FM.
+      </p>
     </div>
   );
 }
@@ -205,16 +246,9 @@ function Fm27SetupGuide() {
       </Step>
 
       <Step index="02" title="Install the View">
-        <p className="mb-2">Download the view file:</p>
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
-            className={LINK_BUTTON_CLASS}
-          >
-            Download Attribute View
-          </a>
-        </div>
-        <p className="mt-3">Move it to:</p>
+        <p className="mb-2">Download one or both view files:</p>
+        <ViewDownloads />
+        <p className="mt-3">Move them to:</p>
         <pre className="codeblock mt-2">
           {`Documents\\Sports Interactive\\Football Manager 27\\views\\`}
         </pre>
@@ -231,7 +265,7 @@ function Fm27SetupGuide() {
             Right-click any column header and select{" "}
             <span className="font-bold">Import View</span>
           </li>
-          <li>Import the view you downloaded in Step 2</li>
+          <li>Import the view you downloaded in Step 2 (Hidden Attributes or Standard)</li>
           <li>
             Select that view from the{" "}
             <span className="font-bold">Custom Views</span> dropdown
@@ -270,7 +304,7 @@ function Fm27SetupGuide() {
           import.
         </p>
         <p className="mt-3 font-semibold text-ink">
-          You&apos;re done — enjoy your scouting data!
+          You&apos;re done. Enjoy your scouting data!
         </p>
       </Step>
 
@@ -342,7 +376,7 @@ function Fm26SetupGuide() {
           </pre>
         </MiniStep>
 
-        <MiniStep title="1.3 Linux only — Set launch options">
+        <MiniStep title="1.3 Linux only: set launch options">
           <p className="mb-2">
             Right-click FM26 in Steam → Properties → Launch Options, and
             paste:
@@ -384,16 +418,9 @@ function Fm26SetupGuide() {
       </Step>
 
       <Step index="03" title="Install the View">
-        <p className="mb-2">Download the view file:</p>
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
-            className={LINK_BUTTON_CLASS}
-          >
-            Download Attribute View
-          </a>
-        </div>
-        <p className="mt-3">Move it to:</p>
+        <p className="mb-2">Download one or both view files:</p>
+        <ViewDownloads />
+        <p className="mt-3">Move them to:</p>
         <pre className="codeblock mt-2">
           {`Documents\\Sports Interactive\\Football Manager 26\\views\\`}
         </pre>
@@ -411,7 +438,7 @@ function Fm26SetupGuide() {
             Right-click any column header and select{" "}
             <span className="font-bold">Import View</span>
           </li>
-          <li>Import the correct view you downloaded in Step 3 for your mode</li>
+          <li>Import the view you downloaded in Step 3 (Hidden Attributes or Standard)</li>
           <li>
             Select that view from the{" "}
             <span className="font-bold">Custom Views</span> dropdown
@@ -441,7 +468,7 @@ function Fm26SetupGuide() {
         </pre>
         <p className="mt-2">Select your exported file and import.</p>
         <p className="mt-3 font-semibold text-ink">
-          You&apos;re done — enjoy your scouting data!
+          You&apos;re done. Enjoy your scouting data!
         </p>
       </Step>
     </div>
@@ -454,24 +481,15 @@ function AttributeTab() {
       <Step index="Use" title="How to use Attribute mode" defaultOpen>
         <p>
           Attribute mode lets you import a player export and instantly rank players by
-          a weighted average of their FM26 attributes. No baseline required — just
+          a weighted average of their FM26 attributes. No baseline required: just
           import and score.
         </p>
 
-        <MiniStep title="1. Download and import the Attribute View">
+        <MiniStep title="1. Download a view">
           <p className="mb-2">
-            Download the Attribute View and place it in your FM26 or FM27 views folder:
+            Download a view and place it in your FM26 or FM27 views folder:
           </p>
-          <a
-            href="/SCOUT%20REPORTER%20Attributes%20v2.fmf"
-            className={LINK_BUTTON_CLASS}
-          >
-            Download Attribute View (v2)
-          </a>
-          <p className="mt-2 text-sm text-muted">
-            v2 adds Professionalism, CA and PA columns, which enable full-potential estimates
-            and Wonderkid mode. v1 exports still import fine.
-          </p>
+          <ViewDownloads />
           <p className="mt-2 text-sm text-muted">
             See the Setup Guide tab for full exporter install instructions for each game version.
           </p>
@@ -485,9 +503,9 @@ function AttributeTab() {
             </li>
             <li>
               Right-click a column header → <span className="font-bold">Import View</span> and
-              load the Attribute View
+              load the view
             </li>
-            <li>Select the Attribute View from the Custom Views dropdown</li>
+            <li>Select the view from the Custom Views dropdown</li>
             <li>Select the players you want, then press <span className="font-semibold">F9</span></li>
           </ol>
         </MiniStep>
@@ -580,7 +598,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
             to be a high-end Championship / low-end Premier League player in their prime.
           </p>
           <p className="mt-2">
-            With a v2 export a <span className="font-bold">Potential</span> column appears: the
+            With a Hidden Attributes export a <span className="font-bold">Potential</span> column appears: the
             same score using attributes projected to PA. The Wonderkid tab explains the
             projection.
           </p>
@@ -601,8 +619,8 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 
         <InfoBox label="Attribute categories">
           <p>
-            Attributes are grouped into four categories — Technical, Mental, Physical, and
-            Goalkeeping — matching FM26&apos;s own groupings. You can weight attributes from any
+            Attributes are grouped into four categories (Technical, Mental, Physical and
+            Goalkeeping), matching FM26&apos;s own groupings. You can weight attributes from any
             category in the same profile, so a goalkeeper weight set can include physical
             and mental attributes alongside GK-specific ones.
           </p>
@@ -625,12 +643,12 @@ function WonderkidTab() {
   return (
     <div>
       <Step index="Use" title="How to use Wonderkid mode" defaultOpen>
-        <MiniStep title="1. Export with the v2 view">
+        <MiniStep title="1. Export with the Hidden Attributes view">
           <p>
-            Import the Attribute View (v2) in FM and export as usual. It adds{" "}
+            Import the Hidden Attributes view in FM and export as usual. It adds the hidden{" "}
             <span className="font-bold">Professionalism</span>, <span className="font-bold">CA</span>{" "}
-            and <span className="font-bold">PA</span>. Players without CA/PA are still scored on
-            their current attributes.
+            and <span className="font-bold">PA</span>. Standard view exports, or players without CA/PA, are
+            still scored on their current attributes.
           </p>
         </MiniStep>
         <MiniStep title="2. Import and filter">
@@ -658,7 +676,7 @@ function WonderkidTab() {
         <InfoBox label="CA is a cost-weighted attribute sum">
           <p>
             Each attribute point costs a position-specific amount of CA (fm-scoring&apos;s FM27 CA
-            cost table, e.g. Decisions 10 and Agility 8 for a keeper). On a v2 export of 109
+            cost table, e.g. Decisions 10 and Agility 8 for a keeper). On a Hidden Attributes export of 109
             keepers, CA fits the cost-weighted sum almost exactly (r = 0.99, error ≈ 2.5 CA). The
             fit is recalibrated on every import that has CA.
           </p>
@@ -714,7 +732,7 @@ export default function HowToUsePage() {
     },
     wonderkid: {
       title: "Wonderkid Mode",
-      description: "Estimate full-potential attributes from a v2 export (CA, PA, Professionalism) and rank prospects on benchmarked FM27 roles.",
+      description: "Estimate full-potential attributes from a Hidden Attributes view export (CA, PA, Professionalism) and rank prospects on benchmarked FM27 roles.",
       link: { href: "/wonderkid", label: "Go to Wonderkid Mode" },
     },
   };

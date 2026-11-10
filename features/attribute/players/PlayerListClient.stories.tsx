@@ -24,9 +24,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-/** v2 export (CA/PA) adds the Potential column. */
+/** Hidden Attributes export (CA/PA) adds the Potential column. */
 export const WithPotential: Story = {
-  args: { players: fixturePlayers("fm27v2") },
+  args: { players: fixturePlayers("fm27hidden") },
 };
 
 export const Selectable: Story = {

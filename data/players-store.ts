@@ -9,7 +9,7 @@ import type { PotentialProjection } from "@/lib/fm27/potential";
 export interface PlayerWithGroups {
   raw: PlayerAttributes;
   grouped: GroupedAttributes;
-  /** Projected attributes at PA; only for v2 exports (CA + PA columns). */
+  /** Projected attributes at PA; only for Hidden Attributes view exports (CA + PA columns). */
   potential?: PotentialProjection | null;
 }
 

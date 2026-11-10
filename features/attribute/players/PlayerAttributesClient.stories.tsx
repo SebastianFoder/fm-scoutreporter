@@ -5,7 +5,7 @@ import { PlayerAttributesClient } from "./PlayerAttributesClient";
 
 const outfield = fixturePlayer("fm27outfield");
 // The only fixture with CA/PA (and so potential projections) is all goalkeepers.
-const keeper = fixturePlayer("fm27v2", (p) => !!p.potential);
+const keeper = fixturePlayer("fm27hidden", (p) => !!p.potential);
 
 const meta = {
   title: "Features/Attribute/PlayerAttributes",

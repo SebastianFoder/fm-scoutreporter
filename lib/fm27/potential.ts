@@ -8,8 +8,8 @@ import { parsePositionGroups } from "./positions";
  * Full-potential projection for FM27, built on the fm-scoring CA cost table.
  *
  * FM's CA is (very nearly) a linear function of the position-weighted attribute sum. With the FM27 cost
- * table, a v2 export of 109 goalkeepers gives CA ≈ 0.165·Σ(cost·attribute) − 99 (r = 0.99, RMSE ≈ 2.5 CA).
- * We express that per cost point — A = Σ(cost·attr) / Σ(cost) — so CA ≈ slope·A + intercept, calibrate it
+ * table, a Hidden Attributes export of 109 goalkeepers gives CA ≈ 0.165·Σ(cost·attribute) − 99 (r = 0.99, RMSE ≈ 2.5 CA).
+ * We express that per cost point (A = Σ(cost·attr) / Σ(cost)), so CA ≈ slope·A + intercept, calibrate it
  * on the imported players when there are enough of them, and use it to find the A a player has at PA.
  * The extra CA is then spread over the attributes that can still grow, proportional to their headroom.
  */
@@ -32,7 +32,7 @@ const PHYSICAL = new Set<AttributeKey>(PHYSICAL_KEYS);
 /** Growth rate of attributes that cost (almost) no CA for the player's positions. */
 const UNCOSTED_RATE = 0.5;
 
-/** Default model: the fit on the FM27 v2 GK sample (0.16469·S − 99.17, Σcost = 107). */
+/** Default model: the fit on the FM27 Hidden Attributes GK sample (0.16469·S − 99.17, Σcost = 107). */
 export const DEFAULT_CA_MODEL: CaModel = {
   slope: 0.16469 * 107,
   intercept: -99.17,
@@ -240,7 +240,7 @@ export function projectPotential(
 export interface DatasetPotentials {
   models: CaModelSet;
   byId: Map<string, PotentialProjection>;
-  /** True when at least one player had CA and PA (i.e. a v2 export). */
+  /** True when at least one player had CA and PA (i.e. a Hidden Attributes export). */
   available: boolean;
 }
 

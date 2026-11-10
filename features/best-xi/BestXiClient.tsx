@@ -349,7 +349,7 @@ export default function BestXiClient() {
                   >
                     <option value="current">Current attributes</option>
                     <option value="potential" disabled={!caModels}>
-                      {caModels ? "Attributes at full potential (PA)" : "Full potential (needs a v2 export)"}
+                      {caModels ? "Attributes at full potential (PA)" : "Full potential (needs the Hidden Attributes view)"}
                     </option>
                   </select>
                 </label>

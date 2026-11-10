@@ -9,7 +9,7 @@ function ImportStatus() {
   return (
     <p data-testid="import-status" className="font-mono text-sm font-bold">
       {state.players.length > 0
-        ? `${state.players.length} players loaded${state.caModels ? " (v2: CA/PA)" : ""}`
+        ? `${state.players.length} players loaded${state.caModels ? " (hidden attributes: CA/PA)" : ""}`
         : "No import"}
     </p>
   );
@@ -20,7 +20,7 @@ const meta = {
   component: CsvImportPanel,
   args: { onImported: fn() },
   argTypes: {
-    testFixture: { control: "inline-radio", options: ["attribute", "attribute-fm27-v2"] },
+    testFixture: { control: "inline-radio", options: ["attribute", "attribute-fm27-hidden"] },
   },
   decorators: [
     (Story) => (
@@ -42,12 +42,12 @@ export const WithExistingImport: Story = {
 };
 
 export const LoadTestData: Story = {
-  args: { testFixture: "attribute-fm27-v2" },
+  args: { testFixture: "attribute-fm27-hidden" },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: /load test data/i }));
     await waitFor(() =>
-      expect(canvas.getByTestId("import-status")).toHaveTextContent(/players loaded \(v2/),
+      expect(canvas.getByTestId("import-status")).toHaveTextContent(/players loaded \(hidden attributes/),
     );
     await expect(args.onImported).toHaveBeenCalled();
   },

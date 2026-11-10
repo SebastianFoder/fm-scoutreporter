@@ -15,11 +15,11 @@ type Story = StoryObj<typeof meta>;
 
 export const NoImport: Story = {};
 
-/** v1 export has no CA/PA, so potential projections are unavailable. */
+/** Standard view export has no CA/PA, so potential projections are unavailable. */
 export const V1Import: Story = {
   parameters: { appProviders: { players: "fm26" } },
 };
 
 export const V2Import: Story = {
-  parameters: { appProviders: { players: "fm27v2" } },
+  parameters: { appProviders: { players: "fm27hidden" } },
 };

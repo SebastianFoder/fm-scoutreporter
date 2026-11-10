@@ -1,21 +1,21 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { VIEW_V1_HREF, VIEW_V2_HREF } from "@/lib/view-files";
+import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
 
 const MODES = [
   {
     href: "/attribute",
     name: "Attribute mode",
     blurb: "Import CSV exports, tune weights, and compare players by attributes.",
-    needs: "v1 or v2 view export",
+    needs: "Standard or Hidden Attributes view",
     cta: "Open Attribute Mode",
   },
   {
     href: "/wonderkid",
     name: "Wonderkid mode",
     blurb:
-      "Import a v2 export (CA, PA, Professionalism) to estimate full-potential attributes and rank prospects on FM27 roles.",
-    needs: "v2 view export (CA, PA, Professionalism)",
+      "Import a Hidden Attributes view export (CA, PA, Professionalism) to estimate full-potential attributes and rank prospects on FM27 roles.",
+    needs: "Hidden Attributes view (CA, PA, Professionalism)",
     cta: "Open Wonderkid Mode",
   },
   {
@@ -23,7 +23,7 @@ const MODES = [
     name: "Best XI",
     blurb:
       "Pick the highest-scoring eleven for a formation from your import, within a minimum and maximum total budget.",
-    needs: "v1 or v2 view export",
+    needs: "Standard or Hidden Attributes view",
     cta: "Open Best XI",
   },
 ] as const;
@@ -108,16 +108,16 @@ export default function Home() {
           <h2 className="section-title">View files (.fmf)</h2>
           <ul className="mt-2 space-y-1.5 text-sm">
             <li>
-              <a href={VIEW_V2_HREF} className="link">
-                Scout Reporter Attributes v2
+              <a href={VIEW_HIDDEN.href} className="link">
+                {VIEW_HIDDEN.name}
               </a>
-              <span className="block text-muted">Adds CA, PA and Professionalism. Recommended.</span>
+              <span className="block text-muted">{VIEW_HIDDEN.summary} Recommended.</span>
             </li>
             <li>
-              <a href={VIEW_V1_HREF} className="link">
-                Scout Reporter Attributes v1
+              <a href={VIEW_STANDARD.href} className="link">
+                {VIEW_STANDARD.name}
               </a>
-              <span className="block text-muted">Attributes only.</span>
+              <span className="block text-muted">{VIEW_STANDARD.summary}</span>
             </li>
           </ul>
         </aside>
