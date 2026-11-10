@@ -1,3 +1,4 @@
+import { csvLines, detectDelimiter, splitCsvLine } from "@/lib/parser/csv-utils";
 import {
   MONEYBALL_REQUIRED_HEADERS,
   NON_STAT_HEADERS,
@@ -14,16 +15,8 @@ function toNumber(value: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function splitCsvLine(line: string): string[] {
-  // Export format is strict and does not include quoted semicolons.
-  return line.split(";").map((x) => x.trim());
-}
-
 export function parseMoneyballCsv(csv: string): MoneyballImportResult {
-  const lines = csv
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean);
+  const lines = csvLines(csv);
 
   if (lines.length < 2) {
     return {
@@ -33,7 +26,8 @@ export function parseMoneyballCsv(csv: string): MoneyballImportResult {
     };
   }
 
-  const headers = splitCsvLine(lines[0]);
+  const delimiter = detectDelimiter(lines[0]);
+  const headers = splitCsvLine(lines[0], delimiter);
   const headerSet = new Set(headers);
   const errors: MoneyballImportResult["errors"] = [];
 
@@ -74,7 +68,7 @@ export function parseMoneyballCsv(csv: string): MoneyballImportResult {
   const rows: MoneyballRow[] = [];
 
   for (let i = 1; i < lines.length; i += 1) {
-    const cols = splitCsvLine(lines[i]);
+    const cols = splitCsvLine(lines[i], delimiter);
     if (cols.length !== headers.length) {
       errors.push({
         line: i + 1,

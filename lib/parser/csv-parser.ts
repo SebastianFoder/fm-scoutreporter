@@ -1,19 +1,19 @@
 import { PlayerAttributes } from "@/types/player-attributes";
+import { csvLines, detectDelimiter, splitCsvLine } from "./csv-utils";
 
 export function parsePlayersCsv(csv: string): PlayerAttributes[] {
-  const lines = csv
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0);
+  const lines = csvLines(csv);
 
   if (lines.length <= 1) return [];
 
   // We rely on the fixed column order from your export
   // L1: Player;Crossing;Handling;...;Transfer Value;Communication;Aerial Reach
+  // FM26 exports are `;`-delimited, FM27 exports are `,`-delimited (and call "Wage" "Salary").
+  const delimiter = detectDelimiter(lines[0]);
   const dataLines = lines.slice(1);
 
   return dataLines.map((line) => {
-    const cols = line.split(";");
+    const cols = splitCsvLine(line, delimiter);
 
     const get = (index: number) => (cols[index] ?? "").trim();
     const num = (index: number): number => {

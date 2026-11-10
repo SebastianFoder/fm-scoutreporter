@@ -1,3 +1,4 @@
+import { csvLines, detectDelimiter, splitCsvLine } from "@/lib/parser/csv-utils";
 import { isGoalkeeper } from "@/features/moneyball/schema";
 import { isMoneyballStat, MoneyballStat } from "@/features/moneyball/moneyball-stat";
 import type { MoneyballImportResult, MoneyballRow } from "@/features/moneyball/types";
@@ -14,15 +15,8 @@ function toNumber(value: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function splitCsvLine(line: string): string[] {
-  return line.split(";").map((x) => x.trim());
-}
-
 export function parseMustermannMoneyballCsv(csv: string): MoneyballImportResult {
-  const lines = csv
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean);
+  const lines = csvLines(csv);
 
   if (lines.length < 2) {
     return {
@@ -32,7 +26,8 @@ export function parseMustermannMoneyballCsv(csv: string): MoneyballImportResult 
     };
   }
 
-  const headers = splitCsvLine(lines[0]);
+  const delimiter = detectDelimiter(lines[0]);
+  const headers = splitCsvLine(lines[0], delimiter);
   const headerSet = new Set(headers);
   const errors: MoneyballImportResult["errors"] = [];
 
@@ -63,7 +58,7 @@ export function parseMustermannMoneyballCsv(csv: string): MoneyballImportResult 
   const statKeys = [...statKeysOrdered, MoneyballStat.HeadersAttemptedPer90, MoneyballStat.OffsidesPer90];
   const rows: MoneyballRow[] = [];
   for (let i = 1; i < lines.length; i += 1) {
-    const cols = splitCsvLine(lines[i]);
+    const cols = splitCsvLine(lines[i], delimiter);
     if (cols.length !== headers.length) {
       errors.push({
         line: i + 1,
