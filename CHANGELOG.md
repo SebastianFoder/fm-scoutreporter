@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.12.0...v1.13.0) (2026-11-11)
+
+
+### Features
+
+* **staff:** lock in and remove backroom picks ([32f062c](https://github.com/SebastianFoder/fm-scoutreporter/commit/32f062c77a1da26d74659d263dce53e8673cd95c))
+
 # [1.12.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.11.0...v1.12.0) (2026-11-11)
 
 
