@@ -41,19 +41,32 @@
   --attr-low: 1 0 0 / 0;
   --attr-low-ink: 0.52 0.012 255;
 
-  /* Grade stamps: one fill per letter tier (S above A, down to F). Text/fill pairs pass WCAG AA. */
+  /* Grade stamps: one fill per letter tier (S above A, down to F), a neighbouring hue at the same
+     lightness for the moving fill, and a gloss strength (weaker where the letter is light). Text stays at WCAG AA. */
   --grade-s: 0.45 0.2 300;
   --grade-s-ink: 1 0 0;
+  --grade-s-shift: 0.45 0.2 335;
+  --grade-s-gloss: 0.06;
   --grade-a: 0.5 0.13 150;
   --grade-a-ink: 1 0 0;
+  --grade-a-shift: 0.5 0.12 175;
+  --grade-a-gloss: 0.06;
   --grade-b: 0.8 0.15 128;
   --grade-b-ink: 0.22 0.04 128;
+  --grade-b-shift: 0.8 0.15 112;
+  --grade-b-gloss: 0.25;
   --grade-c: 0.86 0.14 92;
   --grade-c-ink: 0.25 0.04 88;
+  --grade-c-shift: 0.86 0.14 80;
+  --grade-c-gloss: 0.25;
   --grade-d: 0.74 0.15 58;
   --grade-d-ink: 0.2 0.04 55;
+  --grade-d-shift: 0.74 0.15 45;
+  --grade-d-gloss: 0.25;
   --grade-f: 0.55 0.19 27;
   --grade-f-ink: 1 0 0;
+  --grade-f-shift: 0.55 0.19 12;
+  --grade-f-gloss: 0.06;
 }
 
 :root[data-theme="dark"] {
@@ -264,9 +277,27 @@
     background-color: oklch(var(--attr-average));
     color: oklch(var(--attr-average-ink));
   }
-  /* Grade stamp (S++ to F): tier fill + tier ink, letter always printed. The inset ring keeps pale
-     fills (B, C, D) visible on white panels. */
+  /*
+   * Grade stamp (S++ to F). A glossy badge in the tier colour with the letter always printed. All the
+   * effects sit inside the badge and scale with rarity:
+   *   every grade: gloss across the top, a soft inner glow, and a fill that drifts between two neighbouring
+   *     hues at the same lightness (slow for B to F, livelier for A, fastest for S)
+   *   S: the shine sweeps across every few seconds
+   *   S+: the inner glow breathes
+   *   S++: plus a holographic border that turns and a sparkle on the corner
+   * The gloss is weaker on tiers with light letters (--grade-*-gloss) and the drift keeps lightness fixed,
+   * so the letter stays at WCAG AA throughout. Grade stamps are the one place the design standard allows
+   * gradients, glow and looping motion.
+   */
   .grade {
+    --g: var(--grade-c);
+    --gs: var(--grade-c-shift);
+    --gi: var(--grade-c-ink);
+    --gloss: var(--grade-c-gloss);
+    --inner: 0.18;
+    --flow: 10s;
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     min-width: 2.1rem;
     height: 1.375rem;
@@ -274,30 +305,222 @@
     justify-content: center;
     border-radius: 4px;
     padding: 0 0.3rem;
+    color: oklch(var(--gi));
+    background:
+      radial-gradient(130% 75% at 50% 0%, oklch(1 0 0 / var(--gloss)) 0%, transparent 72%) no-repeat,
+      linear-gradient(115deg, oklch(var(--g)) 0%, oklch(var(--gs)) 50%, oklch(var(--g)) 100%);
+    background-size:
+      100% 100%,
+      220% 100%;
+    background-position:
+      0 0,
+      0% 50%;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.3),
+      inset 0 -1px 0 oklch(0 0 0 / 0.14),
+      inset 0 0 0 1px oklch(var(--gi) / 0.18),
+      inset 0 0 var(--inner-blur, 6px) 0 oklch(1 0 0 / var(--inner));
     font-family: var(--font-ui-condensed), var(--font-ui), sans-serif;
     font-weight: 800;
     font-size: 0.8125rem;
     letter-spacing: 0.01em;
     line-height: 1;
     white-space: nowrap;
+    animation: grade-flow var(--flow) ease-in-out var(--grade-delay, 0s) infinite alternate;
   }
+  .grade-mod {
+    position: relative;
+    top: -0.3em;
+    margin-left: 0.04em;
+    font-size: 0.72em;
+    letter-spacing: -0.02em;
+  }
+
+  .grade[data-tier="s"] { --g: var(--grade-s); --gs: var(--grade-s-shift); --gi: var(--grade-s-ink); --gloss: var(--grade-s-gloss); --inner: 0.42; --flow: 3.5s; }
+  .grade[data-tier="a"] { --g: var(--grade-a); --gs: var(--grade-a-shift); --gi: var(--grade-a-ink); --gloss: var(--grade-a-gloss); --inner: 0.3; --flow: 6s; }
+  .grade[data-tier="b"] { --g: var(--grade-b); --gs: var(--grade-b-shift); --gi: var(--grade-b-ink); --gloss: var(--grade-b-gloss); }
+  .grade[data-tier="c"] { --g: var(--grade-c); --gs: var(--grade-c-shift); --gi: var(--grade-c-ink); --gloss: var(--grade-c-gloss); }
+  .grade[data-tier="d"] { --g: var(--grade-d); --gs: var(--grade-d-shift); --gi: var(--grade-d-ink); --gloss: var(--grade-d-gloss); }
+  .grade[data-tier="f"] { --g: var(--grade-f); --gs: var(--grade-f-shift); --gi: var(--grade-f-ink); --gloss: var(--grade-f-gloss); }
+
+  /* S tier: a shine band sweeps across every few seconds. */
+  .grade[data-tier="s"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 38%, oklch(1 0 0 / 0.45) 50%, transparent 62%) no-repeat;
+    background-size: 250% 100%;
+    background-position: 160% 0;
+  }
+  .grade[data-tier="s"]::after {
+    animation: grade-shine 3.6s ease-in-out var(--grade-delay, 0s) infinite;
+  }
+
+  /* S+: the inner glow breathes. */
+  .grade[data-grade="S+"] {
+    animation:
+      grade-flow var(--flow) ease-in-out var(--grade-delay, 0s) infinite alternate,
+      grade-breathe 2.8s ease-in-out var(--grade-delay, 0s) infinite;
+  }
+
+  /* S++: a holographic border that turns, and a sparkle that twinkles on the corner. */
+  .grade[data-grade="S++"] {
+    border: 1.5px solid transparent;
+    background:
+      radial-gradient(130% 75% at 50% 0%, oklch(1 0 0 / var(--gloss)) 0%, transparent 72%) padding-box no-repeat,
+      linear-gradient(115deg, oklch(var(--g)) 0%, oklch(var(--gs)) 50%, oklch(var(--g)) 100%) padding-box,
+      conic-gradient(
+          from var(--grade-angle),
+          oklch(0.85 0.17 90),
+          oklch(0.8 0.17 340),
+          oklch(0.78 0.15 260),
+          oklch(0.85 0.14 190),
+          oklch(0.85 0.17 90)
+        )
+        border-box;
+    background-size:
+      100% 100%,
+      220% 100%,
+      100% 100%;
+    background-position:
+      0 0,
+      0% 50%,
+      0 0;
+    animation:
+      grade-flow-holo var(--flow) ease-in-out var(--grade-delay, 0s) infinite alternate,
+      grade-breathe 2.8s ease-in-out var(--grade-delay, 0s) infinite,
+      grade-spin 4s linear infinite;
+  }
+  .grade[data-grade="S++"]::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    z-index: 2;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+    background: oklch(0.97 0.06 95);
+    clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    filter: drop-shadow(0 0 2px oklch(0.9 0.15 90));
+    opacity: 0;
+    animation: grade-twinkle 2.4s ease-in-out var(--grade-delay, 0s) infinite;
+  }
+
+  /* Large stamps (profile header). */
   .grade[data-size="lg"] {
     min-width: 3rem;
     height: 2.25rem;
     border-radius: 6px;
     padding: 0 0.5rem;
     font-size: 1.25rem;
+    --inner-blur: 10px;
   }
-  .grade[data-tier="s"] { background-color: oklch(var(--grade-s)); color: oklch(var(--grade-s-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-s-ink) / 0.2); }
-  .grade[data-tier="a"] { background-color: oklch(var(--grade-a)); color: oklch(var(--grade-a-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-a-ink) / 0.2); }
-  .grade[data-tier="b"] { background-color: oklch(var(--grade-b)); color: oklch(var(--grade-b-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-b-ink) / 0.2); }
-  .grade[data-tier="c"] { background-color: oklch(var(--grade-c)); color: oklch(var(--grade-c-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-c-ink) / 0.2); }
-  .grade[data-tier="d"] { background-color: oklch(var(--grade-d)); color: oklch(var(--grade-d-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-d-ink) / 0.2); }
-  .grade[data-tier="f"] { background-color: oklch(var(--grade-f)); color: oklch(var(--grade-f-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-f-ink) / 0.2); }
 
   .attr[data-band="low"] {
     background-color: oklch(var(--attr-low));
     color: oklch(var(--attr-low-ink));
     font-weight: 500;
+  }
+}
+
+/* Grade stamp motion. The angle is registered so the S++ holographic border turns smoothly. */
+@property --grade-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* The fill drifts between the tier colour and its neighbouring hue; the gloss layer stays put. */
+@keyframes grade-flow {
+  from {
+    background-position:
+      0 0,
+      0% 50%;
+  }
+  to {
+    background-position:
+      0 0,
+      100% 50%;
+  }
+}
+
+@keyframes grade-flow-holo {
+  from {
+    background-position:
+      0 0,
+      0% 50%,
+      0 0;
+  }
+  to {
+    background-position:
+      0 0,
+      100% 50%,
+      0 0;
+  }
+}
+
+@keyframes grade-shine {
+  0% {
+    background-position: 160% 0;
+  }
+  35%,
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+@keyframes grade-breathe {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.3),
+      inset 0 -1px 0 oklch(0 0 0 / 0.14),
+      inset 0 0 0 1px oklch(var(--gi) / 0.18),
+      inset 0 0 5px 0 oklch(1 0 0 / 0.3);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.3),
+      inset 0 -1px 0 oklch(0 0 0 / 0.14),
+      inset 0 0 0 1px oklch(var(--gi) / 0.18),
+      inset 0 0 9px 1px oklch(1 0 0 / 0.62);
+  }
+}
+
+@keyframes grade-spin {
+  to {
+    --grade-angle: 360deg;
+  }
+}
+
+@keyframes grade-twinkle {
+  0%,
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  85% {
+    opacity: 0.6;
+    transform: scale(0.6) rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grade,
+  .grade::before,
+  .grade::after {
+    animation: none !important;
+  }
+  .grade[data-grade="S++"]::before {
+    opacity: 1;
   }
 }

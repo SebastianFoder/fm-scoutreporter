@@ -7,6 +7,7 @@ import { LINK_BUTTON_CLASS } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
 import { GRADE_SCALE, PRIME_GRADE } from "@/lib/grades";
+import { GradeBadge } from "@/components/GradeStamp";
 
 type Tab = "setup" | "attribute" | "wonderkid";
 
@@ -618,9 +619,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
               const above = GRADE_SCALE[i - 1];
               return (
                 <li key={g.grade} className="inline-flex items-center gap-1.5 text-[13px]">
-                  <span className="grade" data-tier={g.tier}>
-                    {g.grade}
-                  </span>
+                  <GradeBadge grade={g.grade} tier={g.tier} delay={i * 0.25} />
                   <span className="text-muted">
                     {Number.isFinite(g.min)
                       ? above

@@ -14,8 +14,16 @@ export interface ThemeAttributeBands {
   low: ThemeBand;
 }
 
+/** Grade stamp colours for one letter tier. */
+export interface ThemeGrade extends ThemeBand {
+  /** Neighbouring hue at the same lightness, for the moving fill (keeps the letter's contrast). */
+  shift: string;
+  /** Gloss strength (white alpha, 0–1): weaker where the letter is light, so it stays at WCAG AA. */
+  gloss: number;
+}
+
 /** Grade stamp colours, one per letter tier (S above A, down to F). */
-export type ThemeGrades = Record<"s" | "a" | "b" | "c" | "d" | "f", ThemeBand>;
+export type ThemeGrades = Record<"s" | "a" | "b" | "c" | "d" | "f", ThemeGrade>;
 
 export interface ThemeConfig {
   name: string;
@@ -68,12 +76,12 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
       low: { fill: "1 0 0 / 0", ink: "0.52 0.012 255" },
     },
     grades: {
-      s: { fill: "0.45 0.2 300", ink: "1 0 0" },
-      a: { fill: "0.5 0.13 150", ink: "1 0 0" },
-      b: { fill: "0.8 0.15 128", ink: "0.22 0.04 128" },
-      c: { fill: "0.86 0.14 92", ink: "0.25 0.04 88" },
-      d: { fill: "0.74 0.15 58", ink: "0.2 0.04 55" },
-      f: { fill: "0.55 0.19 27", ink: "1 0 0" },
+      s: { fill: "0.45 0.2 300", ink: "1 0 0", shift: "0.45 0.2 335", gloss: 0.06 },
+      a: { fill: "0.5 0.13 150", ink: "1 0 0", shift: "0.5 0.12 175", gloss: 0.06 },
+      b: { fill: "0.8 0.15 128", ink: "0.22 0.04 128", shift: "0.8 0.15 112", gloss: 0.25 },
+      c: { fill: "0.86 0.14 92", ink: "0.25 0.04 88", shift: "0.86 0.14 80", gloss: 0.25 },
+      d: { fill: "0.74 0.15 58", ink: "0.2 0.04 55", shift: "0.74 0.15 45", gloss: 0.25 },
+      f: { fill: "0.55 0.19 27", ink: "1 0 0", shift: "0.55 0.19 12", gloss: 0.06 },
     },
     specials: {
       red: { bg: "0.55 0.19 27", text: "1 0 0" },
@@ -103,12 +111,12 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
       low: { fill: "0 0 0 / 0", ink: "0.66 0.01 255" },
     },
     grades: {
-      s: { fill: "0.68 0.17 300", ink: "0.16 0.04 300" },
-      a: { fill: "0.72 0.15 150", ink: "0.17 0.03 150" },
-      b: { fill: "0.82 0.15 128", ink: "0.2 0.04 128" },
-      c: { fill: "0.85 0.14 92", ink: "0.22 0.04 88" },
-      d: { fill: "0.74 0.15 58", ink: "0.18 0.04 55" },
-      f: { fill: "0.64 0.19 27", ink: "0.15 0.02 27" },
+      s: { fill: "0.68 0.17 300", ink: "0.16 0.04 300", shift: "0.68 0.17 335", gloss: 0.25 },
+      a: { fill: "0.72 0.15 150", ink: "0.17 0.03 150", shift: "0.72 0.13 175", gloss: 0.25 },
+      b: { fill: "0.82 0.15 128", ink: "0.2 0.04 128", shift: "0.82 0.15 112", gloss: 0.25 },
+      c: { fill: "0.85 0.14 92", ink: "0.22 0.04 88", shift: "0.85 0.14 80", gloss: 0.25 },
+      d: { fill: "0.74 0.15 58", ink: "0.18 0.04 55", shift: "0.74 0.15 45", gloss: 0.25 },
+      f: { fill: "0.64 0.19 27", ink: "0.15 0.02 27", shift: "0.64 0.19 12", gloss: 0.25 },
     },
     specials: {
       red: { bg: "0.62 0.19 27", text: "0.15 0.02 27" },
@@ -159,5 +167,7 @@ export function applyTheme(key: ThemeKey) {
   for (const [tier, band] of Object.entries(theme.grades)) {
     set(`--grade-${tier}`, band.fill);
     set(`--grade-${tier}-ink`, band.ink);
+    set(`--grade-${tier}-shift`, band.shift);
+    set(`--grade-${tier}-gloss`, String(band.gloss));
   }
 }

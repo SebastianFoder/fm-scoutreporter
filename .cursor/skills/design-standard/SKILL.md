@@ -16,7 +16,7 @@ Its identity comes from things that only make sense in this product:
 - **Position map**: a mini pitch with the player's positions marked (`components/PositionMap.tsx`).
 - **Role chart**: FM27 role scores as bars on a 0–20 axis with age-benchmark and prime markers.
 - **Medals** in Compare: gold/silver/bronze chips per row.
-- **Grade stamps**: S++ to F letter stamps for 1–20 scores (`components/GradeStamp.tsx`, scale in `lib/grades.ts`), one fill per letter tier.
+- **Grade stamps**: S++ to F letter stamps for 1–20 scores (`components/GradeStamp.tsx`, scale in `lib/grades.ts`), one fill per letter tier. The only place gradients, glow and looping motion are allowed, and all of it stays inside the badge (no tilt, no outer glow, no hover effects): every stamp has gloss, an inner glow and a fill drifting between two hues at the same lightness, faster for rarer grades; S shines on a loop; S+ breathes; S++ adds a holographic border and a sparkle. Everything stops under `prefers-reduced-motion`, and the letter stays at WCAG AA throughout.
 - **Pitch mark** (`BrandMark`, `app/icon.svg`) and the dark app bar.
 
 ## Tech
@@ -53,7 +53,7 @@ thresholds.
 | `.section-title` | Semi-condensed 650 heading inside panels and pages. Sentence case. |
 | `.data-table` | Paper header row, 1px row rules, `th[aria-sort]` gets a series-1 underline, `tr[data-selected="true"]` gets a tint. |
 | `.attr` | Banded attribute value cell. |
-| `.grade` | Grade stamp. `data-tier` (s, a, b, c, d or f) picks the fill (`--grade-*`, `--grade-*-ink`), `data-size="lg"` for profile headers. Letter always printed. |
+| `.grade` | Grade stamp. `data-tier` (s, a, b, c, d or f) picks the fill (`--grade-*`, `--grade-*-ink`), `data-grade` adds the S+/S++ effects, `data-size="lg"` for profile headers. Letter always printed. Use `GradeStamp` / `GradeBadge`, not the raw class. |
 | `.field` | Input/select/textarea. Selects draw their own chevron; set left padding only. |
 | `.btn` | Button base. Use `Button`, or `LINK_BUTTON_CLASS` / `LINK_BUTTON_OUTLINE_CLASS` on `<a>`/`<label>`. |
 | `.link` | Accent link, underline on hover. |
@@ -78,7 +78,7 @@ stays visible while editing weights or columns).
 
 - Hero sections, oversized display type, "big number + small label" metric tiles
 - Tiny uppercase tracked kicker labels above headings; numbered section labels with no sequence
-- Gradients, glows, decorative textures or grid backgrounds, glassmorphism
+- Gradients, glows, decorative textures or grid backgrounds, glassmorphism (one exception: grade stamps, below)
 - Card grids, nested cards, coloured left borders on cards
 - Neo-brutalist offset shadows; hairline border plus big soft shadow
 - Default AI faces (Inter, Geist, JetBrains Mono) or mono fonts used as decoration
