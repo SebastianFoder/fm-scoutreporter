@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { ArrowLeft, Lock, LockOpen, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useStaffData } from "@/components/StaffDataProvider";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/Button";
@@ -12,9 +12,11 @@ import {
   BACKROOM_PRESETS,
   MAX_PER_ROLE,
   cleanCounts,
+  cleanLocks,
   matchingPreset,
   pickBackroom,
   type BackroomCounts,
+  type BackroomLock,
   type BackroomPick,
 } from "@/lib/staff/backroom";
 import { STAFF_ROLES, STAFF_ROLE_GROUPS, rolesForJob, scoreStaff } from "@/lib/staff/staff-roles";
@@ -29,6 +31,8 @@ type Settings = {
   freeAgentsOnly: boolean;
   preferredJobOnly: boolean;
   excluded: string[];
+  /** Staff kept in their slot (signed, or still negotiating) while the rest is re-picked. */
+  locked: BackroomLock[];
 };
 
 const DEFAULTS: Settings = {
@@ -36,6 +40,7 @@ const DEFAULTS: Settings = {
   freeAgentsOnly: false,
   preferredJobOnly: false,
   excluded: [],
+  locked: [],
 };
 
 function loadSettings(): Settings {
@@ -43,11 +48,13 @@ function loadSettings(): Settings {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULTS;
     const s = JSON.parse(raw) as Partial<Settings>;
+    const counts = s.counts ? cleanCounts(s.counts) : DEFAULTS.counts;
     return {
-      counts: s.counts ? cleanCounts(s.counts) : DEFAULTS.counts,
+      counts,
       freeAgentsOnly: s.freeAgentsOnly === true,
       preferredJobOnly: s.preferredJobOnly === true,
       excluded: Array.isArray(s.excluded) ? s.excluded.filter((x) => typeof x === "string") : [],
+      locked: cleanLocks(s.locked, counts),
     };
   } catch {
     return DEFAULTS;
@@ -79,8 +86,27 @@ export default function BackroomClient() {
   }, [settings, hydrated]);
 
   const update = (patch: Partial<Settings>) => setSettings((s) => ({ ...s, ...patch }));
-  const setCount = (roleId: string, n: number) =>
-    setSettings((s) => ({ ...s, counts: cleanCounts({ ...s.counts, [roleId]: n }) }));
+  /** New counts drop locks the roles no longer have room for. */
+  const setCounts = (next: (c: BackroomCounts) => BackroomCounts) =>
+    setSettings((s) => {
+      const counts = cleanCounts(next(s.counts));
+      return { ...s, counts, locked: cleanLocks(s.locked, counts) };
+    });
+  const setCount = (roleId: string, n: number) => setCounts((c) => ({ ...c, [roleId]: n }));
+  const toggleLock = (role: string, id: string) =>
+    setSettings((s) => ({
+      ...s,
+      locked: s.locked.some((l) => l.id === id)
+        ? s.locked.filter((l) => l.id !== id)
+        : [...s.locked, { role, id }],
+    }));
+  /** Contract talks failed, or they're just not wanted: drop any lock and leave them out. */
+  const exclude = (id: string) =>
+    setSettings((s) => ({
+      ...s,
+      excluded: [...s.excluded, id],
+      locked: s.locked.filter((l) => l.id !== id),
+    }));
 
   const result = useMemo(
     () =>
@@ -90,6 +116,7 @@ export default function BackroomClient() {
             freeAgentsOnly: settings.freeAgentsOnly,
             preferredJobOnly: settings.preferredJobOnly,
             excluded: settings.excluded,
+            locked: settings.locked,
           }),
     [staff, settings],
   );
@@ -116,7 +143,8 @@ export default function BackroomClient() {
           }
         >
           Choose the roles you need and how many of each. Scout Reporter hires the combination of staff with
-          the highest total role score, never using one person twice.
+          the highest total role score, never using one person twice. Lock in staff you&apos;ve signed, and
+          remove anyone who turns you down to get the next best pick for that slot.
         </PageHeader>
 
         <StaffImportPanel onImported={() => update({ excluded: [] })} />
@@ -152,7 +180,7 @@ export default function BackroomClient() {
                     value={preset?.id ?? "custom"}
                     onChange={(e) => {
                       const p = BACKROOM_PRESETS.find((x) => x.id === e.target.value);
-                      if (p) update({ counts: p.counts });
+                      if (p) setCounts(() => p.counts);
                     }}
                     className="field h-9 pl-2.5 text-sm text-ink"
                   >
@@ -264,7 +292,9 @@ export default function BackroomClient() {
                   totalScore={result.totalScore}
                   wanted={wanted}
                   onOpen={setOpenId}
-                  onExclude={(id) => update({ excluded: [...settings.excluded, id] })}
+                  onExclude={exclude}
+                  onToggleLock={toggleLock}
+                  onUnlockAll={() => update({ locked: [] })}
                 />
               )}
 
@@ -323,13 +353,18 @@ function BackroomResultPanel({
   wanted,
   onOpen,
   onExclude,
+  onToggleLock,
+  onUnlockAll,
 }: {
   picks: BackroomPick[];
   totalScore: number;
   wanted: number;
   onOpen: (id: string) => void;
   onExclude: (id: string) => void;
+  onToggleLock: (role: string, id: string) => void;
+  onUnlockAll: () => void;
 }) {
+  const lockedCount = picks.filter((p) => p.locked).length;
   const offJob = picks.filter((p) => !rolesForJob(p.member.preferredJob).some((r) => r.id === p.role.id)).length;
 
   return (
@@ -343,6 +378,14 @@ function BackroomResultPanel({
           <span className="font-semibold text-ink">{(totalScore / picks.length).toFixed(2)}</span>
           <GradeStamp score={totalScore / picks.length} label="Average backroom score" />
           {offJob > 0 && <span>· {offJob} in a role that isn&apos;t their preferred job (job in grey)</span>}
+          {lockedCount > 0 && (
+            <span>
+              · {lockedCount} locked in{" "}
+              <button type="button" className="link text-[13px]" onClick={onUnlockAll}>
+                Unlock all
+              </button>
+            </span>
+          )}
         </p>
       </div>
 
@@ -357,7 +400,7 @@ function BackroomResultPanel({
                 Score
               </th>
               <th className="px-2.5 py-2">
-                <span className="sr-only">Exclude</span>
+                <span className="sr-only">Lock or remove</span>
               </th>
             </tr>
           </thead>
@@ -376,7 +419,7 @@ function BackroomResultPanel({
                     const firstOfRole = i === 0 || rows[i - 1].role.id !== p.role.id;
                     const onJob = rolesForJob(p.member.preferredJob).some((r) => r.id === p.role.id);
                     return (
-                      <tr key={`${p.role.id}-${p.member.uniqueId}`}>
+                      <tr key={`${p.role.id}-${p.member.uniqueId}`} className={p.locked ? "bg-accent/5" : undefined}>
                         <td className="whitespace-nowrap px-2.5 py-1.5 text-[13px]" title={p.role.summary}>
                           {firstOfRole ? p.role.name : <span className="sr-only">{p.role.name}</span>}
                         </td>
@@ -403,15 +446,37 @@ function BackroomResultPanel({
                           <ScoreCell score={{ role: p.role, score: p.score, coverage: p.coverage }} />
                         </td>
                         <td className="px-1.5 py-1 text-right">
-                          <Button
-                            color="alt"
-                            variant="ghost"
-                            size="sm"
-                            aria-label={`Exclude ${p.member.name} and pick again`}
-                            title="Exclude and pick again"
-                            onClick={() => onExclude(p.member.uniqueId)}
-                            icon={<X className="h-4 w-4" aria-hidden />}
-                          />
+                          <span className="inline-flex items-center gap-0.5">
+                            <Button
+                              color={p.locked ? "primary" : "alt"}
+                              variant={p.locked ? "outline" : "ghost"}
+                              size="sm"
+                              aria-label={p.locked ? `Unlock ${p.member.name}` : `Lock in ${p.member.name}`}
+                              aria-pressed={p.locked}
+                              title={
+                                p.locked
+                                  ? "Locked in: kept in this slot when the rest is re-picked. Click to unlock."
+                                  : "Lock in: keep in this slot (e.g. once signed) when the rest is re-picked"
+                              }
+                              onClick={() => onToggleLock(p.role.id, p.member.uniqueId)}
+                              icon={
+                                p.locked ? (
+                                  <Lock className="h-4 w-4" aria-hidden />
+                                ) : (
+                                  <LockOpen className="h-4 w-4 text-muted" aria-hidden />
+                                )
+                              }
+                            />
+                            <Button
+                              color="alt"
+                              variant="ghost"
+                              size="sm"
+                              aria-label={`Exclude ${p.member.name} and pick again`}
+                              title="Remove and pick again (e.g. contract talks failed)"
+                              onClick={() => onExclude(p.member.uniqueId)}
+                              icon={<X className="h-4 w-4" aria-hidden />}
+                            />
+                          </span>
                         </td>
                       </tr>
                     );

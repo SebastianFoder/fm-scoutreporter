@@ -3,7 +3,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseStaffCsv } from "./staff-parser";
-import { BACKROOM_PRESETS, backroomCandidates, cleanCounts, matchingPreset, pickBackroom } from "./backroom";
+import {
+  BACKROOM_PRESETS,
+  backroomCandidates,
+  cleanCounts,
+  cleanLocks,
+  matchingPreset,
+  pickBackroom,
+} from "./backroom";
 import { STAFF_ROLE_BY_ID } from "./staff-roles";
 
 const { staff } = parseStaffCsv(readFileSync(join(process.cwd(), "fixtures", "staff.csv"), "utf8"));
@@ -78,4 +85,46 @@ test("cleanCounts and matchingPreset", () => {
   });
   assert.equal(matchingPreset(full.counts)?.id, "full");
   assert.equal(matchingPreset({ ...full.counts, scout: 9 }), null);
+});
+
+test("pickBackroom keeps locked staff and re-picks the rest around them", () => {
+  const counts = { scout: 2, physio: 1 };
+  const first = pickBackroom(staff, counts);
+  assert.equal(first.kind, "ok");
+  if (first.kind !== "ok") return;
+  const [a, b] = first.picks.filter((p) => p.role.id === "scout").map((p) => p.member.uniqueId);
+
+  // Lock the second scout, drop the first: the locked one stays, a new scout fills the other slot.
+  const again = pickBackroom(staff, counts, { locked: [{ role: "scout", id: b }], excluded: [a] });
+  assert.equal(again.kind, "ok");
+  if (again.kind !== "ok") return;
+  const scouts = again.picks.filter((p) => p.role.id === "scout");
+  assert.equal(scouts.length, 2);
+  assert.ok(scouts.some((p) => p.member.uniqueId === b && p.locked));
+  assert.ok(scouts.every((p) => p.member.uniqueId !== a));
+  assert.equal(again.picks.length, 3);
+  assert.ok(Math.abs(again.totalScore - again.picks.reduce((s, p) => s + p.score, 0)) < 1e-6);
+});
+
+test("locked staff ignore the filters and can fill every slot", () => {
+  const signed = staff.find((m) => m.club)!;
+  const res = pickBackroom(staff, { scout: 1 }, { freeAgentsOnly: true, locked: [{ role: "scout", id: signed.uniqueId }] });
+  assert.ok(res.kind === "ok" && res.picks.length === 1 && res.picks[0].member === signed && res.picks[0].locked);
+});
+
+test("cleanLocks drops bad, duplicate and surplus locks", () => {
+  const raw = [
+    { role: "scout", id: "a" },
+    { role: "scout", id: "b" },
+    { role: "scout", id: "c" },
+    { role: "physio", id: "a" },
+    { role: "physio" },
+    "x",
+    { role: "sports-scientist", id: "d" },
+  ];
+  assert.deepEqual(cleanLocks(raw, { scout: 2, physio: 1 }), [
+    { role: "scout", id: "a" },
+    { role: "scout", id: "b" },
+  ]);
+  assert.deepEqual(cleanLocks("nope", { scout: 1 }), []);
 });
