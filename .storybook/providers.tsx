@@ -4,6 +4,7 @@ import { AttributeColorProvider } from "../components/AttributeColorConfig";
 import { HighlightedAttributesProvider } from "../components/HighlightedAttributesConfig";
 import { PlayersDataProvider } from "../components/PlayersDataProvider";
 import { StaffDataProvider } from "../components/StaffDataProvider";
+import { SquadDataProvider } from "../components/SquadDataProvider";
 import { WeightProvider } from "../components/WeightConfig";
 import { API_FIXTURES, FIXTURE_CSV, STAFF_FIXTURE_CSV, type FixtureName } from "./fixtures";
 
@@ -11,11 +12,14 @@ import { API_FIXTURES, FIXTURE_CSV, STAFF_FIXTURE_CSV, type FixtureName } from "
 const STORAGE_KEYS = {
   players: "importedPlayersCsv",
   staff: "importedStaffCsv",
+  squad: "importedSquadCsv",
   weights: "weightProfiles",
   highlights: "highlightProfiles",
   attributeColors: "attributeColorProfiles",
   bestXi: "bestXiSettings",
   bestBackroom: "bestBackroomSettings",
+  squadAnalysis: "squadAnalysisSettings",
+  savedFormations: "savedFormations",
 } as const;
 
 export type AppStorageKey = keyof typeof STORAGE_KEYS;
@@ -25,8 +29,10 @@ export interface AppProvidersParameters {
   players?: FixtureName | null;
   /** Pre-import the staff fixture into StaffDataProvider. Default `false`. */
   staff?: boolean;
+  /** Fixture to pre-import into SquadDataProvider; `null` starts with no squad. Default `null`. */
+  squad?: FixtureName | null;
   /** Raw values (JSON-serialisable) to seed into the other providers' storage. */
-  storage?: Partial<Record<Exclude<AppStorageKey, "players" | "staff">, unknown>>;
+  storage?: Partial<Record<Exclude<AppStorageKey, "players" | "staff" | "squad">, unknown>>;
   /** Set to `true` to skip wrapping (for pure presentational stories). */
   disable?: boolean;
 }
@@ -36,12 +42,13 @@ export interface AppProvidersParameters {
  * storage before they mount is how a story controls their state. Every story starts from
  * a clean slate so one story's edits (e.g. in the Weights modal) don't leak into another.
  */
-function seedStorage({ players = null, staff = false, storage = {} }: AppProvidersParameters) {
+function seedStorage({ players = null, staff = false, squad = null, storage = {} }: AppProvidersParameters) {
   try {
     for (const key of Object.values(STORAGE_KEYS)) window.localStorage.removeItem(key);
     window.sessionStorage.removeItem(STORAGE_KEYS.players);
     if (players) window.localStorage.setItem(STORAGE_KEYS.players, FIXTURE_CSV[players]);
     if (staff) window.localStorage.setItem(STORAGE_KEYS.staff, STAFF_FIXTURE_CSV);
+    if (squad) window.localStorage.setItem(STORAGE_KEYS.squad, FIXTURE_CSV[squad]);
     for (const [k, v] of Object.entries(storage)) {
       if (v !== undefined) {
         window.localStorage.setItem(STORAGE_KEYS[k as AppStorageKey], JSON.stringify(v));
@@ -67,7 +74,9 @@ function AppProviders({
       <WeightProvider>
         <PlayersDataProvider>
           <StaffDataProvider>
-            <HighlightedAttributesProvider>{children}</HighlightedAttributesProvider>
+            <SquadDataProvider>
+              <HighlightedAttributesProvider>{children}</HighlightedAttributesProvider>
+            </SquadDataProvider>
           </StaffDataProvider>
         </PlayersDataProvider>
       </WeightProvider>

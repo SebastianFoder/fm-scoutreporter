@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { VIEW_HIDDEN, VIEW_STAFF, VIEW_STANDARD } from "@/lib/view-files";
+import { VIEW_HIDDEN, VIEW_SQUAD, VIEW_SQUAD_HIDDEN, VIEW_STAFF, VIEW_STANDARD } from "@/lib/view-files";
 import { AUTHOR_LD, JsonLd } from "@/components/JsonLd";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
@@ -27,6 +27,14 @@ const MODES = [
       "Pick the highest-scoring eleven for a formation from your import, within a minimum and maximum total budget.",
     needs: "Standard or Hidden Attributes view",
     cta: "Open Best XI",
+  },
+  {
+    href: "/squad",
+    name: "Squad analysis",
+    blurb:
+      "Import your own squad and pick your formation to see your first and second eleven, thin or weak positions, ageing starters, youngsters ready to step up, squad-status problems and upgrades from your scouting import.",
+    needs: "Squad or Squad Hidden Attributes view",
+    cta: "Open Squad analysis",
   },
   {
     href: "/staff",
@@ -175,6 +183,18 @@ export default function Home() {
                 {VIEW_STANDARD.name}
               </a>
               <span className="block text-muted">{VIEW_STANDARD.summary}</span>
+            </li>
+            <li>
+              <a href={VIEW_SQUAD_HIDDEN.href} className="link">
+                {VIEW_SQUAD_HIDDEN.name}
+              </a>
+              <span className="block text-muted">{VIEW_SQUAD_HIDDEN.summary}</span>
+            </li>
+            <li>
+              <a href={VIEW_SQUAD.href} className="link">
+                {VIEW_SQUAD.name}
+              </a>
+              <span className="block text-muted">{VIEW_SQUAD.summary}</span>
             </li>
             <li>
               <a href={VIEW_STAFF.href} className="link">

@@ -15,6 +15,23 @@ export const VIEW_STAFF = {
   summary: "Every staff attribute, preferred job, club and personality. For Staff mode.",
 } as const;
 
+/**
+ * Squad screen views for Squad analysis: every attribute plus the team sheet (Picked), squad status
+ * (Playing Time), injuries, happiness, personality and the coach's star ratings. The hidden one adds
+ * Professionalism, CA and PA.
+ */
+export const VIEW_SQUAD = {
+  name: "Squad view",
+  href: "/SCOUT%20REPORTER%20Squad.fmf",
+  summary: "Your squad screen: every attribute plus team sheet, squad status, injuries and coach stars. For Squad analysis.",
+} as const;
+
+export const VIEW_SQUAD_HIDDEN = {
+  name: "Squad Hidden Attributes view",
+  href: "/SCOUT%20REPORTER%20Squad%20Hidden%20Attributes.fmf",
+  summary: "Squad view plus the hidden Professionalism, CA and PA.",
+} as const;
+
 export const VIEW_HIDDEN = {
   name: "Hidden Attributes view",
   href: "/SCOUT%20REPORTER%20Hidden%20Attributes.fmf",

@@ -31,6 +31,23 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 - **Best XI** (`/best-xi`): picks the highest-scoring eleven for a formation from the imported players,
   with an optional minimum and maximum on the eleven's total transfer value. Each position is scored
   on a weight profile of your choice (FM27 benchmark roles by default)
+- **Formations** (Best XI and Squad analysis): FM's tactics pitch, with its 24 spots (DL, DCL, DC, DCR,
+  DR, WBL, DMCL … STCL, STC, STCR). Start from one of FM's preset formations, click a position and then
+  an empty spot to move it, and save your own formations by name (`localStorage` key `savedFormations`,
+  shared by both pages). A spot needs the matching export position: DCL, DC and DCR all need D (C)
+- **Squad analysis** (`/squad`): import your own squad (Squad view `public/SCOUT REPORTER Squad.fmf` or
+  Squad Hidden Attributes view `public/SCOUT REPORTER Squad Hidden Attributes.fmf`; plain player exports work too, stored
+  separately from the player import under `localStorage` key `importedSquadCsv`), pick a formation and
+  it builds the first eleven and, from everyone left, the second eleven (the cover). It flags positions
+  nobody plays naturally, weak starters, missing cover, big drops to the backup, ageing starters with or
+  without a young successor, and (with CA/PA) youngsters projected to overtake a starter. The rest of the
+  squad is listed with their best-fit position, and players in the player import who would beat the
+  weakest starter at a position are shown as upgrades. The Squad views add squad-only columns, read by
+  `lib/squad/squad-fields.ts` (column meanings: [FM View Exporter's column reference](https://github.com/ElectroHugin/FM-View-Exporter/blob/main/docs/columns/fm27.csv)):
+  Playing Time (squad status; "Out On Loan" players are left out unless you count them), Injury (optionally
+  leave injured players out), Picked (your FM team sheet, compared with the suggested eleven), Ability /
+  Potential (the coach's stars, used for prospects when there is no CA/PA), Happiness, Personality and Time
+  Missed (shown in the tables). The Inf column's codes are undocumented, so only `Inj` is used
 - **Staff mode** (`/staff`): import a staff search export made with the Staff view
   (`public/SCOUT REPORTER Staff.fmf`). FM26 shows staff attributes as words; they are mapped back to the
   1–20 scale (Unsuited 1–3 up to Elite 20) and every staff member is scored on the 17 staff roles from

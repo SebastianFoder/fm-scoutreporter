@@ -2,10 +2,11 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { ArrowLeft, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useStaffData } from "@/components/StaffDataProvider";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/Button";
+import { Notice } from "@/components/Notice";
 import { GradeStamp } from "@/components/GradeStamp";
 import {
   BACKROOM_PRESETS,
@@ -312,18 +313,6 @@ export default function BackroomClient() {
           onClose={() => setOpenId(null)}
         />
       )}
-    </div>
-  );
-}
-
-function Notice({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div role="status" className="flex items-start gap-2.5 rounded-md border border-gold bg-gold/12 px-4 py-3 text-sm">
-      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-      <div>
-        <p className="font-semibold">{title}</p>
-        <p className="text-muted">{children}</p>
-      </div>
     </div>
   );
 }

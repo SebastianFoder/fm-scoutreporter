@@ -6,6 +6,7 @@ import { AttributeColorProvider } from "@/components/AttributeColorConfig";
 import { WeightProvider } from "@/components/WeightConfig";
 import { PlayersDataProvider } from "@/components/PlayersDataProvider";
 import { StaffDataProvider } from "@/components/StaffDataProvider";
+import { SquadDataProvider } from "@/components/SquadDataProvider";
 import { HighlightedAttributesProvider } from "@/components/HighlightedAttributesConfig";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
@@ -89,32 +90,34 @@ export default function RootLayout({
           <WeightProvider>
             <PlayersDataProvider>
               <StaffDataProvider>
-                <HighlightedAttributesProvider>
-                  <div className="flex min-h-screen flex-col">
-                    <SiteHeader />
-                    <main className="flex-1">{children}</main>
-                    <footer className="border-t border-line">
-                      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4 text-[13px] text-muted">
-                        <p>
-                          Scout Reporter by <span className="font-semibold text-ink">Sebastian Foder</span>
-                        </p>
-                        <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                          {FOOTER_LINKS.map((l) => (
-                            <Link key={l.href} href={l.href} className="link">
-                              {l.label}
-                            </Link>
-                          ))}
-                          <a href={AUTHOR.url} target="_blank" rel="noreferrer" className="link">
-                            GitHub
-                          </a>
-                          <a href="https://x.com/F1ngs" target="_blank" rel="noreferrer" className="link">
-                            Twitter
-                          </a>
-                        </nav>
-                      </div>
-                    </footer>
-                  </div>
-                </HighlightedAttributesProvider>
+                <SquadDataProvider>
+                  <HighlightedAttributesProvider>
+                    <div className="flex min-h-screen flex-col">
+                      <SiteHeader />
+                      <main className="flex-1">{children}</main>
+                      <footer className="border-t border-line">
+                        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4 text-[13px] text-muted">
+                          <p>
+                            Scout Reporter by <span className="font-semibold text-ink">Sebastian Foder</span>
+                          </p>
+                          <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                            {FOOTER_LINKS.map((l) => (
+                              <Link key={l.href} href={l.href} className="link">
+                                {l.label}
+                              </Link>
+                            ))}
+                            <a href={AUTHOR.url} target="_blank" rel="noreferrer" className="link">
+                              GitHub
+                            </a>
+                            <a href="https://x.com/F1ngs" target="_blank" rel="noreferrer" className="link">
+                              Twitter
+                            </a>
+                          </nav>
+                        </div>
+                      </footer>
+                    </div>
+                  </HighlightedAttributesProvider>
+                </SquadDataProvider>
               </StaffDataProvider>
             </PlayersDataProvider>
           </WeightProvider>

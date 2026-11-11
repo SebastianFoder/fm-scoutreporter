@@ -7,7 +7,8 @@ import {
   parseTransferValue,
   parseWeeklyWage,
 } from "./money";
-import { FORMATIONS, pitchLayout } from "./formations";
+import { FORMATIONS, SPOT_XY, findFormation, isValidFormation, spotsForSlots } from "./formations";
+import { parseSlotSettings } from "./roles";
 import { solveBestXi, xiCostRange, type XiCandidate, type XiSlot } from "./solver";
 
 test("parses FM money strings", () => {
@@ -44,13 +45,29 @@ test("reads typed budgets and formats amounts", () => {
   assert.equal(formatMoney(330), "€330");
 });
 
-test("every formation has eleven slots and a distinct pitch point per slot", () => {
+test("every preset is a valid, distinct FM formation with a pitch point per spot", () => {
   for (const f of FORMATIONS) {
+    assert.ok(isValidFormation(f.spots), f.id);
     assert.equal(f.slots.length, 11, f.id);
-    assert.equal(f.slots.filter((s) => s === "GK").length, 1, f.id);
-    const points = pitchLayout(f.slots).map(([x, y]) => `${x},${y}`);
+    const points = f.spots.map((s) => SPOT_XY[s].join(","));
     assert.equal(new Set(points).size, 11, f.id);
+    assert.equal(findFormation(f.spots), f, `${f.id} duplicates another preset`);
   }
+  assert.equal(new Set(FORMATIONS.map((f) => f.id)).size, FORMATIONS.length);
+});
+
+test("lays out settings saved before the tactics pitch on FM spots", () => {
+  assert.deepEqual(
+    spotsForSlots(["GK", "DR", "DC", "DC", "DL", "DM", "DM", "AMR", "AMC", "AML", "ST"]),
+    ["GK", "DR", "DCR", "DCL", "DL", "DMCR", "DMCL", "AMR", "AMC", "AML", "STC"],
+  );
+  assert.equal(spotsForSlots(["GK", "DC", "DC", "DC", "DC", "MC", "MC", "MC", "AMC", "ST", "ST"]), null);
+  const legacy = ["GK", "DR", "DC", "DC", "DL", "MR", "MC", "MC", "ML", "ST", "ST"].map((slot) => ({ slot, role: "auto" }));
+  legacy[9].role = "my-profile";
+  const parsed = parseSlotSettings(legacy)!;
+  assert.equal(findFormation(parsed.map((s) => s.spot))?.id, "4-4-2");
+  assert.equal(parsed.find((s) => s.role === "my-profile")?.slot, "ST");
+  assert.equal(parseSlotSettings(parsed.map((s) => ({ ...s, spot: "GK" }))), null, "two keepers are rejected");
 });
 
 const c = (id: string, score: number, cost: number): XiCandidate => ({ id, score, cost });

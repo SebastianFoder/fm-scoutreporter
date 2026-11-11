@@ -5,6 +5,8 @@ import fm26Csv from "../fixtures/attribute.csv?raw";
 import fm27OutfieldCsv from "../fixtures/attribute-fm27-outfield.csv?raw";
 import fm27HiddenCsv from "../fixtures/attribute-fm27-hidden.csv?raw";
 import staffCsv from "../fixtures/staff.csv?raw";
+import squadCsv from "../fixtures/squad.csv?raw";
+import squadHiddenCsv from "../fixtures/squad-hidden.csv?raw";
 
 /**
  * CSV fixtures available to stories.
@@ -12,11 +14,15 @@ import staffCsv from "../fixtures/staff.csv?raw";
  * - `fm27outfield`: FM27 export, outfield only (all U21), no CA/PA
  * - `fm27hidden`: FM27 Hidden Attributes view export with CA/PA/Professionalism (enables potential + Wonderkid).
  *   Note: every player in this fixture is a goalkeeper.
+ * - `squad`: FM27 Squad view export of one club (66 players), with team sheet, squad status, injuries and coach stars
+ * - `squadHidden`: the same squad from the Squad Hidden Attributes view (adds CA/PA/Professionalism)
  */
 export const FIXTURE_CSV = {
   fm26: fm26Csv,
   fm27outfield: fm27OutfieldCsv,
   fm27hidden: fm27HiddenCsv,
+  squad: squadCsv,
+  squadHidden: squadHiddenCsv,
 } as const;
 
 export type FixtureName = keyof typeof FIXTURE_CSV;
@@ -26,6 +32,8 @@ export const API_FIXTURES: Record<string, string> = {
   attribute: fm26Csv,
   "attribute-fm27-hidden": fm27HiddenCsv,
   staff: staffCsv,
+  squad: squadCsv,
+  "squad-hidden": squadHiddenCsv,
 };
 
 /** FM26 Staff view export (words, 518 rows with 120 duplicates), for Staff mode. */

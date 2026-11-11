@@ -24,7 +24,7 @@ interface Faq {
 
 const youngest = Math.min(...Object.keys(AGE_BENCHMARK).map(Number));
 const lowestGraded = GRADE_SCALE[GRADE_SCALE.length - 2];
-const formationNames = FORMATIONS.map((f) => f.name.replace(/ \(.*\)$/, ""));
+const formationCount = FORMATIONS.length;
 
 const GROUPS: { title: string; items: Faq[] }[] = [
   {
@@ -90,7 +90,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     ],
   },
   {
-    title: "Wonderkids and Best XI",
+    title: "Wonderkids, Best XI and squads",
     items: [
       {
         q: "How does Wonderkid mode find wonderkids?",
@@ -103,8 +103,13 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "How does the Best XI picker work?",
-        a: `Choose a formation (${formationNames.join(", ")}) and Scout Reporter picks the eleven players from your import with the highest combined score, with each position scored on a weight profile you choose (the FM27 benchmark roles by default). You can set a minimum and maximum total transfer value, and exclude players to see the next best option.`,
+        a: `Choose one of ${formationCount} FM preset formations, or build your own on an FM-style tactics pitch and save it, and Scout Reporter picks the eleven players from your import with the highest combined score, with each position scored on a weight profile you choose (the FM27 benchmark roles by default). You can set a minimum and maximum total transfer value, and exclude players to see the next best option.`,
         more: { href: "/best-xi", label: "Open Best XI" },
+      },
+      {
+        q: "How does Squad analysis work?",
+        a: "Import the Scout Reporter Squad view (or Squad Hidden Attributes view) on your squad screen, export it and import the CSV in Squad analysis. It is stored separately from your player import, so your scouting list stays loaded. Pick your formation and it builds your strongest eleven, then the strongest eleven from everyone left as cover, and flags positions nobody plays, starters well below the team's average, positions with no backup or a big drop to the backup, and starters aged 31 or over (34 for keepers). The Squad view also exports your team sheet, squad status, injuries and the coach's star ratings: players out on loan are left out (injured ones too if you choose), players promised a starting place who miss the eleven and low-status players who start are flagged, your FM starting eleven is compared with the suggested one, and youngsters the coach rates well above a starter are pointed out. With the hidden view those prospects come from projected attributes instead. If your player import holds scouting targets, it lists the ones who would beat your weakest starter at each position.",
+        more: { href: "/squad", label: "Open Squad analysis" },
       },
     ],
   },

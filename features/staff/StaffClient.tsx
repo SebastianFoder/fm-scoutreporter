@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useStaffData } from "@/components/StaffDataProvider";
 import { PageHeader } from "@/components/PageHeader";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { PaginationControls, type PageSizeChoice } from "@/components/PaginationControls";
 import {
   STAFF_ATTRIBUTES,
@@ -281,26 +282,15 @@ export default function StaffClient() {
               </label>
               <div className="flex flex-col gap-1 text-[13px] text-muted">
                 <span id="value-mode">Ratings as</span>
-                <div className="inline-flex h-9 overflow-hidden rounded-md ring-1 ring-line" role="group" aria-labelledby="value-mode">
-                  {(
-                    [
-                      ["words", "Words"],
-                      ["numbers", "1–20"],
-                    ] as const
-                  ).map(([v, label]) => (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => setMode(v)}
-                      aria-pressed={mode === v}
-                      className={`cursor-pointer px-3 text-sm ${
-                        mode === v ? "bg-accent font-semibold text-on-accent" : "text-muted hover:bg-paper hover:text-ink"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                <SegmentedControl
+                  labelledBy="value-mode"
+                  value={mode}
+                  onChange={setMode}
+                  options={[
+                    { value: "words", label: "Words" },
+                    { value: "numbers", label: "1–20" },
+                  ]}
+                />
               </div>
               <p className="ml-auto pb-2 text-sm text-muted">
                 <span className="font-semibold text-ink">{total}</span> of {staff.length} staff

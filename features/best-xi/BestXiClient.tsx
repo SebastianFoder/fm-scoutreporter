@@ -2,25 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, RotateCcw, X } from "lucide-react";
+import { RotateCcw, X } from "lucide-react";
 import { usePlayersData } from "@/components/PlayersDataProvider";
 import { CsvImportPanel } from "@/components/CsvImportPanel";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/Button";
+import { Notice } from "@/components/Notice";
 import { useWeightProfiles } from "@/components/WeightConfig";
 import type { PlayerWithGroups } from "@/data/players-store";
-import { FM27_ROLES, weightedAverage } from "@/lib/fm27/benchmarks";
-import { LEGACY_EMPHASIS } from "@/lib/scoring";
+import { weightedAverage } from "@/lib/fm27/benchmarks";
 import { parsePositionSlots, type PositionSlot } from "@/lib/position-slots";
-import {
-  DEFAULT_FORMATION,
-  DEFAULT_SLOT_ROLE,
-  FORMATIONS,
-  SLOT_LABEL,
-  SLOT_ORDER,
-  isPositionSlot,
-  pitchLayout,
-} from "@/lib/best-xi/formations";
+import { DEFAULT_FORMATION, SLOT_LABEL } from "@/lib/best-xi/formations";
+import { parseSlotSettings, resolveRole, settingsFor, shortRole, type Role, type SlotSetting } from "@/lib/best-xi/roles";
 import {
   currencyPrefix,
   formatMoney,
@@ -31,12 +24,12 @@ import {
   type Valuation,
 } from "@/lib/best-xi/money";
 import { solveBestXi, xiCostRange, type XiCandidate, type XiSlot } from "@/lib/best-xi/solver";
-import type { AttributeKey, AttributeWeights, WeightProfile } from "@/types/weights";
+import type { AttributeKey } from "@/types/weights";
+import { FormationEditor } from "./FormationEditor";
+import { ScoreBasisToggle } from "./ScoreBasisToggle";
+import { PitchLineup } from "./PitchLineup";
 
-const AUTO = "auto";
 const STORAGE_KEY = "bestXiSettings";
-
-type SlotSetting = { slot: PositionSlot; role: string };
 
 type Settings = {
   slots: SlotSetting[];
@@ -49,7 +42,7 @@ type Settings = {
 };
 
 const DEFAULTS: Settings = {
-  slots: DEFAULT_FORMATION.slots.map((slot) => ({ slot, role: AUTO })),
+  slots: settingsFor(DEFAULT_FORMATION.spots),
   basis: "current",
   valuation: "mid",
   minBudget: "",
@@ -63,12 +56,8 @@ function loadSettings(): Settings {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULTS;
     const s = JSON.parse(raw) as Partial<Settings>;
-    const slots =
-      Array.isArray(s.slots) && s.slots.length === 11 && s.slots.every((x) => isPositionSlot(x?.slot))
-        ? s.slots.map((x) => ({ slot: x.slot, role: typeof x.role === "string" ? x.role : AUTO }))
-        : DEFAULTS.slots;
     return {
-      slots,
+      slots: parseSlotSettings(s.slots) ?? DEFAULTS.slots,
       basis: s.basis === "potential" ? "potential" : "current",
       valuation: s.valuation === "low" || s.valuation === "high" ? s.valuation : "mid",
       minBudget: typeof s.minBudget === "string" ? s.minBudget : "",
@@ -80,23 +69,6 @@ function loadSettings(): Settings {
     return DEFAULTS;
   }
 }
-
-type Role = { id: string; name: string; weights: AttributeWeights; emphasis: number };
-
-/** The profile a slot is scored on: the chosen one, else the FM27 benchmark role for that position. */
-function resolveRole(setting: SlotSetting, profiles: WeightProfile[]): Role {
-  const chosen = setting.role === AUTO ? undefined : profiles.find((p) => p.id === setting.role);
-  if (chosen) {
-    return { id: chosen.id, name: chosen.name, weights: chosen.weights, emphasis: chosen.emphasis ?? LEGACY_EMPHASIS };
-  }
-  const def = FM27_ROLES.find((r) => r.role === DEFAULT_SLOT_ROLE[setting.slot])!;
-  const saved = profiles.find((p) => p.id === def.profileId);
-  return saved
-    ? { id: saved.id, name: saved.name, weights: saved.weights, emphasis: saved.emphasis ?? 1 }
-    : { id: def.profileId, name: def.name, weights: def.weights, emphasis: 1 };
-}
-
-const shortRole = (name: string) => name.replace(/^FM27 · /, "");
 
 type Pick = {
   setting: SlotSetting;
@@ -143,15 +115,6 @@ export default function BestXiClient() {
   }, [settings, hydrated]);
 
   const update = (patch: Partial<Settings>) => setSettings((s) => ({ ...s, ...patch }));
-  const updateSlot = (index: number, patch: Partial<SlotSetting>) =>
-    setSettings((s) => ({
-      ...s,
-      slots: s.slots.map((x, i) => (i === index ? { ...x, ...patch } : x)),
-    }));
-
-  const formationId =
-    FORMATIONS.find((f) => f.slots.every((slot, i) => settings.slots[i]?.slot === slot))?.id ?? "custom";
-
   const basis = settings.basis === "potential" && caModels ? "potential" : "current";
   const minBudget = parseBudgetInput(settings.minBudget);
   const maxBudget = parseBudgetInput(settings.maxBudget);
@@ -340,19 +303,11 @@ export default function BestXiClient() {
                   </select>
                 </label>
 
-                <label className={labelClass}>
-                  Score players on
-                  <select
-                    value={basis}
-                    onChange={(e) => update({ basis: e.target.value as Settings["basis"] })}
-                    className={`${fieldClass} w-full pl-2.5`}
-                  >
-                    <option value="current">Current attributes</option>
-                    <option value="potential" disabled={!caModels}>
-                      {caModels ? "Attributes at full potential (PA)" : "Full potential (needs the Hidden Attributes view)"}
-                    </option>
-                  </select>
-                </label>
+                <ScoreBasisToggle
+                  value={basis}
+                  onChange={(b) => update({ basis: b })}
+                  potentialAvailable={Boolean(caModels)}
+                />
 
                 <label className="flex items-start gap-2 text-sm">
                   <input
@@ -371,79 +326,11 @@ export default function BestXiClient() {
               </div>
 
               <div className="border-t border-line px-4 py-3.5">
-                <label className={labelClass}>
-                  Formation
-                  <select
-                    value={formationId}
-                    onChange={(e) => {
-                      const f = FORMATIONS.find((x) => x.id === e.target.value);
-                      if (f) update({ slots: f.slots.map((slot) => ({ slot, role: AUTO })) });
-                    }}
-                    className={`${fieldClass} w-full pl-2.5`}
-                  >
-                    {FORMATIONS.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.name}
-                      </option>
-                    ))}
-                    {formationId === "custom" && <option value="custom">Custom</option>}
-                  </select>
-                </label>
-
-                <table className="mt-3 w-full text-sm">
-                  <thead>
-                    <tr className="text-left text-[12px] text-muted">
-                      <th className="pb-1 pr-2 font-normal">Position</th>
-                      <th className="pb-1 font-normal">Scored as</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {settings.slots.map((s, i) => {
-                      const auto = resolveRole({ slot: s.slot, role: AUTO }, profiles);
-                      const missing = s.role !== AUTO && !profiles.some((p) => p.id === s.role);
-                      return (
-                        <tr key={i}>
-                          <td className="py-0.5 pr-2">
-                            <select
-                              aria-label={`Position ${i + 1}`}
-                              value={s.slot}
-                              onChange={(e) => updateSlot(i, { slot: e.target.value as PositionSlot })}
-                              className="field h-8 w-[5.75rem] pl-2 text-[13px] text-ink"
-                            >
-                              {SLOT_ORDER.map((slot) => (
-                                <option key={slot} value={slot}>
-                                  {SLOT_LABEL[slot]}
-                                </option>
-                              ))}
-                            </select>
-                          </td>
-                          <td className="py-0.5">
-                            <select
-                              aria-label={`Role for position ${i + 1}, ${SLOT_LABEL[s.slot]}`}
-                              value={missing ? AUTO : s.role}
-                              onChange={(e) => updateSlot(i, { role: e.target.value })}
-                              className="field h-8 w-full pl-2 text-[13px] text-ink"
-                            >
-                              <option value={AUTO}>Auto: {shortRole(auto.name)}</option>
-                              {profiles.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                  {p.name}
-                                </option>
-                              ))}
-                            </select>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <p className="mt-2 text-[12px] text-muted">
-                  Roles are your weight profiles from{" "}
-                  <Link href="/attribute" className="link">
-                    Attribute mode
-                  </Link>
-                  .
-                </p>
+                <FormationEditor
+                  slots={settings.slots}
+                  onChange={(slots) => update({ slots })}
+                  profiles={profiles}
+                />
               </div>
             </section>
 
@@ -458,7 +345,7 @@ export default function BestXiClient() {
               {outcome?.kind === "slots" && (
                 <Notice title="Not enough players to fill this formation.">
                   No eligible player left for:{" "}
-                  {outcome.unfilled.map((s) => SLOT_LABEL[s.slot]).join(", ")}. Only natural
+                  {[...new Set(outcome.unfilled.map((s) => SLOT_LABEL[s.slot]))].join(", ")}. Only natural
                   positions from the export count.
                   {(settings.excluded.length > 0 || !settings.includeFree) &&
                     " Excluded players and players with no transfer value are left out."}
@@ -524,18 +411,6 @@ export default function BestXiClient() {
   );
 }
 
-function Notice({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div role="status" className="flex items-start gap-2.5 rounded-md border border-gold bg-gold/12 px-4 py-3 text-sm">
-      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-      <div>
-        <p className="font-semibold">{title}</p>
-        <p className="text-muted">{children}</p>
-      </div>
-    </div>
-  );
-}
-
 function XiResultPanel({
   outcome,
   money,
@@ -554,7 +429,6 @@ function XiResultPanel({
   onExclude: (id: string) => void;
 }) {
   const { picks, totalScore, totalCost } = outcome;
-  const points = pitchLayout(picks.map((p) => p.setting.slot));
   const wages = picks.reduce((sum, p) => sum + (p.wage ?? 0), 0);
   const unknownWages = picks.filter((p) => p.wage === null).length;
   const budgetText =
@@ -590,44 +464,12 @@ function XiResultPanel({
       </div>
 
       <div className="flex flex-col xl:flex-row">
-        <figure
-          aria-label="The eleven on the pitch"
-          className="shrink-0 border-b border-line p-4 xl:w-[23.5rem] xl:border-b-0 xl:border-r"
-        >
-          <div className="relative mx-auto w-full max-w-[21.5rem]" style={{ aspectRatio: "68 / 100" }}>
-            <svg viewBox="0 0 68 100" className="absolute inset-0 h-full w-full" aria-hidden>
-              <rect x="0.5" y="0.5" width="67" height="99" rx="2" fill="oklch(0.5 0.12 150)" />
-              <g fill="none" stroke="white" strokeOpacity="0.55" strokeWidth="0.5">
-                <rect x="2.5" y="2.5" width="63" height="95" />
-                <line x1="2.5" y1="50" x2="65.5" y2="50" />
-                <circle cx="34" cy="50" r="8" />
-                <rect x="16" y="2.5" width="36" height="14" />
-                <rect x="16" y="83.5" width="36" height="14" />
-              </g>
-            </svg>
-            <ul>
-              {picks.map((pick, i) => {
-                const [x, y] = points[i];
-                const name = pick.player.raw.player;
-                return (
-                  <li
-                    key={i}
-                    title={`${name}, ${SLOT_LABEL[pick.setting.slot]}, ${pick.score.toFixed(1)}`}
-                    className="absolute w-[21%] -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-line bg-surface px-1 py-0.5 text-center leading-tight"
-                    style={{ left: `${(x / 68) * 100}%`, top: `${y}%` }}
-                  >
-                    <span className="block truncate text-[12px] font-semibold">
-                      {name.trim().split(/\s+/).pop()}
-                    </span>
-                    <span className="block text-[11px] text-muted">
-                      {pick.setting.slot} {pick.score.toFixed(1)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </figure>
+        <div className="shrink-0 border-b border-line p-4 xl:w-[23.5rem] xl:border-b-0 xl:border-r">
+          <PitchLineup
+            label="The eleven on the pitch"
+            entries={picks.map((p) => ({ spot: p.setting.spot, name: p.player.raw.player, score: p.score }))}
+          />
+        </div>
 
         <div className="min-w-0 flex-1 overflow-x-auto">
           <table className="data-table">
@@ -657,7 +499,9 @@ function XiResultPanel({
                 const raw = pick.player.raw;
                 return (
                   <tr key={i}>
-                    <td className="whitespace-nowrap px-2.5 py-1.5">{SLOT_LABEL[pick.setting.slot]}</td>
+                    <td className="whitespace-nowrap px-2.5 py-1.5" title={SLOT_LABEL[pick.setting.slot]}>
+                      {pick.setting.spot}
+                    </td>
                     <td className="px-2.5 py-1.5">
                       <Link
                         href={`/attribute/players/${raw.uniqueId}`}

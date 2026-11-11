@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { LINK_BUTTON_CLASS } from "@/components/Button";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
 import { GRADE_SCALE, PRIME_GRADE } from "@/lib/grades";
 import { GradeBadge } from "@/components/GradeStamp";
@@ -147,21 +148,13 @@ export function SetupGuide() {
     <div>
       <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
         <span className="text-sm text-muted">Game version</span>
-        <div className="inline-flex overflow-hidden rounded-md ring-1 ring-line" role="group" aria-label="Game version">
-          {(["fm27", "fm26"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setVersion(v)}
-              aria-pressed={version === v}
-              className={`cursor-pointer px-3 py-1 text-sm ${
-                version === v ? "bg-accent font-semibold text-on-accent" : "text-muted hover:bg-paper hover:text-ink"
-              }`}
-            >
-              {v.toUpperCase()}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          label="Game version"
+          size="sm"
+          value={version}
+          onChange={setVersion}
+          options={(["fm27", "fm26"] as const).map((v) => ({ value: v, label: v.toUpperCase() }))}
+        />
       </div>
       <div hidden={version !== "fm27"}>
         <Fm27SetupGuide />
