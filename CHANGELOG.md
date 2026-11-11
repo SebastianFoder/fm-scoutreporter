@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.10.0...v1.11.0) (2026-11-11)
+
+
+### Features
+
+* **staff:** add staff mode and best backroom ([ad3d21e](https://github.com/SebastianFoder/fm-scoutreporter/commit/ad3d21e930d4694d0dec720bed38b9cb5cf9187d))
+
 # [1.10.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.9.0...v1.10.0) (2026-11-11)
 
 
