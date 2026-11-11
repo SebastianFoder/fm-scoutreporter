@@ -11,6 +11,7 @@ import type { PlayerWithGroups } from "@/data/players-store";
 import { fm27PlayerScores, type Fm27PlayerScores } from "@/lib/fm27/player-scores";
 import { PRIME_BENCHMARK, type Fm27Role } from "@/lib/fm27/benchmarks";
 import type { CaModel } from "@/lib/fm27/potential";
+import { GradeStamp } from "@/components/GradeStamp";
 
 type Row = { p: PlayerWithGroups; s: Fm27PlayerScores };
 
@@ -286,8 +287,13 @@ export default function WonderkidClient() {
                       <td className="px-2.5 py-2 text-right">{p.raw.currentAbility ?? "–"}</td>
                       <td className="px-2.5 py-2 text-right font-semibold">{p.raw.potentialAbility ?? "–"}</td>
                       <td className="px-2.5 py-2 text-right">
-                        {s.best.score.toFixed(1)}{" "}
-                        <span className="text-[12px] text-muted">{s.best.role}</span>
+                        <span className="inline-flex items-center justify-end gap-2">
+                          <span>
+                            {s.best.score.toFixed(1)}{" "}
+                            <span className="text-[12px] text-muted">{s.best.role}</span>
+                          </span>
+                          <GradeStamp score={s.best.score} label="Now" />
+                        </span>
                       </td>
                       <td
                         className={`px-2.5 py-2 text-right ${
@@ -298,12 +304,15 @@ export default function WonderkidClient() {
                       </td>
                       <td className="px-2.5 py-2 text-right font-bold">
                         {s.bestPotential ? (
-                          <>
-                            {s.bestPotential.score.toFixed(1)}{" "}
-                            <span className="text-[12px] font-normal text-muted">
-                              {s.bestPotential.role}
+                          <span className="inline-flex items-center justify-end gap-2">
+                            <span>
+                              {s.bestPotential.score.toFixed(1)}{" "}
+                              <span className="text-[12px] font-normal text-muted">
+                                {s.bestPotential.role}
+                              </span>
                             </span>
-                          </>
+                            <GradeStamp score={s.bestPotential.score} label="Potential" />
+                          </span>
                         ) : (
                           "–"
                         )}

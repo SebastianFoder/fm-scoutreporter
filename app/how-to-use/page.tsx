@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import { LINK_BUTTON_CLASS } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
+import { GRADE_SCALE, PRIME_GRADE } from "@/lib/grades";
 
 type Tab = "setup" | "attribute" | "wonderkid";
 
@@ -602,6 +603,35 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
             same score using attributes projected to PA. The Wonderkid tab explains the
             projection.
           </p>
+        </InfoBox>
+
+        <InfoBox label="Grades">
+          <p>
+            Every score gets a letter stamp, FM-style from A+ down to F, plus S, S+ and S++ above A+ for
+            the truly elite. Grades read the weighted average on the 1–20 scale and step every 0.5.
+            The prime benchmark (13.8, a high-end Championship / low-end Premier League player in their
+            prime) is a {PRIME_GRADE}. Young players grade low on Now and high on Potential, so compare
+            them with the Potential stamp or vs Age.
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-2" aria-label="Grade scale">
+            {GRADE_SCALE.map((g, i) => {
+              const above = GRADE_SCALE[i - 1];
+              return (
+                <li key={g.grade} className="inline-flex items-center gap-1.5 text-[13px]">
+                  <span className="grade" data-tier={g.tier}>
+                    {g.grade}
+                  </span>
+                  <span className="text-muted">
+                    {Number.isFinite(g.min)
+                      ? above
+                        ? `${g.min.toFixed(1)}–${above.min.toFixed(1)}`
+                        : `${g.min.toFixed(1)}+`
+                      : `under ${GRADE_SCALE[i - 1].min.toFixed(1)}`}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
         </InfoBox>
 
         <InfoBox label="100-point normalisation">

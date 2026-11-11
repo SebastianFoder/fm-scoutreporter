@@ -40,6 +40,20 @@
   --attr-average-ink: 0.235 0.012 255;
   --attr-low: 1 0 0 / 0;
   --attr-low-ink: 0.52 0.012 255;
+
+  /* Grade stamps: one fill per letter tier (S above A, down to F). Text/fill pairs pass WCAG AA. */
+  --grade-s: 0.45 0.2 300;
+  --grade-s-ink: 1 0 0;
+  --grade-a: 0.5 0.13 150;
+  --grade-a-ink: 1 0 0;
+  --grade-b: 0.8 0.15 128;
+  --grade-b-ink: 0.22 0.04 128;
+  --grade-c: 0.86 0.14 92;
+  --grade-c-ink: 0.25 0.04 88;
+  --grade-d: 0.74 0.15 58;
+  --grade-d-ink: 0.2 0.04 55;
+  --grade-f: 0.55 0.19 27;
+  --grade-f-ink: 1 0 0;
 }
 
 :root[data-theme="dark"] {
@@ -250,6 +264,37 @@
     background-color: oklch(var(--attr-average));
     color: oklch(var(--attr-average-ink));
   }
+  /* Grade stamp (S++ to F): tier fill + tier ink, letter always printed. The inset ring keeps pale
+     fills (B, C, D) visible on white panels. */
+  .grade {
+    display: inline-flex;
+    min-width: 2.1rem;
+    height: 1.375rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: 0 0.3rem;
+    font-family: var(--font-ui-condensed), var(--font-ui), sans-serif;
+    font-weight: 800;
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .grade[data-size="lg"] {
+    min-width: 3rem;
+    height: 2.25rem;
+    border-radius: 6px;
+    padding: 0 0.5rem;
+    font-size: 1.25rem;
+  }
+  .grade[data-tier="s"] { background-color: oklch(var(--grade-s)); color: oklch(var(--grade-s-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-s-ink) / 0.2); }
+  .grade[data-tier="a"] { background-color: oklch(var(--grade-a)); color: oklch(var(--grade-a-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-a-ink) / 0.2); }
+  .grade[data-tier="b"] { background-color: oklch(var(--grade-b)); color: oklch(var(--grade-b-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-b-ink) / 0.2); }
+  .grade[data-tier="c"] { background-color: oklch(var(--grade-c)); color: oklch(var(--grade-c-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-c-ink) / 0.2); }
+  .grade[data-tier="d"] { background-color: oklch(var(--grade-d)); color: oklch(var(--grade-d-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-d-ink) / 0.2); }
+  .grade[data-tier="f"] { background-color: oklch(var(--grade-f)); color: oklch(var(--grade-f-ink)); box-shadow: inset 0 0 0 1px oklch(var(--grade-f-ink) / 0.2); }
+
   .attr[data-band="low"] {
     background-color: oklch(var(--attr-low));
     color: oklch(var(--attr-low-ink));

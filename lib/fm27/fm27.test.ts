@@ -12,6 +12,7 @@ import {
   projectPotential,
 } from "./potential";
 import { developmentPlan } from "./development";
+import { GRADE_SCALE, gradeFor } from "../grades";
 import { groupPlayerAttributes } from "../parser/attribute-grouper";
 import { ageBenchmark, bestFm27Role, fm27BenchmarkProfiles } from "./benchmarks";
 import { CA_COSTS } from "./ca-costs";
@@ -142,4 +143,20 @@ test("FM27 benchmark helpers", () => {
   assert.equal(ageBenchmark(31), 13.8);
   const best = bestFm27Role(() => 15, false);
   assert.equal(best.score, 15);
+});
+
+test("grade scale: anchored on the prime benchmark, S tiers above A+", () => {
+  assert.equal(gradeFor(13.8).grade, "B-");
+  assert.equal(gradeFor(13.5).grade, "B-");
+  assert.equal(gradeFor(13.49).grade, "C+");
+  assert.equal(gradeFor(16).grade, "A+");
+  assert.equal(gradeFor(16.5).grade, "S");
+  assert.equal(gradeFor(17.2).grade, "S+");
+  assert.equal(gradeFor(19).grade, "S++");
+  assert.equal(gradeFor(10.49).grade, "F");
+  assert.equal(gradeFor(1).tier, "f");
+  // Every step is 0.5 below the one above it.
+  for (let i = 1; i < GRADE_SCALE.length - 1; i += 1) {
+    assert.equal(GRADE_SCALE[i - 1].min - GRADE_SCALE[i].min, 0.5);
+  }
 });

@@ -11,6 +11,8 @@ import { usePlayersData } from "@/components/PlayersDataProvider";
 import { PositionMap } from "@/components/PositionMap";
 import { groupPlayerAttributes } from "@/lib/parser/attribute-grouper";
 import { isGoalkeeperPosition } from "@/lib/fm27/benchmarks";
+import { fm27PlayerScores } from "@/lib/fm27/player-scores";
+import { GradeStamp } from "@/components/GradeStamp";
 
 export default function AttributePlayerPage() {
   const { state } = usePlayersData();
@@ -21,6 +23,8 @@ export default function AttributePlayerPage() {
     [state.players, id],
   );
   const [view, setView] = useState<"current" | "potential">("current");
+
+  const scores = useMemo(() => (player ? fm27PlayerScores(player) : null), [player]);
 
   const potentialGrouped = useMemo(
     () =>
@@ -62,6 +66,14 @@ export default function AttributePlayerPage() {
             {raw.position} · {raw.age} years old · {raw.euNational ? "EU national" : "Non-EU"}
           </p>
 
+          {scores && (
+            <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="Grades">
+              <GradeLine label="Now" role={scores.best.role} score={scores.best.score} />
+              {scores.bestPotential && (
+                <GradeLine label="Potential" role={scores.bestPotential.role} score={scores.bestPotential.score} />
+              )}
+            </div>
+          )}
 
           <dl className="mt-4 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-3">
             {raw.currentAbility !== null && <Fact label="Current ability" value={String(raw.currentAbility)} strong />}
@@ -122,6 +134,20 @@ export default function AttributePlayerPage() {
       </section>
 
       <DevelopmentPlanPanel player={player} />
+    </div>
+  );
+}
+
+function GradeLine({ label, role, score }: { label: string; role: string; score: number }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <GradeStamp score={score} size="lg" label={label} />
+      <div className="leading-tight">
+        <p className="text-[12px] text-muted">{label}</p>
+        <p className="text-sm font-semibold">
+          {role} <span className="font-normal text-muted">{score.toFixed(1)}</span>
+        </p>
+      </div>
     </div>
   );
 }

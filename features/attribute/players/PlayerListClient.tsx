@@ -20,6 +20,7 @@ import {
 } from "@/lib/scoring";
 import { attributeLabel } from "@/lib/attribute-labels";
 import { ageBenchmark } from "@/lib/fm27/benchmarks";
+import { GradeStamp } from "@/components/GradeStamp";
 import {
   getBandForValue,
   useActiveAttributeProfile,
@@ -48,10 +49,13 @@ type SortDir = "asc" | "desc";
 type Row = {
   p: PlayerWithGroups;
   score: number;
+  /** Weighted average on the 1–20 scale, which the grade stamp reads. */
+  avg: number;
   /** Weighted average ÷ FM27 age benchmark (1 = on track for a prime high-end Championship / low-end PL player). */
   vsAge: number;
   /** Score with the projected attributes at PA; null without a Hidden Attributes export. */
   potential: number | null;
+  potentialAvg: number | null;
 };
 
 const DEFAULT_SORT = "score";
@@ -358,13 +362,16 @@ function PlayersListClientInner({
     () =>
       players.map((p) => {
         const avg = computeWeightedAverage(p, weights, emphasis);
+        const potentialAvg = p.potential
+          ? computeWeightedAverageOf(p.potential.attributes, weights, emphasis)
+          : null;
         return {
           p,
           score: scaleScore(avg),
+          avg,
           vsAge: avg / ageBenchmark(p.raw.age),
-          potential: p.potential
-            ? scaleScore(computeWeightedAverageOf(p.potential.attributes, weights, emphasis))
-            : null,
+          potential: potentialAvg === null ? null : scaleScore(potentialAvg),
+          potentialAvg,
         };
       }),
     [players, weights, emphasis],
@@ -597,7 +604,7 @@ function PlayersListClientInner({
             </tr>
           </thead>
           <tbody>
-            {pageItems.map(({ p, score, vsAge, potential }) => (
+            {pageItems.map(({ p, score, avg, vsAge, potential, potentialAvg }) => (
               <tr
                 key={p.raw.uniqueId}
                 data-selected={selectable && selectedIds.includes(p.raw.uniqueId)}
@@ -627,7 +634,10 @@ function PlayersListClientInner({
                 <td className="px-3 py-2 text-[13px] text-muted">{p.raw.position}</td>
                 <td className="px-3 py-2 text-right">{p.raw.age}</td>
                 <td className="px-3 py-2 text-right font-bold">
-                  {score.toFixed(2)}
+                  <span className="inline-flex items-center justify-end gap-2">
+                    {score.toFixed(2)}
+                    <GradeStamp score={avg} label="Score" />
+                  </span>
                 </td>
                 <td
                   className={`px-3 py-2 text-right ${
@@ -638,7 +648,14 @@ function PlayersListClientInner({
                 </td>
                 {hasPotential && (
                   <td className="px-3 py-2 text-right font-semibold">
-                    {potential === null ? "–" : potential.toFixed(2)}
+                    {potential === null || potentialAvg === null ? (
+                      "–"
+                    ) : (
+                      <span className="inline-flex items-center justify-end gap-2">
+                        {potential.toFixed(2)}
+                        <GradeStamp score={potentialAvg} label="Potential" />
+                      </span>
+                    )}
                   </td>
                 )}
                 {highlighted.map((key) => {

@@ -14,6 +14,9 @@ export interface ThemeAttributeBands {
   low: ThemeBand;
 }
 
+/** Grade stamp colours, one per letter tier (S above A, down to F). */
+export type ThemeGrades = Record<"s" | "a" | "b" | "c" | "d" | "f", ThemeBand>;
+
 export interface ThemeConfig {
   name: string;
   /** Interactive accent: primary buttons, links, selected controls. oklch triplet "L C H". */
@@ -34,6 +37,7 @@ export interface ThemeConfig {
   /** First data series (role bars, focus ring). */
   series1: string;
   attributeBands: ThemeAttributeBands;
+  grades: ThemeGrades;
   specials: {
     red: { bg: string; text: string };
     gold: { bg: string; text: string };
@@ -63,6 +67,14 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
       average: { fill: "0.945 0.025 150", ink: "0.235 0.012 255" },
       low: { fill: "1 0 0 / 0", ink: "0.52 0.012 255" },
     },
+    grades: {
+      s: { fill: "0.45 0.2 300", ink: "1 0 0" },
+      a: { fill: "0.5 0.13 150", ink: "1 0 0" },
+      b: { fill: "0.8 0.15 128", ink: "0.22 0.04 128" },
+      c: { fill: "0.86 0.14 92", ink: "0.25 0.04 88" },
+      d: { fill: "0.74 0.15 58", ink: "0.2 0.04 55" },
+      f: { fill: "0.55 0.19 27", ink: "1 0 0" },
+    },
     specials: {
       red: { bg: "0.55 0.19 27", text: "1 0 0" },
       gold: { bg: "0.83 0.14 88", text: "0.25 0.04 88" },
@@ -89,6 +101,14 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
       good: { fill: "0.48 0.09 150", ink: "1 0 0" },
       average: { fill: "0.32 0.045 150", ink: "0.93 0.005 255" },
       low: { fill: "0 0 0 / 0", ink: "0.66 0.01 255" },
+    },
+    grades: {
+      s: { fill: "0.68 0.17 300", ink: "0.16 0.04 300" },
+      a: { fill: "0.72 0.15 150", ink: "0.17 0.03 150" },
+      b: { fill: "0.82 0.15 128", ink: "0.2 0.04 128" },
+      c: { fill: "0.85 0.14 92", ink: "0.22 0.04 88" },
+      d: { fill: "0.74 0.15 58", ink: "0.18 0.04 55" },
+      f: { fill: "0.64 0.19 27", ink: "0.15 0.02 27" },
     },
     specials: {
       red: { bg: "0.62 0.19 27", text: "0.15 0.02 27" },
@@ -134,5 +154,10 @@ export function applyTheme(key: ThemeKey) {
   for (const band of ["excellent", "good", "average", "low"] as const) {
     set(`--attr-${band}`, theme.attributeBands[band].fill);
     set(`--attr-${band}-ink`, theme.attributeBands[band].ink);
+  }
+
+  for (const [tier, band] of Object.entries(theme.grades)) {
+    set(`--grade-${tier}`, band.fill);
+    set(`--grade-${tier}-ink`, band.ink);
   }
 }
