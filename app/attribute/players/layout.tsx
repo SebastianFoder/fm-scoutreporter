@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+/* The list and every profile under it show only the visitor's own import: noindex. */
+export const metadata: Metadata = pageMetadata({
   title: "Players",
   description:
-    "Browse imported players with weighted scoring and configurable highlighted attributes.",
-};
+    "Browse imported Football Manager players with weighted scoring and configurable highlighted attributes.",
+  path: "/attribute/players",
+  noindex: true,
+});
 
-export default function AttributePlayersLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AttributePlayersLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

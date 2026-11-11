@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Compare",
+/* Shows only the visitor's own import, so there is nothing for search engines here. */
+export const metadata: Metadata = pageMetadata({
+  title: "Compare players",
   description:
-    "Compare selected players across highlighted attributes. Medals are assigned per attribute relative to the selected players.",
-};
+    "Compare selected Football Manager players across highlighted attributes, with gold, silver and bronze per attribute.",
+  path: "/attribute/compare",
+  noindex: true,
+});
 
-export default function AttributeCompareLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AttributeCompareLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

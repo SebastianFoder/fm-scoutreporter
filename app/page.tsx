@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
+import { AUTHOR_LD, JsonLd } from "@/components/JsonLd";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 const MODES = [
   {
@@ -28,13 +30,46 @@ const MODES = [
   },
 ] as const;
 
+const SITE_LD = [
+  {
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: SITE_NAME,
+    url: absoluteUrl("/"),
+    description: SITE_DESCRIPTION,
+    inLanguage: "en-GB",
+    author: AUTHOR_LD,
+  },
+  {
+    "@type": "WebApplication",
+    "@id": `${SITE_URL}/#app`,
+    name: SITE_NAME,
+    url: absoluteUrl("/"),
+    description: SITE_DESCRIPTION,
+    applicationCategory: "GameApplication",
+    applicationSubCategory: "Football Manager scouting tool",
+    operatingSystem: "Any (web browser)",
+    browserRequirements: "Requires JavaScript",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    featureList: MODES.map((m) => `${m.name}: ${m.blurb}`),
+    about: [
+      { "@type": "VideoGame", name: "Football Manager 27" },
+      { "@type": "VideoGame", name: "Football Manager 26" },
+    ],
+    author: AUTHOR_LD,
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+  },
+];
+
 export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-5 py-8 text-ink md:py-12">
+      <JsonLd data={SITE_LD} />
       <h1 className="text-[1.75rem] font-bold leading-tight tracking-[-0.01em]">Scout Reporter</h1>
       <p className="mt-1.5 max-w-2xl text-[15px] text-muted">
-        Score, rank and compare players from a Football Manager player export. Everything runs
-        in your browser; the CSV never leaves your machine.
+        Score, rank and compare players from a Football Manager 27 or 26 player export. Everything
+        runs in your browser; the CSV never leaves your machine.
       </p>
 
       <section aria-labelledby="modes" className="mt-8">
@@ -88,7 +123,10 @@ export default function Home() {
             Getting players out of FM
           </h2>
           <ol className="list-decimal space-y-1.5 pl-5 text-[15px] marker:text-muted">
-            <li>Install BepInEx and the FM26 Player CSV Export plugin.</li>
+            <li>
+              Install an exporter: FM View Exporter for FM27, or BepInEx with the FM26 Player CSV
+              Export plugin.
+            </li>
             <li>
               Import the Scout Reporter view in FM&apos;s Player Database (right-click a column
               header, then Import View).
@@ -98,9 +136,12 @@ export default function Home() {
             </li>
             <li>Import that CSV in Attribute or Wonderkid mode.</li>
           </ol>
-          <p className="mt-3 text-sm">
+          <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
             <Link href="/how-to-use" className="link">
               Full setup guide
+            </Link>
+            <Link href="/faq" className="link">
+              Frequently asked questions
             </Link>
           </p>
         </div>
