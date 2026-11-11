@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.9.0...v1.10.0) (2026-11-11)
+
+
+### Features
+
+* **seo:** add site metadata, sitemap, share card and faq page ([940fd76](https://github.com/SebastianFoder/fm-scoutreporter/commit/940fd7673b0d8a68fc185c5b575adbe3eea98467))
+
 # [1.9.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.8.0...v1.9.0) (2026-11-11)
 
 
