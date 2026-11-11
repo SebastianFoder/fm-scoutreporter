@@ -1,3 +1,11 @@
+# [1.8.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.7.0...v1.8.0) (2026-11-11)
+
+
+### Features
+
+* **grades:** add s++ to f grade stamps on players ([4e9e76c](https://github.com/SebastianFoder/fm-scoutreporter/commit/4e9e76cf592c33c55e319db279245985da76aaf9))
+* **potential:** ground growth in fm27 training data and add development plan ([aa6ceef](https://github.com/SebastianFoder/fm-scoutreporter/commit/aa6ceef2f25964b81f97979b0d26127f6ebc2b56))
+
 # [1.7.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.6.0...v1.7.0) (2026-11-10)
 
 
