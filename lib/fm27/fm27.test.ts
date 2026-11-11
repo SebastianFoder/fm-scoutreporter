@@ -4,7 +4,15 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parsePlayersCsv } from "../parser/csv-parser";
 import { parsePositionGroups } from "./positions";
-import { calibrateCaModel, computeDatasetPotentials, projectPotential } from "./potential";
+import {
+  calibrateCaModel,
+  computeDatasetPotentials,
+  DEFAULT_CA_MODEL,
+  growthRates,
+  projectPotential,
+} from "./potential";
+import { developmentPlan } from "./development";
+import { groupPlayerAttributes } from "../parser/attribute-grouper";
 import { ageBenchmark, bestFm27Role, fm27BenchmarkProfiles } from "./benchmarks";
 import { CA_COSTS } from "./ca-costs";
 import { ALL_ATTRIBUTE_KEYS } from "../attribute-keys";
@@ -60,6 +68,65 @@ test("projectPotential reaches PA and never lowers an attribute", () => {
   const gain = atPa.predictedCa - proj.predictedCa;
   assert.ok(Math.abs(gain - (shirkey.potentialAbility! - shirkey.currentAbility!)) < 4, `gain=${gain}`);
   assert.ok(proj.attributes.reflexes > shirkey.reflexes);
+});
+
+test("growth rates follow the training test: position profile, fixed personality, keepers later", () => {
+  const st = growthRates(["ST"], 18);
+  const cb = growthRates(["CB"], 18);
+  assert.ok(st.get("finishing")! > cb.get("finishing")!);
+  assert.ok(cb.get("marking")! > st.get("marking")!);
+  for (const k of ["determination", "aggression", "bravery"] as const) {
+    assert.equal(st.get(k), 0);
+    assert.equal(growthRates(["GK"], 18).get(k), 0);
+  }
+  // Outfielders never grow goalkeeping attributes; keepers don't grow outfield finishing.
+  assert.equal(st.get("reflexes"), 0);
+  assert.equal(growthRates(["GK"], 18).get("finishing"), 0);
+  assert.ok(growthRates(["GK"], 18).get("reflexes")! > 0);
+  // At 24 a keeper's physicals still grow at full rate; an outfielder's have slowed.
+  assert.ok(growthRates(["GK"], 24).get("agility")! / growthRates(["GK"], 18).get("agility")! === 1);
+  assert.ok(growthRates(["CM"], 24).get("agility")! < growthRates(["CM"], 18).get("agility")!);
+});
+
+test("outfield projection reaches PA under the CA model", () => {
+  const players = parsePlayersCsv(fixture("attribute-fm27-outfield.csv"));
+  const models = { global: DEFAULT_CA_MODEL, byGroup: {} };
+  const base = players[0];
+  const now = projectPotential({ ...base, currentAbility: 100, potentialAbility: 100 }, models)!;
+  const ca = Math.round(now.predictedCa);
+  const proj = projectPotential({ ...base, currentAbility: ca, potentialAbility: ca + 30 }, models)!;
+  const after = projectPotential({ ...base, ...proj.attributes, currentAbility: 1, potentialAbility: 1 }, models)!;
+  assert.ok(Math.abs(after.predictedCa - now.predictedCa - 30) < 4, `gain=${after.predictedCa - now.predictedCa}`);
+  assert.equal(proj.attributes.handling, base.handling);
+  assert.ok(proj.attributes.pace > base.pace);
+});
+
+test("developmentPlan gives position-aware advice", () => {
+  const outfield = parsePlayersCsv(fixture("attribute-fm27-outfield.csv"));
+  const raw = { ...outfield[0], currentAbility: 100, potentialAbility: 140, professionalism: 7 };
+  const plan = developmentPlan({ raw, grouped: groupPlayerAttributes(raw) });
+  assert.equal(plan.focus.name, "Quickness");
+  assert.match(plan.trainingRole.name, /Attacking Midfielder/);
+  assert.equal(plan.sessions!.length, 6);
+  assert.equal(plan.sessions![0].relative, 1);
+  assert.ok(plan.items.some((i) => i.id === "prof" && i.tone === "warning"));
+  const share = plan.coaching.reduce((a, c) => a + c.share, 0);
+  assert.ok(share > 0.9 && share <= 1.0001, `share=${share}`);
+
+  const cbRaw = { ...raw, position: "D (C)" };
+  assert.match(developmentPlan({ raw: cbRaw, grouped: groupPlayerAttributes(cbRaw) }).trainingRole.name, /Defensive Midfielder/);
+
+  const keepers = parsePlayersCsv(fixture("attribute-fm27-hidden.csv"));
+  const { byId } = computeDatasetPotentials(keepers);
+  const gk = keepers[0];
+  const gkPlan = developmentPlan({ raw: gk, grouped: groupPlayerAttributes(gk), potential: byId.get(gk.uniqueId) });
+  assert.equal(gkPlan.sessions, null);
+  assert.equal(gkPlan.endAge, 27);
+  assert.deepEqual(gkPlan.coaching.map((c) => c.group.id).sort(), ["fitness", "goalkeeping"]);
+
+  const veteran = { ...raw, age: 26 };
+  const vPlan = developmentPlan({ raw: veteran, grouped: groupPlayerAttributes(veteran) });
+  assert.ok(vPlan.items.some((i) => i.id === "gap" && i.tone === "warning"));
 });
 
 test("projectPotential returns null without CA/PA (Standard view export)", () => {

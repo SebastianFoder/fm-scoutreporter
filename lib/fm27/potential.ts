@@ -3,6 +3,13 @@ import type { AttributeKey } from "@/types/weights";
 import { ALL_ATTRIBUTE_KEYS, PHYSICAL_KEYS } from "@/lib/attribute-keys";
 import { CA_COSTS, type PositionGroup } from "./ca-costs";
 import { parsePositionGroups } from "./positions";
+import {
+  COACHING_GROUPS,
+  GK_COACH_KEYS,
+  GROUP_PROFILE,
+  profileGrowth,
+  TRAINING_TEST,
+} from "./training";
 
 /**
  * Full-potential projection for FM27, built on the fm-scoring CA cost table.
@@ -11,26 +18,24 @@ import { parsePositionGroups } from "./positions";
  * table, a Hidden Attributes export of 109 goalkeepers gives CA ≈ 0.165·Σ(cost·attribute) − 99 (r = 0.99, RMSE ≈ 2.5 CA).
  * We express that per cost point (A = Σ(cost·attr) / Σ(cost)), so CA ≈ slope·A + intercept, calibrate it
  * on the imported players when there are enough of them, and use it to find the A a player has at PA.
- * The extra CA is then spread over the attributes that can still grow, proportional to their headroom.
+ * The extra CA is then spread over the attributes that can still grow, each at the rate harvestgreen22's
+ * FM27 training test measured for it (see `training.ts`), scaled by its room below 20.
  */
 
-/** Personality- and tendency-driven attributes that training doesn't move. Kept at their current value. */
+/** Training never moves these (harvestgreen22's FM27 test: about 0 a season under every schedule). */
 const FIXED_KEYS = new Set<AttributeKey>([
   "determination",
-  "flair",
   "aggression",
   "bravery",
-  "leadership",
-  "naturalFitness",
   "eccentricity",
-  "rushingOutTendency",
   "punching",
 ]);
 
 const PHYSICAL = new Set<AttributeKey>(PHYSICAL_KEYS);
-
-/** Growth rate of attributes that cost (almost) no CA for the player's positions. */
-const UNCOSTED_RATE = 0.5;
+const GK_COACHED = new Set<AttributeKey>(GK_COACH_KEYS);
+const FITNESS_COACHED = new Set<AttributeKey>(
+  COACHING_GROUPS.find((g) => g.id === "fitness")!.keys,
+);
 
 /** Default model: the fit on the FM27 Hidden Attributes GK sample (0.16469·S − 99.17, Σcost = 107). */
 export const DEFAULT_CA_MODEL: CaModel = {
@@ -166,11 +171,63 @@ export function calibrateCaModel(players: PlayerAttributes[]): CaModelSet {
   return { global, byGroup };
 }
 
-/** Physical attributes develop mostly before the mid-20s. */
-function physicalRate(age: number): number {
-  if (age <= 21) return 1;
-  if (age <= 24) return 0.75;
+/**
+ * Physical attributes develop mostly in the late teens and slow down through the early 20s.
+ * Goalkeepers develop about three years longer than outfielders.
+ */
+function physicalRate(age: number, isGoalkeeper: boolean): number {
+  const a = isGoalkeeper ? age - 3 : age;
+  if (a <= 21) return 1;
+  if (a <= 24) return 0.75;
   return 0.4;
+}
+
+/** The test's attributes all started at 8, so a season's growth used 1/12 of the room below 20. */
+const TEST_HEADROOM = 12;
+
+/**
+ * How fast each attribute grows relative to its room below 20, as a share of that room per season for
+ * the test's 18-year-old. Outfielders use the measured growth of the schedule that suits their position
+ * (defensive or attacking ball work, blended for multi-position players). Goalkeepers were not tested,
+ * so their GK-coached attributes grow like the outfield coach-trained ones, their physicals like the
+ * outfield fitness work without the Quickness focus, and everything else like untrained outfielders.
+ */
+export function growthRates(
+  groups: PositionGroup[],
+  age: number,
+): Map<AttributeKey, number> {
+  const isGoalkeeper = groups.includes("GK");
+  const physRate = physicalRate(age, isGoalkeeper);
+  const tested = TRAINING_TEST.noTraining.growth as Partial<Record<AttributeKey, number>>;
+  const rates = new Map<AttributeKey, number>();
+
+  let seasonGrowth: (k: AttributeKey) => number;
+  if (isGoalkeeper) {
+    const balanced = profileGrowth("balanced") as Partial<Record<AttributeKey, number>>;
+    const coachTrained = COACHING_GROUPS.filter(
+      (g) => g.id === "possessionTechnical" || g.id === "possessionTactical",
+    ).flatMap((g) => g.keys);
+    const gkCoachGrowth =
+      coachTrained.reduce((a, k) => a + (balanced[k] ?? 0), 0) / coachTrained.length;
+    seasonGrowth = (k) => {
+      if (GK_COACHED.has(k)) return gkCoachGrowth;
+      if (k === "pace" || k === "acceleration") return tested[k] ?? 0;
+      if (FITNESS_COACHED.has(k)) return balanced[k] ?? 0;
+      return tested[k] ?? 0;
+    };
+  } else {
+    const profiles = groups
+      .filter((g): g is Exclude<PositionGroup, "GK"> => g !== "GK")
+      .map((g) => profileGrowth(GROUP_PROFILE[g]) as Partial<Record<AttributeKey, number>>);
+    seasonGrowth = (k) => profiles.reduce((a, p) => a + (p[k] ?? 0), 0) / profiles.length;
+  }
+
+  for (const k of ALL_ATTRIBUTE_KEYS) {
+    let rate = FIXED_KEYS.has(k) ? 0 : Math.max(0, seasonGrowth(k)) / TEST_HEADROOM;
+    if (PHYSICAL.has(k)) rate *= physRate;
+    rates.set(k, rate);
+  }
+  return rates;
 }
 
 export function projectPotential(
@@ -189,30 +246,27 @@ export function projectPotential(
   const currentA = costAverage(get, costs);
   const targetA = currentA + (pa - ca) / model.slope;
 
-  const physRate = physicalRate(player.age);
-  const rates = new Map<AttributeKey, number>();
-  for (const k of ALL_ATTRIBUTE_KEYS) {
-    let rate = FIXED_KEYS.has(k) ? 0 : (costs[k] ?? 0) > 0 ? 1 : UNCOSTED_RATE;
-    if (PHYSICAL.has(k)) rate *= physRate;
-    rates.set(k, rate);
-  }
+  const rates = growthRates(groups, player.age);
 
   const grown = (t: number) => (k: AttributeKey) => {
     const v = get(k);
     return Math.min(20, v + t * (rates.get(k) ?? 0) * Math.max(0, 20 - v));
   };
 
-  // Solve A(t) = targetA by bisection; A(t) is non-decreasing in t, and t = 1 maxes every growable attribute.
+  // Solve A(t) = targetA by bisection. A(t) is non-decreasing in t (t is roughly "seasons of the test's
+  // development"), and tMax is where every attribute that can grow reaches 20.
+  const minRate = Math.min(...[...rates.values()].filter((r) => r > 0));
+  const tMax = Number.isFinite(minRate) ? 1 / minRate : 0;
   let t = 0;
   let capped = false;
   if (pa > ca) {
-    if (costAverage(grown(1), costs) <= targetA) {
-      t = 1;
+    if (costAverage(grown(tMax), costs) <= targetA) {
+      t = tMax;
       capped = true;
     } else {
       let lo = 0;
-      let hi = 1;
-      for (let i = 0; i < 40; i += 1) {
+      let hi = tMax;
+      for (let i = 0; i < 50; i += 1) {
         const mid = (lo + hi) / 2;
         if (costAverage(grown(mid), costs) < targetA) lo = mid;
         else hi = mid;

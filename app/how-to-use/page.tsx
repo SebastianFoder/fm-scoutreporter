@@ -667,7 +667,9 @@ function WonderkidTab() {
         <MiniStep title="3. Inspect a prospect">
           <p>
             Click a player and switch to <span className="font-bold">Full potential</span> to see
-            the estimated attributes at PA, with the gain per attribute.
+            the estimated attributes at PA, with the gain per attribute. The{" "}
+            <span className="font-bold">Development plan</span> below suggests the individual focus,
+            training role, development sessions and coaches that get the most out of them.
           </p>
         </MiniStep>
       </Step>
@@ -688,12 +690,16 @@ A at PA = A + (PA − CA) / slope`}
         </InfoBox>
         <InfoBox label="Spreading the growth">
           <p>
-            The extra points are spread over attributes that can still grow, in proportion to
-            their room below 20. Attributes that cost CA for the player&apos;s positions grow at
-            full rate, others at half. Physicals slow down after 21 (¾ rate to 24, then 0.4).
-            Determination, Flair, Aggression, Bravery, Leadership, Natural Fitness and the
-            keeper tendencies stay put. Multi-position players use the average cost of their
-            positions.
+            The extra points are spread over attributes that can still grow, each in proportion
+            to its room below 20 and to how fast it grew in harvestgreen22&apos;s FM27 training test
+            (an 18-year-old training for a season, collected in fm-scoring). Defenders, wing-backs
+            and DMs grow like the defensive ball work schedules, central midfielders like a mix,
+            and wide players, AMs and strikers like the attacking ball work schedules. Keepers
+            weren&apos;t tested: their goalkeeping-coached attributes grow at the outfield coached rate.
+            Physicals slow down after 21 (¾ rate to 24, then 0.4), three years later for keepers.
+            Determination, Aggression, Bravery and the keeper tendencies stay put, and outfielders
+            never grow goalkeeping attributes. Multi-position players use the average cost and
+            growth of their positions.
           </p>
         </InfoBox>
         <InfoBox label="Reading the numbers">

@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PlayerAttributesClient } from "@/features/attribute/players/PlayerAttributesClient";
 import { Fm27RolePanel } from "@/features/fm27/Fm27RolePanel";
+import { DevelopmentPlanPanel } from "@/features/fm27/DevelopmentPlanPanel";
 import { usePlayersData } from "@/components/PlayersDataProvider";
 import { PositionMap } from "@/components/PositionMap";
 import { groupPlayerAttributes } from "@/lib/parser/attribute-grouper";
@@ -60,6 +61,7 @@ export default function AttributePlayerPage() {
           <p className="mt-0.5 text-[15px] text-muted">
             {raw.position} · {raw.age} years old · {raw.euNational ? "EU national" : "Non-EU"}
           </p>
+
 
           <dl className="mt-4 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-3">
             {raw.currentAbility !== null && <Fact label="Current ability" value={String(raw.currentAbility)} strong />}
@@ -118,6 +120,8 @@ export default function AttributePlayerPage() {
           <Fm27RolePanel player={player} />
         </aside>
       </section>
+
+      <DevelopmentPlanPanel player={player} />
     </div>
   );
 }

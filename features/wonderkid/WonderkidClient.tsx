@@ -355,15 +355,17 @@ export default function WonderkidClient() {
               fm-scoring
             </a>
             , the extra CA between CA and PA is converted to attribute points and spread over the
-            attributes that can still grow, in proportion to their room below 20. Attributes that
-            cost CA for the player&apos;s positions grow at full rate, others at half; physicals slow
-            down after 21; personality attributes (Determination, Flair, Bravery, Leadership…) stay
-            put. Multi-position players use the average cost of their positions.
+            attributes that can still grow. Each attribute grows in proportion to its room below 20
+            and to the rate harvestgreen22&apos;s FM27 training test measured for it, using defensive
+            ball work schedules for defenders and DMs and attacking ones for wide players and
+            forwards. Physicals slow down after 21 (24 for keepers). Determination, Aggression and
+            Bravery stay put. Multi-position players use the average of their positions.
           </p>
           <p>
             Roles and age benchmarks are fm-scoring&apos;s FM27 weights, tuned on harvestgreen22&apos;s
             match-engine attribute test. Reaching PA is never guaranteed: professionalism, playing
-            time and training decide how much of it a player realises.
+            time and training decide how much of it a player realises. Open a player for a
+            development plan built on that research.
           </p>
           {modelLines.length > 0 && (
             <p className="codeblock text-ink">CA fit on this import: {modelLines.join(" · ")}</p>

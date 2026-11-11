@@ -23,7 +23,11 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
   [jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring)'s FM27 weights and age benchmarks
 - **Wonderkid mode** (`/wonderkid`): with the Hidden Attributes view (`public/SCOUT REPORTER Hidden Attributes.fmf`, adds
   the hidden Professionalism, CA and PA) it estimates each player's attributes at full potential using the FM27
-  CA-cost table, then ranks prospects on the benchmark roles
+  CA-cost table and harvestgreen22's FM27 training test (per-attribute growth by position), then ranks prospects
+  on the benchmark roles
+- **Development plan** on every player page: individual focus, training role, the development sessions and
+  coaching groups that matter most for their best role, plus playing-time and personality notes, from the FM27
+  training research collected in fm-scoring
 - **Best XI** (`/best-xi`): picks the highest-scoring eleven for a formation from the imported players,
   with an optional minimum and maximum on the eleven's total transfer value. Each position is scored
   on a weight profile of your choice (FM27 benchmark roles by default)
