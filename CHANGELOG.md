@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.11.0...v1.12.0) (2026-11-11)
+
+
+### Features
+
+* **squad:** add squad analysis and fm-style formation editor ([0f097c9](https://github.com/SebastianFoder/fm-scoutreporter/commit/0f097c9e294405707589b82ce3536d7e8f1e202f))
+
 # [1.11.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.10.0...v1.11.0) (2026-11-11)
 
 
