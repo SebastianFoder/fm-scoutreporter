@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/site";
 export const metadata: Metadata = pageMetadata({
   title: "FAQ: FM27 and FM26 scouting, exports and scores",
   description:
-    "Answers about Scout Reporter: exporting Football Manager 27 and 26 players to CSV, which view to use, privacy, how scores, grades and vs Age work, finding wonderkids from CA and PA, and Best XI.",
+    "Answers about Scout Reporter: exporting Football Manager 27 and 26 players to CSV, which view to use, privacy, how scores, grades and vs Age work, finding wonderkids from CA and PA, Best XI and scouting staff.",
   path: "/faq",
 });
 
@@ -105,6 +105,29 @@ const GROUPS: { title: string; items: Faq[] }[] = [
         q: "How does the Best XI picker work?",
         a: `Choose a formation (${formationNames.join(", ")}) and Scout Reporter picks the eleven players from your import with the highest combined score, with each position scored on a weight profile you choose (the FM27 benchmark roles by default). You can set a minimum and maximum total transfer value, and exclude players to see the next best option.`,
         more: { href: "/best-xi", label: "Open Best XI" },
+      },
+    ],
+  },
+  {
+    title: "Staff mode",
+    items: [
+      {
+        q: "How do I scout staff?",
+        a: "Import the Scout Reporter Staff view in an FM staff search (right-click a column header, then Import View), select the staff and export a CSV the same way as players. Import that CSV in Staff mode. It is stored separately from your player import, so both can be loaded at once.",
+        more: { href: "/staff", label: "Open Staff mode" },
+      },
+      {
+        q: "FM26 shows staff attributes as words. How are they scored?",
+        a: "Each word covers a fixed range of the old 1 to 20 scale: Unsuited 1 to 3, Reasonable 4 to 6, Competent 7 to 9, Average 10 to 11, Good 12 to 14, Very Good 15 to 17, Outstanding 18 to 19 and Elite 20. Staff mode scores each word at the middle of its range, and uses exact numbers when an export has them.",
+      },
+      {
+        q: "How are staff role scores worked out?",
+        a: "Each role is a weighted average of its attributes, using the 17 staff roles and weights from fm-scoring, checked against the key attributes FM27 highlights on staff profiles. Coaches are split into FM's nine coaching groups (each scored on its two coaching attributes plus authority, determination, motivating, people management and working with youngsters), alongside manager, assistant manager, director of football, head of youth development, scout, performance analyst, physio and sports scientist. Every role score gets the same S++ to F grade stamp as player scores. Filter by preferred job to see only the attributes that job is weighted on, or open a staff member to see every role ranked.",
+      },
+      {
+        q: "How does Best backroom pick my staff?",
+        a: "Choose how many of each staff role you need, or start from a preset (full backroom, coaching staff, recruitment team, medical team). Best backroom fills every role from your staff import with the combination that has the highest total role score, never using one person twice, so an all-rounder goes where they add the most. You can limit it to free agents, to staff whose preferred job is the role, and exclude anyone to see the next best pick.",
+        more: { href: "/staff/backroom", label: "Open Best backroom" },
       },
     ],
   },

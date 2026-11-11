@@ -31,6 +31,19 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 - **Best XI** (`/best-xi`): picks the highest-scoring eleven for a formation from the imported players,
   with an optional minimum and maximum on the eleven's total transfer value. Each position is scored
   on a weight profile of your choice (FM27 benchmark roles by default)
+- **Staff mode** (`/staff`): import a staff search export made with the Staff view
+  (`public/SCOUT REPORTER Staff.fmf`). FM26 shows staff attributes as words; they are mapped back to the
+  1–20 scale (Unsuited 1–3 up to Elite 20) and every staff member is scored on the 17 staff roles from
+  [fm-scoring](https://github.com/jamiebolden/fm-scoring)'s `weights/fm27.toml` (nine coaching groups, manager,
+  assistant, director of football, head of youth development, scout, performance analyst, physio, sports
+  scientist). Rank by best role, preferred job or any role; filtering by preferred job shows only the
+  attributes fm-scoring weights for that job. Filter free agents, and open a staff member for every role
+  ranked. Stored separately
+  from the player import (`localStorage` key `importedStaffCsv`)
+- **Best backroom** (`/staff/backroom`): choose how many of each staff role you need (or a preset) and it
+  hires the combination with the highest total role score from the staff import, nobody used twice (the
+  Best XI assignment solver with no budget). Filter to free agents or to staff whose preferred job is the
+  role, and exclude anyone to see the next best pick
 
 ## Getting started
 
@@ -95,6 +108,7 @@ For components that take players as props, use `fixturePlayers` / `fixturePlayer
 The custom FM view is included at:
 
 - `public/scouting-exporter.fmf`
+- `public/SCOUT REPORTER Staff.fmf` (Staff mode)
 
 Users can download it from the **How to use** page.
 

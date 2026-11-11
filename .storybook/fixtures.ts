@@ -4,6 +4,7 @@ import { isGoalkeeperPosition } from "../lib/fm27/benchmarks";
 import fm26Csv from "../fixtures/attribute.csv?raw";
 import fm27OutfieldCsv from "../fixtures/attribute-fm27-outfield.csv?raw";
 import fm27HiddenCsv from "../fixtures/attribute-fm27-hidden.csv?raw";
+import staffCsv from "../fixtures/staff.csv?raw";
 
 /**
  * CSV fixtures available to stories.
@@ -24,7 +25,11 @@ export type FixtureName = keyof typeof FIXTURE_CSV;
 export const API_FIXTURES: Record<string, string> = {
   attribute: fm26Csv,
   "attribute-fm27-hidden": fm27HiddenCsv,
+  staff: staffCsv,
 };
+
+/** FM26 Staff view export (words, 518 rows with 120 duplicates), for Staff mode. */
+export const STAFF_FIXTURE_CSV = staffCsv;
 
 const cache = new Map<FixtureName, ReturnType<typeof parseAndGroup>>();
 

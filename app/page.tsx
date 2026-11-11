@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { VIEW_HIDDEN, VIEW_STANDARD } from "@/lib/view-files";
+import { VIEW_HIDDEN, VIEW_STAFF, VIEW_STANDARD } from "@/lib/view-files";
 import { AUTHOR_LD, JsonLd } from "@/components/JsonLd";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
@@ -27,6 +27,22 @@ const MODES = [
       "Pick the highest-scoring eleven for a formation from your import, within a minimum and maximum total budget.",
     needs: "Standard or Hidden Attributes view",
     cta: "Open Best XI",
+  },
+  {
+    href: "/staff",
+    name: "Staff mode",
+    blurb:
+      "Import a staff search export to rank coaches, scouts, analysts and directors on every staff role, with FM26's word ratings mapped back to 1–20.",
+    needs: "Staff view",
+    cta: "Open Staff Mode",
+  },
+  {
+    href: "/staff/backroom",
+    name: "Best backroom",
+    blurb:
+      "Pick the staff roles you need and how many of each, and get the strongest backroom your staff import can make, nobody used twice.",
+    needs: "Staff view",
+    cta: "Open Best backroom",
   },
 ] as const;
 
@@ -159,6 +175,12 @@ export default function Home() {
                 {VIEW_STANDARD.name}
               </a>
               <span className="block text-muted">{VIEW_STANDARD.summary}</span>
+            </li>
+            <li>
+              <a href={VIEW_STAFF.href} className="link">
+                {VIEW_STAFF.name}
+              </a>
+              <span className="block text-muted">{VIEW_STAFF.summary}</span>
             </li>
           </ul>
         </aside>
