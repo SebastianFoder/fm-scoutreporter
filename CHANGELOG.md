@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.8.0...v1.9.0) (2026-11-11)
+
+
+### Features
+
+* **grades:** give grade stamps gloss, inner glow and a moving fill ([3dc6beb](https://github.com/SebastianFoder/fm-scoutreporter/commit/3dc6beb847152d163a5c11d45c6327f5a17bc44a))
+
 # [1.8.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.7.0...v1.8.0) (2026-11-11)
 
 
