@@ -144,7 +144,7 @@ A Bun workspaces monorepo. The website and the desktop app share the same logic 
 | `packages/ui` (`@scoutreporter/ui`) | React components, feature screens, global styles (`styles/globals.css`) and Storybook. |
 | `reader` | The C# memory reader the desktop app runs to scan FM27. |
 
-Root scripts: `bun dev` / `bun run build` / `bun start` (website), `bun test` (every workspace),
+Root scripts: `bun dev` / `bun run build` / `bun start` (website), `bun run test` (every workspace),
 `bun run lint`, `bun run storybook`. The shared packages have no build step: Next compiles them
 (`transpilePackages`).
 

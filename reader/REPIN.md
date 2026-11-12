@@ -66,7 +66,7 @@ players in `diagnostics.txt`: are names, ages, CA/PA and clubs right?
    squad screen next to the app: age, contract, nationality and wage must match exactly (FM shows
    your currency, the scan is in GBP). Compare attribute profiles per position (GK/ST/DC) with the
    previous version: they should show the same pattern.
-3. `bun run reader:test` and `bun test`, then a walk through the app.
+3. `bun run reader:test` and `bun run test`, then a walk through the app.
 4. Build a new desktop release.
 
 ## Reference: what pins where

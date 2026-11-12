@@ -51,7 +51,7 @@ jobs:
         run: bun run reader:test
 
       - name: App tests
-        run: bun test
+        run: bun run test
 
       - name: Build reader, pages and main process
         run: node apps/desktop/scripts/build.mjs all

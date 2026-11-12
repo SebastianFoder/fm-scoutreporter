@@ -3,7 +3,9 @@
  * that size from the squad fixture and run the per-player passes the screens use (parse, group,
  * potential, list scores, FM27 role scores, name sort, Best XI). Each pass is timed at 6,000 and at
  * 60,000 players: a linear pass takes about 10x as long, so a ratio far above that means something
- * quadratic crept in. The absolute limits are generous, to stay stable on slow CI machines.
+ * quadratic crept in. The absolute limits are generous, to stay stable on slow CI machines. The 60k
+ * run takes longer than bun's default 5 s test timeout on CI, so run it with `bun run test`, which
+ * raises the timeout.
  */
 import test from "node:test";
 import assert from "node:assert/strict";

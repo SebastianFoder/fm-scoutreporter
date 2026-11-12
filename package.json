@@ -16,7 +16,7 @@
     "build": "bun run --cwd apps/web build",
     "start": "bun run --cwd apps/web start",
     "lint": "eslint && bun scripts/no-em-dash.mjs",
-    "test": "bun test",
+    "test": "bun test --timeout 120000",
     "release": "semantic-release",
     "storybook": "bun run --cwd packages/ui storybook",
     "build-storybook": "bun run --cwd packages/ui build-storybook",
