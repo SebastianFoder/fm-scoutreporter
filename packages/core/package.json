@@ -1,0 +1,7 @@
+{
+  "name": "@scoutreporter/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Scout Reporter's pure logic: CSV parsing, scoring, FM27 roles and potential, Best XI, squad and staff. No React, no Next.",
+  "sideEffects": false
+}

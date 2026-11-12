@@ -13,16 +13,16 @@ colour spent on data**, not on decoration or "branding".
 Its identity comes from things that only make sense in this product:
 
 - **Attribute cells**: FM-style banded value cells (a one-hue ordinal ramp, number always printed).
-- **Position map**: a mini pitch with the player's positions marked (`components/PositionMap.tsx`).
+- **Position map**: a mini pitch with the player's positions marked (`packages/ui/components/PositionMap.tsx`).
 - **Role chart**: FM27 role scores as bars on a 0–20 axis with age-benchmark and prime markers.
 - **Medals** in Compare: gold/silver/bronze chips per row.
-- **Grade stamps**: S++ to F letter stamps for 1–20 scores (`components/GradeStamp.tsx`, scale in `lib/grades.ts`), one fill per letter tier. The only place gradients, glow and looping motion are allowed, and all of it stays inside the badge (no tilt, no outer glow, no hover effects): every stamp has gloss, an inner glow and a fill drifting between two hues at the same lightness, faster for rarer grades; S shines on a loop; S+ breathes; S++ adds a holographic border and a sparkle. Everything stops under `prefers-reduced-motion`, and the letter stays at WCAG AA throughout.
-- **Pitch mark** (`BrandMark`, `app/icon.svg`) and the dark app bar.
+- **Grade stamps**: S++ to F letter stamps for 1–20 scores (`packages/ui/components/GradeStamp.tsx`, scale in `packages/core/grades.ts`), one fill per letter tier. The only place gradients, glow and looping motion are allowed, and all of it stays inside the badge (no tilt, no outer glow, no hover effects): every stamp has gloss, an inner glow and a fill drifting between two hues at the same lightness, faster for rarer grades; S shines on a loop; S+ breathes; S++ adds a holographic border and a sparkle. Everything stops under `prefers-reduced-motion`, and the letter stays at WCAG AA throughout.
+- **Pitch mark** (`BrandMark`, `apps/web/app/icon.svg`) and the dark app bar.
 
 ## Tech
 
-- Tailwind CSS v4, configured in `app/globals.css` (no `tailwind.config.*`).
-- OKLCH triplets as CSS custom properties, set at runtime by `lib/themes.ts` (light/dark).
+- Tailwind CSS v4, configured in `packages/ui/styles/globals.css` (no `tailwind.config.*`).
+- OKLCH triplets as CSS custom properties, set at runtime by `packages/core/themes.ts` (light/dark).
 - Semantic colours are mapped in `@theme inline`, so write `bg-surface text-muted`, never `bg-[oklch(var(--surface))]`.
 - One typeface family: **Sofia Sans** (UI, `font-sans`) and **Sofia Sans Semi Condensed** (`.section-title`, table headers). Tabular figures and no ligatures globally; FM position strings like `AM (R)` must never become `AM ®`.
 
@@ -45,7 +45,7 @@ per-theme tokens (`--attr-*`, `--attr-*-ink`). The ramp was contrast-checked: ev
 pair passes WCAG AA, and the fills step monotonically away from the surface. Users only edit
 thresholds.
 
-## Component classes (`app/globals.css`)
+## Component classes (`packages/ui/styles/globals.css`)
 
 | Class | What it is |
 |---|---|

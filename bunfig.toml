@@ -1,0 +1,4 @@
+[install]
+# Hoist workspace dependencies to the root node_modules. Next, Storybook and Electron resolve
+# packages (next/link, react) from the shared packages' real paths, which needs the hoisted layout.
+linker = "hoisted"

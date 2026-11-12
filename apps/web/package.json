@@ -1,0 +1,23 @@
+{
+  "name": "@scoutreporter/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@scoutreporter/core": "workspace:*",
+    "@scoutreporter/ui": "workspace:*",
+    "@tanstack/react-virtual": "^3.13.23",
+    "lucide-react": "^0.577.0",
+    "next": "16.1.7",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4"
+  }
+}
