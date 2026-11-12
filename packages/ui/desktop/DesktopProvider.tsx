@@ -146,7 +146,9 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
           scannedAt: scan.meta.scannedAt,
           gameDate: scan.meta.gameDate,
         };
-        const hide = settings?.hideHidden === true;
+        // Settings load in the background; a scan used before they arrive must still honour them.
+        const current = settings ?? (await bridge.getSettings());
+        const hide = current.hideHidden === true;
         const strip = (list: PlayerAttributes[]) => (hide ? list.map(withoutHidden) : list);
         await players.importRecords(strip(scanPlayers(scan)), source);
         if (scan.meta.myClub) await squad.importRecords(strip(scanPlayers(scan, { club: scan.meta.myClub })), source);
@@ -161,7 +163,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         setLoadError((e as Error).message);
       }
     },
-    [readSnapshot, snapshots, settings, players, squad, staff],
+    [bridge, readSnapshot, snapshots, settings, players, squad, staff],
   );
 
   // The finished-scan listener is registered once; it calls the latest loadSnapshot through a ref.

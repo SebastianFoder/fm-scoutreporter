@@ -78,6 +78,15 @@ async function waitFor(page, expression, timeoutMs = 20_000) {
   return false;
 }
 
+/** The header and the start of the page, to show what the page looked like when a check failed. */
+const pageText = (page) =>
+  page
+    .eval("`${location.pathname} | header: ${document.querySelector('header')?.innerText ?? ''} | main: ${document.querySelector('main')?.innerText ?? ''}`.replace(/\\s+/g, ' ').slice(0, 600)")
+    .catch((e) => `page unreachable (${e.message})`);
+
+// Wonderkid mode says this when the import has no CA/PA (its table always has CA and PA headers).
+const NO_CA_PA = "This import has no CA / PA columns";
+
 const navigate = (page, path) => page.eval(`(location.href = new URL(${JSON.stringify(path)}, location.origin).href, true)`);
 
 try {
@@ -119,7 +128,7 @@ try {
     "Wonderkid mode has CA/PA from the scan",
     await waitFor(
       page,
-      "/of 66 players/.test(document.querySelector('main').innerText) && [...document.querySelectorAll('main *')].some((e) => e.children.length === 0 && e.textContent.trim() === 'PA')",
+      `/of 66 players/.test(document.querySelector('main').innerText) && !document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`,
     ),
   );
 
@@ -141,19 +150,21 @@ try {
   await page.eval("window.scoutReporterDesktop.setSettings({ hideHidden: true })");
   await navigate(page, "/desktop");
   await waitFor(page, "[...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Use' && !b.disabled)");
-  await page.eval("[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Use' && !b.disabled).click(), true");
-  await sleep(1500);
+  // Mark the button, click it, and wait until that scan is in use (its Use button turns disabled).
+  await page.eval("(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Use' && !b.disabled); b.dataset.smoke = 'use'; b.click(); return true; })()");
+  const inUse = await waitFor(page, "document.querySelector('[data-smoke=use]')?.disabled === true");
   await navigate(page, "/wonderkid");
-  check(
-    "hiding hidden attributes removes CA/PA",
-    await waitFor(page, "document.querySelector('main').innerText.length > 0 && ![...document.querySelectorAll('main *')].some((e) => e.children.length === 0 && e.textContent.trim() === 'PA')"),
-  );
+  const hidden =
+    inUse &&
+    (await waitFor(page, `/of 66 players/.test(document.querySelector('main').innerText) && document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`));
+  check("hiding hidden attributes removes CA/PA", hidden, hidden ? "" : inUse ? await pageText(page) : "the scan never showed as in use");
 
   // The CSV import still works inside the app.
   await navigate(page, "/attribute");
   await waitFor(page, "[...document.querySelectorAll('button')].some((b) => b.textContent.includes('Load test data'))");
   await page.eval("[...document.querySelectorAll('button')].find((b) => b.textContent.includes('Load test data')).click(), true");
-  check("CSV test data imports in the app", await waitFor(page, "/players imported/.test(document.querySelector('header').innerText)"));
+  const csvOk = await waitFor(page, "/players imported/.test(document.querySelector('header').innerText)");
+  check("CSV test data imports in the app", csvOk, csvOk ? "" : await pageText(page));
   page.close();
 } catch (e) {
   check("smoke test ran", false, e.message);
