@@ -66,6 +66,61 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
   Best XI assignment solver with no budget). Filter to free agents or to staff whose preferred job is the
   role, and exclude anyone to see the next best pick
 
+## Desktop app (Windows)
+
+The desktop app (`apps/desktop`) has every screen of the website, plus **Scan FM**: it reads the
+whole database of a running Football Manager 27 (or 26) straight from the game's memory, in
+seconds, with no CSV export. Every scan includes real CA and PA, hidden attributes, personality,
+exact wages and values, and staff attributes as 1-20 numbers. The reader only reads FM's memory;
+it never changes the game or the save.
+
+**Install.** Run `Scout-Reporter-Setup-<version>.exe`. The installer is not code-signed yet, so
+Windows SmartScreen warns about an unknown publisher on first run: click **More info**, then
+**Run anyway**.
+
+**Scan.** Start FM, load your save, then press **Scan FM** in the app (or **F9** anywhere, also
+inside FM, while the app runs). The scan loads into every screen: Attribute and Wonderkid get the
+whole database, Squad gets your club's players, and Staff gets every staff member. If FM runs as
+administrator, run Scout Reporter as administrator too.
+
+**Stored scans.** Every scan is kept under `%APPDATA%\Scout Reporter\scans` (the **Scans** page
+lists them; **Open folder** shows the files). By default the newest 20 are kept; change this under
+Settings. **Use** loads an older scan back into the app, and **Load sample scan** tries the app
+without FM.
+
+**Growth.** The **Growth** page compares two scans of your save: CA, PA and attribute change per
+player, sortable, with filters such as "gained 10+ CA" and a maximum age. Scan every few in-game
+months to follow your youngsters and spot breakout players worldwide.
+
+**Hide hidden stats.** If you see CA, PA and hidden attributes as cheating, switch on
+**Hide CA, PA and hidden attributes** under Settings, then press **Use** on your scan. The screens
+then work from visible attributes only, as with a Standard view export.
+
+**Supported versions.** FM27 (game version 27.0) and FM26 (26.3), Windows, from Steam, Epic or
+Game Pass. The reader reads FM's memory at fixed places, and a big FM patch can move them. When
+the game's version differs from the version the reader was made for, the app shows a warning on
+the scan: check a few players against the game, and update Scout Reporter when a new version is
+out. How to re-pin the reader after a patch: `reader/REPIN.md`. Mac support is planned (the Mac
+reader has to load inside FM, so the app will start FM itself).
+
+**Develop.**
+
+```bash
+bun run reader:build     # the reader (needs the .NET 10 SDK): reader/dist/ScoutReporter.Reader.exe
+bun run desktop:dev      # next dev for the desktop target + Electron, pages hot-reload
+bun run desktop:dist     # reader + pages + main process, then the NSIS installer in apps/desktop/release
+bun run desktop:smoke    # drive the built app (release/win-unpacked) end to end, without FM
+```
+
+The desktop pages are `apps/web` built with `SCOUTREPORTER_TARGET=desktop`: a standalone Next
+server (in `.next-desktop`) that the app runs on `127.0.0.1`. Pages only in the desktop app are named
+`page.desktop.tsx`. The screens talk to the app only through the preload bridge
+(`window.scoutReporterDesktop`, typed in `packages/core/desktop/bridge.ts`). The scan file format
+is documented in `packages/core/scan/README.md`.
+
+**Credits.** The reader is adapted from [FMSuperScout](https://github.com/mavarobli/FMSuperScout)
+by mavarobli (MIT licence, see `reader/LICENSE-FMSuperScout` and `reader/UPSTREAM.md`).
+
 ## Getting started
 
 Install dependencies and run the dev server:
@@ -162,6 +217,8 @@ Commit messages must follow the [Conventional Commits](https://www.conventionalc
 | `feat!:` / `BREAKING CHANGE:` footer | Major (x.0.0) |
 
 Other prefixes like `chore:`, `docs:`, `ci:` do not trigger a release.
+
+These releases (tags `vX.Y.Z`, `CHANGELOG.md`) are the website's. The desktop app is not released yet: pull requests that touch it build an unsigned installer in CI (`.github/workflows/desktop.yml`, artifact `scout-reporter-windows`). Desktop releases will get their own tag prefix, `desktop-v`.
 
 ## Tech stack
 
