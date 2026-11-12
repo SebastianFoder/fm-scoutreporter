@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Scout Reporter reader: reads a running fm.exe from outside (ReadProcessMemory, read-only) and
+    writes the database as JSON for the desktop app. Adapted from FMSuperScout's scanner (MIT).
+
+    Release build (self-contained, no .NET install needed on the user's PC):
+      dotnet publish reader -c Release   (or: bun run reader:build)
+      -> reader/dist/ScoutReporter.Reader.exe
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>ScoutReporter.Reader</AssemblyName>
+    <RootNamespace>ScoutReporter.Reader</RootNamespace>
+    <Version>0.1.0</Version>
+    <Product>Scout Reporter Reader</Product>
+    <Description>Scout Reporter reader: reads Football Manager's database (read-only)</Description>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>none</DebugType>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Big scans: no concurrent GC, workstation GC; the scan is already parallel. -->
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_IsPublishing)' == 'true'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishDir>$(MSBuildThisFileDirectory)dist\</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="tests\**" />
+    <InternalsVisibleTo Include="ScoutReporter.Reader.Tests" />
+  </ItemGroup>
+
+</Project>

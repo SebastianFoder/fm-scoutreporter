@@ -1,0 +1,280 @@
+using System.Text.Json;
+using Xunit;
+
+namespace ScoutReporter.Reader.Tests;
+
+public class DecodeTests
+{
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(5, 1)]
+    [InlineData(62, 12)]   // 12.4 rounds down
+    [InlineData(63, 13)]   // 12.6 rounds up
+    [InlineData(100, 20)]
+    [InlineData(255, 20)]  // out of range clamps
+    public void Attributes_are_stored_times_five(int raw, int expected) =>
+        Assert.Equal(expected, Decode.Attribute((byte)raw));
+
+    [Fact]
+    public void Raw_personality_values_outside_1_to_20_are_unknown()
+    {
+        Assert.Equal(0, Decode.Raw20(0));
+        Assert.Equal(15, Decode.Raw20(15));
+        Assert.Equal(0, Decode.Raw20(21));
+    }
+
+    [Fact]
+    public void FM_dates_decode_to_year_and_day_of_year()
+    {
+        uint raw = (2027u << 16) | 182u;
+        Assert.Equal((2027, 182), Decode.FmDate(raw));
+        Assert.Equal("2027-07-01", Decode.FmDateIso(raw));
+        Assert.Equal((0, 0), Decode.FmDate(0xFFFFFFFF));
+        Assert.Null(Decode.FmDateIso((1999u << 16) | 10u, minYear: 2000));
+        // Day 366 in a non-leap year is not a date.
+        Assert.Null(Decode.FmDateIso((2027u << 16) | 366u));
+        Assert.Equal("2028-12-31", Decode.FmDateIso((2028u << 16) | 366u));
+    }
+
+    [Fact]
+    public void Age_counts_birthdays()
+    {
+        var today = new DateTime(2027, 7, 1); // day 182
+        Assert.Equal(20, Decode.AgeAt(2007, 182, today));
+        Assert.Equal(19, Decode.AgeAt(2007, 183, today));
+        Assert.Equal(0, Decode.AgeAt(0, 0, today));
+    }
+
+    [Fact]
+    public void Money_sentinels_mean_unknown()
+    {
+        Assert.Equal(-1, Decode.Money(0xFFFFFFFF));
+        Assert.Equal(2_500_000, Decode.Money(2_500_000));
+        Assert.Equal(-1, Decode.MoneyValue(300_000_000));
+    }
+
+    [Theory]
+    [InlineData("Feyenoord", true)]
+    [InlineData("Lech Poznań", true)]
+    [InlineData("Fenerbahçe", true)]
+    [InlineData("Д", false)]
+    [InlineData("Динамо Москва", false)]
+    [InlineData("x", false)]
+    [InlineData(null, false)]
+    public void Only_plausible_names_pass(string name, bool expected) =>
+        Assert.Equal(expected, Decode.PlausibleName(name));
+
+    [Fact]
+    public void Job_preferences_pick_the_top_groups()
+    {
+        var table = new byte[15];
+        table[2] = 18; table[5] = 18; table[0] = 9;
+        var (preferred, scores) = Decode.JobPreferences(table);
+        Assert.Equal(new[] { 2, 5 }, preferred);
+        Assert.Same(table, scores);
+
+        var weak = new byte[15]; weak[3] = 8;
+        Assert.Empty(Decode.JobPreferences(weak).preferred);
+        Assert.NotNull(Decode.JobPreferences(weak).scores);
+
+        var corrupt = new byte[15]; corrupt[1] = 200;
+        Assert.Null(Decode.JobPreferences(corrupt).scores);
+        Assert.Null(Decode.JobPreferences(new byte[3]).scores);
+    }
+
+    [Fact]
+    public void Job_ids_have_English_names()
+    {
+        Assert.Equal("Head of Youth Development", Decode.JobName(64));
+        Assert.Equal("Performance Analyst", Decode.JobName(60));
+        Assert.Null(Decode.JobName(999));
+    }
+}
+
+public class FieldsTests
+{
+    [Fact]
+    public void Versions_resolve_to_their_layout()
+    {
+        var (fm27, ok27) = Fields.Resolve(27, 0);
+        Assert.Equal("FM27", fm27.Game);
+        Assert.True(ok27);
+        Assert.Equal(0x440u, fm27.HUMAN_MANAGER_OFFSET);
+
+        var (patched, okPatched) = Fields.Resolve(27, 1);
+        Assert.Equal("FM27", patched.Game);
+        Assert.False(okPatched);
+
+        var (fm26, ok26) = Fields.Resolve(26, 3);
+        Assert.Equal("FM26", fm26.Game);
+        Assert.True(ok26);
+        Assert.Equal(0x450u, fm26.HUMAN_MANAGER_OFFSET);
+    }
+
+    [Fact]
+    public void Unknown_versions_use_the_newest_layout_and_are_flagged()
+    {
+        var (layout, ok) = Fields.Resolve(28, 0);
+        Assert.Equal("FM27", layout.Game);
+        Assert.False(ok);
+    }
+
+    [Fact]
+    public void Attribute_offsets_are_unique_and_inside_the_block()
+    {
+        var all = Fields.PlayerAttrs.Concat(Fields.PlayerHiddenAttrs).ToList();
+        Assert.Equal(all.Count, all.Select(a => a.off).Distinct().Count());
+        Assert.Equal(all.Count, all.Select(a => a.key).Distinct().Count());
+        Assert.All(all, a => Assert.InRange(a.off, 0, 54));
+        Assert.Equal(Fields.StaffAttrs.Length, Fields.StaffAttrs.Select(a => a.key).Distinct().Count());
+    }
+}
+
+public class DumpWriterTests
+{
+    private static ScanResult Sample()
+    {
+        var player = new Person
+        {
+            Uid = 2002083882, IsPlayer = true, Name = "Alex \"AW\" Williamson", BirthYear = 2007, BirthDoy = 32, Age = 20,
+            Nationality = "United States", Club = "Loan FC", OwnerClub = "Parent FC", Division = "MLS", TeamType = 0,
+            Ca = 112, Pa = 150, Wage = 1900, ContractExpires = "2030-06-30", Value = 950_000, AskingPrice = -1,
+            Professionalism = 15, Ambition = 12, FootLeft = 8, FootRight = 20, Height = 184, Listed = true,
+        };
+        player.Attributes["pace"] = 15;
+        player.Attributes["teamWork"] = 11;
+        player.Hidden["consistency"] = 13;
+        player.Positions["GK"] = 20;
+
+        var coach = new Person { Uid = 7, Name = "Coach", Ca = 100, Pa = 120, Job = "Coach", JobId = 2, Wage = -1 };
+        coach.PreferredJobs.Add(2);
+        coach.StaffAttributes["attacking"] = 14;
+        coach.StaffAttributes["workingWithYoungsters"] = 16;
+
+        return new ScanResult
+        {
+            Players = { player }, Staff = { coach }, Game = "FM27", GameVersion = "27.0.1.0", SupportedVersion = "27.0",
+            VersionOk = true, GameDate = new DateTime(2027, 8, 14), GameYear = 2027, Manager = "Me", MyClub = "Parent FC",
+        };
+    }
+
+    private static JsonElement WriteSample(ScanResult r)
+    {
+        var sw = new StringWriter();
+        using (var j = new JsonWriter(sw))
+        {
+            DumpWriter.Write(j, r, "0.1.0", DatabaseChoice.Men, new DateTime(2026, 11, 12, 18, 0, 0, DateTimeKind.Utc));
+            j.Close();
+        }
+        return JsonDocument.Parse(sw.ToString()).RootElement;
+    }
+
+    [Fact]
+    public void Writes_the_schema_and_meta()
+    {
+        var root = WriteSample(Sample());
+        Assert.Equal("scoutreporter-scan", root.GetProperty("schema").GetString());
+        Assert.Equal(1, root.GetProperty("schemaVersion").GetInt32());
+        var meta = root.GetProperty("meta");
+        Assert.Equal("2026-11-12T18:00:00Z", meta.GetProperty("scannedAt").GetString());
+        Assert.Equal("27.0.1.0", meta.GetProperty("gameVersion").GetString());
+        Assert.True(meta.GetProperty("versionOk").GetBoolean());
+        Assert.Equal("2027-08-14", meta.GetProperty("gameDate").GetString());
+        Assert.Equal("Parent FC", meta.GetProperty("myClub").GetString());
+        Assert.Equal("men", meta.GetProperty("database").GetString());
+    }
+
+    [Fact]
+    public void Writes_players_in_our_keys()
+    {
+        var p = WriteSample(Sample()).GetProperty("players")[0];
+        Assert.Equal(2002083882u, p.GetProperty("uid").GetUInt32());
+        Assert.Equal("Alex \"AW\" Williamson", p.GetProperty("name").GetString());
+        Assert.Equal("2007-02-01", p.GetProperty("birthDate").GetString());
+        Assert.Equal("Parent FC", p.GetProperty("ownerClub").GetString());
+        Assert.Equal(15, p.GetProperty("attributes").GetProperty("pace").GetInt32());
+        Assert.Equal(11, p.GetProperty("attributes").GetProperty("teamWork").GetInt32());
+        Assert.Equal(13, p.GetProperty("hidden").GetProperty("consistency").GetInt32());
+        Assert.Equal(20, p.GetProperty("positions").GetProperty("GK").GetInt32());
+        Assert.Equal(15, p.GetProperty("personality").GetProperty("professionalism").GetInt32());
+        Assert.Equal(JsonValueKind.Null, p.GetProperty("personality").GetProperty("loyalty").ValueKind);
+        Assert.Equal(950_000, p.GetProperty("value").GetInt64());
+        Assert.Equal(JsonValueKind.Null, p.GetProperty("askingPrice").ValueKind);
+        Assert.True(p.GetProperty("transferStatus").GetProperty("listed").GetBoolean());
+    }
+
+    [Fact]
+    public void Writes_staff_with_numeric_attributes()
+    {
+        var s = WriteSample(Sample()).GetProperty("staff")[0];
+        Assert.Equal("Coach", s.GetProperty("job").GetString());
+        Assert.Equal(2, s.GetProperty("preferredJobs")[0].GetInt32());
+        Assert.Equal(14, s.GetProperty("attributes").GetProperty("attacking").GetInt32());
+        Assert.Equal(JsonValueKind.Null, s.GetProperty("wage").ValueKind);
+        Assert.Equal(JsonValueKind.Null, s.GetProperty("jobPreferences").ValueKind);
+    }
+
+    [Fact]
+    public void Never_writes_an_empty_scan()
+    {
+        var empty = new ScanResult();
+        Assert.Equal((false, ScanError.NothingFound), Pick(DumpWriter.Check(empty, existingFile: false)));
+        Assert.Equal((false, ScanError.NothingFound), Pick(DumpWriter.Check(empty, existingFile: true)));
+    }
+
+    [Fact]
+    public void A_thinned_out_scan_only_replaces_nothing()
+    {
+        var r = Sample();
+        r.UnreadFraction = 0.2;
+        Assert.Equal((false, ScanError.TooMuchUnread), Pick(DumpWriter.Check(r, existingFile: true)));
+        Assert.True(DumpWriter.Check(r, existingFile: false).write);
+        r.UnreadFraction = 0.05;
+        Assert.True(DumpWriter.Check(r, existingFile: true).write);
+    }
+
+    private static (bool, ScanError?) Pick((bool write, ScanError? error, string message) c) => (c.write, c.error);
+
+    [Fact]
+    public void Writes_atomically_through_a_temp_file()
+    {
+        string dir = Path.Combine(Path.GetTempPath(), "sr-reader-test-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(dir);
+        try
+        {
+            string path = Path.Combine(dir, DumpWriter.FileName);
+            DumpWriter.WriteFile(path, Sample(), "0.1.0", DatabaseChoice.Both, DateTime.UtcNow);
+            Assert.True(File.Exists(path));
+            Assert.False(File.Exists(path + ".tmp"));
+            using var doc = JsonDocument.Parse(File.ReadAllText(path));
+            Assert.Equal("both", doc.RootElement.GetProperty("meta").GetProperty("database").GetString());
+        }
+        finally { Directory.Delete(dir, true); }
+    }
+}
+
+public class JsonWriterTests
+{
+    [Fact]
+    public void Escapes_strings_and_writes_invariant_numbers()
+    {
+        var sw = new StringWriter();
+        using (var j = new JsonWriter(sw))
+        {
+            j.BeginObj();
+            j.Prop("s", "a\"b\\c\n\u0001");
+            j.Prop("d", 0.5);
+            j.Prop("nan", double.NaN);
+            j.PropPositive("unknown", -1);
+            j.Key("arr"); j.BeginArr(); j.Val(1); j.Val(2); j.EndArr();
+            j.EndObj();
+            j.Close();
+        }
+        var root = JsonDocument.Parse(sw.ToString()).RootElement;
+        Assert.Equal("a\"b\\c\n\u0001", root.GetProperty("s").GetString());
+        Assert.Equal(0.5, root.GetProperty("d").GetDouble());
+        Assert.Equal(JsonValueKind.Null, root.GetProperty("nan").ValueKind);
+        Assert.Equal(JsonValueKind.Null, root.GetProperty("unknown").ValueKind);
+        Assert.Equal(2, root.GetProperty("arr").GetArrayLength());
+    }
+}

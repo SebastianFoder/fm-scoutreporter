@@ -19,7 +19,9 @@
     "test": "bun test",
     "release": "semantic-release",
     "storybook": "bun run --cwd packages/ui storybook",
-    "build-storybook": "bun run --cwd packages/ui build-storybook"
+    "build-storybook": "bun run --cwd packages/ui build-storybook",
+    "reader:build": "dotnet publish reader/ScoutReporter.Reader.csproj -c Release",
+    "reader:test": "dotnet test reader/tests"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
