@@ -83,9 +83,15 @@ const navigate = (page, path) => page.eval(`(location.href = new URL(${JSON.stri
 try {
   const page = cdp(await pageSocket());
   await page.ready;
-  await waitFor(page, "document.readyState === 'complete'");
+  // The window's target can show up while it still holds the first blank page (no preload there),
+  // so wait until /desktop itself has loaded before checking anything.
+  await waitFor(page, "location.pathname.startsWith('/desktop') && document.readyState === 'complete'");
 
-  check("preload bridge is exposed", (await page.eval("typeof window.scoutReporterDesktop")) === "object");
+  check(
+    "preload bridge is exposed",
+    await waitFor(page, "typeof window.scoutReporterDesktop === 'object'", 10_000),
+    await page.eval("location.href").catch(() => "page unreachable"),
+  );
   check("Node is not exposed to the page", (await page.eval("typeof require === 'undefined' && typeof process === 'undefined'")) === true);
 
   const noFm = await page.eval("window.scoutReporterDesktop.scan()");
