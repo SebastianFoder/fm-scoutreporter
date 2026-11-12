@@ -20,15 +20,16 @@ export function ImportPanel({
   description: ReactNode;
   /** Fixture name served by /api/fixtures/[name]. */
   testFixture: string;
-  onLoad: (csvText: string) => string | null;
+  /** Resolves (or returns) a message to show, or null when the import went well. */
+  onLoad: (csvText: string) => string | null | Promise<string | null>;
   onClear: () => void;
   onImported?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [testDataLoading, setTestDataLoading] = useState(false);
 
-  const load = (text: string) => {
-    setError(onLoad(text));
+  const load = async (text: string) => {
+    setError(await onLoad(text));
     onImported?.();
   };
 
@@ -37,7 +38,7 @@ export function ImportPanel({
     try {
       const res = await fetch(`/api/fixtures/${testFixture}`);
       if (!res.ok) throw new Error("Failed to fetch fixture");
-      load(await res.text());
+      await load(await res.text());
     } catch {
       setError("Could not load test data.");
     } finally {
@@ -49,7 +50,7 @@ export function ImportPanel({
     const file = event.target.files?.[0];
     if (!file) return;
     try {
-      load(await file.text());
+      await load(await file.text());
     } catch (e) {
       console.error(e);
       setError("Could not parse CSV. Please check the file format.");

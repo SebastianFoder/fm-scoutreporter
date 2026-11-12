@@ -34,7 +34,7 @@ export function CsvImportPanel({
         </>
       }
       testFixture={testFixture}
-      onLoad={(text) => (setCsvText(text) ? null : STORAGE_FULL_MESSAGE)}
+      onLoad={async (text) => ((await setCsvText(text)) ? null : STORAGE_FULL_MESSAGE)}
       onClear={clear}
       onImported={onImported}
     />

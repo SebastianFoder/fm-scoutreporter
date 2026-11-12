@@ -11,7 +11,11 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 ## Features
 
 - **CSV import** (semicolon-delimited FM export) from the homepage
-- **Persisted import** (stored in `sessionStorage`, survives navigation)
+- **Persisted imports**: player, squad and staff imports are kept in IndexedDB (database `scoutreporter`,
+  store `imports`, keyed `importedPlayersCsv`, `importedSquadCsv`, `importedStaffCsv`), so they survive
+  reloads and visits like before, and full-database imports fit. Imports saved by older versions in
+  localStorage (or sessionStorage) move across on first load. Open tabs stay in sync. Without IndexedDB
+  the app falls back to localStorage. Settings (profiles, theme, formations) stay in localStorage
 - **Player list** with score + highlighted attributes
 - **Player profile** view (with goalkeeper-specific layout when position includes `GK`)
 - **Compare view** with:
@@ -37,7 +41,7 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
   shared by both pages). A spot needs the matching export position: DCL, DC and DCR all need D (C)
 - **Squad analysis** (`/squad`): import your own squad (Squad view `apps/web/public/SCOUT REPORTER Squad.fmf` or
   Squad Hidden Attributes view `apps/web/public/SCOUT REPORTER Squad Hidden Attributes.fmf`; plain player exports work too, stored
-  separately from the player import under `localStorage` key `importedSquadCsv`), pick a formation and
+  separately from the player import under the import key `importedSquadCsv`), pick a formation and
   it builds the first eleven and, from everyone left, the second eleven (the cover). It flags positions
   nobody plays naturally, weak starters, missing cover, big drops to the backup, ageing starters with or
   without a young successor, and (with CA/PA) youngsters projected to overtake a starter. The rest of the
@@ -56,7 +60,7 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
   scientist). Rank by best role, preferred job or any role; filtering by preferred job shows only the
   attributes fm-scoring weights for that job. Filter free agents, and open a staff member for every role
   ranked. Stored separately
-  from the player import (`localStorage` key `importedStaffCsv`)
+  from the player import (import key `importedStaffCsv`)
 - **Best backroom** (`/staff/backroom`): choose how many of each staff role you need (or a preset) and it
   hires the combination with the highest total role score from the staff import, nobody used twice (the
   Best XI assignment solver with no budget). Filter to free agents or to staff whose preferred job is the

@@ -28,6 +28,7 @@ import {
 import { StaffDetailModal } from "./StaffDetailModal";
 import { StaffImportPanel } from "./StaffImportPanel";
 import { RatingCell, ScoreCell, type ValueMode } from "./StaffCells";
+import { compareNames } from "@scoutreporter/core/text";
 
 type Row = { s: StaffMember; scores: StaffScores };
 
@@ -112,7 +113,7 @@ export default function StaffClient() {
       const va = sortValue(a, sort, rankBy);
       const vb = sortValue(b, sort, rankBy);
       if (typeof va === "string" || typeof vb === "string") {
-        return m * String(va).localeCompare(String(vb), undefined, { sensitivity: "base" });
+        return m * compareNames(String(va), String(vb));
       }
       return m * (va - vb) || a.s.name.localeCompare(b.s.name);
     });

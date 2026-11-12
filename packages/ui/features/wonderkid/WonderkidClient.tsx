@@ -12,6 +12,7 @@ import { fm27PlayerScores, type Fm27PlayerScores } from "@scoutreporter/core/fm2
 import { PRIME_BENCHMARK, type Fm27Role } from "@scoutreporter/core/fm27/benchmarks";
 import type { CaModel } from "@scoutreporter/core/fm27/potential";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
+import { compareNames } from "@scoutreporter/core/text";
 
 type Row = { p: PlayerWithGroups; s: Fm27PlayerScores };
 
@@ -97,7 +98,7 @@ export default function WonderkidClient() {
       const va = sortValue(a, sort);
       const vb = sortValue(b, sort);
       if (typeof va === "string" || typeof vb === "string") {
-        return m * String(va).localeCompare(String(vb), undefined, { sensitivity: "base" });
+        return m * compareNames(String(va), String(vb));
       }
       return m * (va - vb);
     });

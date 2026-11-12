@@ -6,6 +6,7 @@ import { PlayersDataProvider } from "@scoutreporter/ui/components/PlayersDataPro
 import { StaffDataProvider } from "@scoutreporter/ui/components/StaffDataProvider";
 import { SquadDataProvider } from "@scoutreporter/ui/components/SquadDataProvider";
 import { WeightProvider } from "@scoutreporter/ui/components/WeightConfig";
+import { resetImportStoreToMemory } from "@scoutreporter/core/storage/import-store";
 import { API_FIXTURES, FIXTURE_CSV, STAFF_FIXTURE_CSV, type FixtureName } from "./fixtures";
 
 /** localStorage keys owned by the app's providers. */
@@ -43,6 +44,9 @@ export interface AppProvidersParameters {
  * a clean slate so one story's edits (e.g. in the Weights modal) don't leak into another.
  */
 function seedStorage({ players = null, staff = false, squad = null, storage = {} }: AppProvidersParameters) {
+  // Imports live in IndexedDB in the app; stories use a fresh in-memory store instead, so nothing
+  // leaks between stories or into the real site. Seeded CSVs go through the localStorage migration path.
+  resetImportStoreToMemory();
   try {
     for (const key of Object.values(STORAGE_KEYS)) window.localStorage.removeItem(key);
     window.sessionStorage.removeItem(STORAGE_KEYS.players);

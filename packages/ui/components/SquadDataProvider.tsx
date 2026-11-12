@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { parseAndGroup, type PlayerWithGroups } from "./PlayersDataProvider";
+import { useStoredImport } from "./useStoredImport";
 import type { CaModelSet } from "@scoutreporter/core/fm27/potential";
 import { parseSquadFields, type SquadColumns, type SquadFields } from "@scoutreporter/core/squad/squad-fields";
 
@@ -21,11 +22,14 @@ export type SquadImportResult = { ok: true; persisted: boolean } | { ok: false; 
 type SquadDataContextValue = {
   state: SquadDataState;
   /** Parse and store a squad export (Standard or Hidden Attributes view). */
-  importCsv: (csvText: string) => SquadImportResult;
+  importCsv: (csvText: string) => Promise<SquadImportResult>;
   clear: () => void;
 };
 
-/** Separate from the player (scouting) import, so a squad can be checked against scouting targets. */
+/**
+ * Separate from the player (scouting) import, so a squad can be checked against scouting targets.
+ * IndexedDB key (also its old localStorage key, migrated on first load).
+ */
 export const SQUAD_STORAGE_KEY = "importedSquadCsv";
 
 const EMPTY: SquadDataState = { csvText: null, players: [], caModels: null, fields: new Map(), columns: null };
@@ -42,58 +46,34 @@ function stateFor(csvText: string): SquadDataState | null {
 export function SquadDataProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<SquadDataState>(EMPTY);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- post-SSR localStorage hydration */
-  useEffect(() => {
+  const { save, remove } = useStoredImport(SQUAD_STORAGE_KEY, (stored) => {
     try {
-      const stored = window.localStorage.getItem(SQUAD_STORAGE_KEY);
-      const next = stored ? stateFor(stored) : null;
-      if (next) setState(next);
+      setState((stored && stateFor(stored)) || EMPTY);
     } catch {
-      // storage blocked or corrupt: start empty
+      setState(EMPTY);
     }
-  }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
+  });
 
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key !== SQUAD_STORAGE_KEY) return;
-      try {
-        setState((e.newValue && stateFor(e.newValue)) || EMPTY);
-      } catch {
-        setState(EMPTY);
+  const importCsv = useCallback(
+    async (csvText: string): Promise<SquadImportResult> => {
+      const next = stateFor(csvText);
+      if (!next) {
+        return {
+          ok: false,
+          error:
+            "No players with positions found in this file. Export your squad with the Scout Reporter Standard or Hidden Attributes view.",
+        };
       }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  const importCsv = useCallback((csvText: string): SquadImportResult => {
-    const next = stateFor(csvText);
-    if (!next) {
-      return {
-        ok: false,
-        error:
-          "No players with positions found in this file. Export your squad with the Scout Reporter Standard or Hidden Attributes view.",
-      };
-    }
-    setState(next);
-    let persisted = true;
-    try {
-      window.localStorage.setItem(SQUAD_STORAGE_KEY, csvText);
-    } catch {
-      persisted = false;
-    }
-    return { ok: true, persisted };
-  }, []);
+      setState(next);
+      return { ok: true, persisted: await save(csvText) };
+    },
+    [save],
+  );
 
   const clear = useCallback(() => {
     setState(EMPTY);
-    try {
-      window.localStorage.removeItem(SQUAD_STORAGE_KEY);
-    } catch {
-      // ignore
-    }
-  }, []);
+    void remove();
+  }, [remove]);
 
   const value = useMemo(() => ({ state, importCsv, clear }), [state, importCsv, clear]);
 

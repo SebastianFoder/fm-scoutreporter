@@ -36,6 +36,7 @@ import {
   parsePageSizeParam,
   type PageSizeChoice,
 } from "@scoutreporter/ui/components/PaginationControls";
+import { compareNames } from "@scoutreporter/core/text";
 
 interface Props {
   players: PlayerWithGroups[];
@@ -191,17 +192,13 @@ function compareRows(a: Row, b: Row, sort: string, sortDir: SortDir): number {
   if (sort === "player") {
     return (
       m *
-      a.p.raw.player.localeCompare(b.p.raw.player, undefined, {
-        sensitivity: "base",
-      })
+      compareNames(a.p.raw.player, b.p.raw.player)
     );
   }
   if (sort === "position") {
     return (
       m *
-      a.p.raw.position.localeCompare(b.p.raw.position, undefined, {
-        sensitivity: "base",
-      })
+      compareNames(a.p.raw.position, b.p.raw.position)
     );
   }
   if (sort === "score") {

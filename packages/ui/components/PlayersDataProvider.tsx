@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type Dispatch,
@@ -14,6 +13,7 @@ import { parsePlayersCsv } from "@scoutreporter/core/parser/csv-parser";
 import { groupPlayerAttributes } from "@scoutreporter/core/parser/attribute-grouper";
 import { computeDatasetPotentials, type CaModelSet } from "@scoutreporter/core/fm27/potential";
 import type { PlayerWithGroups } from "@scoutreporter/core/players";
+import { useStoredImport } from "./useStoredImport";
 
 export type { PlayerWithGroups };
 
@@ -27,12 +27,18 @@ type PlayersDataState = {
 type PlayersDataContextValue = {
   state: PlayersDataState;
   setState: Dispatch<SetStateAction<PlayersDataState>>;
-  /** Returns false if the CSV could not be persisted (e.g. storage quota). In-memory state is still updated. */
-  setCsvText: (csvText: string) => boolean;
+  /**
+   * Import a CSV. Resolves false if it could not be persisted (storage blocked or full); the
+   * in-memory state is updated either way.
+   */
+  setCsvText: (csvText: string) => Promise<boolean>;
   clear: () => void;
 };
 
-const STORAGE_KEY = "importedPlayersCsv";
+/** IndexedDB key of the player import (also its old localStorage key, migrated on first load). */
+export const PLAYERS_STORAGE_KEY = "importedPlayersCsv";
+const STORAGE_KEY = PLAYERS_STORAGE_KEY;
+/** The oldest imports were kept in sessionStorage under this key. */
 const LEGACY_SESSION_KEY = "importedPlayersCsv";
 
 const PlayersDataContext = createContext<PlayersDataContextValue | null>(null);
@@ -53,23 +59,6 @@ export function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText"
 
 const EMPTY: PlayersDataState = { csvText: null, players: [], caModels: null };
 
-function readStoredCsv(): string | null {
-  try {
-    let stored = window.localStorage.getItem(STORAGE_KEY);
-    if (!stored) {
-      const legacy = window.sessionStorage.getItem(LEGACY_SESSION_KEY);
-      if (legacy) {
-        window.localStorage.setItem(STORAGE_KEY, legacy);
-        window.sessionStorage.removeItem(LEGACY_SESSION_KEY);
-        stored = legacy;
-      }
-    }
-    return stored;
-  } catch {
-    return null;
-  }
-}
-
 export function PlayersDataProvider({
   children,
 }: {
@@ -77,59 +66,34 @@ export function PlayersDataProvider({
 }) {
   const [state, setState] = useState<PlayersDataState>(EMPTY);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- post-SSR localStorage hydration */
-  useEffect(() => {
-    try {
-      const stored = readStoredCsv();
-      if (!stored) return;
-      setState({ csvText: stored, ...parseAndGroup(stored) });
-    } catch {
-      // ignore
-    }
-  }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
-
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key !== STORAGE_KEY) return;
-      if (e.newValue) {
-        try {
-          setState({ csvText: e.newValue, ...parseAndGroup(e.newValue) });
-        } catch {
-          setState(EMPTY);
-        }
-      } else {
+  const { save, remove } = useStoredImport(
+    STORAGE_KEY,
+    (stored) => {
+      if (!stored) {
+        setState(EMPTY);
+        return;
+      }
+      try {
+        setState({ csvText: stored, ...parseAndGroup(stored) });
+      } catch {
         setState(EMPTY);
       }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+    },
+    LEGACY_SESSION_KEY,
+  );
 
   const setCsvText = useCallback(
     (csvText: string) => {
       setState({ csvText, ...parseAndGroup(csvText) });
-      let persisted = true;
-      try {
-        window.localStorage.setItem(STORAGE_KEY, csvText);
-        window.sessionStorage.removeItem(LEGACY_SESSION_KEY);
-      } catch {
-        persisted = false;
-      }
-      return persisted;
+      return save(csvText);
     },
-    [],
+    [save],
   );
 
   const clear = useCallback(() => {
     setState(EMPTY);
-    try {
-      window.localStorage.removeItem(STORAGE_KEY);
-      window.sessionStorage.removeItem(LEGACY_SESSION_KEY);
-    } catch {
-      // ignore
-    }
-  }, []);
+    void remove();
+  }, [remove]);
 
   const value = useMemo(
     () => ({ state, setState, setCsvText, clear }),

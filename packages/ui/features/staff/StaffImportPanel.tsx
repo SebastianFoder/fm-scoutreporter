@@ -23,8 +23,8 @@ export function StaffImportPanel({ onImported }: { onImported?: () => void }) {
         </>
       }
       testFixture="staff"
-      onLoad={(text) => {
-        const r = importCsv(text);
+      onLoad={async (text) => {
+        const r = await importCsv(text);
         if (!r.ok) return r.error;
         return r.persisted ? null : STORAGE_FULL_MESSAGE;
       }}

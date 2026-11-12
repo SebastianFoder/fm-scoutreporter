@@ -188,8 +188,8 @@ export default function SquadClient() {
             </>
           }
           testFixture="squad-hidden"
-          onLoad={(text) => {
-            const res = squad.importCsv(text);
+          onLoad={async (text) => {
+            const res = await squad.importCsv(text);
             if (!res.ok) return res.error;
             return res.persisted ? null : STORAGE_FULL_MESSAGE;
           }}
@@ -205,7 +205,7 @@ export default function SquadClient() {
                 <button
                   type="button"
                   className="link"
-                  onClick={() => squad.importCsv(scouting.state.csvText!)}
+                  onClick={() => void squad.importCsv(scouting.state.csvText!)}
                 >
                   Use the player import ({scoutingCount} players) as your squad
                 </button>
