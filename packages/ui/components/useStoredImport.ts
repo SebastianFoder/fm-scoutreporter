@@ -18,7 +18,8 @@ import {
  */
 export function useStoredImport(
   key: string,
-  onStored: (text: string | null) => void,
+  /** A CSV string, or a records object (see `@scoutreporter/core/storage/stored-records`); null when cleared. */
+  onStored: (value: unknown) => void,
   legacySessionKey?: string,
 ) {
   const touched = useRef(false);
@@ -29,15 +30,15 @@ export function useStoredImport(
 
   useEffect(() => {
     let active = true;
-    void loadImport(key, { legacySessionKey }).then((text) => {
-      if (active && !touched.current && text) onStoredRef.current(text);
+    void loadImport<unknown>(key, { legacySessionKey }).then((value) => {
+      if (active && !touched.current && value) onStoredRef.current(value);
     });
     const unsubscribe = subscribeImports((changed) => {
       if (changed !== key) return;
-      void readImport<string>(key).then((text) => {
+      void readImport<unknown>(key).then((value) => {
         if (!active) return;
         touched.current = true;
-        onStoredRef.current(text);
+        onStoredRef.current(value);
       });
     });
     return () => {
@@ -46,11 +47,11 @@ export function useStoredImport(
     };
   }, [key, legacySessionKey]);
 
-  /** Store a new import. Resolves false when it could not be kept beyond this tab. */
+  /** Store a new import (CSV text or a records object). Resolves false when it could not be kept beyond this tab. */
   const save = useCallback(
-    (text: string) => {
+    (value: unknown) => {
       touched.current = true;
-      return writeImport(key, text);
+      return writeImport(key, value);
     },
     [key],
   );

@@ -223,12 +223,12 @@ function readLegacy(key: string, sessionKey?: string): string | null {
  * Read an import, moving a pre-IndexedDB copy (localStorage under the same key, or sessionStorage
  * under `legacySessionKey`) into IndexedDB first. The old copy is removed only once IndexedDB has it.
  */
-export async function loadImport(
+export async function loadImport<T = string>(
   key: string,
   { legacySessionKey }: { legacySessionKey?: string } = {},
-): Promise<string | null> {
+): Promise<T | string | null> {
   const legacy = readLegacy(key, legacySessionKey);
-  if (legacy === null) return readImport<string>(key);
+  if (legacy === null) return readImport<T>(key);
   try {
     const b = await backend();
     if (b.kind === "localstorage") return legacy;

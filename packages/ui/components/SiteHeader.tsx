@@ -6,6 +6,8 @@ import { BrandMark } from "./BrandMark";
 import { AttributeColorConfig } from "./AttributeColorConfig";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { usePlayersData } from "./PlayersDataProvider";
+import { ScanButton } from "../desktop/ScanButton";
+import { useDesktopBridge } from "../desktop/DesktopProvider";
 
 const NAV = [
   { href: "/attribute", label: "Attribute" },
@@ -16,10 +18,18 @@ const NAV = [
   { href: "/how-to-use", label: "How to use" },
 ] as const;
 
+/** The desktop app adds its scan screens and drops the CSV setup guide. */
+const DESKTOP_NAV = [
+  { href: "/desktop", label: "Scans" },
+  ...NAV.filter((item) => item.href !== "/how-to-use"),
+  { href: "/growth", label: "Growth" },
+] as const;
+
 export function SiteHeader() {
   const pathname = usePathname() ?? "/";
   const { state } = usePlayersData();
   const count = state.players.length;
+  const nav = useDesktopBridge() ? DESKTOP_NAV : NAV;
 
   return (
     <header className="bg-chrome text-on-chrome">
@@ -34,7 +44,7 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Main" className="flex min-w-0 items-stretch overflow-x-auto">
-          {NAV.map((item) => {
+          {nav.map((item) => {
             const active =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
@@ -56,12 +66,13 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5">
+          <ScanButton />
           {count > 0 && (
             <span
               className="hidden whitespace-nowrap text-[13px] text-on-chrome/65 md:inline"
               title="Imported players, shared by both modes"
             >
-              {count} players imported
+              {count.toLocaleString("en-GB")} players {state.source ? "scanned" : "imported"}
             </span>
           )}
           <AttributeColorConfig />

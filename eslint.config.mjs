@@ -32,7 +32,7 @@ const eslintConfig = defineConfig([
   ...storybook.configs["flat/recommended"],
   {
     // The Next app is in a workspace, not at the repo root.
-    settings: { next: { rootDir: "apps/web/" } },
+    settings: { next: { rootDir: "apps/web/" }, react: { version: "19.2" } },
   },
   {
     plugins: { local: { rules: { "no-em-dash": noEmDash } } },
@@ -49,7 +49,14 @@ const eslintConfig = defineConfig([
     "**/next-env.d.ts",
     "storybook-static/**",
     "reader/**",
+    "apps/desktop/release/**",
+    "apps/desktop/dist/**",
   ]),
+  // CommonJS build hooks (electron-builder loads them with require).
+  {
+    files: ["**/*.cjs"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
   // Storybook config dir is dot-prefixed, so it's ignored by default.
   globalIgnores(["!**/.storybook"]),
 ]);

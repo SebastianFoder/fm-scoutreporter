@@ -1,0 +1,74 @@
+name: Desktop app
+
+# Builds the Windows installer (unsigned) for pull requests that touch the desktop app, the reader or
+# the shared packages, runs the reader's and the app's tests and the end-to-end smoke test, and
+# uploads the installer as an artifact. No release yet: desktop releases will get their own
+# `desktop-v` tag prefix.
+
+on:
+  pull_request:
+    paths:
+      - "apps/desktop/**"
+      - "apps/web/**"
+      - "reader/**"
+      - "packages/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/desktop.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Reader tests
+        run: bun run reader:test
+
+      - name: App tests
+        run: bun test
+
+      - name: Build reader, pages and main process
+        run: node apps/desktop/scripts/build.mjs all
+
+      - name: Download Electron
+        run: node apps/desktop/scripts/build.mjs electron
+
+      - name: Package installer
+        working-directory: apps/desktop
+        run: npx electron-builder --win nsis --x64 --publish never
+
+      - name: Smoke test the packaged app
+        run: node apps/desktop/scripts/smoke.mjs
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: scout-reporter-windows
+          path: apps/desktop/release/*.exe
+          if-no-files-found: error

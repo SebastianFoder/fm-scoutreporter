@@ -13,12 +13,20 @@ import { parsePlayersCsv } from "@scoutreporter/core/parser/csv-parser";
 import { groupPlayerAttributes } from "@scoutreporter/core/parser/attribute-grouper";
 import { computeDatasetPotentials, type CaModelSet } from "@scoutreporter/core/fm27/potential";
 import type { PlayerWithGroups } from "@scoutreporter/core/players";
+import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
+import {
+  isStoredPlayerRecords,
+  type ImportSource,
+  type StoredPlayerRecords,
+} from "@scoutreporter/core/storage/stored-records";
 import { useStoredImport } from "./useStoredImport";
 
 export type { PlayerWithGroups };
 
 type PlayersDataState = {
   csvText: string | null;
+  /** Set when the import came from records (a desktop scan) instead of a CSV. */
+  source: ImportSource | null;
   players: PlayerWithGroups[];
   /** CA model used for potential projections; null when the import has no CA/PA (Standard view). */
   caModels: CaModelSet | null;
@@ -32,6 +40,8 @@ type PlayersDataContextValue = {
    * in-memory state is updated either way.
    */
   setCsvText: (csvText: string) => Promise<boolean>;
+  /** Import already-parsed records (a desktop scan). Resolves false if they could not be persisted. */
+  importRecords: (players: PlayerAttributes[], source: ImportSource) => Promise<boolean>;
   clear: () => void;
 };
 
@@ -44,8 +54,12 @@ const LEGACY_SESSION_KEY = "importedPlayersCsv";
 const PlayersDataContext = createContext<PlayersDataContextValue | null>(null);
 
 /** Parse a CSV export into the grouped dataset the app works with. */
-export function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText"> {
-  const parsed = parsePlayersCsv(csvText);
+export function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText" | "source"> {
+  return groupRecords(parsePlayersCsv(csvText));
+}
+
+/** Group parsed player records (from a CSV or a desktop scan) into the dataset the app works with. */
+export function groupRecords(parsed: PlayerAttributes[]): Omit<PlayersDataState, "csvText" | "source"> {
   const potentials = computeDatasetPotentials(parsed);
   return {
     players: parsed.map((p) => ({
@@ -57,7 +71,14 @@ export function parseAndGroup(csvText: string): Omit<PlayersDataState, "csvText"
   };
 }
 
-const EMPTY: PlayersDataState = { csvText: null, players: [], caModels: null };
+const EMPTY: PlayersDataState = { csvText: null, source: null, players: [], caModels: null };
+
+/** State for a stored import: CSV text or a records object. Null when it is neither. */
+function stateForStored(stored: unknown): PlayersDataState | null {
+  if (typeof stored === "string") return { csvText: stored, source: null, ...parseAndGroup(stored) };
+  if (isStoredPlayerRecords(stored)) return { csvText: null, source: stored.source, ...groupRecords(stored.players) };
+  return null;
+}
 
 export function PlayersDataProvider({
   children,
@@ -69,12 +90,8 @@ export function PlayersDataProvider({
   const { save, remove } = useStoredImport(
     STORAGE_KEY,
     (stored) => {
-      if (!stored) {
-        setState(EMPTY);
-        return;
-      }
       try {
-        setState({ csvText: stored, ...parseAndGroup(stored) });
+        setState(stateForStored(stored) ?? EMPTY);
       } catch {
         setState(EMPTY);
       }
@@ -84,8 +101,17 @@ export function PlayersDataProvider({
 
   const setCsvText = useCallback(
     (csvText: string) => {
-      setState({ csvText, ...parseAndGroup(csvText) });
+      setState({ csvText, source: null, ...parseAndGroup(csvText) });
       return save(csvText);
+    },
+    [save],
+  );
+
+  const importRecords = useCallback(
+    (players: PlayerAttributes[], source: ImportSource) => {
+      setState({ csvText: null, source, ...groupRecords(players) });
+      const stored: StoredPlayerRecords = { kind: "records", version: 1, source, players };
+      return save(stored);
     },
     [save],
   );
@@ -96,8 +122,8 @@ export function PlayersDataProvider({
   }, [remove]);
 
   const value = useMemo(
-    () => ({ state, setState, setCsvText, clear }),
-    [state, setCsvText, clear],
+    () => ({ state, setState, setCsvText, importRecords, clear }),
+    [state, setCsvText, importRecords, clear],
   );
 
   return (
