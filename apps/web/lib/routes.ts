@@ -14,4 +14,5 @@ export const INDEXABLE_ROUTES: { path: string; priority: number; changeFrequency
   { path: "/how-to-use/attribute-mode", priority: 0.6, changeFrequency: "monthly" },
   { path: "/how-to-use/wonderkid-mode", priority: 0.6, changeFrequency: "monthly" },
   { path: "/faq", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/download", priority: 0.8, changeFrequency: "weekly" },
 ];

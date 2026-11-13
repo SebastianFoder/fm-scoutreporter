@@ -16,12 +16,13 @@ const NAV = [
   { href: "/squad", label: "Squad" },
   { href: "/staff", label: "Staff" },
   { href: "/how-to-use", label: "How to use" },
+  { href: "/download", label: "Desktop app" },
 ] as const;
 
 /** The desktop app adds its scan screens and drops the CSV setup guide. */
 const DESKTOP_NAV = [
   { href: "/desktop", label: "Scans" },
-  ...NAV.filter((item) => item.href !== "/how-to-use"),
+  ...NAV.filter((item) => item.href !== "/how-to-use" && item.href !== "/download"),
   { href: "/growth", label: "Growth" },
 ] as const;
 
