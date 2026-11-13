@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.14.0...v1.15.0) (2026-11-13)
+
+
+### Features
+
+* **desktop:** use the Scout Reporter icon instead of Electron's ([f2038ad](https://github.com/SebastianFoder/fm-scoutreporter/commit/f2038adb881b741726dd8d763269091ee23a9ddd))
+
 # [1.14.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.13.0...v1.14.0) (2026-11-13)
 
 
