@@ -120,22 +120,30 @@ internal static class Program
             Log($"Scout Reporter reader {ReaderVersion}: fm.exe pid {fm.Id}");
 
             var result = new Scanner(game, db, Progress).Run();
+            var steps = new StepTimer(result.Timings);
             foreach (var line in result.Log) Log(line);
             try { WriteDiagnostics(Path.Combine(outDir, "diagnostics.txt"), result, ReaderVersion); }
             catch (Exception e) { Log("Could not write diagnostics.txt: " + e.Message); }   // best effort, but say so
             bool previous = File.Exists(target) || args.Contains("--previous-exists");
             bool onlySearch = args.Contains("--only-search");
             var (write, error, message) = DumpWriter.Check(result, previous, onlySearch);
-            if (!write) throw new ScanException(error!.Value, message);
+            if (!write)
+            {
+                Log("Steps: " + StepTimer.Format(result.Timings));
+                throw new ScanException(error!.Value, message);
+            }
             if (onlySearch)
             {
                 int before = result.Log.Count;
                 result.KeepSearchOnly();
                 foreach (var line in result.Log.Skip(before)) Log(line);
             }
+            steps.Lap("diagnostics");
 
             Progress("writing", 0.95);
             DumpWriter.WriteFile(target, result, ReaderVersion, db, DateTime.UtcNow);
+            steps.Lap("write");
+            Log("Steps: " + StepTimer.Format(result.Timings));
             if (!result.VersionOk) Log(RepinHint(result));
             Emit(w =>
             {
@@ -147,6 +155,10 @@ internal static class Program
                 w.Prop("game", result.Game);
                 w.Prop("gameVersion", result.GameVersion);
                 w.Prop("elapsedMs", result.ElapsedMs);
+                // Milliseconds per step, in order: open, version, find, merge, read people, ...
+                w.Key("timings"); w.BeginObj();
+                foreach (var (step, ms) in result.Timings) w.Prop(step, ms);
+                w.EndObj();
             });
             return 0;
         }
@@ -423,6 +435,7 @@ internal static class Program
             w.WriteLine($"Players: {r.Players.Count:N0}  Staff: {r.Staff.Count:N0}  Unreadable: {r.UnreadFraction:P1}  Snapshot: {r.FromSnapshot}  Time: {r.ElapsedMs} ms");
             w.WriteLine($"Manager: {r.Manager ?? "?"}  Club: {r.MyClub ?? "?"}  In-game date: {r.GameDate?.ToString("yyyy-MM-dd") ?? "not found"} (year {r.GameYear})");
             w.WriteLine($"FM search result: {r.SearchPlayers:N0} players, {r.SearchStaff:N0} staff");
+            w.WriteLine($"Steps: {StepTimer.Format(r.Timings)}");
             w.WriteLine();
             w.WriteLine("Log:");
             foreach (var line in r.Log) w.WriteLine("  " + line);

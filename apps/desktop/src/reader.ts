@@ -13,6 +13,10 @@ export interface ReaderDone {
   versionOk: boolean;
   game: string;
   gameVersion: string | null;
+  /** Time spent scanning, in milliseconds. */
+  elapsedMs?: number;
+  /** Milliseconds per reader step, in order (open, version, find, merge, read people, ...). */
+  timings?: Record<string, number>;
 }
 
 export interface ReaderError {

@@ -58,6 +58,10 @@ The unit tests cover what does not need the game: value decoding, version resolu
 output and the write rules. Reading a live FM can only be checked by hand: start FM27, load a save,
 run `scan`, and compare a few players with the game (see `REPIN.md`, step 4).
 
+Speed: every scan logs how long each step took (`Steps:` in the log and in diagnostics.txt).
+`bun run reader:check` times a scan against the running FM and compares it with a reference scan
+field by field; see [PERFORMANCE.md](PERFORMANCE.md).
+
 ## Supported versions
 
 | Game | Pinned on | Notes |

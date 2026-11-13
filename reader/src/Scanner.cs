@@ -26,6 +26,8 @@ internal sealed class ScanResult
     public double UnreadFraction;
     public bool FromSnapshot;
     public long ElapsedMs;
+    /// <summary>How long each step of the scan took, in order (see <see cref="StepTimer"/>).</summary>
+    public List<(string step, long ms)> Timings = new();
     /// <summary>Class-offset histogram (largest first), for diagnostics and re-pinning.</summary>
     public List<(int offset, long count)> ClassHistogram = new();
     public List<string> Log = new();
@@ -84,6 +86,7 @@ internal sealed class Scanner
         if (!retry) return first;
         var second = RunOnce(useSnapshot: true, out _);
         second.Log.InsertRange(0, first.Log);
+        second.Timings.Insert(0, ("first try", first.ElapsedMs));
         return second;
     }
 
@@ -92,6 +95,7 @@ internal sealed class Scanner
         retryWithSnapshot = false;
         var sw = Stopwatch.StartNew();
         var result = new ScanResult();
+        var steps = new StepTimer(result.Timings);
         void Log(string s) => result.Log.Add(s);
 
         var (availPhys, availCommit, memLoad) = MemScan.MemoryStatus();
@@ -110,6 +114,7 @@ internal sealed class Scanner
             BufPool[t] ??= GC.AllocateUninitializedArray<byte>(MemScan.ChunkBytes, pinned: true);
 
         var mem = new MemScan(_game, useSnapshot);
+        steps.Lap("open");
         try
         {
             result.FromSnapshot = mem.Snapshotted;
@@ -125,8 +130,9 @@ internal sealed class Scanner
             var searchVts = mem.GamePluginVtables(Fields.SEARCH_SESSION_TYPE);
             _searchVt = searchVts.Count > 0 ? searchVts[0] : 0;
             if (searchVts.Count != 1) Log($"FM's search class was found {searchVts.Count} times (expected once): {(searchVts.Count == 0 ? "search results are not read" : "using the first")}.");
+            steps.Lap("version");
 
-            Scan(mem, maxDop, result, sw, out double unread);
+            Scan(mem, maxDop, result, sw, steps, out double unread);
             result.UnreadFraction = unread;
             if (!useSnapshot && unread > 0.10)
             {
@@ -158,20 +164,41 @@ internal sealed class Scanner
         result.SupportedVersion = F.SupportedVersion;
     }
 
-    // Per-thread collections for the parallel scan: each worker fills its own without locks.
+    /// <summary>
+    /// One person the scan pass found: where the object is, and the values the pass checked from
+    /// the copied memory. Reading the person (name, attributes, contract...) happens afterwards.
+    /// </summary>
+    internal struct Found
+    {
+        public ulong Obj;      // the person object
+        public ulong Block;    // its player or staff block
+        public uint Uid;
+        public ushort Ca, Pa;
+        public bool Female;
+    }
+
+    // Per-thread collections for the parallel scan: each worker fills its own without locks. Lists
+    // keep the order objects were met in, so the merge picks the same object for a UID as before.
     private sealed class ScanLocal
     {
-        public readonly Dictionary<uint, Person> Players = new();
-        public readonly Dictionary<uint, Person> Staff = new();
+        public readonly List<Found> Players = new();
+        public readonly HashSet<uint> PlayerUids = new();
+        public readonly List<Found> Staff = new();
+        public readonly HashSet<uint> StaffUids = new();
         public readonly Dictionary<int, long> Hist = new();
         public readonly List<(ulong obj, ulong person)> Managers = new();
-        public readonly Dictionary<ulong, uint> PersonToUid = new();
         public readonly Dictionary<ulong, uint> StaffToUid = new();
         public readonly List<ulong> Clubs = new();
         public readonly List<ulong> SearchSessions = new();
     }
 
-    private void Scan(MemScan mem, int maxDop, ScanResult result, Stopwatch sw, out double unreadFraction)
+    /// <summary>
+    /// The scan works in two steps. The pass copies FM's heap in big blocks and only notes the people
+    /// in it (UID, address, CA/PA), taken from the copied memory: almost no extra reads. Reading each
+    /// person's fields comes after, in <see cref="ReadPeople"/>, so later it can be limited to the
+    /// people a scan actually needs.
+    /// </summary>
+    private void Scan(MemScan mem, int maxDop, ScanResult result, Stopwatch sw, StepTimer steps, out double unreadFraction)
     {
         ulong totalBytes = 0;
         foreach (var r in mem.ScanRegions) totalBytes += r.size;
@@ -225,7 +252,7 @@ internal sealed class Scanner
                             long now = sw.ElapsedMilliseconds;
                             if (now - Interlocked.Read(ref lastProgressMs) >= 500 && totalBytes > 0 && Monitor.TryEnter(progressLock))
                             {
-                                try { lastProgressMs = now; _progress("scanning", 0.85 * done / totalBytes); }
+                                try { lastProgressMs = now; _progress("memory", FindShare * done / totalBytes); }
                                 finally { Monitor.Exit(progressLock); }
                             }
                         }
@@ -244,9 +271,14 @@ internal sealed class Scanner
         }
         Task.WaitAll(tasks);
         if (regionErrors > 0) result.Log.Add($"{regionErrors} region(s) skipped after an internal error (first: {firstRegionError}); the rest of the scan went on.");
+        steps.Lap("find");
 
-        var players = new Dictionary<uint, Person>();
-        var staff = new Dictionary<uint, Person>();
+        // Merge the workers' finds. For a UID seen more than once, the first worker's first object
+        // wins; every object's address still maps to its UID (squad lists may point at either).
+        var foundPlayers = new List<Found>();
+        var foundStaff = new List<Found>();
+        var playerUids = new HashSet<uint>();
+        var staffUids = new HashSet<uint>();
         var hist = new Dictionary<int, long>();
         var managers = new List<(ulong obj, ulong person)>();
         var personToUid = new Dictionary<ulong, uint>(1 << 17);
@@ -257,9 +289,14 @@ internal sealed class Scanner
         {
             foreach (var kv in L.StaffToUid) staffToUid[kv.Key] = kv.Value;
             searchSessions.UnionWith(L.SearchSessions);
-            foreach (var kv in L.Players) players.TryAdd(kv.Key, kv.Value);
-            foreach (var kv in L.Staff) staff.TryAdd(kv.Key, kv.Value);
-            foreach (var kv in L.PersonToUid) personToUid[kv.Key] = kv.Value;
+            foreach (var f in L.Players)
+            {
+                if (playerUids.Add(f.Uid)) foundPlayers.Add(f);
+                personToUid[f.Obj] = f.Uid;
+                personToUid[f.Block] = f.Uid;
+            }
+            foreach (var f in L.Staff)
+                if (staffUids.Add(f.Uid)) foundStaff.Add(f);
             foreach (var kv in L.Hist) hist[kv.Key] = hist.GetValueOrDefault(kv.Key) + kv.Value;
             managers.AddRange(L.Managers);
             clubObjs.AddRange(L.Clubs);
@@ -268,12 +305,25 @@ internal sealed class Scanner
         unreadFraction = totalBytes > 0 ? (double)Interlocked.Read(ref unreadBytes) / totalBytes : 0;
         if (unreadFraction > 0) result.Log.Add($"Unreadable during the scan: {unreadFraction:P1} of {totalBytes / (1024 * 1024):N0} MB.");
         result.ClassHistogram = hist.OrderByDescending(kv => kv.Value).Select(kv => (kv.Key, kv.Value)).ToList();
-        _progress("linking", 0.87);
+
+        // Every person also has a staff facet, so a player can be picked up as staff too. Real staff
+        // (coaches, scouts, physios) have no player facet and stay; the others are not read as staff.
+        int staffRaw = foundStaff.Count;
+        foundStaff.RemoveAll(f => playerUids.Contains(f.Uid));
+        steps.Lap("merge");
+
+        var players = ReadPeople(foundPlayers, maxDop, FindShare, 0.80, result,
+            f => ReadPlayer(mem, f.Obj, f.Block, f.Uid, f.Ca, f.Pa, f.Female));
+        var staff = ReadPeople(foundStaff, maxDop, 0.80, 0.85, result,
+            f => ReadStaff(mem, f.Obj, f.Block, f.Uid, f.Ca, f.Pa));
+        steps.Lap("read people");
+        _progress("clubs", 0.87);
 
         var squadClub = WalkSquads(mem, players, personToUid, clubObjs, managers, result);
         foreach (var p in players.Values)
             if (squadClub.TryGetValue(p.Uid, out var sc))
             { p.Club = sc.club; if (sc.rep > 0) p.ClubRep = sc.rep; if (sc.div != null) p.Division = sc.div; p.TeamType = sc.tt; }
+        steps.Lap("squads");
 
         // The human manager's team (person -> contract -> team): source of the in-game date.
         ulong myTeam = 0;
@@ -298,18 +348,64 @@ internal sealed class Scanner
         FindGameDate(mem, myTeam, result);
         var today = result.GameDate ?? new DateTime(result.GameYear, DateTime.Now.Month, Math.Min(DateTime.Now.Day, 28));
         foreach (var p in players.Values.Concat(staff.Values)) p.Age = Decode.AgeAt(p.BirthYear, p.BirthDoy, today);
-
-        // Every person also has a staff facet, so almost every player was also picked up as staff.
-        // Real staff (coaches, scouts, physios) have no player facet and stay.
-        int staffRaw = staff.Count;
-        foreach (var uid in staff.Keys.Where(players.ContainsKey).ToList()) staff.Remove(uid);
-        result.Log.Add($"Found {players.Count:N0} players and {staff.Count:N0} staff ({staffRaw - staff.Count:N0} staff entries were players).");
+        result.Log.Add($"Found {players.Count:N0} players and {staff.Count:N0} staff ({staffRaw - foundStaff.Count:N0} staff entries were players).");
+        steps.Lap("date");
 
         ReadSearchResults(mem, searchSessions, personToUid, staffToUid, players, staff, result);
 
         result.Players = players.Values.ToList();
         result.Staff = staff.Values.ToList();
+        steps.Lap("search");
     }
+
+    /// <summary>Progress share of the scan pass; reading the people found takes it up to 0.85.</summary>
+    private const double FindShare = 0.30;
+
+    /// <summary>
+    /// Read every found person (in parallel: each field is a ReadProcessMemory call, so this is where
+    /// most of a full scan's time goes). The result keeps the order of `found`. A person whose read
+    /// throws is left out and counted, so one odd object never sinks the scan.
+    /// </summary>
+    private Dictionary<uint, Person> ReadPeople(List<Found> found, int maxDop, double from, double to, ScanResult result, Func<Found, Person> read)
+    {
+        var people = new Person[found.Count];
+        long done = 0, errors = 0, lastProgressMs = 0;
+        string firstError = null;
+        var clock = Stopwatch.StartNew();
+        object progressLock = new();
+        Parallel.For(0, found.Count, new ParallelOptions { MaxDegreeOfParallelism = maxDop }, i =>
+        {
+            try { people[i] = read(found[i]); }
+            catch (Exception ex)
+            {
+                Interlocked.Increment(ref errors);
+                Interlocked.CompareExchange(ref firstError, ex.Message, null);
+            }
+            long n = Interlocked.Increment(ref done);
+            long now = clock.ElapsedMilliseconds;
+            if (now - Interlocked.Read(ref lastProgressMs) >= 500 && Monitor.TryEnter(progressLock))
+            {
+                try { lastProgressMs = now; _progress("people", from + (to - from) * n / found.Count); }
+                finally { Monitor.Exit(progressLock); }
+            }
+        });
+        if (errors > 0) result.Log.Add($"{errors:N0} people skipped after an internal error (first: {firstError}).");
+        var byUid = new Dictionary<uint, Person>(found.Count);
+        foreach (var p in people)
+            if (p != null) byUid.TryAdd(p.Uid, p);
+        return byUid;
+    }
+
+    // Values the scan pass reads from the copied block when they lie inside it (`at` is the index in
+    // `buf`, `addr` the same place in FM's memory), and from FM's memory otherwise.
+    internal static byte BufU8(byte[] buf, int len, long at, MemScan mem, ulong addr) =>
+        at >= 0 && at + 1 <= len ? buf[at] : mem.U8(addr);
+
+    internal static ushort BufU16(byte[] buf, int len, long at, MemScan mem, ulong addr) =>
+        at >= 0 && at + 2 <= len ? BitConverter.ToUInt16(buf, (int)at) : mem.U16(addr);
+
+    internal static ulong BufPtr(byte[] buf, int len, long at, MemScan mem, ulong addr) =>
+        at >= 0 && at + 8 <= len ? BitConverter.ToUInt64(buf, (int)at) : mem.Ptr(addr);
 
     /// <summary>
     /// Mark the people in FM's search result (the Player Search or Staff Search screen, after its
@@ -373,29 +469,30 @@ internal sealed class Scanner
             if (cls.Hist != 0) L.Hist[cls.Hist] = L.Hist.GetValueOrDefault(cls.Hist) + 1;
             if (cls.Kind == ObjKind.None)
             {
-                if (IsClub(mem, p)) L.Clubs.Add(p);
+                if (IsClub(mem, buf, want, i, p)) L.Clubs.Add(p);
                 continue;
             }
 
-            ulong block = p + (ulong)cls.BlockOff;               // player or staff block
-            ulong person = p;
+            // The player or staff block, as an address and as an index into the copied block.
+            ulong block = p + (ulong)cls.BlockOff;
+            long blockAt = i + cls.BlockOff;
             if (cls.Kind == ObjKind.Player)
             {
-                ushort ca = mem.U16(block + F.PLAO_CA), pa = mem.U16(block + F.PLAO_PA);
+                ushort ca = BufU16(buf, want, blockAt + F.PLAO_CA, mem, block + F.PLAO_CA);
+                ushort pa = BufU16(buf, want, blockAt + F.PLAO_PA, mem, block + F.PLAO_PA);
                 if (ca < 1 || ca > 200 || pa < 1 || pa > 200) continue;
-                bool female = (mem.U8(p + F.PERO_GENDER) & F.GENDER_FEMALE_BIT) != 0;
+                bool female = (BufU8(buf, want, i + F.PERO_GENDER, mem, p + F.PERO_GENDER) & F.GENDER_FEMALE_BIT) != 0;
                 if (female ? _db == DatabaseChoice.Men : _db == DatabaseChoice.Women) continue;
-                if (L.Players.ContainsKey(uid)) continue;
-                L.Players[uid] = ReadPlayer(mem, person, block, uid, ca, pa, female);
-                L.PersonToUid[p] = uid;
-                L.PersonToUid[block] = uid;
+                if (!L.PlayerUids.Add(uid)) continue;
+                L.Players.Add(new Found { Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa, Female = female });
             }
             else
             {
-                ushort ca = mem.U16(block + F.NPLO_CA), pa = mem.U16(block + F.NPLO_PA);
+                ushort ca = BufU16(buf, want, blockAt + F.NPLO_CA, mem, block + F.NPLO_CA);
+                ushort pa = BufU16(buf, want, blockAt + F.NPLO_PA, mem, block + F.NPLO_PA);
                 if (ca < 1 || ca > 200 || pa < 1 || pa > 200) continue;
-                if (cls.Kind == ObjKind.HumanManager) L.Managers.Add((p, person));
-                if (!L.Staff.ContainsKey(uid)) L.Staff[uid] = ReadStaff(mem, person, block, uid, ca, pa);
+                if (cls.Kind == ObjKind.HumanManager) L.Managers.Add((p, p));
+                if (L.StaffUids.Add(uid)) L.Staff.Add(new Found { Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa });
                 L.StaffToUid[p] = uid;
                 L.StaffToUid[block] = uid;
             }
@@ -547,10 +644,14 @@ internal sealed class Scanner
         return null;
     }
 
-    /// <summary>A club object: a team vector of 1..64 teams and a readable name.</summary>
-    private bool IsClub(MemScan m, ulong p)
+    /// <summary>
+    /// A club object: a team vector of 1..64 teams and a readable name. The vector comes from the
+    /// copied block (`at` is the object's index in `buf`) when it lies inside it.
+    /// </summary>
+    private bool IsClub(MemScan m, byte[] buf, int len, long at, ulong p)
     {
-        ulong tb = m.Ptr(p + F.CLUB_TEAMS_BEGIN), te = m.Ptr(p + F.CLUB_TEAMS_END);
+        ulong tb = BufPtr(buf, len, at + F.CLUB_TEAMS_BEGIN, m, p + F.CLUB_TEAMS_BEGIN);
+        ulong te = BufPtr(buf, len, at + F.CLUB_TEAMS_END, m, p + F.CLUB_TEAMS_END);
         return tb != 0 && te > tb && (te - tb) % 8 == 0 && (te - tb) / 8 is >= 1 and <= 64 && ClubNameOf(m, p) != null;
     }
 
@@ -666,6 +767,27 @@ internal sealed class Scanner
         }
         catch (Exception e) { result.Log.Add("Reading the in-game date failed: " + e.Message); }
     }
+}
+
+/// <summary>Times the steps of a scan: each Lap records the time since the previous one.</summary>
+internal sealed class StepTimer
+{
+    private readonly Stopwatch _clock = Stopwatch.StartNew();
+    private readonly List<(string step, long ms)> _into;
+    private long _last;
+
+    public StepTimer(List<(string step, long ms)> into) => _into = into;
+
+    public void Lap(string step)
+    {
+        long now = _clock.ElapsedMilliseconds;
+        _into.Add((step, now - _last));
+        _last = now;
+    }
+
+    /// <summary>"open 120 ms, find 830 ms, ..." for logs.</summary>
+    public static string Format(IEnumerable<(string step, long ms)> timings) =>
+        string.Join(", ", timings.Select(t => string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{t.step} {t.ms:N0} ms")));
 }
 
 internal enum ScanError { NotRunning = 2, NoAccess = 4, NotLoaded = 5, NothingFound = 6, TooMuchUnread = 7, NoSearch = 8, Busy = 3 }
