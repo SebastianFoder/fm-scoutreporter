@@ -31,7 +31,7 @@ your save.
 
 - **Install:** download `Scout-Reporter-Setup-<version>.exe` from the
   [download page](https://fmscouting.sebastianfoder.com/download) or the
-  [desktop releases](https://github.com/SebastianFoder/fm-scoutreporter/releases?q=desktop-v&expanded=true).
+  [desktop releases](https://github.com/SebastianFoder/fm-scoutreporter/releases?q=%22Scout+Reporter+desktop%22&expanded=true).
   It is not code-signed yet, so SmartScreen warns on first run: **More info** > **Run anyway**.
 - **Supported:** FM27 (27.0) and FM26 (26.3) on Windows, from Steam, Epic or Game Pass. A big FM
   patch can move the data the reader looks for; the app warns when the game version differs. Mac is
