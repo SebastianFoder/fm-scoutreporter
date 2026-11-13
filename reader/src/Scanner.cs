@@ -385,7 +385,7 @@ internal sealed class Scanner
         steps.Lap("contracts");
         _progress("clubs", 0.40);
 
-        var squadClub = WalkSquads(mem, owners, personToUid, clubObjs, contractClubs, managers, result);
+        var squadClub = WalkSquads(mem, owners, personToUid, clubObjs, contractClubs, managers, result, maxDop);
         steps.Lap("squads");
 
         // The human manager's team (person -> contract -> team): source of the in-game date.
@@ -808,52 +808,74 @@ internal sealed class Scanner
     /// Link players to the club whose squad they are in: clubs found by shape during the scan, then
     /// the clubs on players' contracts. Squad entries are not always person pointers, so an entry is
     /// also probed for a pointer field that points at a known person (upstream, 15-07-2026).
+    /// The clubs are read in parallel; what each one holds is then applied in club order, so ties
+    /// between squads are settled as they always were.
     /// </summary>
     private Dictionary<uint, (string club, int tt, int rep, string div)> WalkSquads(
         MemScan mem, Dictionary<uint, string> owners, Dictionary<ulong, uint> personToUid,
-        List<ulong> shapeClubs, HashSet<ulong> contractClubs, List<(ulong obj, ulong person)> managers, ScanResult result)
+        List<ulong> shapeClubs, HashSet<ulong> contractClubs, List<(ulong obj, ulong person)> managers, ScanResult result, int maxDop)
     {
         var squad = new Dictionary<uint, (string club, int tt, int rep, string div)>();
         var managerAddrs = new HashSet<ulong>(managers.SelectMany(x => new[] { x.obj, x.person }));
 
-        foreach (ulong club in shapeClubs.Concat(contractClubs).Distinct())
+        var clubs = shapeClubs.Concat(contractClubs).Distinct().ToList();
+        var perClub = new List<SquadEvent>[clubs.Count];
+        Parallel.For(0, clubs.Count, new ParallelOptions { MaxDegreeOfParallelism = maxDop }, ci =>
+            perClub[ci] = ReadClubSquads(mem, clubs[ci], personToUid, managerAddrs));
+        foreach (var events in perClub)
         {
-            string cname = ClubNameOf(mem, club);
-            if (cname == null) continue;
-            ulong tb = mem.Ptr(club + F.CLUB_TEAMS_BEGIN), te = mem.Ptr(club + F.CLUB_TEAMS_END);
-            if (tb == 0 || te <= tb || (te - tb) % 8 != 0 || (te - tb) / 8 > 64) continue;
-            for (ulong ti = 0; ti < (te - tb) / 8; ti++)
+            if (events == null) continue;
+            foreach (var e in events)
             {
-                ulong team = mem.Ptr(tb + ti * 8);
-                if (team == 0) continue;
-                int tt = mem.U8(team + F.TEAM_TYPE);
-                int trep = mem.U16(team + F.TEAM_REP);
-                if (trep is < 0 or > 12000) trep = 0;
-                ulong mgr = mem.Ptr(team + F.TEAM_MANAGER);
-                if (mgr != 0 && managerAddrs.Contains(mgr) && (result.MyClub == null || tt == 0)) result.MyClub = cname;
-                string div = CompNameOf(mem, team);
-                ulong pb = mem.Ptr(team + F.TEAM_PLAYERS_BEGIN), pe = mem.Ptr(team + F.TEAM_PLAYERS_END);
-                if (pb == 0 || pe <= pb || (pe - pb) % 8 != 0 || (pe - pb) / 8 > 200) continue;
-                for (ulong pi = 0; pi < (pe - pb) / 8; pi++)
-                {
-                    ulong entry = mem.Ptr(pb + pi * 8);
-                    if (entry == 0) continue;
-                    if (!personToUid.TryGetValue(entry, out uint uid))
-                    {
-                        bool hit = false;
-                        for (ulong off = 0; off <= 0x80 && !hit; off += 8)
-                        {
-                            ulong q = mem.Ptr(entry + off);
-                            hit = q != 0 && personToUid.TryGetValue(q, out uid);
-                        }
-                        if (!hit) continue;
-                    }
-                    PickSquad(squad, owners, uid, cname, tt, trep, div);
-                }
+                if (e.Manager) { if (result.MyClub == null || e.Tt == 0) result.MyClub = e.Club; }
+                else PickSquad(squad, owners, e.Uid, e.Club, e.Tt, e.Rep, e.Div);
             }
         }
         result.Log.Add($"Squad walk: {squad.Count:N0} players linked to clubs.");
         return squad;
+    }
+
+    /// <summary>One thing a club's teams hold: a squad entry, or the human manager managing a team.</summary>
+    private readonly record struct SquadEvent(bool Manager, uint Uid, string Club, int Tt, int Rep, string Div);
+
+    /// <summary>A club's squad entries and human-manager teams, in team order (null: not a club).</summary>
+    private List<SquadEvent> ReadClubSquads(MemScan mem, ulong club, Dictionary<ulong, uint> personToUid, HashSet<ulong> managerAddrs)
+    {
+        var events = new List<SquadEvent>();
+        string cname = ClubNameOf(mem, club);
+        if (cname == null) return null;
+        ulong tb = mem.Ptr(club + F.CLUB_TEAMS_BEGIN), te = mem.Ptr(club + F.CLUB_TEAMS_END);
+        if (tb == 0 || te <= tb || (te - tb) % 8 != 0 || (te - tb) / 8 > 64) return null;
+        for (ulong ti = 0; ti < (te - tb) / 8; ti++)
+        {
+            ulong team = mem.Ptr(tb + ti * 8);
+            if (team == 0) continue;
+            int tt = mem.U8(team + F.TEAM_TYPE);
+            int trep = mem.U16(team + F.TEAM_REP);
+            if (trep is < 0 or > 12000) trep = 0;
+            ulong mgr = mem.Ptr(team + F.TEAM_MANAGER);
+            if (mgr != 0 && managerAddrs.Contains(mgr)) events.Add(new SquadEvent(true, 0, cname, tt, 0, null));
+            string div = CompNameOf(mem, team);
+            ulong pb = mem.Ptr(team + F.TEAM_PLAYERS_BEGIN), pe = mem.Ptr(team + F.TEAM_PLAYERS_END);
+            if (pb == 0 || pe <= pb || (pe - pb) % 8 != 0 || (pe - pb) / 8 > 200) continue;
+            for (ulong pi = 0; pi < (pe - pb) / 8; pi++)
+            {
+                ulong entry = mem.Ptr(pb + pi * 8);
+                if (entry == 0) continue;
+                if (!personToUid.TryGetValue(entry, out uint uid))
+                {
+                    bool hit = false;
+                    for (ulong off = 0; off <= 0x80 && !hit; off += 8)
+                    {
+                        ulong q = mem.Ptr(entry + off);
+                        hit = q != 0 && personToUid.TryGetValue(q, out uid);
+                    }
+                    if (!hit) continue;
+                }
+                events.Add(new SquadEvent(false, uid, cname, tt, trep, div));
+            }
+        }
+        return events;
     }
 
     /// <summary>
