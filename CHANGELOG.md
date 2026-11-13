@@ -1,3 +1,15 @@
+## [1.17.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.17.0...v1.17.1) (2026-11-13)
+
+
+### Performance Improvements
+
+* **reader:** open FM's memory faster ([4172a6e](https://github.com/SebastianFoder/fm-scoutreporter/commit/4172a6e706e6bd9ad3e4d49f6a4a91223eeaadc5))
+* **reader:** read clubs' squads in parallel ([a1fe6e6](https://github.com/SebastianFoder/fm-scoutreporter/commit/a1fe6e660c65b1f7a3b116d50ef2560df87b2655))
+* **reader:** read memory a page at a time when reading people ([7ebde00](https://github.com/SebastianFoder/fm-scoutreporter/commit/7ebde0060bd00d5ebb1e3194ffd1472c1859b9dc))
+* **reader:** read only the people a search scan keeps ([d1c6a2c](https://github.com/SebastianFoder/fm-scoutreporter/commit/d1c6a2cd51d557158345c7f314a659dc054dd5d8))
+* **reader:** share the scan pass's memory pieces between workers ([83c9478](https://github.com/SebastianFoder/fm-scoutreporter/commit/83c9478e35c4e79ed229b9ad9286e95939692eb2))
+* **reader:** time each scan step and split finding people from reading them ([e14a256](https://github.com/SebastianFoder/fm-scoutreporter/commit/e14a256ba60ba12443a3ded5ce1c60d805d96adc))
+
 # [1.17.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.16.0...v1.17.0) (2026-11-13)
 
 
