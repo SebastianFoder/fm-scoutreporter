@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.17.1...v1.17.2) (2026-11-13)
+
+
+### Bug Fixes
+
+* **download:** link to the desktop releases and show a new one within 10 minutes ([79c08a1](https://github.com/SebastianFoder/fm-scoutreporter/commit/79c08a1387ee96899d30a3b5263d8e10ed288da6))
+
 ## [1.17.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.17.0...v1.17.1) (2026-11-13)
 
 
