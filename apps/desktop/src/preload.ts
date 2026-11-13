@@ -3,7 +3,7 @@
  * Runs sandboxed with context isolation; the page sees `window.scoutReporterDesktop`.
  */
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from "electron";
-import { IPC, type DesktopBridge, type ScanOutcome, type ScanProgress } from "@scoutreporter/core/desktop/bridge";
+import { IPC, type DesktopBridge, type ScanOutcome, type ScanProgress, type UpdateState } from "@scoutreporter/core/desktop/bridge";
 
 function subscribe<T>(channel: string, listener: (value: T) => void): () => void {
   const handler = (_event: IpcRendererEvent, value: T) => listener(value);
@@ -27,6 +27,10 @@ const bridge: DesktopBridge = {
   getSettings: () => ipcRenderer.invoke(IPC.getSettings),
   setSettings: (patch) => ipcRenderer.invoke(IPC.setSettings, patch),
   openDataFolder: () => ipcRenderer.invoke(IPC.openDataFolder),
+  getUpdateState: () => ipcRenderer.invoke(IPC.getUpdateState),
+  checkForUpdate: () => ipcRenderer.invoke(IPC.checkForUpdate),
+  installUpdate: () => ipcRenderer.invoke(IPC.installUpdate),
+  onUpdateState: (listener) => subscribe<UpdateState>(IPC.updateState, listener),
 };
 
 contextBridge.exposeInMainWorld("scoutReporterDesktop", bridge);

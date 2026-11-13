@@ -36,6 +36,8 @@ your save.
 - **Supported:** FM27 (27.0) and FM26 (26.3) on Windows, from Steam, Epic or Game Pass. A big FM
   patch can move the data the reader looks for; the app warns when the game version differs. Mac is
   planned.
+- **Updates:** the app tells you when a new version is out; **Update now** downloads it, checks its
+  SHA-256 and installs it. Settings, scans, weights and formations are kept.
 - Scans are stored under `%APPDATA%\Scout Reporter\scans`.
 
 ## Development

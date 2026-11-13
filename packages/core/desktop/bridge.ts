@@ -5,6 +5,7 @@
  */
 import type { GrowthSort, PlayerGrowth } from "../scan/growth";
 import type { ScanFile } from "../scan/schema";
+import type { DesktopRelease } from "./releases";
 
 /** One stored scan. */
 export interface SnapshotInfo {
@@ -129,6 +130,8 @@ export interface DesktopSettings {
   scanMode: ScanScope;
   /** How much the screens load from a scan too big for the window. */
   load: LoadLimits;
+  /** Ask GitHub for a newer version when the app starts and every few hours. */
+  checkUpdates: boolean;
 }
 
 export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
@@ -138,6 +141,7 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   hideHidden: false,
   scanMode: "search",
   load: DEFAULT_LOAD_LIMITS,
+  checkUpdates: true,
 };
 
 /** What the screens load with these settings: in search mode, only FM's search and your club. */
@@ -161,6 +165,23 @@ export type ScanOutcome =
       log: string[];
     };
 
+/** What the app knows about updates. */
+export interface UpdateState {
+  /** The running version. */
+  current: string;
+  /** The newest desktop release found, when a check succeeded. */
+  latest: DesktopRelease | null;
+  /** latest is newer than current. */
+  available: boolean;
+  /** When the last check finished (ISO), null before the first. */
+  checkedAt: string | null;
+  checking: boolean;
+  /** Why the last check or update failed. */
+  error: string | null;
+  /** Installing an update: downloading (0..1), then starting the installer (the app then closes). */
+  install: { phase: "downloading" | "verifying" | "starting"; progress: number } | null;
+}
+
 export interface DesktopBridge {
   /** The desktop app's version. */
   version: string;
@@ -183,6 +204,18 @@ export interface DesktopBridge {
   setSettings(patch: Partial<DesktopSettings>): Promise<DesktopSettings>;
   /** Open the folder with the stored scans and diagnostics. */
   openDataFolder(): Promise<void>;
+  /** What the app knows about updates now (no new check). */
+  getUpdateState(): Promise<UpdateState>;
+  /** Ask GitHub for the newest version now. */
+  checkForUpdate(): Promise<UpdateState>;
+  /**
+   * Download the newest version, check it against the release's SHA-256, and install it over this
+   * one: the installer replaces the program only, so settings, scans, weights, highlights and
+   * formations stay. The app closes and starts again by itself. Resolves only when it fails.
+   */
+  installUpdate(): Promise<UpdateState>;
+  /** Every change in the update state (checks, download progress). Returns an unsubscribe. */
+  onUpdateState(listener: (state: UpdateState) => void): () => void;
 }
 
 /** The IPC channel names behind the bridge (main process and preload). */
@@ -198,6 +231,10 @@ export const IPC = {
   getSettings: "sr:get-settings",
   setSettings: "sr:set-settings",
   openDataFolder: "sr:open-data-folder",
+  getUpdateState: "sr:get-update-state",
+  checkForUpdate: "sr:check-for-update",
+  installUpdate: "sr:install-update",
+  updateState: "sr:update-state",
 } as const;
 
 /** A whole number within [min, max], or `fallback`. */
@@ -229,5 +266,6 @@ export function normaliseSettings(value: unknown): DesktopSettings {
     hideHidden: v.hideHidden === true,
     scanMode: v.scanMode === "full" ? "full" : "search",
     load: normaliseLoadLimits(v.load),
+    checkUpdates: v.checkUpdates !== false,
   };
 }

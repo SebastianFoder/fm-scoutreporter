@@ -2,12 +2,14 @@ import test, { after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { DEFAULT_LOAD_LIMITS, DEFAULT_LOAD_SCOPE, loadScopeFor, normaliseSettings } from "@scoutreporter/core/desktop/bridge";
 import { scanToLines } from "@scoutreporter/core/scan/db/write";
 import type { ScanFile } from "@scoutreporter/core/scan/schema";
 import { compareScanFiles, importJsonFile, importLinesFile, loadScanFile, scanMeta } from "./db-ops";
 import { ReaderOutput } from "./reader";
+import { downloadInstaller, findLatestRelease } from "./update";
 import { SCAN_FILE, SnapshotStore, snapshotId } from "./snapshots";
 
 const sampleFile = join(import.meta.dirname, "..", "..", "..", "packages", "core", "fixtures", "scan-sample.json");
@@ -194,4 +196,77 @@ test("reports the reader's error, or a missing result", () => {
   noSearch.push('{"type":"error","code":"no-search","message":"Football Manager has no search result to read."}\n');
   assert.equal(noSearch.finish(8).error?.code, "no-search");
   assert.equal(new ReaderOutput().finish(1).error?.code, "failed");
+});
+
+// ---------- updates ----------
+
+const releaseFor = (body: Uint8Array, sums: string) => {
+  const base = "https://github.com/SebastianFoder/fm-scoutreporter/releases/download/desktop-v0.3.0";
+  const files: Record<string, Response | (() => Response)> = {
+    [`${base}/SHA256SUMS.txt`]: () => new Response(sums),
+    [`${base}/Scout-Reporter-Setup-0.3.0.exe`]: () => new Response(Buffer.from(body), { headers: { "content-length": String(body.byteLength) } }),
+  };
+  const fetchImpl = async (url: string) => {
+    const f = files[url];
+    return typeof f === "function" ? f() : (f ?? new Response("not found", { status: 404 }));
+  };
+  const release = {
+    version: "0.3.0",
+    pageUrl: "https://github.com/SebastianFoder/fm-scoutreporter/releases/tag/desktop-v0.3.0",
+    downloadUrl: `${base}/Scout-Reporter-Setup-0.3.0.exe`,
+    fileName: "Scout-Reporter-Setup-0.3.0.exe",
+    bytes: body.byteLength,
+    checksumsUrl: `${base}/SHA256SUMS.txt`,
+    publishedAt: "2026-11-20T10:00:00Z",
+  };
+  return { release, fetchImpl };
+};
+
+test("an update is downloaded and kept only when it matches the release's checksum", async () => {
+  const body = new TextEncoder().encode("pretend installer ".repeat(1000));
+  const good = createHash("sha256").update(body).digest("hex");
+  const dir = tempDir();
+
+  const ok = releaseFor(body, `${good}  Scout-Reporter-Setup-0.3.0.exe\n`);
+  const progress: number[] = [];
+  const file = await downloadInstaller(ok.release, dir, ok.fetchImpl, (p) => progress.push(p));
+  assert.equal(file, join(dir, "Scout-Reporter-Setup-0.3.0.exe"));
+  assert.deepEqual(readFileSync(file), Buffer.from(body));
+  assert.equal(progress.at(-1), 1);
+
+  // A tampered download is refused and nothing is left behind.
+  const bad = releaseFor(body, `${"0".repeat(64)}  Scout-Reporter-Setup-0.3.0.exe\n`);
+  const dir2 = tempDir();
+  await assert.rejects(downloadInstaller(bad.release, dir2, bad.fetchImpl), /does not match/);
+  assert.equal(existsSync(join(dir2, "Scout-Reporter-Setup-0.3.0.exe")), false);
+  assert.equal(existsSync(join(dir2, "Scout-Reporter-Setup-0.3.0.exe.part")), false);
+
+  // No checksum, or a file from anywhere else: refused before downloading.
+  await assert.rejects(downloadInstaller({ ...ok.release, checksumsUrl: null }, tempDir(), ok.fetchImpl), /no checksum/);
+  await assert.rejects(
+    downloadInstaller({ ...ok.release, downloadUrl: "https://example.com/Scout-Reporter-Setup-0.3.0.exe" }, tempDir(), ok.fetchImpl),
+    /not one of Scout Reporter's releases/,
+  );
+  await assert.rejects(downloadInstaller(ok.release, tempDir(), releaseFor(body, "").fetchImpl), /does not list the installer/);
+});
+
+test("the update check finds the newest desktop release and reports GitHub's errors", async () => {
+  const list = [
+    { tag_name: "v1.17.2", assets: [] },
+    { tag_name: "desktop-v0.3.0", assets: [{ name: "Scout-Reporter-Setup-0.3.0.exe", browser_download_url: "https://x/a.exe", size: 1 }] },
+  ];
+  let agent = "";
+  const latest = await findLatestRelease(async (_url, init) => {
+    agent = new Headers(init?.headers).get("user-agent") ?? "";
+    return new Response(JSON.stringify(list));
+  }, "ScoutReporter-Desktop/0.2.0");
+  assert.equal(latest?.version, "0.3.0");
+  assert.equal(agent, "ScoutReporter-Desktop/0.2.0");
+  await assert.rejects(findLatestRelease(async () => new Response("{}", { status: 403 }), "x"), /GitHub answered 403/);
+});
+
+test("update checks are on unless turned off", () => {
+  assert.equal(normaliseSettings({}).checkUpdates, true);
+  assert.equal(normaliseSettings({ checkUpdates: false }).checkUpdates, false);
+  assert.equal(normaliseSettings({ checkUpdates: "no" }).checkUpdates, true);
 });

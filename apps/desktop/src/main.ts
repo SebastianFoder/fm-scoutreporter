@@ -13,7 +13,7 @@
  * only FM's search result and your club (settings.scanMode "search"), which the screens load whole;
  * a whole-save scan ("full") is loaded in part (settings.load). Growth compares two scans in SQL.
  */
-import { app, BrowserWindow, globalShortcut, ipcMain, session, shell, Menu, type IpcMainInvokeEvent } from "electron";
+import { app, BrowserWindow, globalShortcut, ipcMain, net, session, shell, Menu, type IpcMainInvokeEvent } from "electron";
 import { existsSync } from "node:fs";
 import { appendFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -27,13 +27,17 @@ import {
   type LoadedScan,
   type ScanOutcome,
   type ScanProgress,
+  type UpdateState,
 } from "@scoutreporter/core/desktop/bridge";
+import { compareVersions } from "@scoutreporter/core/desktop/releases";
 import type { GrowthSort } from "@scoutreporter/core/scan/growth";
 import { DbClient } from "./db-client";
 import type { ImportResult } from "./db-ops";
 import { runReader } from "./reader";
 import { SnapshotStore } from "./snapshots";
 import { startWebServer, type WebServer } from "./server";
+import { APP_ORIGIN, registerAppScheme, serveAppScheme } from "./app-origin";
+import { downloadInstaller, findLatestRelease, startInstaller } from "./update";
 
 const isDev = !app.isPackaged;
 // The app folder (apps/desktop in development, resources/app.asar when installed). Not __dirname:
@@ -65,7 +69,15 @@ const settingsFile = () => join(userData(), "settings.json");
 
 let settings: DesktopSettings = normaliseSettings({});
 let server: WebServer | null = null;
+/**
+ * Where the window shows the pages: scoutreporter://app (app-origin.ts), the same on every start so
+ * what the pages store survives restarts and updates. In development, next dev's own fixed address.
+ */
+let pageOrigin = "";
 let win: BrowserWindow | null = null;
+
+// Has to happen before the app is ready.
+registerAppScheme();
 let scanning: Promise<ScanOutcome> | null = null;
 const db = new DbClient(paths.dbProcess);
 
@@ -86,7 +98,97 @@ async function saveSettings(patch: unknown) {
   await mkdir(userData(), { recursive: true });
   await writeFile(settingsFile(), JSON.stringify(settings, null, 2));
   applyHotkey();
+  applyUpdateChecks();
   return settings;
+}
+
+// ---------- updates ----------
+
+/** How often the app asks GitHub for a newer version while it runs. */
+const UPDATE_CHECK_MS = 6 * 60 * 60 * 1000;
+/** Installers are downloaded here; the folder is cleared on the next start. */
+const updateDir = () => join(app.getPath("temp"), "scout-reporter-update");
+
+let update: UpdateState = {
+  current: app.getVersion(),
+  latest: null,
+  available: false,
+  checkedAt: null,
+  checking: false,
+  error: null,
+  install: null,
+};
+let updateTimer: ReturnType<typeof setInterval> | null = null;
+
+function setUpdate(patch: Partial<UpdateState>) {
+  update = { ...update, ...patch };
+  send(IPC.updateState, update);
+}
+
+/** Ask GitHub for the newest desktop release. Only the request itself is sent: no data about you. */
+async function checkForUpdate(): Promise<UpdateState> {
+  if (update.checking || update.install) return update;
+  setUpdate({ checking: true, error: null });
+  try {
+    const latest = await findLatestRelease((url, init) => net.fetch(url, init), `ScoutReporter-Desktop/${update.current}`);
+    setUpdate({
+      latest,
+      available: !!latest && compareVersions(latest.version, update.current) > 0,
+      checkedAt: new Date().toISOString(),
+      checking: false,
+    });
+  } catch (e) {
+    setUpdate({ checking: false, checkedAt: new Date().toISOString(), error: `Could not check for updates: ${(e as Error).message}` });
+  }
+  return update;
+}
+
+/** Check soon after start and every few hours, while the setting is on. */
+function applyUpdateChecks(firstDelayMs = 0) {
+  if (!settings.checkUpdates) {
+    if (updateTimer) clearInterval(updateTimer);
+    updateTimer = null;
+    return;
+  }
+  if (updateTimer) return;
+  updateTimer = setInterval(() => void checkForUpdate(), UPDATE_CHECK_MS);
+  setTimeout(() => void checkForUpdate(), firstDelayMs);
+}
+
+/**
+ * Download the newest version, check it, and run its installer silently; the app closes so the
+ * installer can replace it, and the installer starts it again. Your data is not touched.
+ */
+async function installUpdate(): Promise<UpdateState> {
+  if (update.install) return update;
+  if (!app.isPackaged) {
+    setUpdate({ error: "Updates install only in the installed app." });
+    return update;
+  }
+  if (scanning) {
+    setUpdate({ error: "A scan is running. Update when it has finished." });
+    return update;
+  }
+  if (!update.available) await checkForUpdate();
+  const latest = update.latest;
+  if (!latest || !update.available) return update;
+  let lastSent = 0;
+  try {
+    setUpdate({ install: { phase: "downloading", progress: 0 }, error: null });
+    const file = await downloadInstaller(latest, updateDir(), (url, init) => net.fetch(url, init), (share) => {
+      const now = Date.now();
+      if (now - lastSent < 250 && share < 1) return;
+      lastSent = now;
+      setUpdate({ install: { phase: share < 1 ? "downloading" : "verifying", progress: share } });
+    });
+    setUpdate({ install: { phase: "starting", progress: 1 } });
+    startInstaller(file);
+    // Give the installer a moment to start, then close so it can replace the program files.
+    setTimeout(() => app.quit(), 1000);
+  } catch (e) {
+    setUpdate({ install: null, error: `The update could not be installed: ${(e as Error).message}.` });
+  }
+  return update;
 }
 
 /** F9 scans from anywhere while the app runs (it is a global shortcut, so other apps lose F9 meanwhile). */
@@ -204,7 +306,7 @@ function growthQuery(value: unknown): GrowthQuery {
 /** Only our own pages may use the bridge. */
 function fromApp(event: IpcMainInvokeEvent): boolean {
   const url = event.senderFrame?.url ?? "";
-  return !!server && url.startsWith(`${server.origin}/`);
+  return !!pageOrigin && url.startsWith(`${pageOrigin}/`);
 }
 
 function handle(channel: string, fn: (...args: unknown[]) => unknown) {
@@ -235,6 +337,9 @@ function registerIpc() {
   handle(IPC.loadSample, () => loadSample());
   handle(IPC.getSettings, () => settings);
   handle(IPC.setSettings, (patch) => saveSettings(patch));
+  handle(IPC.getUpdateState, () => update);
+  handle(IPC.checkForUpdate, () => checkForUpdate());
+  handle(IPC.installUpdate, () => installUpdate());
   handle(IPC.openDataFolder, async () => {
     const dir = join(userData(), "scans");
     await mkdir(dir, { recursive: true });
@@ -243,8 +348,8 @@ function registerIpc() {
 }
 
 /** Content Security Policy for our pages. Next's inline bootstrap scripts need 'unsafe-inline'; dev also needs eval. */
-function applyCsp(origin: string) {
-  const csp = [
+function contentSecurityPolicy(): string {
+  return [
     "default-src 'self'",
     `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
@@ -256,14 +361,19 @@ function applyCsp(origin: string) {
     "form-action 'self'",
     "frame-ancestors 'none'",
   ].join("; ");
+}
+
+/** Development: the policy on next dev's responses (the installed app sets it in serveAppScheme). */
+function applyCsp(origin: string) {
+  const csp = contentSecurityPolicy();
   session.defaultSession.webRequest.onHeadersReceived({ urls: [`${origin}/*`] }, (details, callback) => {
     callback({ responseHeaders: { ...details.responseHeaders, "Content-Security-Policy": [csp] } });
   });
 }
 
 async function createWindow() {
-  if (!server) return;
-  const origin = server.origin;
+  if (!pageOrigin) return;
+  const origin = pageOrigin;
   win = new BrowserWindow({
     width: 1440,
     height: 900,
@@ -335,9 +445,19 @@ async function main() {
     app.quit();
     return;
   }
-  applyCsp(server.origin);
+  if (process.env.SR_DEV_URL) {
+    // next dev runs on a fixed port, and its hot reload needs a websocket to it: load it directly.
+    pageOrigin = server.origin;
+    applyCsp(server.origin);
+  } else {
+    pageOrigin = APP_ORIGIN;
+    serveAppScheme(server.origin, contentSecurityPolicy());
+  }
   applyHotkey();
+  // An installer left from the last update has done its work.
+  void rm(updateDir(), { recursive: true, force: true }).catch(() => {});
   await createWindow();
+  applyUpdateChecks(10_000);
 }
 
 void main();

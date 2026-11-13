@@ -121,8 +121,9 @@ export default async function DownloadPage() {
           Is it safe?
         </h2>
         <p className="text-[15px]">
-          The app only reads Football Manager&apos;s memory; it never changes your game or your save, and nothing is
-          sent anywhere. Scans stay on your PC, under <code className="text-[13px]">%APPDATA%\Scout Reporter</code>.
+          The app only reads Football Manager&apos;s memory; it never changes your game or your save. The only thing
+          it asks the internet is whether GitHub has a newer version (you can turn that off); nothing about you or your
+          save is sent. Scans stay on your PC, under <code className="text-[13px]">%APPDATA%\Scout Reporter</code>.
           The code is open on{" "}
           <a href={REPO_URL} className="link">
             GitHub
@@ -135,7 +136,9 @@ export default async function DownloadPage() {
         </p>
         <p className="text-[15px]">
           After a big Football Manager patch the reader may need an update. The app warns when your game version
-          differs from the one it was made for.
+          differs from the one it was made for, and tells you when a new version is out:{" "}
+          <span className="font-semibold">Update now</span> installs it and keeps your settings, scans, weights and
+          formations.
         </p>
       </section>
 
