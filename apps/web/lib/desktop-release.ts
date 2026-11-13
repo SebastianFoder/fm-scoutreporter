@@ -6,8 +6,14 @@
 
 export const GITHUB_REPO = "SebastianFoder/fm-scoutreporter";
 export const REPO_URL = `https://github.com/${GITHUB_REPO}`;
-/** Every desktop release, newest first. */
-export const DESKTOP_RELEASES_URL = `${REPO_URL}/releases?q=desktop-v&expanded=true`;
+/**
+ * Every desktop release, newest first. GitHub's release search matches titles and notes, not tags,
+ * so it searches for the desktop releases' title ("Scout Reporter desktop X.Y.Z").
+ */
+export const DESKTOP_RELEASES_URL = `${REPO_URL}/releases?q=%22Scout+Reporter+desktop%22&expanded=true`;
+
+/** How often (seconds) the newest release is looked up: a new release shows within this time. */
+export const RELEASE_CHECK_SECONDS = 600;
 
 export interface DesktopRelease {
   version: string;
@@ -57,14 +63,16 @@ export function pickDesktopRelease(list: unknown): DesktopRelease | null {
 }
 
 /**
- * Asks GitHub (cached for an hour, so the anonymous rate limit is never near). Null when there is
- * no desktop release yet, or GitHub cannot be reached: the page then links to the release list.
+ * Asks GitHub, cached for RELEASE_CHECK_SECONDS (six requests an hour, far below the anonymous
+ * limit of 60). Null when there is no desktop release yet, or GitHub cannot be reached: the page then
+ * links to the release list. The cached answer outlives deployments, so changing the request (URL
+ * or headers) is what makes a deployment ask GitHub afresh.
  */
 export async function latestDesktopRelease(): Promise<DesktopRelease | null> {
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases?per_page=50`, {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases?per_page=50&page=1`, {
       headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
-      next: { revalidate: 3600 },
+      next: { revalidate: RELEASE_CHECK_SECONDS },
     });
     if (!res.ok) return null;
     return pickDesktopRelease(await res.json());

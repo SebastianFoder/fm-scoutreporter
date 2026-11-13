@@ -13,8 +13,9 @@ export const metadata: Metadata = pageMetadata({
   path: "/download",
 });
 
-// The newest release is looked up on GitHub at most once an hour.
-export const revalidate = 3600;
+// The newest release is looked up on GitHub at most every 10 minutes (RELEASE_CHECK_SECONDS; a
+// segment config has to be a literal).
+export const revalidate = 600;
 
 const kbd = "rounded border border-line bg-surface px-1.5 text-[13px] font-semibold";
 
