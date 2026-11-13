@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.16.0...v1.17.0) (2026-11-13)
+
+
+### Features
+
+* publish the desktop app as GitHub Releases and add a download page ([ad7c1da](https://github.com/SebastianFoder/fm-scoutreporter/commit/ad7c1da1d3426ed569de936fc4d9c154440b32ba))
+
 # [1.16.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.15.0...v1.16.0) (2026-11-13)
 
 
