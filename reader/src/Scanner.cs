@@ -190,26 +190,31 @@ internal sealed class Scanner
         public uint Dob;       // raw FM birth date
     }
 
-    // Per-thread collections for the parallel scan: each worker fills its own without locks. Lists
-    // keep the order objects were met in, so the merge picks the same object for a UID as before.
-    private sealed class ScanLocal
+    /// <summary>
+    /// What the pass found in one piece of memory, in the order it met it. Workers take pieces from a
+    /// shared queue, so which worker reads which piece varies; the pieces are merged in a fixed order
+    /// instead (see Scan), so the result does not depend on it. Lists are made when first needed.
+    /// </summary>
+    private sealed class PieceFinds
     {
-        public readonly List<Found> Players = new();
-        public readonly HashSet<uint> PlayerUids = new();
-        public readonly List<Found> Staff = new();
-        public readonly HashSet<uint> StaffUids = new();
+        public List<Found> Players, Staff;
+        public List<(ulong obj, ulong person)> Managers;
+        public List<(ulong addr, uint uid)> StaffAddrs;
+        public List<ulong> Clubs, SearchSessions;
+    }
+
+    /// <summary>Per worker: the class histogram and where its time went (Stopwatch ticks), for the log.</summary>
+    private sealed class WorkerStats
+    {
         public readonly Dictionary<int, long> Hist = new();
-        public readonly List<(ulong obj, ulong person)> Managers = new();
-        public readonly Dictionary<ulong, uint> StaffToUid = new();
-        public readonly List<ulong> Clubs = new();
-        public readonly List<ulong> SearchSessions = new();
+        public long CopyTicks, CheckTicks, Objects, ClubChecks;
     }
 
     /// <summary>
     /// The scan works in two steps. The pass copies FM's heap in big blocks and only notes the people
-    /// in it (UID, address, CA/PA), taken from the copied memory: almost no extra reads. Reading each
-    /// person's fields comes after, in <see cref="ReadPeople"/>, so later it can be limited to the
-    /// people a scan actually needs.
+    /// in it (UID, address, CA/PA, contract, birth date), taken from the copied memory: almost no
+    /// extra reads. Reading each person's fields comes after, in <see cref="ReadPeople"/>, and only
+    /// for the people the scan keeps.
     /// </summary>
     private void Scan(MemScan mem, int maxDop, ScanResult result, Stopwatch sw, StepTimer steps, out double unreadFraction)
     {
@@ -222,20 +227,37 @@ internal sealed class Scanner
         var regions = mem.ScanRegions.Where(r => r.size >= 0x40).ToList();
         int chunk = MemScan.ChunkBytes;
 
-        // N workers, each a round-robin share of the regions (sizes vary a lot, interleaving balances).
-        var locals = new ScanLocal[maxDop];
+        // The regions cut into pieces of at most one block. Consecutive pieces of a region overlap by
+        // 16 bytes, so an object starting right at a border is not missed (seeing it twice is
+        // harmless: UIDs de-duplicate).
+        var pieces = new List<(int region, ulong start, ulong size)>();
+        for (int ri = 0; ri < regions.Count; ri++)
+        {
+            var (start, size) = regions[ri];
+            for (ulong off = 0; ; off += (ulong)chunk - 16)
+            {
+                ulong len = Math.Min((ulong)chunk, size - off);
+                pieces.Add((ri, start + off, len));
+                if (off + len >= size) break;
+            }
+        }
+        var finds = new PieceFinds[pieces.Count];
+        var stats = new WorkerStats[maxDop];
+        int nextPiece = -1;
+
         var tasks = new Task[maxDop];
         for (int t = 0; t < maxDop; t++)
         {
             int worker = t;
-            var L = locals[worker] = new ScanLocal();
+            var W = stats[worker] = new WorkerStats();
             tasks[worker] = Task.Run(() =>
             {
                 MemScan.BypassPageCache = true;   // the pass reads from its own copied blocks
                 var buf = BufPool[worker];
-                for (int ri = worker; ri < regions.Count; ri += maxDop)
+                for (int pi = Interlocked.Increment(ref nextPiece); pi < pieces.Count; pi = Interlocked.Increment(ref nextPiece))
                 {
-                    var (start, size) = regions[ri];
+                    var (_, start, size) = pieces[pi];
+                    var P = finds[pi] = new PieceFinds();
                     ulong scanned = 0;
                     try
                     {
@@ -243,7 +265,10 @@ internal sealed class Scanner
                         {
                             int want = (int)Math.Min((ulong)chunk, size - scanned);
                             ulong chunkBase = start + scanned;
-                            if (!mem.ReadBlock(chunkBase, buf, want))
+                            long t0 = Stopwatch.GetTimestamp();
+                            bool copied = mem.ReadBlock(chunkBase, buf, want);
+                            W.CopyTicks += Stopwatch.GetTimestamp() - t0;
+                            if (!copied)
                             {
                                 // One unreadable page must not cost 32 MB: try a 1 MB window. If that
                                 // fails too, count it as unread (that count decides about the retry).
@@ -257,9 +282,9 @@ internal sealed class Scanner
                                 }
                                 want = fine;
                             }
-                            ScanChunk(mem, buf, want, chunkBase, modLo, modHi, L);
-                            // Windows overlap by 16 bytes, so an object starting right at a chunk
-                            // border is not missed. Seeing it twice is harmless (UIDs de-duplicate).
+                            long t1 = Stopwatch.GetTimestamp();
+                            ScanChunk(mem, buf, want, chunkBase, modLo, modHi, P, W);
+                            W.CheckTicks += Stopwatch.GetTimestamp() - t1;
                             int step = (ulong)want < size - scanned ? want - 16 : want;
                             scanned += (ulong)step;
                             long done = Interlocked.Add(ref doneBytes, step);
@@ -273,7 +298,7 @@ internal sealed class Scanner
                     }
                     catch (Exception ex)
                     {
-                        // One region with unexpected content must never sink the whole scan.
+                        // One piece with unexpected content must never sink the whole scan.
                         long rest = (long)(size - scanned);
                         Interlocked.Add(ref doneBytes, rest);
                         Interlocked.Add(ref unreadBytes, rest);
@@ -285,11 +310,20 @@ internal sealed class Scanner
             });
         }
         Task.WaitAll(tasks);
-        if (regionErrors > 0) result.Log.Add($"{regionErrors} region(s) skipped after an internal error (first: {firstRegionError}); the rest of the scan went on.");
+        if (regionErrors > 0) result.Log.Add($"{regionErrors} piece(s) of memory skipped after an internal error (first: {firstRegionError}); the rest of the scan went on.");
         steps.Lap("find");
+        double perWorkerMs(long ticks) => ticks * 1000.0 / Stopwatch.Frequency / maxDop;
+        result.Log.Add($"Find pass ({maxDop} workers, average per worker): copying {perWorkerMs(stats.Sum(w => w.CopyTicks)):N0} ms, " +
+                       $"checking {perWorkerMs(stats.Sum(w => w.CheckTicks)):N0} ms; {stats.Sum(w => w.Objects):N0} database objects, " +
+                       $"{stats.Sum(w => w.ClubChecks):N0} club checks.");
 
-        // Merge the workers' finds. For a UID seen more than once, the first worker's first object
-        // wins; every object's address still maps to its UID (squad lists may point at either).
+        // Merge in a fixed order: as if region r had been read by "lane" r % maxDop, lanes one after
+        // the other. Within a lane the first object for a UID counts and later copies are dropped;
+        // across lanes the first lane's object wins, but every lane's address still maps to the UID
+        // (squad lists may point at either). This keeps which object is read for a UID stable.
+        var order = Enumerable.Range(0, pieces.Count).OrderBy(i => pieces[i].region % maxDop).ThenBy(i => i).ToList();
+        var lanePlayers = Enumerable.Range(0, maxDop).Select(_ => new HashSet<uint>()).ToArray();
+        var laneStaff = Enumerable.Range(0, maxDop).Select(_ => new HashSet<uint>()).ToArray();
         var foundPlayers = new List<Found>();
         var foundStaff = new List<Found>();
         var playerUids = new HashSet<uint>();
@@ -300,22 +334,29 @@ internal sealed class Scanner
         var clubObjs = new List<ulong>();
         var staffToUid = new Dictionary<ulong, uint>(1 << 17);
         var searchSessions = new HashSet<ulong>();
-        foreach (var L in locals)
+        foreach (int pi in order)
         {
-            foreach (var kv in L.StaffToUid) staffToUid[kv.Key] = kv.Value;
-            searchSessions.UnionWith(L.SearchSessions);
-            foreach (var f in L.Players)
-            {
-                if (playerUids.Add(f.Uid)) foundPlayers.Add(f);
-                personToUid[f.Obj] = f.Uid;
-                personToUid[f.Block] = f.Uid;
-            }
-            foreach (var f in L.Staff)
-                if (staffUids.Add(f.Uid)) foundStaff.Add(f);
-            foreach (var kv in L.Hist) hist[kv.Key] = hist.GetValueOrDefault(kv.Key) + kv.Value;
-            managers.AddRange(L.Managers);
-            clubObjs.AddRange(L.Clubs);
+            var P = finds[pi];
+            if (P == null) continue;
+            int lane = pieces[pi].region % maxDop;
+            if (P.StaffAddrs != null) foreach (var (addr, uid) in P.StaffAddrs) staffToUid[addr] = uid;
+            if (P.SearchSessions != null) searchSessions.UnionWith(P.SearchSessions);
+            if (P.Players != null)
+                foreach (var f in P.Players)
+                {
+                    if (!lanePlayers[lane].Add(f.Uid)) continue;
+                    if (playerUids.Add(f.Uid)) foundPlayers.Add(f);
+                    personToUid[f.Obj] = f.Uid;
+                    personToUid[f.Block] = f.Uid;
+                }
+            if (P.Staff != null)
+                foreach (var f in P.Staff)
+                    if (laneStaff[lane].Add(f.Uid) && staffUids.Add(f.Uid)) foundStaff.Add(f);
+            if (P.Managers != null) managers.AddRange(P.Managers);
+            if (P.Clubs != null) clubObjs.AddRange(P.Clubs);
         }
+        foreach (var W in stats)
+            foreach (var kv in W.Hist) hist[kv.Key] = hist.GetValueOrDefault(kv.Key) + kv.Value;
         result.PersonToUid = personToUid;
         unreadFraction = totalBytes > 0 ? (double)Interlocked.Read(ref unreadBytes) / totalBytes : 0;
         if (unreadFraction > 0) result.Log.Add($"Unreadable during the scan: {unreadFraction:P1} of {totalBytes / (1024 * 1024):N0} MB.");
@@ -542,25 +583,27 @@ internal sealed class Scanner
         return (inPlayers, inStaff);
     }
 
-    private void ScanChunk(MemScan mem, byte[] buf, int want, ulong chunkBase, ulong modLo, ulong modHi, ScanLocal L)
+    private void ScanChunk(MemScan mem, byte[] buf, int want, ulong chunkBase, ulong modLo, ulong modHi, PieceFinds L, WorkerStats W)
     {
         for (int i = 0; i + 0x10 <= want; i += 8)
         {
             ulong vt = BitConverter.ToUInt64(buf, i);
             if (vt < modLo || vt >= modHi) continue;            // fast rejection
             if (!mem.InGp(vt) && !mem.InGa(vt)) continue;       // only database/managed vtables
-            if (vt == _searchVt) { L.SearchSessions.Add(chunkBase + (ulong)i); continue; }
+            if (vt == _searchVt) { (L.SearchSessions ??= new()).Add(chunkBase + (ulong)i); continue; }
 
             ulong p = chunkBase + (ulong)i;
             var cls = mem.Classify(vt, F);                      // cached: no syscall per candidate
             if (cls == null) continue;
+            W.Objects++;
             long uidAt = i + F.OBJ_DUNI;
             uint uid = uidAt + 4 <= want ? BitConverter.ToUInt32(buf, (int)uidAt) : mem.U32(p + F.OBJ_DUNI);
             if (uid == 0 || uid == 0xFFFFFFFF) continue;
-            if (cls.Hist != 0) L.Hist[cls.Hist] = L.Hist.GetValueOrDefault(cls.Hist) + 1;
+            if (cls.Hist != 0) W.Hist[cls.Hist] = W.Hist.GetValueOrDefault(cls.Hist) + 1;
             if (cls.Kind == ObjKind.None)
             {
-                if (IsClub(mem, buf, want, i, p)) L.Clubs.Add(p);
+                W.ClubChecks++;
+                if (IsClub(mem, buf, want, i, p)) (L.Clubs ??= new()).Add(p);
                 continue;
             }
 
@@ -574,8 +617,7 @@ internal sealed class Scanner
                 if (ca < 1 || ca > 200 || pa < 1 || pa > 200) continue;
                 bool female = (BufU8(buf, want, i + F.PERO_GENDER, mem, p + F.PERO_GENDER) & F.GENDER_FEMALE_BIT) != 0;
                 if (female ? _db == DatabaseChoice.Men : _db == DatabaseChoice.Women) continue;
-                if (!L.PlayerUids.Add(uid)) continue;
-                L.Players.Add(new Found
+                (L.Players ??= new()).Add(new Found
                 {
                     Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa, Female = female,
                     Contract = BufPtr(buf, want, i + F.PERO_FULL_CONTRACT, mem, p + F.PERO_FULL_CONTRACT),
@@ -587,15 +629,14 @@ internal sealed class Scanner
                 ushort ca = BufU16(buf, want, blockAt + F.NPLO_CA, mem, block + F.NPLO_CA);
                 ushort pa = BufU16(buf, want, blockAt + F.NPLO_PA, mem, block + F.NPLO_PA);
                 if (ca < 1 || ca > 200 || pa < 1 || pa > 200) continue;
-                if (cls.Kind == ObjKind.HumanManager) L.Managers.Add((p, p));
-                if (L.StaffUids.Add(uid))
-                    L.Staff.Add(new Found
-                    {
-                        Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa,
-                        Contract = BufPtr(buf, want, i + F.PERO_FULL_CONTRACT, mem, p + F.PERO_FULL_CONTRACT),
-                    });
-                L.StaffToUid[p] = uid;
-                L.StaffToUid[block] = uid;
+                if (cls.Kind == ObjKind.HumanManager) (L.Managers ??= new()).Add((p, p));
+                (L.Staff ??= new()).Add(new Found
+                {
+                    Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa,
+                    Contract = BufPtr(buf, want, i + F.PERO_FULL_CONTRACT, mem, p + F.PERO_FULL_CONTRACT),
+                });
+                (L.StaffAddrs ??= new()).Add((p, uid));
+                L.StaffAddrs.Add((block, uid));
             }
         }
     }
