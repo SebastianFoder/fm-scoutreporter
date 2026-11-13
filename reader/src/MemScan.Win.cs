@@ -145,12 +145,24 @@ internal sealed partial class MemScan
     {
         _game = game;
         _proc = game.Handle;
+        var clock = Stopwatch.StartNew();
         if (useSnapshot) TrySnapshot();   // points _proc at the clone; regions and reads then come from it
-        BuildRegions();
+        long snapshot = clock.ElapsedMilliseconds, regions = 0;
+        // The region list and the module images do not depend on each other: build them side by side.
+        var regionTask = Task.Run(() => { BuildRegions(); regions = clock.ElapsedMilliseconds - snapshot; });
         FindModules();      // module addresses are the same in the clone
-        _gp = CacheImage(GpBase, GpEnd, "game_plugin.dll");
+        long modules = clock.ElapsedMilliseconds;
+        var gpTask = Task.Run(() => CacheImage(GpBase, GpEnd, "game_plugin.dll"));
         _ga = CacheImage(GaBase, GaEnd, "GameAssembly.dll");
+        _gp = gpTask.Result;
+        long images = clock.ElapsedMilliseconds;
+        regionTask.Wait();
+        OpenTimings = $"snapshot {snapshot} ms, then side by side: regions {regions} ms ({ScanRegions.Count:N0}); modules {modules - snapshot} ms, " +
+                      $"images {images - modules} ms ({((_gp?.Length ?? 0) + (_ga?.Length ?? 0)) / (1024 * 1024):N0} MB)";
     }
+
+    /// <summary>How long opening took, step by step (for the log).</summary>
+    public string OpenTimings { get; private set; }
 
     private void TrySnapshot()
     {
@@ -180,6 +192,7 @@ internal sealed partial class MemScan
             }
             _vaClone = clone;
             _proc = clone;
+            DropPageCache();
             Snapshotted = true;
         }
         catch (Exception e)
@@ -198,6 +211,7 @@ internal sealed partial class MemScan
         if (!Snapshotted) return;
         Snapshotted = false;
         _proc = _game.Handle;
+        DropPageCache();
         try { CloseHandle(_vaClone); } catch { }
         try { PssFreeSnapshot(GetCurrentProcess(), _snap); } catch { }
         _vaClone = 0; _snap = 0;
@@ -280,17 +294,54 @@ internal sealed partial class MemScan
         }
     }
 
+    [DllImport("psapi.dll", SetLastError = true)]
+    private static extern bool EnumProcessModulesEx(nint hProcess, [Out] nint[] modules, uint cb, out uint needed, uint filter);
+
+    [DllImport("psapi.dll", CharSet = CharSet.Unicode)]
+    private static extern uint GetModuleBaseNameW(nint hProcess, nint module, [Out] char[] name, uint size);
+
+    [DllImport("psapi.dll", CharSet = CharSet.Unicode)]
+    private static extern uint GetModuleFileNameExW(nint hProcess, nint module, [Out] char[] name, uint size);
+
+    [DllImport("psapi.dll")]
+    private static extern bool GetModuleInformation(nint hProcess, nint module, out MODULEINFO info, uint cb);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MODULEINFO { public nint BaseOfDll; public uint SizeOfImage; public nint EntryPoint; }
+
+    private const uint LIST_MODULES_ALL = 0x03;
+
+    /// <summary>
+    /// Where GameAssembly.dll and game_plugin.dll are. Asked of Windows directly, for these two only:
+    /// Process.Modules collects every detail of all ~200 modules and took 150 ms. The live process
+    /// is asked even when reading a snapshot (module addresses are the same in the clone).
+    /// </summary>
     private void FindModules()
     {
-        _game.Process.Refresh();   // game_plugin loads late, so refresh the module list
-        foreach (ProcessModule m in _game.Process.Modules)
+        nint h = _game.Handle;
+        var mods = new nint[1024];
+        if (!EnumProcessModulesEx(h, mods, (uint)(mods.Length * IntPtr.Size), out uint needed, LIST_MODULES_ALL)) { SetModuleBounds(); return; }
+        int count = (int)Math.Min(needed / (uint)IntPtr.Size, (uint)mods.Length);
+        var name = new char[260];
+        for (int i = 0; i < count; i++)
         {
-            ulong b = (ulong)m.BaseAddress.ToInt64();
-            ulong e = b + (ulong)m.ModuleMemorySize;
-            if (string.Equals(m.ModuleName, "GameAssembly.dll", StringComparison.OrdinalIgnoreCase))
-            { GaBase = b; GaEnd = e; }
-            else if (string.Equals(m.ModuleName, "game_plugin.dll", StringComparison.OrdinalIgnoreCase))
-            { GpBase = b; GpEnd = e; GpPath = m.FileName; }
+            uint n = GetModuleBaseNameW(h, mods[i], name, (uint)name.Length);
+            if (n == 0) continue;
+            var s = new string(name, 0, (int)n);
+            bool ga = string.Equals(s, "GameAssembly.dll", StringComparison.OrdinalIgnoreCase);
+            bool gp = string.Equals(s, "game_plugin.dll", StringComparison.OrdinalIgnoreCase);
+            if (!ga && !gp) continue;
+            if (!GetModuleInformation(h, mods[i], out var info, (uint)Marshal.SizeOf<MODULEINFO>())) continue;
+            ulong b = (ulong)info.BaseOfDll.ToInt64();
+            ulong e = b + info.SizeOfImage;
+            if (ga) { GaBase = b; GaEnd = e; }
+            else
+            {
+                GpBase = b; GpEnd = e;
+                var path = new char[1024];
+                uint pn = GetModuleFileNameExW(h, mods[i], path, (uint)path.Length);
+                GpPath = pn == 0 ? null : new string(path, 0, (int)pn);
+            }
         }
         SetModuleBounds();
     }

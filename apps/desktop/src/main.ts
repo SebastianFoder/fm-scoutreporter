@@ -15,7 +15,7 @@
  */
 import { app, BrowserWindow, globalShortcut, ipcMain, session, shell, Menu, type IpcMainInvokeEvent } from "electron";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
   IPC,
@@ -121,6 +121,7 @@ async function doScan(): Promise<ScanOutcome> {
     await mkdir(workDir, { recursive: true });
     // With a real scan stored already, a thinned-out scan is refused rather than stored.
     const previousExists = (await store().list()).some((s) => !s.sample);
+    const started = performance.now();
     const run = await runReader(
       paths.reader,
       workDir,
@@ -128,17 +129,25 @@ async function doScan(): Promise<ScanOutcome> {
       (p: ScanProgress) => send(IPC.scanProgress, { phase: p.phase, progress: p.progress * READ_SHARE }),
       [...(settings.scanMode === "search" ? ["--only-search"] : []), ...(previousExists ? ["--previous-exists"] : [])],
     );
+    const readerMs = performance.now() - started;
     if (run.done) {
       const target = join(workDir, "scan.sqlite");
       try {
         send(IPC.scanProgress, { phase: "importing", progress: READ_SHARE });
+        const importStarted = performance.now();
         const imported = await db.request<ImportResult>({ op: "import-lines", source: run.done.file, target }, (share) =>
           send(IPC.scanProgress, { phase: "importing", progress: READ_SHARE + share * (1 - READ_SHARE) }),
         );
-        const { snapshot } = await store().add(target, imported, settings.retention, { diagnostics: join(workDir, "diagnostics.txt") });
+        // How long the app's part took, next to the reader's own steps in diagnostics.txt.
+        const timing = `App: reader ${ms(readerMs)} (start to finish), import ${ms(performance.now() - importStarted)}`;
+        const diagnostics = join(workDir, "diagnostics.txt");
+        await appendFile(diagnostics, `
+${timing}
+`).catch(() => {});
+        const { snapshot } = await store().add(target, imported, settings.retention, { diagnostics });
         // The lines file is several times bigger than the database: drop it once imported.
         await rm(run.done.file, { force: true });
-        outcome = { ok: true, snapshot, log: run.log };
+        outcome = { ok: true, snapshot, log: [...run.log, `${timing}, total ${ms(performance.now() - started)}`] };
       } catch (e) {
         outcome = { ok: false, code: "failed", message: `The scan could not be stored: ${(e as Error).message}`, log: run.log };
       }
@@ -165,6 +174,11 @@ async function loadSample(): Promise<ScanOutcome> {
   }
   send(IPC.scanFinished, outcome);
   return outcome;
+}
+
+/** "1.23 s" or "456 ms". */
+function ms(n: number): string {
+  return n >= 1000 ? `${(n / 1000).toFixed(2)} s` : `${Math.round(n)} ms`;
 }
 
 const GROWTH_SORTS: GrowthSort[] = ["caChange", "attributeChange", "paChange", "ca", "age", "name"];
@@ -203,9 +217,12 @@ function handle(channel: string, fn: (...args: unknown[]) => unknown) {
 function registerIpc() {
   handle(IPC.scan, () => scan());
   handle(IPC.listSnapshots, () => store().list());
-  handle(IPC.loadSnapshot, (id) =>
-    db.request<LoadedScan>({ op: "load", file: store().scanFile(String(id)), scope: loadScopeFor(settings) }),
-  );
+  handle(IPC.loadSnapshot, async (id) => {
+    const started = performance.now();
+    const loaded = await db.request<LoadedScan>({ op: "load", file: store().scanFile(String(id)), scope: loadScopeFor(settings) });
+    console.info(`Loaded scan ${String(id)} in ${ms(performance.now() - started)}`);
+    return loaded;
+  });
   handle(IPC.compareSnapshots, (fromId, toId, query) =>
     db.request<GrowthPage>({
       op: "compare",

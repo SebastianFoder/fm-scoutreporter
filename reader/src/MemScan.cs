@@ -90,11 +90,75 @@ internal sealed partial class MemScan
         fixed (byte* b = buf) return ReadRaw(addr, b, len);
     }
 
-    public unsafe ulong Ptr(ulong a) { ulong v; return ReadRaw(a, &v, 8) ? v : 0UL; }
-    public unsafe uint U32(ulong a) { uint v; return ReadRaw(a, &v, 4) ? v : 0U; }
-    public unsafe int I32(ulong a) { int v; return ReadRaw(a, &v, 4) ? v : 0; }
-    public unsafe ushort U16(ulong a) { ushort v; return ReadRaw(a, &v, 2) ? v : (ushort)0; }
-    public unsafe byte U8(ulong a) { byte v; return ReadRaw(a, &v, 1) ? v : (byte)0; }
+    public unsafe ulong Ptr(ulong a) { ulong v; return ReadSmall(a, &v, 8) ? v : 0UL; }
+    public unsafe uint U32(ulong a) { uint v; return ReadSmall(a, &v, 4) ? v : 0U; }
+    public unsafe int I32(ulong a) { int v; return ReadSmall(a, &v, 4) ? v : 0; }
+    public unsafe ushort U16(ulong a) { ushort v; return ReadSmall(a, &v, 2) ? v : (ushort)0; }
+    public unsafe byte U8(ulong a) { byte v; return ReadSmall(a, &v, 1) ? v : (byte)0; }
+
+    // ---------- page cache ----------
+    //
+    // Every ReadProcessMemory call costs about a microsecond, whatever its size, and reading a person
+    // takes a couple of hundred small reads that mostly fall in the same few pages (the person, its
+    // player block, its contract, club and nation). So small reads fetch the whole 4 KB page once
+    // and serve the rest from it. Windows grants or refuses access per page, so a read inside a page
+    // succeeds exactly when reading the page does: the results are the same as reading directly.
+    // Each thread has its own cache (no locks); it is dropped when the reads switch process.
+
+    internal const int PageSize = 4096;
+    private const int CachePages = 256;   // per thread: 1 MB, direct-mapped by page number
+
+    private sealed class PageCache
+    {
+        public readonly ulong[] Tags = new ulong[CachePages];   // page number + 1; 0 = empty
+        public readonly byte[] Data = GC.AllocateUninitializedArray<byte>(CachePages * PageSize, pinned: true);
+        public int Epoch;
+    }
+
+    private readonly ThreadLocal<PageCache> _pages = new(() => new PageCache());
+    private int _cacheEpoch;
+
+    /// <summary>Forget every cached page (the reads now come from another process handle).</summary>
+    private void DropPageCache() => Interlocked.Increment(ref _cacheEpoch);
+
+    /// <summary>
+    /// Set on a thread whose small reads are scattered one-offs (the scan pass checking a possible
+    /// club): fetching a whole page for each would cost more than it saves.
+    /// </summary>
+    [ThreadStatic] internal static bool BypassPageCache;
+
+    /// <summary>A small read through the page cache; one that spans two pages is read directly.</summary>
+    private unsafe bool ReadSmall(ulong addr, void* dst, int len)
+    {
+        if (addr == 0) return false;
+        int off = (int)(addr & (PageSize - 1));
+        if (off + len > PageSize || BypassPageCache) return ReadRaw(addr, dst, len);
+        ulong page = addr / PageSize;
+        var c = _pages.Value;
+        int epoch = Volatile.Read(ref _cacheEpoch);
+        if (c.Epoch != epoch)
+        {
+            Array.Clear(c.Tags);
+            c.Epoch = epoch;
+        }
+        int slot = (int)(page % CachePages);
+        fixed (byte* data = c.Data)
+        {
+            byte* at = data + slot * PageSize;
+            if (c.Tags[slot] != page + 1)
+            {
+                if (!ReadRaw(page * PageSize, at, PageSize))
+                {
+                    // Not readable as a whole page: read the bytes themselves, as before the cache.
+                    c.Tags[slot] = 0;
+                    return ReadRaw(addr, dst, len);
+                }
+                c.Tags[slot] = page + 1;
+            }
+            Buffer.MemoryCopy(at + off, dst, len, len);
+            return true;
+        }
+    }
 
     /// <summary>Nested FM string: [addr] -> outer, [outer] -> inner, UTF-8 string at inner+4.</summary>
     public string NestedString(ulong addr, int maxLen = 128)
@@ -118,11 +182,11 @@ internal sealed partial class MemScan
     {
         maxLen = System.Math.Clamp(maxLen, 32, 256);
         byte* buf = stackalloc byte[maxLen];
-        if (!ReadRaw(addr, buf, maxLen))
+        if (!ReadSmall(addr, buf, maxLen))
         {
             // Fallback: read less (the string can sit right before the end of a region).
             maxLen = 32;
-            if (!ReadRaw(addr, buf, maxLen)) return null;
+            if (!ReadSmall(addr, buf, maxLen)) return null;
         }
         int n = 0;
         while (n < maxLen && buf[n] != 0) n++;

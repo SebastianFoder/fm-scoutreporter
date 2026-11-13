@@ -235,6 +235,16 @@ public class DumpWriterTests
     }
 
     [Fact]
+    public void A_search_scan_that_read_nobody_but_found_people_has_no_search_rather_than_nothing()
+    {
+        // A search scan only reads the people it keeps: with no search and no club, it read nobody.
+        var r = new ScanResult { FoundPlayers = 395_000, FoundStaff = 170_000 };
+        Assert.Equal((false, ScanError.NoSearch), Pick(DumpWriter.Check(r, existingFile: false, onlySearch: true)));
+        r.FoundPlayers = r.FoundStaff = 0;
+        Assert.Equal((false, ScanError.NothingFound), Pick(DumpWriter.Check(r, existingFile: false, onlySearch: true)));
+    }
+
+    [Fact]
     public void Marks_people_in_fms_search_result()
     {
         var r = Sample();
@@ -398,5 +408,45 @@ public class JsonWriterTests
         Assert.Equal(JsonValueKind.Null, root.GetProperty("nan").ValueKind);
         Assert.Equal(JsonValueKind.Null, root.GetProperty("unknown").ValueKind);
         Assert.Equal(2, root.GetProperty("arr").GetArrayLength());
+    }
+}
+
+public class ScanPassTests
+{
+    [Fact]
+    public void Values_inside_the_copied_block_come_from_it()
+    {
+        var buf = new byte[32];
+        BitConverter.GetBytes((ushort)147).CopyTo(buf, 10);
+        BitConverter.GetBytes(0x1234_5678_9ABCUL).CopyTo(buf, 16);
+        buf[31] = 0x10;
+        // No MemScan: a value read from the block never touches FM's memory.
+        Assert.Equal(147, Scanner.BufU16(buf, buf.Length, 10, null, 0));
+        Assert.Equal(0x1234_5678_9ABCUL, Scanner.BufPtr(buf, buf.Length, 16, null, 0));
+        Assert.Equal(0x10, Scanner.BufU8(buf, buf.Length, 31, null, 0));
+        // Only the copied length counts, not the buffer's size.
+        Assert.Equal(147, Scanner.BufU16(buf, 12, 10, null, 0));
+    }
+
+    [Fact]
+    public void Values_past_the_copied_block_are_read_from_memory()
+    {
+        var buf = new byte[32];
+        // Each of these needs FM's memory; with no MemScan that is a NullReferenceException.
+        Assert.Throws<NullReferenceException>(() => Scanner.BufU16(buf, 11, 10, null, 0));
+        Assert.Throws<NullReferenceException>(() => Scanner.BufPtr(buf, buf.Length, 28, null, 0));
+        Assert.Throws<NullReferenceException>(() => Scanner.BufU8(buf, buf.Length, -1, null, 0));
+    }
+
+    [Fact]
+    public void Step_timings_are_listed_in_order()
+    {
+        var timings = new List<(string step, long ms)>();
+        var steps = new StepTimer(timings);
+        steps.Lap("find");
+        steps.Lap("read people");
+        Assert.Equal(new[] { "find", "read people" }, timings.Select(t => t.step));
+        Assert.All(timings, t => Assert.True(t.ms >= 0));
+        Assert.Equal("find 1,250 ms, write 30 ms", StepTimer.Format(new[] { ("find", 1250L), ("write", 30L) }));
     }
 }
