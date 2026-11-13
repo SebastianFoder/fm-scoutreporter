@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
+import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { AlertTriangle, ArrowDown, ArrowUp } from "lucide-react";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { CsvImportPanel } from "@scoutreporter/ui/components/CsvImportPanel";
@@ -275,12 +275,9 @@ export default function WonderkidClient() {
                   {pageItems.map(({ p, s }) => (
                     <tr key={p.raw.uniqueId}>
                       <td className="px-2.5 py-2">
-                        <Link
-                          href={`/attribute/players/${p.raw.uniqueId}`}
-                          className="font-semibold hover:text-accent hover:underline"
-                        >
+                        <PlayerLink id={p.raw.uniqueId} className="font-semibold hover:text-accent hover:underline">
                           {p.raw.player}
-                        </Link>
+                        </PlayerLink>
                       </td>
                       <td className="px-2.5 py-2 text-[13px] text-muted">{p.raw.position}</td>
                       <td className="px-2.5 py-2 text-right">{p.raw.age}</td>

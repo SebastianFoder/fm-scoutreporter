@@ -6,6 +6,7 @@ import {
   parseMoney,
   parseTransferValue,
   parseWeeklyWage,
+  transferValueSortKey,
 } from "./money";
 import { FORMATIONS, SPOT_XY, findFormation, isValidFormation, spotsForSlots } from "./formations";
 import { parseSlotSettings } from "./roles";
@@ -26,6 +27,14 @@ test("parses transfer value ranges", () => {
   assert.deepEqual(parseTransferValue(null), { kind: "none" });
   assert.deepEqual(parseTransferValue("€0"), { kind: "none" });
   assert.deepEqual(parseTransferValue("Not for Sale"), { kind: "unavailable" });
+});
+
+test("sorts transfer values by the middle of the range", () => {
+  assert.equal(transferValueSortKey("€250K - €2.5M"), 1_375_000);
+  assert.equal(transferValueSortKey("£950K"), 950_000);
+  assert.equal(transferValueSortKey(null), null);
+  assert.equal(transferValueSortKey("€0"), null);
+  assert.equal(transferValueSortKey("Not for Sale"), null);
 });
 
 test("normalises wages to per week", () => {

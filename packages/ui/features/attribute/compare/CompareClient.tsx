@@ -7,7 +7,7 @@ import type { AttributeKey } from "@scoutreporter/core/types/weights";
 import { computeScore } from "@scoutreporter/core/scoring";
 import { useActiveWeightProfile } from "@scoutreporter/ui/components/WeightConfig";
 import { useHighlightedAttributes } from "@scoutreporter/ui/components/HighlightedAttributesConfig";
-import Link from "next/link";
+import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { getGroupedAttributeValue } from "@scoutreporter/core/grouped-attribute-value";
@@ -249,12 +249,12 @@ export default function CompareClient({
                       </th>
                       {scored.map(({ p }) => (
                         <th key={p.raw.uniqueId} className="px-3 py-2 text-right align-bottom">
-                          <Link
-                            href={`/attribute/players/${p.raw.uniqueId}`}
+                          <PlayerLink
+                            id={p.raw.uniqueId}
                             className="block font-sans text-sm font-semibold text-ink hover:text-accent hover:underline"
                           >
                             {p.raw.player}
-                          </Link>
+                          </PlayerLink>
                           <span className="block text-[12px] font-normal">{p.raw.position}</span>
                         </th>
                       ))}

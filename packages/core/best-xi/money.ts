@@ -51,6 +51,15 @@ export function parseTransferValue(text: string | null): TransferValue {
   return { kind: "range", low, high };
 }
 
+/**
+ * A transfer value as one number to sort by: the middle of the range. Null when there is no
+ * valuation (free agent, "Not for Sale"), so callers can put those last.
+ */
+export function transferValueSortKey(text: string | null): number | null {
+  const v = parseTransferValue(text);
+  return v.kind === "range" ? (v.low + v.high) / 2 : null;
+}
+
 export type Valuation = "low" | "mid" | "high";
 
 /** The single figure a value range counts for under the chosen estimate. */
