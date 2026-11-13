@@ -48,6 +48,13 @@ export interface ScanMeta {
   currency: "GBP";
   /** Share of FM's memory that could not be read (0..1). */
   unreadFraction: number;
+  /**
+   * Players in the result of FM's Player Search at scan time, after its filters (for example
+   * "Player's interest"); each has `inSearch`. 0 or missing: no search result was found.
+   */
+  searchPlayers?: number;
+  /** The same for FM's Staff Search. */
+  searchStaff?: number;
 }
 
 export interface ScanPersonality {
@@ -71,6 +78,10 @@ interface ScanPersonBase {
   female?: boolean;
   club: string | null;
   division: string | null;
+  /** The club's reputation (about 0..10000). */
+  clubReputation?: number;
+  /** Only when true: in the result of FM's player or staff search at scan time. */
+  inSearch?: boolean;
   ca: number;
   pa: number;
   /** GBP per week. */

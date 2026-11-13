@@ -15,6 +15,8 @@ export interface ImportSource {
   gameDate?: string | null;
   /** How many the whole scan had, when only part of it was loaded (see LoadScope). */
   total?: number;
+  /** Size of FM's search result, when only people from it (plus your club) were loaded. */
+  search?: number;
 }
 
 export interface StoredPlayerRecords {

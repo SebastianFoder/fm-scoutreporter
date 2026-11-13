@@ -154,11 +154,19 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         const hide = current.hideHidden === true;
         const strip = (list: PlayerAttributes[]) => (hide ? list.map(withoutHidden) : list);
         if (stale()) return;
-        await players.importRecords(strip(scanPlayers(scan)), { ...source, total: scan.totalPlayers });
+        await players.importRecords(strip(scanPlayers(scan)), {
+          ...source,
+          total: scan.totalPlayers,
+          ...(scan.bySearch.players && { search: scan.searchPlayers }),
+        });
         if (stale()) return;
         if (scan.meta.myClub) await squad.importRecords(strip(scanPlayers(scan, { club: scan.meta.myClub })), source);
         if (stale()) return;
-        await staff.importRecords(scanStaff(scan), SCAN_STAFF_COLUMNS, { ...source, total: scan.totalStaff });
+        await staff.importRecords(scanStaff(scan), SCAN_STAFF_COLUMNS, {
+          ...source,
+          total: scan.totalStaff,
+          ...(scan.bySearch.staff && { search: scan.searchStaff }),
+        });
         if (stale()) return;
         setActiveId(id);
         try {

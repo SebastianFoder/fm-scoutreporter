@@ -104,6 +104,15 @@ internal sealed class Fields
     public uint NPLO_WORLD_REP { get; private set; } = 0xD8;   // u16
     public uint NPLO_ATTRS { get; private set; } = 0x10;       // staff attributes base
 
+    // FM's person search (the Player Search and Staff Search screens). The game keeps the whole
+    // result of the search on screen, after its filters (also "Player's interest"), in an object of
+    // this class: a vector of pointers to entries, each starting with a pointer to the person. The
+    // class is found by its RTTI name, so a patch that moves the vtable does not break it. Found on
+    // FM 27.0.1 (13-11-2026) with `probe-chain` (see reader/REPIN.md); not verified on FM26.
+    public const string SEARCH_SESSION_TYPE = ".?AVPERSON_SEARCH_EDIT_SESSION@@";
+    public uint SEARCH_LIST { get; private set; } = 0x10;          // vector begin (end at +8)
+    public uint SEARCH_ENTRY_PERSON { get; private set; } = 0x00;  // ptr to the person
+
     /// <summary>FM26, pinned on 26.3.x.</summary>
     public static readonly Fields FM26 = new();
 

@@ -43,6 +43,9 @@ internal sealed class Person
     public byte[] JobPreferences;
     public readonly Dictionary<string, int> StaffAttributes = new();
 
+    /// <summary>In the result of FM's player or staff search at scan time (see Fields.SEARCH_*).</summary>
+    public bool InSearch;
+
     /// <summary>Memory address of the person part (used to walk contracts and squads).</summary>
     public ulong PersonAddr;
 }

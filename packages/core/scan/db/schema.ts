@@ -11,7 +11,7 @@
 import type { ScanPositionKey } from "../schema";
 
 /** Bumped when the tables change; stored as SQLite's user_version. */
-export const SCAN_DB_VERSION = 1;
+export const SCAN_DB_VERSION = 2;
 
 export const POSITION_KEYS: readonly ScanPositionKey[] = [
   "GK", "SW", "DL", "DC", "DR", "DM", "ML", "MC", "MR", "AML", "AMC", "AMR", "ST", "WBL", "WBR",
@@ -62,6 +62,8 @@ const PERSON_COLUMNS = [
   "contract_expires TEXT",
   "rep_current INTEGER",
   "rep_world INTEGER",
+  /** 1 when the person was in FM's search result at scan time. */
+  "in_search INTEGER NOT NULL DEFAULT 0",
   ...PERSONALITY_KEYS.map((k) => `${perCol(k)} INTEGER`),
 ];
 
@@ -97,7 +99,7 @@ export const columnName = (definition: string) => definition.split(" ")[0];
 /** Create the tables. Indexes come after the bulk insert (see INDEXES), which is much faster. */
 export const CREATE_TABLES = `
 CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
-CREATE TABLE club (id INTEGER PRIMARY KEY, name TEXT NOT NULL, division TEXT, UNIQUE (name, division));
+CREATE TABLE club (id INTEGER PRIMARY KEY, name TEXT NOT NULL, division TEXT, reputation INTEGER, UNIQUE (name, division));
 CREATE TABLE nation (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);
 CREATE TABLE player (${PLAYER_COLUMNS.join(", ")}) WITHOUT ROWID;
 CREATE TABLE staff (${STAFF_COLUMNS.join(", ")}) WITHOUT ROWID;

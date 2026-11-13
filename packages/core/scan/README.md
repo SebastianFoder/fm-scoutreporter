@@ -45,7 +45,9 @@ The records, shown as the whole-file JSON form (`scan-sample.json`):
     "myClub": "Club",
     "database": "men",                      // "men" | "women" | "both"
     "currency": "GBP",
-    "unreadFraction": 0.0                   // share of FM's memory that could not be read
+    "unreadFraction": 0.0,                  // share of FM's memory that could not be read
+    "searchPlayers": 164658,                // players in FM's Player Search result at scan time (0: none)
+    "searchStaff": 0                        // the same for FM's Staff Search
   },
   "players": [{
     "uid": 2002083882,
@@ -55,9 +57,11 @@ The records, shown as the whole-file JSON form (`scan-sample.json`):
     "nationality": "United States",         // in the game's language
     "nationId": 123,                        // optional, language independent
     "female": true,                         // only when true
+    "inSearch": true,                       // only when true: in FM's search result (see below)
     "club": "Club where he plays",
     "ownerClub": "Parent club",             // only for loans
     "division": "Competition",
+    "clubReputation": 6826,                 // the club's reputation, about 0..10000 (optional)
     "teamType": 0,                          // 0 first team, ~3 reserves, 10+ youth
     "ca": 112, "pa": 150,
     "wage": 1900,                           // GBP per week
@@ -90,6 +94,13 @@ Player attribute keys are the app's `PlayerAttributes` keys (`crossing` ... `con
 including `teamWork`, `freeKickTaking`, `rushingOutTendency`, `punching`, `oneOnOnes`). Staff
 attribute keys are the app's `StaffAttributeKey`s; adaptability is the personality value.
 
+**FM's search result.** FM keeps the whole result of its Player Search (and Staff Search) screen
+in memory, after every filter set there, including "Player's interest" (Interested, Persuadable,
+Doubtful), which FM computes itself and stores nowhere per player. The reader marks the people in
+that result with `inSearch` and counts them in `meta.searchPlayers` / `meta.searchStaff`. The app
+can then load only those (`LoadScope.onlySearch`): FM's own answer to "would he join my club",
+not an estimate. The counts are 0 when FM had no search result.
+
 A new field is a minor change (readers ignore unknown fields). Renaming or removing one, or
 changing a unit, bumps `schemaVersion`; `assertScanFile` and `assertScanHeader` reject versions they
 do not know. Version 1 was a single JSON document (players and staff as arrays); version 2 is the
@@ -103,9 +114,9 @@ smaller than the JSON: a full FM27 database is about 140 MB.
 | Table | Holds |
 | --- | --- |
 | `meta` | `schema`, `schemaVersion` and the scan's `meta` (JSON) |
-| `club` | `id`, `name`, `division`, stored once and referenced by id |
+| `club` | `id`, `name`, `division`, `reputation`, stored once and referenced by id |
 | `nation` | `id`, `name` |
-| `player` | one row per player: the fields above as columns, one column per 1..20 value (`a_<attribute>`, `h_<hidden>`, `per_<personality>`, `pos_<position>`), transfer status as bit flags |
+| `player` | one row per player: the fields above as columns (`in_search` is 0 or 1), one column per 1..20 value (`a_<attribute>`, `h_<hidden>`, `per_<personality>`, `pos_<position>`), transfer status as bit flags |
 | `staff` | the same person columns, `job`, `job_id`, `preferred_jobs` and `job_preferences` (comma lists), one `a_<attribute>` column per staff attribute |
 
 `PRAGMA user_version` holds `SCAN_DB_VERSION` (`db/schema.ts`); a database of another version is
@@ -113,9 +124,10 @@ rejected (scan again). Reading rows back (`db/read.ts`) gives exactly the record
 
 - `db/write.ts`: `importScanLines` (streams the lines file, a transaction per 5,000 rows),
   `writeScanFile` (an in-memory scan), `scanToLines`.
-- `db/read.ts`: `loadScan(db, scope)` returns what the screens load. A scan that fits under the
-  limits is loaded whole; a bigger one loads your club, plus players at or above a CA, plus young
-  players with a high PA, best CA first, up to a cap (and staff likewise). See `LoadScope` in
+- `db/read.ts`: `loadScan(db, scope)` returns what the screens load: your club plus a pool, which
+  is the whole scan or, with `scope.onlySearch`, FM's search result. A pool that fits under the
+  limits is loaded whole; a bigger one keeps players at or above a CA, plus young players with a
+  high PA, best CA first, up to a cap (and staff likewise). See `LoadScope` in
   `../desktop/bridge.ts`.
 - `db/growth.ts`: `prepareGrowth` joins two scan databases on uid once into a small `growth` table
   in a scratch database (a few seconds for two full databases); `queryGrowth` filters, sorts and

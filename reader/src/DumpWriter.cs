@@ -65,6 +65,9 @@ internal static class DumpWriter
         j.Prop("database", db.ToString().ToLowerInvariant());
         j.Prop("currency", "GBP");
         j.Prop("unreadFraction", Math.Round(r.UnreadFraction, 4));
+        // People in FM's player/staff search at scan time ("inSearch" on each); 0 = no search found.
+        j.Prop("searchPlayers", r.SearchPlayers);
+        j.Prop("searchStaff", r.SearchStaff);
         j.EndObj();
         j.EndObj();
         j.NewLine();
@@ -83,8 +86,10 @@ internal static class DumpWriter
         j.Prop("nationality", p.Nationality);
         if (p.NationId != 0) j.Prop("nationId", p.NationId);
         if (p.Gender == 1) j.Prop("female", true);
+        if (p.InSearch) j.Prop("inSearch", true);
         j.Prop("club", p.Club);
         j.Prop("division", p.Division);
+        if (p.ClubRep > 0) j.Prop("clubReputation", p.ClubRep);   // the club's reputation (~0..10000)
         j.Prop("ca", p.Ca);
         j.Prop("pa", p.Pa);
         j.PropPositive("wage", p.Wage);

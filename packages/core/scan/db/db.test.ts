@@ -104,7 +104,7 @@ test("a scan that fits under the limits loads whole", () => {
 
 test("a big scan loads your club plus the players and staff worth scouting", () => {
   const myClub = sample.meta.myClub!;
-  const scope: LoadScope = { minCa: 140, youngMaxAge: 19, youngMinPa: 150, maxPlayers: 60, staffMinCa: 120, maxStaff: 50 };
+  const scope: LoadScope = { minCa: 140, youngMaxAge: 19, youngMinPa: 150, maxPlayers: 60, staffMinCa: 120, maxStaff: 50, onlySearch: false };
   const loaded = loadScan(memoryDb(), scope);
 
   const expected = sample.players.filter(
@@ -128,6 +128,60 @@ test("a big scan loads your club plus the players and staff worth scouting", () 
   const capped = loadScan(memoryDb(), { ...scope, maxPlayers: 10 });
   assert.equal(capped.players.length, 10);
   assert.ok(capped.players.every((p) => p.club === myClub));
+});
+
+/** The sample with FM search results: every second player and staff member who is not at your club. */
+function searchedScan(): ScanFile {
+  const myClub = sample.meta.myClub!;
+  let others = 0;
+  const players = sample.players.map((p) => (p.club !== myClub && others++ % 2 === 0 ? { ...p, inSearch: true } : p));
+  others = 0;
+  const staff = sample.staff.map((s) => (s.club !== myClub && others++ % 2 === 0 ? { ...s, inSearch: true } : s));
+  return {
+    ...sample,
+    meta: { ...sample.meta, searchPlayers: players.filter((p) => p.inSearch).length, searchStaff: staff.filter((s) => s.inSearch).length },
+    players,
+    staff,
+  };
+}
+
+test("keeps FM's search result and club reputations", () => {
+  const scan = searchedScan();
+  scan.players = scan.players.map((p) => (p.club ? { ...p, clubReputation: 4000 + p.club.length } : p));
+  const db = memoryDb(scan);
+  assert.deepEqual(allPlayers(db), byUid(scan.players));
+  assert.deepEqual(allStaff(db), byUid(scan.staff));
+  assert.ok(scan.meta.searchPlayers! > 0 && scan.meta.searchStaff! > 0);
+});
+
+test("can load only the people from FM's search, plus your club", () => {
+  const scan = searchedScan();
+  const myClub = scan.meta.myClub!;
+  const db = memoryDb(scan);
+  const off = loadScan(db, DEFAULT_LOAD_SCOPE);
+  assert.equal(off.players.length, scan.players.length);
+  assert.deepEqual(off.bySearch, { players: false, staff: false });
+  assert.equal(off.searchPlayers, scan.meta.searchPlayers);
+
+  const on = loadScan(db, { ...DEFAULT_LOAD_SCOPE, onlySearch: true });
+  assert.deepEqual(on.bySearch, { players: true, staff: true });
+  assert.deepEqual(byUid(on.players), byUid(scan.players.filter((p) => p.inSearch || p.club === myClub)));
+  assert.deepEqual(byUid(on.staff), byUid(scan.staff.filter((s) => s.inSearch || s.club === myClub)));
+  assert.ok(on.players.some((p) => p.inSearch) && on.players.some((p) => p.club === myClub && !p.inSearch));
+
+  // A search result over the limit is cut down like a big scan: the CA and PA limits apply inside it.
+  const scope: LoadScope = { ...DEFAULT_LOAD_SCOPE, onlySearch: true, maxPlayers: 5, minCa: 150, youngMaxAge: 0, youngMinPa: 200 };
+  const cut = loadScan(db, scope);
+  assert.ok(cut.players.length <= 5);
+  assert.ok(cut.players.every((p) => p.club === myClub || (p.inSearch && p.ca >= 150)));
+});
+
+test("a scan without an FM search loads as usual when only the search is wanted", () => {
+  const loaded = loadScan(memoryDb(), { ...DEFAULT_LOAD_SCOPE, onlySearch: true });
+  assert.equal(loaded.players.length, sample.players.length);
+  assert.equal(loaded.staff.length, sample.staff.length);
+  assert.deepEqual(loaded.bySearch, { players: false, staff: false });
+  assert.equal(loaded.searchPlayers, 0);
 });
 
 function laterScan(): ScanFile {

@@ -46,14 +46,14 @@ export function scanDbCounts(db: SqlDatabase): { players: number; staff: number 
 }
 
 const PLAYER_SELECT = `
-SELECT p.*, c.name AS club_name, c.division AS club_division, oc.name AS owner_name, n.name AS nation_name
+SELECT p.*, c.name AS club_name, c.division AS club_division, c.reputation AS club_reputation, oc.name AS owner_name, n.name AS nation_name
 FROM player p
 LEFT JOIN club c ON c.id = p.club_id
 LEFT JOIN club oc ON oc.id = p.owner_club_id
 LEFT JOIN nation n ON n.id = p.nation_id`;
 
 const STAFF_SELECT = `
-SELECT s.*, c.name AS club_name, c.division AS club_division, n.name AS nation_name
+SELECT s.*, c.name AS club_name, c.division AS club_division, c.reputation AS club_reputation, n.name AS nation_name
 FROM staff s
 LEFT JOIN club c ON c.id = s.club_id
 LEFT JOIN nation n ON n.id = s.nation_id`;
@@ -72,6 +72,7 @@ function personFields(row: SqlRow) {
   const personality = {} as ScanPersonality;
   for (const k of PERSONALITY_KEYS) personality[k] = num(row[perCol(k)]);
   const fmNation = num(row.fm_nation_id);
+  const clubReputation = num(row.club_reputation);
   return {
     uid: Number(row.uid),
     name: String(row.name),
@@ -82,6 +83,8 @@ function personFields(row: SqlRow) {
     ...(Number(row.female) === 1 && { female: true }),
     club: str(row.club_name),
     division: str(row.club_division),
+    ...(clubReputation !== null && { clubReputation }),
+    ...(Number(row.in_search) === 1 && { inSearch: true }),
     ca: Number(row.ca),
     pa: Number(row.pa),
     wage: num(row.wage),
@@ -147,43 +150,63 @@ export function allStaff(db: SqlDatabase): ScanStaff[] {
 }
 
 /**
- * What the screens get from a scan. A scan that fits under the limits is loaded whole. A bigger one
- * (a full FM database is about 400,000 players) loads your club, plus every player at or above
- * `minCa`, plus young players (up to `youngMaxAge`) with a PA of at least `youngMinPa`, best CA first,
- * up to `maxPlayers`; and for staff your club plus everyone at or above `staffMinCa`, up to `maxStaff`.
+ * What the screens get from a scan: your club, plus a pool of other people.
+ *
+ * The pool is the whole scan, or, with `scope.onlySearch` and a scan that has one, the result of
+ * FM's search (the players FM found with the filters on its Player Search screen, such as
+ * "Player's interest"; staff likewise). A pool that fits under the limit is loaded whole. A bigger
+ * one (a full FM database is about 400,000 players) keeps every player at or above `minCa`, plus
+ * young players (up to `youngMaxAge`) with a PA of at least `youngMinPa`, best CA first, up to
+ * `maxPlayers`; and for staff everyone at or above `staffMinCa`, up to `maxStaff`.
  */
 export function loadScan(db: SqlDatabase, scope: LoadScope): LoadedScan {
   const meta = readScanMeta(db);
   const totals = scanDbCounts(db);
   const myClub = meta.myClub;
+  const inSearch = (table: string) => Number((db.prepare(`SELECT count(*) AS n FROM ${table} WHERE in_search = 1`).get() as SqlRow).n);
+  const searchPlayers = inSearch("player");
+  const searchStaff = inSearch("staff");
 
-  const players =
-    totals.players <= scope.maxPlayers
-      ? allPlayers(db)
-      : (
-          db
-            .prepare(
-              `${PLAYER_SELECT}
-               WHERE (c.name IS NOT NULL AND c.name = ?) OR p.ca >= ? OR (p.age <= ? AND p.pa >= ?)
-               ORDER BY (c.name IS NOT NULL AND c.name = ?) DESC, p.ca DESC, p.uid
-               LIMIT ?`,
-            )
-            .all(myClub, scope.minCa, scope.youngMaxAge, scope.youngMinPa, myClub, scope.maxPlayers) as SqlRow[]
-        ).map(rowToPlayer);
+  /** Your club first, then the pool (cut down by `worthIt` when it is over the limit), best CA first. */
+  const load = (select: string, t: string, bySearch: boolean, poolSize: number, limit: number, worthIt: string, worthItParams: SqlValue[]) => {
+    const pool = bySearch ? `${t}.in_search = 1` : "1";
+    const wanted = poolSize <= limit ? pool : `${pool} AND (${worthIt})`;
+    const mine = "(c.name IS NOT NULL AND c.name = ?)";
+    return db
+      .prepare(`${select} WHERE ${mine} OR (${wanted}) ORDER BY ${mine} DESC, ${t}.ca DESC, ${t}.uid LIMIT ?`)
+      .all(myClub, ...(poolSize <= limit ? [] : worthItParams), myClub, limit) as SqlRow[];
+  };
 
-  const staff =
-    totals.staff <= scope.maxStaff
-      ? allStaff(db)
-      : (
-          db
-            .prepare(
-              `${STAFF_SELECT}
-               WHERE (c.name IS NOT NULL AND c.name = ?) OR s.ca >= ?
-               ORDER BY (c.name IS NOT NULL AND c.name = ?) DESC, s.ca DESC, s.uid
-               LIMIT ?`,
-            )
-            .all(myClub, scope.staffMinCa, myClub, scope.maxStaff) as SqlRow[]
-        ).map(rowToStaff);
+  const playersBySearch = scope.onlySearch && searchPlayers > 0;
+  const players = load(
+    PLAYER_SELECT,
+    "p",
+    playersBySearch,
+    playersBySearch ? searchPlayers : totals.players,
+    scope.maxPlayers,
+    "p.ca >= ? OR (p.age <= ? AND p.pa >= ?)",
+    [scope.minCa, scope.youngMaxAge, scope.youngMinPa],
+  ).map(rowToPlayer);
 
-  return { meta, players, staff, totalPlayers: totals.players, totalStaff: totals.staff };
+  const staffBySearch = scope.onlySearch && searchStaff > 0;
+  const staff = load(
+    STAFF_SELECT,
+    "s",
+    staffBySearch,
+    staffBySearch ? searchStaff : totals.staff,
+    scope.maxStaff,
+    "s.ca >= ?",
+    [scope.staffMinCa],
+  ).map(rowToStaff);
+
+  return {
+    meta,
+    players,
+    staff,
+    totalPlayers: totals.players,
+    totalStaff: totals.staff,
+    searchPlayers,
+    searchStaff,
+    bySearch: { players: playersBySearch, staff: staffBySearch },
+  };
 }

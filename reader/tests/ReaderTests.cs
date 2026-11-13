@@ -200,6 +200,22 @@ public class DumpWriterTests
         Assert.Equal("2027-08-14", meta.GetProperty("gameDate").GetString());
         Assert.Equal("Parent FC", meta.GetProperty("myClub").GetString());
         Assert.Equal("men", meta.GetProperty("database").GetString());
+        Assert.Equal(0, meta.GetProperty("searchPlayers").GetInt32());
+    }
+
+    [Fact]
+    public void Marks_people_in_fms_search_result()
+    {
+        var r = Sample();
+        r.Players[0].InSearch = true;
+        r.Players[0].ClubRep = 6826;
+        r.SearchPlayers = 1;
+        var lines = WriteSample(r);
+        Assert.Equal(1, lines[0].GetProperty("meta").GetProperty("searchPlayers").GetInt32());
+        Assert.Equal(0, lines[0].GetProperty("meta").GetProperty("searchStaff").GetInt32());
+        Assert.True(Kind(lines, "player").GetProperty("inSearch").GetBoolean());
+        Assert.Equal(6826, Kind(lines, "player").GetProperty("clubReputation").GetInt32());
+        Assert.False(Kind(lines, "staff").TryGetProperty("inSearch", out _));
     }
 
     [Fact]
@@ -268,6 +284,43 @@ public class DumpWriterTests
             Assert.Equal("both", doc.RootElement.GetProperty("meta").GetProperty("database").GetString());
         }
         finally { Directory.Delete(dir, true); }
+    }
+}
+
+public class RttiTests
+{
+    /// <summary>A module image with one class: its name, a locator for it and a vtable.</summary>
+    private static (byte[] image, ulong imageBase) Image(string name, uint locatorOffset = 0)
+    {
+        const ulong imageBase = 0x7FFE00000000;
+        var image = new byte[0x400];
+        // Type descriptor at 0x100: two pointers, then the name.
+        System.Text.Encoding.ASCII.GetBytes(name + "\0").CopyTo(image, 0x110);
+        // Complete object locator at 0x200.
+        BitConverter.GetBytes(1u).CopyTo(image, 0x200);
+        BitConverter.GetBytes(locatorOffset).CopyTo(image, 0x204);
+        BitConverter.GetBytes(0x100u).CopyTo(image, 0x20C);
+        BitConverter.GetBytes(0x200u).CopyTo(image, 0x214);
+        // The slot before the vtable (at 0x308) points at the locator.
+        BitConverter.GetBytes(imageBase + 0x200).CopyTo(image, 0x300);
+        return (image, imageBase);
+    }
+
+    [Fact]
+    public void Finds_a_class_vtable_by_its_rtti_name()
+    {
+        var (image, imageBase) = Image(Fields.SEARCH_SESSION_TYPE);
+        Assert.Equal(new[] { imageBase + 0x308 }, MemScan.VtablesOfType(image, imageBase, Fields.SEARCH_SESSION_TYPE));
+    }
+
+    [Fact]
+    public void Ignores_other_classes_secondary_vtables_and_a_missing_image()
+    {
+        var (image, imageBase) = Image(".?AVPERSON_SEARCH_EDIT_SESSION_HELPER@@");
+        Assert.Empty(MemScan.VtablesOfType(image, imageBase, Fields.SEARCH_SESSION_TYPE));
+        var (secondary, secondaryBase) = Image(Fields.SEARCH_SESSION_TYPE, locatorOffset: 16);
+        Assert.Empty(MemScan.VtablesOfType(secondary, secondaryBase, Fields.SEARCH_SESSION_TYPE));
+        Assert.Empty(MemScan.VtablesOfType(null, 0, Fields.SEARCH_SESSION_TYPE));
     }
 }
 

@@ -49,6 +49,9 @@ export class ScanDbWriter {
   private readonly clubsByName = new Map<string, number>();
   private readonly nations = new Map<string, number>();
   private readonly insertClub: SqlStatement;
+  private readonly setClubReputation: SqlStatement;
+  /** Clubs stored without a reputation so far (the first person seen there had none). */
+  private readonly clubsWithoutReputation = new Set<number>();
   private readonly insertNation: SqlStatement;
   private readonly insertPlayer: SqlStatement;
   private readonly insertStaff: SqlStatement;
@@ -56,7 +59,8 @@ export class ScanDbWriter {
   constructor(private readonly db: SqlDatabase) {
     db.exec(`PRAGMA user_version = ${SCAN_DB_VERSION};`);
     db.exec(CREATE_TABLES);
-    this.insertClub = db.prepare("INSERT INTO club (id, name, division) VALUES (?, ?, ?)");
+    this.insertClub = db.prepare("INSERT INTO club (id, name, division, reputation) VALUES (?, ?, ?, ?)");
+    this.setClubReputation = db.prepare("UPDATE club SET reputation = ? WHERE id = ?");
     this.insertNation = db.prepare("INSERT INTO nation (id, name) VALUES (?, ?)");
     this.insertPlayer = insertFor(db, "player", PLAYER_COLUMNS);
     this.insertStaff = insertFor(db, "staff", STAFF_COLUMNS);
@@ -69,15 +73,18 @@ export class ScanDbWriter {
     insert.run("meta", JSON.stringify(meta));
   }
 
-  private clubId(name: string | null | undefined, division: string | null | undefined): number | null {
+  private clubId(name: string | null | undefined, division: string | null | undefined, reputation?: number | null): number | null {
     if (!name) return null;
     const key = `${name}\u0000${division ?? ""}`;
     let id = this.clubs.get(key);
     if (id === undefined) {
       id = this.clubs.size + 1;
       this.clubs.set(key, id);
-      this.insertClub.run(id, name, division ?? null);
+      this.insertClub.run(id, name, division ?? null, int(reputation));
       if (!this.clubsByName.has(name)) this.clubsByName.set(name, id);
+      if (int(reputation) === null) this.clubsWithoutReputation.add(id);
+    } else if (int(reputation) !== null && this.clubsWithoutReputation.delete(id)) {
+      this.setClubReputation.run(int(reputation), id);
     }
     return id;
   }
@@ -102,13 +109,14 @@ export class ScanDbWriter {
       this.nationId(p.nationality),
       int(p.nationId),
       p.female ? 1 : 0,
-      this.clubId(p.club, p.division),
+      this.clubId(p.club, p.division, p.clubReputation),
       p.ca,
       p.pa,
       int(p.wage),
       p.contractExpires,
       int(p.reputation?.current),
       int(p.reputation?.world),
+      p.inSearch ? 1 : 0,
       ...PERSONALITY_KEYS.map((k) => int(p.personality?.[k])),
     ];
   }

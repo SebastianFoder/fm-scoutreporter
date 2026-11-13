@@ -22,6 +22,16 @@ and reports on stdout as JSON lines (`progress`, `log`, `done`, `error`). Exit c
 not running, 3 a scan is already running, 4 FM runs as administrator, 5 save not loaded, 6 nothing
 found, 7 too much memory unreadable, 64 usage.
 
+The scan also reads the result of FM's Player Search and Staff Search screens (every person FM
+found with the filters set there, such as "Player's interest"): those people get `inSearch`, and
+`meta.searchPlayers` / `meta.searchStaff` count them. See `Fields.SEARCH_*` and `REPIN.md`.
+
+Developer commands for finding things in FM's memory (plain text output, read-only like the scan):
+`probe-chain --uids a,b,c,d,...` finds a list that leads to the given players in order (for example
+the rows of a search on screen), `probe-peek --addr 0x... [--rtti] [--refs]` shows what is at an
+address, the class name of a vtable and what refers to it, and `probe-lists` / `probe-find` list
+arrays of players and references to players. `REPIN.md` shows how they were used.
+
 Safety rules kept from upstream: a scan that finds nobody is never written; a scan that could not
 read more than 10% of memory (even after retrying from a frozen snapshot) is refused when there is
 an earlier scan to keep using (an existing `scan.ndjson`, or `--previous-exists`, which the app

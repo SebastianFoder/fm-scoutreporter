@@ -25,6 +25,37 @@ internal sealed class ObjClass
 /// </summary>
 internal sealed partial class MemScan
 {
+    /// <summary>
+    /// The vtables of a class in a module image, by its MSVC RTTI name (".?AVNAME@@"): the name is
+    /// in the class's type descriptor, a complete object locator refers to that descriptor, and the
+    /// slot just before a vtable points at the locator. Only the primary vtable (offset 0) counts.
+    /// `image` is the module as mapped in memory, so an index into it is an RVA.
+    /// </summary>
+    internal static List<ulong> VtablesOfType(byte[] image, ulong imageBase, string decoratedName)
+    {
+        var result = new List<ulong>();
+        if (image == null) return result;
+        byte[] name = System.Text.Encoding.ASCII.GetBytes(decoratedName + "\0");
+        for (int at = image.AsSpan().IndexOf(name); at >= 0;)
+        {
+            int descriptor = at - 16;   // the name follows two pointers
+            if (descriptor >= 0)
+                for (int i = 0; i + 24 <= image.Length; i += 4)
+                {
+                    // Locator: signature 1, offset, cdOffset, type descriptor RVA, class RVA, own RVA.
+                    if (BitConverter.ToUInt32(image, i + 12) != (uint)descriptor) continue;
+                    if (BitConverter.ToUInt32(image, i) != 1 || BitConverter.ToUInt32(image, i + 20) != (uint)i) continue;
+                    if (BitConverter.ToUInt32(image, i + 4) != 0) continue;
+                    ulong locator = imageBase + (ulong)i;
+                    for (int j = 0; j + 16 <= image.Length; j += 8)
+                        if (BitConverter.ToUInt64(image, j) == locator) result.Add(imageBase + (ulong)j + 8);
+                }
+            int next = image.AsSpan(at + 1).IndexOf(name);
+            at = next < 0 ? -1 : at + 1 + next;
+        }
+        return result;
+    }
+
     // Regions to scan for database objects (FM's heap).
     public readonly List<(ulong start, ulong size)> ScanRegions = new();
 

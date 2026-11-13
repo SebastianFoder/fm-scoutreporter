@@ -98,6 +98,8 @@ export class SnapshotStore {
       database: meta.database,
       ...(opts.sample && { sample: true }),
       ...(scan.bytes !== undefined && { bytes: scan.bytes }),
+      ...(meta.searchPlayers ? { searchPlayers: meta.searchPlayers } : {}),
+      ...(meta.searchStaff ? { searchStaff: meta.searchStaff } : {}),
     };
     const next = [snapshot, ...list].sort((a, b) => b.scannedAt.localeCompare(a.scannedAt));
     const keep = next.slice(0, Math.max(1, retention));

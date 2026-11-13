@@ -101,6 +101,14 @@ CA" and a maximum age. Comparing two full databases takes a few seconds the firs
 filters and sorting are instant. Scan every few in-game months to follow your youngsters and spot
 breakout players worldwide.
 
+**Only players who would join you.** A scan also reads the result of FM's own Player Search (and
+Staff Search), with every filter you set there. In FM, open Player Search and set **Player's
+interest** (for example Transfer only, Interested), plus any other filter you like; leave the
+search on screen and scan (F9 works inside FM). The Scans page then shows "FM search: 164,658
+players" on the scan. Tick **Only players and staff from my FM search** under **What the screens
+load** and the screens load only those players, plus your own club. This is FM's own verdict, read
+from the game, not an estimate. A scan without a search result loads as usual.
+
 **Hide hidden stats.** If you see CA, PA and hidden attributes as cheating, switch on
 **Hide CA, PA and hidden attributes** under Settings, then press **Use** on your scan. The screens
 then work from visible attributes only, as with a Standard view export.

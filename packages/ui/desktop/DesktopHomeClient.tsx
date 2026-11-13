@@ -115,6 +115,15 @@ export function DesktopHomeClient() {
       ? { players: loadedPlayers, staff: loadedStaff, totalPlayers: active.players, totalStaff: active.staff }
       : null;
   const setLoad = (patch: Partial<LoadScope>) => void updateSettings({ load: { ...settings!.load, ...patch } });
+  // FM's search result in the scan in use, and whether the screens were loaded from it.
+  const staffFromScan = staffState.source?.snapshotId === activeId ? staffState.source : null;
+  const activeSearch = active && (active.searchPlayers || active.searchStaff) ? { players: active.searchPlayers ?? 0, staff: active.searchStaff ?? 0 } : null;
+  const searchText = (s: { players: number; staff: number }) =>
+    [s.players > 0 && `${n(s.players)} players`, s.staff > 0 && `${n(s.staff)} staff`].filter(Boolean).join(" and ");
+  const loadedFrom = [
+    fromScan?.search ? `players from FM's player search (${n(fromScan.search)} found)` : "the players worth scouting",
+    staffFromScan?.search ? `staff from FM's staff search (${n(staffFromScan.search)} found)` : "the staff worth hiring",
+  ].join(" and ");
 
   return (
     <div className="mx-auto max-w-5xl space-y-5 px-5 py-6 text-ink">
@@ -171,9 +180,21 @@ export function DesktopHomeClient() {
       {partial && !loading && (
         <p className="text-[13px] text-muted">
           The screens hold {n(partial.players)} of {n(partial.totalPlayers)} players and {n(partial.staff)} of {n(partial.totalStaff)} staff
-          from this scan: your club plus the ones worth scouting (see <a href="#load-title" className="link">What the screens load</a>).
-          Growth always compares every player.
+          from this scan: your club plus {loadedFrom} (see <a href="#load-title" className="link">What the screens load</a>). Growth
+          always compares every player.
         </p>
+      )}
+      {settings && active && !loading && activeSearch && !settings.load.onlySearch && (
+        <p className="text-[13px] text-muted">
+          FM&apos;s search had {searchText(activeSearch)} when this scan ran. To load only those, tick{" "}
+          <a href="#load-title" className="link">Only players and staff from my FM search</a>.
+        </p>
+      )}
+      {settings?.load.onlySearch && active && !activeSearch && !loading && (
+        <Notice title="This scan has no FM search result">
+          Only players and staff from your FM search is on, but FM had no search result when this scan ran, so the scan is loaded as
+          usual. In FM, open Player Search, set its filters, leave it on screen and scan again.
+        </Notice>
       )}
 
       {active && !active.versionOk && (
@@ -218,6 +239,8 @@ export function DesktopHomeClient() {
                     {n(s.players)} players · {n(s.staff)} staff · {s.myClub ?? "no club"} · {s.game} {s.gameVersion ?? ""} · scanned{" "}
                     {formatTime(s.scannedAt)}
                     {s.bytes !== undefined && ` · ${formatBytes(s.bytes)}`}
+                    {(s.searchPlayers || s.searchStaff) &&
+                      ` · FM search: ${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}`}
                   </p>
                 </div>
                 <Button color="alt" variant="outline" size="sm" disabled={s.id === activeId || loading} onClick={() => void loadSnapshot(s.id)}>
@@ -291,6 +314,18 @@ export function DesktopHomeClient() {
               player in both scans.
             </p>
           </div>
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" className="mt-1" checked={settings.load.onlySearch} onChange={(e) => setLoad({ onlySearch: e.target.checked })} />
+            <span>
+              <span className="font-semibold">Only players and staff from my FM search</span>
+              <span className="block text-[13px] text-muted">
+                A scan also reads the result of FM&apos;s Player Search and Staff Search, with every filter you set there. So to see only
+                players who would join you: in FM, open Player Search, set Player&apos;s interest (for example to Interested), leave the
+                search on screen and scan. The screens then load those players plus your own club. It is FM&apos;s own answer, not an
+                estimate. A result over the limit below keeps the best by the CA and PA limits.
+              </span>
+            </span>
+          </label>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
             <NumberSetting label="Players with CA" suffix="or more" value={settings.load.minCa} min={1} max={200} onSave={(minCa) => setLoad({ minCa })} />
             <NumberSetting label="plus players up to age" value={settings.load.youngMaxAge} min={14} max={45} onSave={(youngMaxAge) => setLoad({ youngMaxAge })} />

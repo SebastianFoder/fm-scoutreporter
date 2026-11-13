@@ -69,6 +69,29 @@ players in `diagnostics.txt`: are names, ages, CA/PA and clubs right?
 3. `bun run reader:test` and `bun run test`, then a walk through the app.
 4. Build a new desktop release.
 
+## FM's search result (`Fields.SEARCH_*`)
+
+The scan reads the result of FM's Player Search and Staff Search from an object of the class
+`PERSON_SEARCH_EDIT_SESSION`. The class is found by its RTTI name, so a patch that only moves code
+does not break it. Two offsets are pinned (found on FM 27.0.1): `SEARCH_LIST` (0x10), a vector
+(begin and end pointer) of pointers to entries, and `SEARCH_ENTRY_PERSON` (0x00), the pointer to
+the person at the start of each entry. A list where fewer than 90% of the entries are known people
+is ignored, so a wrong offset gives "no search result", not wrong data.
+
+Check after a patch: open Player Search in FM, note "N players found", scan, and compare with
+"FM search result: N players" in the reader's log (`diagnostics.txt`). If it is 0 or differs:
+
+1. In FM, show the Unique ID column in the search and note the first five or more rows' IDs, in order.
+2. `ScoutReporter.Reader.exe probe-chain --uids id1,id2,id3,id4,id5` prints each list that leads to
+   those players in that order: its address, the slot size and the offsets from a slot to the
+   player (`pointer via offsets [0x0]` means slot -> entry, entry + 0x0 -> person). The search
+   result is the long one. It can run past the real end into entries of an earlier search.
+3. `probe-peek --addr <list address> --refs` shows what holds the list: the owning object has the
+   list's begin and end pointer next to each other (end = begin + 8 x players found). The value two
+   slots before the begin pointer is the object's vtable.
+4. `probe-peek --addr <vtable> --rtti` prints the class name. Update `SEARCH_SESSION_TYPE`,
+   `SEARCH_LIST` (begin pointer minus object start) and `SEARCH_ENTRY_PERSON`.
+
 ## Reference: what pins where
 
 | Constant | Meaning | Moves |

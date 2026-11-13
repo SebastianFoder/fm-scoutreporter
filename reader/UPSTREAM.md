@@ -16,6 +16,14 @@ Pinned upstream commit: `dbc8b33c84bc7bfc18a5f57483f5dc21768d2e1c` (main, 2026-1
 | `Json.cs` | `core/Json.cs` | Translated; writes to any `TextWriter` (for tests). |
 | `Program.cs` | `scanner/Program.cs` | `scan --out <dir>` and `version` only, progress as JSON lines on stdout, plus `diagnostics.txt`. No watcher and no F9 hook: the desktop app owns the hotkey. |
 
+Added (not from upstream):
+
+- FM's search result: `Fields.SEARCH_*`, `MemScan.VtablesOfType` (class lookup by RTTI name) and
+  `Scanner.ReadSearchResults` mark the people in the result of FM's Player Search and Staff Search.
+  Upstream estimates transfer interest instead; this reads the list FM itself filtered.
+- `Probe.cs` and the `probe-*` commands: developer tools that find lists of players in memory.
+- Club reputation is written per person (`clubReputation`).
+
 Left out for now:
 
 - `core/MemScan.Mac.cs` and `mac/` (loader, host module, Swift app): the Mac reader loads inside FM

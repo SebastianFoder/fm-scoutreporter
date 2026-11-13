@@ -24,6 +24,10 @@ export interface SnapshotInfo {
   sample?: boolean;
   /** Size of the stored scan on disk. */
   bytes?: number;
+  /** Players in FM's Player Search result when the scan ran (0 or missing: none found). */
+  searchPlayers?: number;
+  /** The same for FM's Staff Search. */
+  searchStaff?: number;
 }
 
 /**
@@ -43,6 +47,11 @@ export interface LoadScope {
   /** Staff at or above this CA. */
   staffMinCa: number;
   maxStaff: number;
+  /**
+   * Load only people from FM's search result (plus your club), when the scan has one: the players
+   * FM's Player Search showed when the scan ran, after its filters such as "Player's interest".
+   */
+  onlySearch: boolean;
 }
 
 export const DEFAULT_LOAD_SCOPE: LoadScope = {
@@ -52,12 +61,18 @@ export const DEFAULT_LOAD_SCOPE: LoadScope = {
   maxPlayers: 40_000,
   staffMinCa: 80,
   maxStaff: 40_000,
+  onlySearch: false,
 };
 
 /** A stored scan as the screens get it: the loaded part, and the totals of the whole scan. */
 export interface LoadedScan extends Omit<ScanFile, "schema" | "schemaVersion"> {
   totalPlayers: number;
   totalStaff: number;
+  /** People in FM's search result in this scan (0: none). */
+  searchPlayers: number;
+  searchStaff: number;
+  /** Whether only FM's search result (plus your club) was loaded. */
+  bySearch: { players: boolean; staff: boolean };
 }
 
 export interface GrowthQuery {
@@ -175,6 +190,7 @@ export function normaliseLoadScope(value: unknown): LoadScope {
     maxPlayers: clampInt(v.maxPlayers, 100, 100_000, d.maxPlayers),
     staffMinCa: clampInt(v.staffMinCa, 1, 200, d.staffMinCa),
     maxStaff: clampInt(v.maxStaff, 100, 100_000, d.maxStaff),
+    onlySearch: v.onlySearch === true,
   };
 }
 

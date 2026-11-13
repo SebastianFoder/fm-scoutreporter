@@ -18,6 +18,8 @@ internal sealed class ScanResult
     public int GameYear;
     public string Manager;
     public string MyClub;
+    /// <summary>Players and staff in FM's search result at scan time; 0 = no search found.</summary>
+    public int SearchPlayers, SearchStaff;
     /// <summary>Share of the scanned memory that could not be read (0..1).</summary>
     public double UnreadFraction;
     public bool FromSnapshot;
@@ -25,6 +27,8 @@ internal sealed class ScanResult
     /// <summary>Class-offset histogram (largest first), for diagnostics and re-pinning.</summary>
     public List<(int offset, long count)> ClassHistogram = new();
     public List<string> Log = new();
+    /// <summary>Player object and player block addresses, to UID (for the probe-lists experiment).</summary>
+    public Dictionary<ulong, uint> PersonToUid = new();
 }
 
 /// <summary>
@@ -39,6 +43,8 @@ internal sealed class Scanner
     private readonly DatabaseChoice _db;
     private readonly Action<string, double> _progress;
     private Fields F = Fields.All[0];
+    /// <summary>Vtable of FM's person search session (0 = not found), see Fields.SEARCH_*.</summary>
+    private ulong _searchVt;
 
     // Read buffers, one per worker.
     private static readonly byte[][] BufPool = new byte[MemScan.MaxWorkers][];
@@ -99,6 +105,10 @@ internal sealed class Scanner
             // guaranteed to be empty, so stop instead of producing an empty file.
             if (mem.GpBase == 0) throw new ScanException(ScanError.NotLoaded, "Football Manager is still starting up (the game database is not loaded yet). Load your save, then try again.");
 
+            var searchVts = mem.GamePluginVtables(Fields.SEARCH_SESSION_TYPE);
+            _searchVt = searchVts.Count > 0 ? searchVts[0] : 0;
+            if (searchVts.Count != 1) Log($"FM's search class was found {searchVts.Count} times (expected once): {(searchVts.Count == 0 ? "search results are not read" : "using the first")}.");
+
             Scan(mem, maxDop, result, sw, out double unread);
             result.UnreadFraction = unread;
             if (!useSnapshot && unread > 0.10)
@@ -139,7 +149,9 @@ internal sealed class Scanner
         public readonly Dictionary<int, long> Hist = new();
         public readonly List<(ulong obj, ulong person)> Managers = new();
         public readonly Dictionary<ulong, uint> PersonToUid = new();
+        public readonly Dictionary<ulong, uint> StaffToUid = new();
         public readonly List<ulong> Clubs = new();
+        public readonly List<ulong> SearchSessions = new();
     }
 
     private void Scan(MemScan mem, int maxDop, ScanResult result, Stopwatch sw, out double unreadFraction)
@@ -222,8 +234,12 @@ internal sealed class Scanner
         var managers = new List<(ulong obj, ulong person)>();
         var personToUid = new Dictionary<ulong, uint>(1 << 17);
         var clubObjs = new List<ulong>();
+        var staffToUid = new Dictionary<ulong, uint>(1 << 17);
+        var searchSessions = new HashSet<ulong>();
         foreach (var L in locals)
         {
+            foreach (var kv in L.StaffToUid) staffToUid[kv.Key] = kv.Value;
+            searchSessions.UnionWith(L.SearchSessions);
             foreach (var kv in L.Players) players.TryAdd(kv.Key, kv.Value);
             foreach (var kv in L.Staff) staff.TryAdd(kv.Key, kv.Value);
             foreach (var kv in L.PersonToUid) personToUid[kv.Key] = kv.Value;
@@ -231,6 +247,7 @@ internal sealed class Scanner
             managers.AddRange(L.Managers);
             clubObjs.AddRange(L.Clubs);
         }
+        result.PersonToUid = personToUid;
         unreadFraction = totalBytes > 0 ? (double)Interlocked.Read(ref unreadBytes) / totalBytes : 0;
         if (unreadFraction > 0) result.Log.Add($"Unreadable during the scan: {unreadFraction:P1} of {totalBytes / (1024 * 1024):N0} MB.");
         result.ClassHistogram = hist.OrderByDescending(kv => kv.Value).Select(kv => (kv.Key, kv.Value)).ToList();
@@ -271,8 +288,54 @@ internal sealed class Scanner
         foreach (var uid in staff.Keys.Where(players.ContainsKey).ToList()) staff.Remove(uid);
         result.Log.Add($"Found {players.Count:N0} players and {staff.Count:N0} staff ({staffRaw - staff.Count:N0} staff entries were players).");
 
+        ReadSearchResults(mem, searchSessions, personToUid, staffToUid, players, staff, result);
+
         result.Players = players.Values.ToList();
         result.Staff = staff.Values.ToList();
+    }
+
+    /// <summary>
+    /// Mark the people in FM's search result (the Player Search or Staff Search screen, after its
+    /// filters such as "Player's interest"). Each session object holds a vector of entry pointers;
+    /// an entry starts with a pointer to the person. With several lists of a kind, the longest wins.
+    /// A list where fewer than 90% of the entries are people we know is something else: ignored.
+    /// </summary>
+    private void ReadSearchResults(MemScan mem, HashSet<ulong> sessions, Dictionary<ulong, uint> personToUid, Dictionary<ulong, uint> staffToUid,
+        Dictionary<uint, Person> players, Dictionary<uint, Person> staff, ScanResult result)
+    {
+        List<Person> bestPlayers = null, bestStaff = null;
+        foreach (ulong session in sessions)
+        {
+            ulong begin = mem.Ptr(session + F.SEARCH_LIST), end = mem.Ptr(session + F.SEARCH_LIST + 8);
+            if (begin == 0 || end <= begin || (end - begin) % 8 != 0 || end - begin > 8UL * 2_000_000) continue;
+            int n = (int)((end - begin) / 8);
+            var slots = new byte[n * 8];
+            if (!mem.ReadBlock(begin, slots, slots.Length)) continue;
+            var foundPlayers = new List<Person>();
+            var foundStaff = new List<Person>();
+            for (int i = 0; i < n; i++)
+            {
+                ulong entry = BitConverter.ToUInt64(slots, i * 8);
+                if (entry < 0x10000) continue;
+                ulong person = mem.Ptr(entry + F.SEARCH_ENTRY_PERSON);
+                if (!personToUid.TryGetValue(person, out uint uid) && !staffToUid.TryGetValue(person, out uid)) continue;
+                if (players.TryGetValue(uid, out var pl)) foundPlayers.Add(pl);
+                else if (staff.TryGetValue(uid, out var st)) foundStaff.Add(st);
+            }
+            if (foundPlayers.Count + foundStaff.Count < n * 0.9)
+            {
+                result.Log.Add($"A search list of {n:N0} entries was ignored: only {foundPlayers.Count + foundStaff.Count:N0} are known people.");
+                continue;
+            }
+            if (foundPlayers.Count >= foundStaff.Count) { if (foundPlayers.Count > (bestPlayers?.Count ?? 0)) bestPlayers = foundPlayers; }
+            else if (foundStaff.Count > (bestStaff?.Count ?? 0)) bestStaff = foundStaff;
+        }
+        foreach (var p in bestPlayers ?? new()) p.InSearch = true;
+        foreach (var s in bestStaff ?? new()) s.InSearch = true;
+        result.SearchPlayers = players.Values.Count(p => p.InSearch);
+        result.SearchStaff = staff.Values.Count(s => s.InSearch);
+        if (result.SearchPlayers > 0 || result.SearchStaff > 0)
+            result.Log.Add($"FM search result: {result.SearchPlayers:N0} players, {result.SearchStaff:N0} staff.");
     }
 
     private void ScanChunk(MemScan mem, byte[] buf, int want, ulong chunkBase, ulong modLo, ulong modHi, ScanLocal L)
@@ -282,6 +345,7 @@ internal sealed class Scanner
             ulong vt = BitConverter.ToUInt64(buf, i);
             if (vt < modLo || vt >= modHi) continue;            // fast rejection
             if (!mem.InGp(vt) && !mem.InGa(vt)) continue;       // only database/managed vtables
+            if (vt == _searchVt) { L.SearchSessions.Add(chunkBase + (ulong)i); continue; }
 
             ulong p = chunkBase + (ulong)i;
             var cls = mem.Classify(vt, F);                      // cached: no syscall per candidate
@@ -315,6 +379,8 @@ internal sealed class Scanner
                 if (ca < 1 || ca > 200 || pa < 1 || pa > 200) continue;
                 if (cls.Kind == ObjKind.HumanManager) L.Managers.Add((p, person));
                 if (!L.Staff.ContainsKey(uid)) L.Staff[uid] = ReadStaff(mem, person, block, uid, ca, pa);
+                L.StaffToUid[p] = uid;
+                L.StaffToUid[block] = uid;
             }
         }
     }

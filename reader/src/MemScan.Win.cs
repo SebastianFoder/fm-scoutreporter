@@ -236,6 +236,9 @@ internal sealed partial class MemScan
         return image;
     }
 
+    /// <summary>Vtables of a game_plugin class by RTTI name; empty without the image cache.</summary>
+    public List<ulong> GamePluginVtables(string decoratedName) => VtablesOfType(_gp, GpBase, decoratedName);
+
     // Fast image reads (out of range: single read). Bounds are checked as (addr - base) so a corrupt
     // pointer near ulong.MaxValue cannot wrap around into a negative index (upstream issue #16).
     private ulong ImgPtr(ulong addr)
