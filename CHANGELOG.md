@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.15.0...v1.16.0) (2026-11-13)
+
+
+### Features
+
+* open players in a side panel and show their value in the player list ([c08f6a7](https://github.com/SebastianFoder/fm-scoutreporter/commit/c08f6a704c83c352fd121dd36aa835c144310aa4))
+
 # [1.15.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.14.0...v1.15.0) (2026-11-13)
 
 
