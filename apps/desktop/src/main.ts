@@ -34,6 +34,7 @@ import type { ImportResult } from "./db-ops";
 import { runReader } from "./reader";
 import { SnapshotStore } from "./snapshots";
 import { startWebServer, type WebServer } from "./server";
+import { APP_ORIGIN, registerAppScheme, serveAppScheme } from "./app-origin";
 
 const isDev = !app.isPackaged;
 // The app folder (apps/desktop in development, resources/app.asar when installed). Not __dirname:
@@ -65,7 +66,15 @@ const settingsFile = () => join(userData(), "settings.json");
 
 let settings: DesktopSettings = normaliseSettings({});
 let server: WebServer | null = null;
+/**
+ * Where the window shows the pages: scoutreporter://app (app-origin.ts), the same on every start so
+ * what the pages store survives restarts and updates. In development, next dev's own fixed address.
+ */
+let pageOrigin = "";
 let win: BrowserWindow | null = null;
+
+// Has to happen before the app is ready.
+registerAppScheme();
 let scanning: Promise<ScanOutcome> | null = null;
 const db = new DbClient(paths.dbProcess);
 
@@ -204,7 +213,7 @@ function growthQuery(value: unknown): GrowthQuery {
 /** Only our own pages may use the bridge. */
 function fromApp(event: IpcMainInvokeEvent): boolean {
   const url = event.senderFrame?.url ?? "";
-  return !!server && url.startsWith(`${server.origin}/`);
+  return !!pageOrigin && url.startsWith(`${pageOrigin}/`);
 }
 
 function handle(channel: string, fn: (...args: unknown[]) => unknown) {
@@ -243,8 +252,8 @@ function registerIpc() {
 }
 
 /** Content Security Policy for our pages. Next's inline bootstrap scripts need 'unsafe-inline'; dev also needs eval. */
-function applyCsp(origin: string) {
-  const csp = [
+function contentSecurityPolicy(): string {
+  return [
     "default-src 'self'",
     `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
@@ -256,14 +265,19 @@ function applyCsp(origin: string) {
     "form-action 'self'",
     "frame-ancestors 'none'",
   ].join("; ");
+}
+
+/** Development: the policy on next dev's responses (the installed app sets it in serveAppScheme). */
+function applyCsp(origin: string) {
+  const csp = contentSecurityPolicy();
   session.defaultSession.webRequest.onHeadersReceived({ urls: [`${origin}/*`] }, (details, callback) => {
     callback({ responseHeaders: { ...details.responseHeaders, "Content-Security-Policy": [csp] } });
   });
 }
 
 async function createWindow() {
-  if (!server) return;
-  const origin = server.origin;
+  if (!pageOrigin) return;
+  const origin = pageOrigin;
   win = new BrowserWindow({
     width: 1440,
     height: 900,
@@ -335,7 +349,14 @@ async function main() {
     app.quit();
     return;
   }
-  applyCsp(server.origin);
+  if (process.env.SR_DEV_URL) {
+    // next dev runs on a fixed port, and its hot reload needs a websocket to it: load it directly.
+    pageOrigin = server.origin;
+    applyCsp(server.origin);
+  } else {
+    pageOrigin = APP_ORIGIN;
+    serveAppScheme(server.origin, contentSecurityPolicy());
+  }
   applyHotkey();
   await createWindow();
 }
