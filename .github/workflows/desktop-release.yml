@@ -1,32 +1,39 @@
 name: Desktop release
 
-# Publishes the Windows desktop app as a GitHub Release when a tag `desktop-vX.Y.Z` is pushed:
+# Publishes the Windows desktop app as a GitHub Release "desktop-vX.Y.Z". Start it from the Actions
+# tab (Desktop release > Run workflow, version 0.2.0) or with:
 #
-#   git tag desktop-v0.2.0 && git push origin desktop-v0.2.0
+#   gh workflow run desktop-release.yml -f version=0.2.0
 #
-# The version comes from the tag (it is stamped into apps/desktop/package.json for the build only,
-# nothing is committed). A tag with a suffix (desktop-v0.2.0-beta.1) makes a pre-release. The
+# It releases the head of the branch it runs on (master by default) and creates the tag there. A
+# version whose tag already exists rebuilds that tag and replaces the release's files.
+#
+# Pushing a tag desktop-vX.Y.Z also starts it, except on a commit whose message contains
+# "[skip ci]": GitHub then skips every workflow, and master's head is usually the website's
+# "chore(release): ... [skip ci]" commit. So prefer Run workflow.
+#
+# The version is stamped into apps/desktop/package.json for the build only (nothing is committed).
+# A version with a suffix (0.2.0-beta.1) makes a pre-release. The
 # release holds the unsigned NSIS installer and its SHA-256 checksum, and is not marked "Latest",
 # because the website's semantic-release releases (vX.Y.Z) share this repository's release list.
 # The website's /download page finds the newest desktop release through the GitHub API.
 #
 # The build steps match desktop.yml (the pull request build), plus the release steps.
-# Run it by hand (Actions > Desktop release > Run workflow) to rebuild an existing tag.
 
 on:
   push:
     tags: ["desktop-v*"]
   workflow_dispatch:
     inputs:
-      tag:
-        description: "Existing tag to build and publish, for example desktop-v0.1.0"
+      version:
+        description: "Version to release, for example 0.2.0 (tag desktop-v0.2.0)"
         required: true
 
 permissions:
   contents: write
 
 concurrency:
-  group: desktop-release-${{ inputs.tag || github.ref_name }}
+  group: desktop-release-${{ inputs.version || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -38,23 +45,35 @@ jobs:
       run:
         shell: bash
     env:
-      TAG: ${{ inputs.tag || github.ref_name }}
+      # The typed version (Run workflow), or the pushed tag.
+      REQUESTED: ${{ inputs.version || github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          ref: ${{ env.TAG }}
           fetch-depth: 0
 
-      - name: Read the version from the tag
+      - name: Work out the version and tag
         run: |
-          VERSION="${TAG#desktop-v}"
-          if [[ "$TAG" != desktop-v* || ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::$TAG is not a desktop release tag (desktop-vX.Y.Z or desktop-vX.Y.Z-suffix)."
+          VERSION="${REQUESTED#desktop-v}"
+          VERSION="${VERSION#v}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::'$REQUESTED' is not a version (X.Y.Z or X.Y.Z-suffix)."
             exit 1
           fi
+          TAG="desktop-v$VERSION"
+          # An existing tag is rebuilt as it is; a new one is made at the head of this branch.
+          if git rev-parse -q --verify "refs/tags/$TAG" > /dev/null; then
+            git checkout -q "$TAG"
+            echo "TAG_EXISTS=true" >> "$GITHUB_ENV"
+          else
+            echo "TAG_EXISTS=false" >> "$GITHUB_ENV"
+          fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
           if [[ "$VERSION" == *-* ]]; then echo "PRERELEASE=true" >> "$GITHUB_ENV"; else echo "PRERELEASE=false" >> "$GITHUB_ENV"; fi
+          echo "Releasing $TAG from $(git log --oneline -1)"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -122,7 +141,7 @@ jobs:
             if [ -n "$PREV" ]; then
               echo "## Changes since $PREV"
               echo
-              git log --no-merges --pretty='- %s' "$PREV..$TAG" -- apps/desktop reader packages
+              git log --no-merges --pretty='- %s' "$PREV..$COMMIT" -- apps/desktop reader packages
             else
               echo "## First release"
             fi
@@ -140,8 +159,9 @@ jobs:
           else
             EXTRA=()
             if [ "$PRERELEASE" = true ]; then EXTRA+=(--prerelease); fi
+            # A new version: GitHub creates the tag at the commit that was built.
+            if [ "$TAG_EXISTS" = true ]; then EXTRA+=(--verify-tag); else EXTRA+=(--target "$COMMIT"); fi
             gh release create "$TAG" "${FILES[@]}" \
-              --verify-tag \
               --title "Scout Reporter desktop $VERSION" \
               --notes-file release-notes.md \
               --latest=false \
