@@ -25,7 +25,8 @@
     "reader:check": "node reader/tools/scan-check.mjs",
     "desktop:dev": "bun run --cwd apps/desktop dev",
     "desktop:dist": "bun run --cwd apps/desktop dist",
-    "desktop:smoke": "node apps/desktop/scripts/smoke.mjs"
+    "desktop:smoke": "node apps/desktop/scripts/smoke.mjs",
+    "desktop:time-scan": "node apps/desktop/scripts/time-scan.mjs"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

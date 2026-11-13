@@ -9,30 +9,52 @@ diagnostics.txt, and in the `timings` object of the `done` line.
 
 | Step | What it does |
 |---|---|
-| open | Lists FM's memory regions and modules, caches the module images |
+| open | Lists FM's memory regions and finds its two modules, caches the module images |
 | version | Reads game_plugin.dll's version, finds FM's search class |
-| find | The scan pass: copies the heap in 32 MB blocks and notes every person in it (UID, address, CA/PA), from the copied memory |
-| merge | Joins the workers' finds |
-| read people | Reads each found person's fields: name, attributes, contract, club, personality |
-| squads | Links players to the club whose squad they are in |
-| date | The in-game date and ages |
-| search | Marks the people in FM's search result |
+| find | The scan pass: copies the heap in 32 MB pieces (workers share a queue) and notes every person in it (UID, address, CA/PA, contract, birth date), from the copied memory |
+| merge | Joins the pieces' finds in a fixed order |
+| contracts | Each player's contract club (the owner) |
+| squads | Links players to the club whose squad they are in (clubs read in parallel) |
+| date | The in-game date and season year |
+| search | Finds the people in FM's search result |
+| pick | Search scans only: picks the people to read (the search result and your club) |
+| read people | Reads the picked people's fields: name, attributes, contract, club, personality |
 | diagnostics | diagnostics.txt, and keeping only the search (`--only-search`) |
 | write | Writes scan.ndjson |
 
-The app adds its own part to diagnostics.txt: `App: reader ... (start to finish), import ...`.
+The app adds its own part to the scan log and diagnostics.txt: `App: reader ... (start to finish),
+import ...`. `node apps/desktop/scripts/time-scan.mjs` (or `bun run desktop:time-scan`) times
+scans in the built app, from clicking Scan FM to the players on screen.
 
 Copying FM's memory is cheap: about 0.5 s for 5 to 9 GB with 8 threads. A single small read costs
-about 0.8 µs, because every one goes through Windows (ReadProcessMemory). "read people" makes about
-150 to 250 such reads per person, which is why it is the slow step on a whole database. A different
-language would make the same calls at the same cost: the fix is fewer calls.
+about 0.8 µs, because every one goes through Windows (ReadProcessMemory), and reading a person took
+about 150 to 250 of them. A different language would make the same calls at the same cost: the fix
+was fewer calls. Small reads now fetch the whole 4 KB page once and serve the rest from it (Windows
+grants access per page, so the results are the same), and a search scan reads only the people it
+keeps.
 
-Measured on 2026-11-13 (FM27 27.0.1, 396k players and 173k staff, 8 workers):
+Measured on a paused FM27 27.0.1 save (396k players, 173k staff; a Player Search with 1,151
+players, 1,298 people kept with your club; 8 workers):
+
+| | Before (2026-11-13) | After (2026-11-14) |
+|---|---|---|
+| Search scan, reader | 15.6 s | 1.8 to 2.1 s |
+| Search scan in the app, click to players on screen | about 16 s (30 s with a retry) | 2.0 s |
+| Search scan with the snapshot retry | about 32 s | 4.2 s |
+| Full scan, reader | 16 to 18 s | 8 to 9 s |
 
 ```
-open 296 ms, version 124 ms, find 1,748 ms, merge 61 ms, read people 9,775 ms,
-squads 2,206 ms, date 104 ms, search 22 ms, diagnostics 22 ms, write 2,095 ms
+before, search: open 306 ms, version 73 ms, find 1,712 ms, merge 74 ms, read people 10,595 ms,
+                squads 2,333 ms, date 99 ms, search 25 ms, diagnostics 44 ms, write 17 ms
+after, search:  open 134 ms, version 69 ms, find 847 ms, merge 128 ms, contracts 172 ms, squads 196 ms,
+                date 28 ms, search 3 ms, pick 81 ms, read people 16 ms, diagnostics 22 ms, write 30 ms
+after, full:    open 291 ms, version 69 ms, find 977 ms, merge 126 ms, contracts 160 ms, squads 151 ms,
+                date 29 ms, search 3 ms, read people 3,759 ms, diagnostics 21 ms, write 2,438 ms
 ```
+
+Reading people in a full scan varies with how busy the PC is (4 to 8 s in the same session). The
+first scan after a new reader was installed took 12 s once, while Windows checked the new exe; it
+did not happen again.
 
 ## The retry
 
