@@ -180,6 +180,7 @@ internal sealed partial class MemScan
             }
             _vaClone = clone;
             _proc = clone;
+            DropPageCache();
             Snapshotted = true;
         }
         catch (Exception e)
@@ -198,6 +199,7 @@ internal sealed partial class MemScan
         if (!Snapshotted) return;
         Snapshotted = false;
         _proc = _game.Handle;
+        DropPageCache();
         try { CloseHandle(_vaClone); } catch { }
         try { PssFreeSnapshot(GetCurrentProcess(), _snap); } catch { }
         _vaClone = 0; _snap = 0;

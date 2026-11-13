@@ -231,6 +231,7 @@ internal sealed class Scanner
             var L = locals[worker] = new ScanLocal();
             tasks[worker] = Task.Run(() =>
             {
+                MemScan.BypassPageCache = true;   // the pass reads from its own copied blocks
                 var buf = BufPool[worker];
                 for (int ri = worker; ri < regions.Count; ri += maxDop)
                 {
@@ -280,6 +281,7 @@ internal sealed class Scanner
                         Interlocked.CompareExchange(ref firstRegionError, ex.Message, null);
                     }
                 }
+                MemScan.BypassPageCache = false;   // pool threads are reused: reading people wants the cache
             });
         }
         Task.WaitAll(tasks);
