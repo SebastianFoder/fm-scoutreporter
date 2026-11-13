@@ -37,6 +37,9 @@ import {
   type PageSizeChoice,
 } from "@scoutreporter/ui/components/PaginationControls";
 import { compareNames } from "@scoutreporter/core/text";
+import { transferValueSortKey } from "@scoutreporter/core/best-xi/money";
+import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
+import { useDesktopBridge } from "@scoutreporter/ui/desktop/DesktopProvider";
 
 interface Props {
   players: PlayerWithGroups[];
@@ -57,6 +60,8 @@ type Row = {
   /** Score with the projected attributes at PA; null without a Hidden Attributes export. */
   potential: number | null;
   potentialAvg: number | null;
+  /** Middle of FM's transfer value range, for sorting; null without a valuation. */
+  value: number | null;
 };
 
 const DEFAULT_SORT = "score";
@@ -109,6 +114,7 @@ function parseListSort(
     rawSort === "score" ||
     rawSort === "vsAge" ||
     rawSort === "potential" ||
+    rawSort === "value" ||
     rawSort === "age"
   ) {
     return { sort: rawSort, sortDir };
@@ -212,6 +218,9 @@ function compareRows(a: Row, b: Row, sort: string, sortDir: SortDir): number {
   }
   if (sort === "potential") {
     return m * ((a.potential ?? -1) - (b.potential ?? -1));
+  }
+  if (sort === "value") {
+    return m * ((a.value ?? -1) - (b.value ?? -1));
   }
   if (sort.startsWith("attr:")) {
     const key = sort.slice(5) as AttributeKey;
@@ -369,11 +378,14 @@ function PlayersListClientInner({
           vsAge: avg / ageBenchmark(p.raw.age),
           potential: potentialAvg === null ? null : scaleScore(potentialAvg),
           potentialAvg,
+          value: transferValueSortKey(p.raw.transferValueRange),
         };
       }),
     [players, weights, emphasis],
   );
   const hasPotential = useMemo(() => rows.some((r) => r.potential !== null), [rows]);
+  // In the desktop app a new tab would open the system browser, which has none of the app's data.
+  const desktop = useDesktopBridge() !== null;
 
   const filteredRows = useMemo(() => {
     if (!searchQuery) return rows;
@@ -587,6 +599,14 @@ function PlayersListClientInner({
                   onSort={() => onColumnSort("potential")}
                 />
               )}
+              <SortableTh
+                label={<span title="FM's transfer value range (sorted by its middle)">Value</span>}
+                align="right"
+                columnSort="value"
+                listSort={listSort}
+                listSortDir={listSortDir}
+                onSort={() => onColumnSort("value")}
+              />
               {highlighted.map((key) => (
                 <SortableTh
                   key={key}
@@ -619,13 +639,10 @@ function PlayersListClientInner({
                 )}
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-1 whitespace-nowrap">
-                    <Link
-                      href={`/attribute/players/${p.raw.uniqueId}`}
-                      className="font-semibold hover:text-accent hover:underline"
-                    >
+                    <PlayerLink id={p.raw.uniqueId} className="font-semibold hover:text-accent hover:underline">
                       {p.raw.player}
-                    </Link>
-                    <NewTabPlayerLink uniqueId={p.raw.uniqueId} name={p.raw.player} />
+                    </PlayerLink>
+                    {!desktop && <NewTabPlayerLink uniqueId={p.raw.uniqueId} name={p.raw.player} />}
                   </div>
                 </td>
                 <td className="px-3 py-2 text-[13px] text-muted">{p.raw.position}</td>
@@ -655,6 +672,9 @@ function PlayersListClientInner({
                     )}
                   </td>
                 )}
+                <td className="whitespace-nowrap px-3 py-2 text-right text-[13px] text-muted">
+                  {p.raw.transferValueRange ?? "–"}
+                </td>
                 {highlighted.map((key) => {
                   const value = getPlayerAttributeValue(p, key);
                   const band = getBandForValue(value, profile.thresholds);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { RotateCcw, X } from "lucide-react";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { CsvImportPanel } from "@scoutreporter/ui/components/CsvImportPanel";
@@ -503,12 +503,9 @@ function XiResultPanel({
                       {pick.setting.spot}
                     </td>
                     <td className="px-2.5 py-1.5">
-                      <Link
-                        href={`/attribute/players/${raw.uniqueId}`}
-                        className="font-semibold hover:text-accent hover:underline"
-                      >
+                      <PlayerLink id={raw.uniqueId} className="font-semibold hover:text-accent hover:underline">
                         {raw.player}
-                      </Link>
+                      </PlayerLink>
                       <span className="block text-[12px] text-muted">{raw.position}</span>
                     </td>
                     <td className="px-2.5 py-1.5 text-right">{raw.age}</td>

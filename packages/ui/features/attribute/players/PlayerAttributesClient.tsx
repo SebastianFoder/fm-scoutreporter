@@ -124,7 +124,7 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
     return (
       <div>
         <h2 className="section-title mb-1.5">{title}</h2>
-        <dl className={compact ? "text-[13px] md:grid md:grid-cols-3 md:gap-x-6" : "text-sm"}>
+        <dl className={compact ? "text-[13px] @lg:grid @lg:grid-cols-3 @lg:gap-x-6" : "text-sm"}>
           {entries.map(([key, value]) => {
             const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
             const pretty = withSpaces
@@ -177,10 +177,11 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
     );
   };
 
+  // Columns follow the width it gets (a page, or the narrower player side panel), not the window.
   return (
-    <div className="panel space-y-5 px-4 py-4">
+    <div className="panel @container space-y-5 px-4 py-4">
       {isGoalkeeper ? (
-        <div className="grid gap-x-6 gap-y-5 md:grid-cols-3">
+        <div className="grid gap-x-6 gap-y-5 @lg:grid-cols-3">
           {renderKeyColumn("Goalkeeping", GK_PANEL_KEYS)}
           {renderColumn("Mental", grouped.mental)}
           <div className="space-y-5">
@@ -190,7 +191,7 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
         </div>
       ) : (
         <>
-          <div className="grid gap-x-6 gap-y-5 md:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-5 @lg:grid-cols-3">
             {renderColumn("Technical", grouped.technical)}
             {renderColumn("Mental", grouped.mental)}
             {renderColumn("Physical", grouped.physical)}

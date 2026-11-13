@@ -16,8 +16,11 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
   reloads and visits like before, and full-database imports fit. Imports saved by older versions in
   localStorage (or sessionStorage) move across on first load. Open tabs stay in sync. Without IndexedDB
   the app falls back to localStorage. Settings (profiles, theme, formations) stay in localStorage
-- **Player list** with score + highlighted attributes
+- **Player list** with score, FM's transfer value range (sortable) and highlighted attributes
 - **Player profile** view (with goalkeeper-specific layout when position includes `GK`)
+- **Player side panel**: clicking a player anywhere (player list, Wonderkid, Best XI, Squad, Compare, Growth) shows their
+  profile in a panel on the right, without leaving the page. Click another player to switch, Esc to close;
+  Ctrl/Cmd-click or **Full page** opens the player page
 - **Compare view** with:
   - Player selector (search + pagination)
   - Comparison table

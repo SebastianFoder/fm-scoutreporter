@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { Notice } from "@scoutreporter/ui/components/Notice";
@@ -218,7 +219,7 @@ export function GrowthClient() {
                       <tr key={r.player.uid}>
                         <td className="px-3 py-1.5 font-semibold">
                           {loaded.has(String(r.player.uid)) ? (
-                            <Link href={`/attribute/players/${r.player.uid}`} className="hover:underline">{r.player.name}</Link>
+                            <PlayerLink id={String(r.player.uid)} className="hover:underline">{r.player.name}</PlayerLink>
                           ) : (
                             r.player.name
                           )}

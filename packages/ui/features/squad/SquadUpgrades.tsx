@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
 import type { PlayerWithGroups } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { SLOT_LABEL } from "@scoutreporter/core/best-xi/formations";
@@ -80,12 +81,9 @@ export function SquadUpgrades({
                             return (
                               <li key={c.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
                                 <GradeStamp score={c.score} label={raw?.player} />
-                                <Link
-                                  href={`/attribute/players/${c.id}`}
-                                  className="font-semibold hover:text-accent hover:underline"
-                                >
+                                <PlayerLink id={c.id} className="font-semibold hover:text-accent hover:underline">
                                   {raw?.player}
-                                </Link>
+                                </PlayerLink>
                                 <span className="text-[12px] text-muted">{raw?.age}y</span>
                                 <span className="tabular-nums text-muted">{c.score.toFixed(1)}</span>
                                 {u.starter && <Delta value={c.score - u.starter.score} />}
