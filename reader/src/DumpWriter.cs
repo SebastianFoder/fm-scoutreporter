@@ -23,7 +23,8 @@ internal static class DumpWriter
     /// </summary>
     public static (bool write, ScanError? error, string message) Check(ScanResult r, bool existingFile, bool onlySearch = false)
     {
-        if (r.Players.Count == 0 && r.Staff.Count == 0)
+        // A search scan reads only the people it keeps; everyone it found is counted in Found*.
+        if (r.Players.Count == 0 && r.Staff.Count == 0 && r.FoundPlayers == 0 && r.FoundStaff == 0)
             return (false, ScanError.NothingFound,
                 "The scan found no players. Is your save fully loaded? If it is, the reader may need an update for this FM version.");
         if (r.UnreadFraction > 0.10 && existingFile)

@@ -119,13 +119,13 @@ internal static class Program
             using var _ = game;
             Log($"Scout Reporter reader {ReaderVersion}: fm.exe pid {fm.Id}");
 
-            var result = new Scanner(game, db, Progress).Run();
+            bool onlySearch = args.Contains("--only-search");
+            var result = new Scanner(game, db, Progress, onlySearch).Run();
             var steps = new StepTimer(result.Timings);
             foreach (var line in result.Log) Log(line);
             try { WriteDiagnostics(Path.Combine(outDir, "diagnostics.txt"), result, ReaderVersion); }
             catch (Exception e) { Log("Could not write diagnostics.txt: " + e.Message); }   // best effort, but say so
             bool previous = File.Exists(target) || args.Contains("--previous-exists");
-            bool onlySearch = args.Contains("--only-search");
             var (write, error, message) = DumpWriter.Check(result, previous, onlySearch);
             if (!write)
             {
@@ -432,7 +432,7 @@ internal static class Program
             using var w = new StreamWriter(path, false);
             w.WriteLine($"Scout Reporter reader {readerVersion} diagnostics, {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             w.WriteLine($"Game: {r.Game} (game_plugin {r.GameVersion ?? "?"}, offsets pinned on {r.SupportedVersion}.x, {(r.VersionOk ? "ok" : "DIFFERENT VERSION")})");
-            w.WriteLine($"Players: {r.Players.Count:N0}  Staff: {r.Staff.Count:N0}  Unreadable: {r.UnreadFraction:P1}  Snapshot: {r.FromSnapshot}  Time: {r.ElapsedMs} ms");
+            w.WriteLine($"Players: {Math.Max(r.Players.Count, r.FoundPlayers):N0}  Staff: {Math.Max(r.Staff.Count, r.FoundStaff):N0}  Unreadable: {r.UnreadFraction:P1}  Snapshot: {r.FromSnapshot}  Time: {r.ElapsedMs} ms");
             w.WriteLine($"Manager: {r.Manager ?? "?"}  Club: {r.MyClub ?? "?"}  In-game date: {r.GameDate?.ToString("yyyy-MM-dd") ?? "not found"} (year {r.GameYear})");
             w.WriteLine($"FM search result: {r.SearchPlayers:N0} players, {r.SearchStaff:N0} staff");
             w.WriteLine($"Steps: {StepTimer.Format(r.Timings)}");

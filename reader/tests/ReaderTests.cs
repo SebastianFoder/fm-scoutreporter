@@ -235,6 +235,16 @@ public class DumpWriterTests
     }
 
     [Fact]
+    public void A_search_scan_that_read_nobody_but_found_people_has_no_search_rather_than_nothing()
+    {
+        // A search scan only reads the people it keeps: with no search and no club, it read nobody.
+        var r = new ScanResult { FoundPlayers = 395_000, FoundStaff = 170_000 };
+        Assert.Equal((false, ScanError.NoSearch), Pick(DumpWriter.Check(r, existingFile: false, onlySearch: true)));
+        r.FoundPlayers = r.FoundStaff = 0;
+        Assert.Equal((false, ScanError.NothingFound), Pick(DumpWriter.Check(r, existingFile: false, onlySearch: true)));
+    }
+
+    [Fact]
     public void Marks_people_in_fms_search_result()
     {
         var r = Sample();

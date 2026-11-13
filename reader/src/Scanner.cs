@@ -20,6 +20,11 @@ internal sealed class ScanResult
     public string MyClub;
     /// <summary>Players and staff in FM's search result at scan time; 0 = no search found.</summary>
     public int SearchPlayers, SearchStaff;
+    /// <summary>
+    /// Everyone the scan found. A search scan reads only the people it keeps, so Players and Staff
+    /// can hold fewer.
+    /// </summary>
+    public int FoundPlayers, FoundStaff;
     /// <summary>Only FM's search result and your own club were kept (see KeepSearchOnly).</summary>
     public bool SearchOnly;
     /// <summary>Share of the scanned memory that could not be read (0..1).</summary>
@@ -41,7 +46,7 @@ internal sealed class ScanResult
     /// </summary>
     public void KeepSearchOnly()
     {
-        int players = Players.Count, staff = Staff.Count;
+        int players = Math.Max(Players.Count, FoundPlayers), staff = Math.Max(Staff.Count, FoundStaff);
         bool Mine(Person p) => MyClub != null && (p.Club == MyClub || p.OwnerClub == MyClub);
         Players = Players.Where(p => p.InSearch || Mine(p)).ToList();
         Staff = Staff.Where(s => s.InSearch || Mine(s)).ToList();
@@ -61,6 +66,7 @@ internal sealed class Scanner
     private readonly GameProcess _game;
     private readonly DatabaseChoice _db;
     private readonly Action<string, double> _progress;
+    private readonly bool _onlySearch;
     private Fields F = Fields.All[0];
     /// <summary>Vtable of FM's person search session (0 = not found), see Fields.SEARCH_*.</summary>
     private ulong _searchVt;
@@ -68,10 +74,15 @@ internal sealed class Scanner
     // Read buffers, one per worker.
     private static readonly byte[][] BufPool = new byte[MemScan.MaxWorkers][];
 
-    public Scanner(GameProcess game, DatabaseChoice db, Action<string, double> progress)
+    /// <param name="onlySearch">
+    /// Read only the people a search scan keeps (FM's search result and your club, see
+    /// <see cref="ScanResult.KeepSearchOnly"/>). Everyone is still found: the search needs that.
+    /// </param>
+    public Scanner(GameProcess game, DatabaseChoice db, Action<string, double> progress, bool onlySearch = false)
     {
         _game = game;
         _db = db;
+        _onlySearch = onlySearch;
         _progress = progress ?? ((_, _) => { });
     }
 
@@ -175,6 +186,8 @@ internal sealed class Scanner
         public uint Uid;
         public ushort Ca, Pa;
         public bool Female;
+        public ulong Contract; // the person's contract (0 = none)
+        public uint Dob;       // raw FM birth date
     }
 
     // Per-thread collections for the parallel scan: each worker fills its own without locks. Lists
@@ -310,19 +323,26 @@ internal sealed class Scanner
         // (coaches, scouts, physios) have no player facet and stay; the others are not read as staff.
         int staffRaw = foundStaff.Count;
         foundStaff.RemoveAll(f => playerUids.Contains(f.Uid));
+        staffUids.ExceptWith(playerUids);
+        result.FoundPlayers = foundPlayers.Count;
+        result.FoundStaff = foundStaff.Count;
         steps.Lap("merge");
 
-        var players = ReadPeople(foundPlayers, maxDop, FindShare, 0.80, result,
-            f => ReadPlayer(mem, f.Obj, f.Block, f.Uid, f.Ca, f.Pa, f.Female));
-        var staff = ReadPeople(foundStaff, maxDop, 0.80, 0.85, result,
-            f => ReadStaff(mem, f.Obj, f.Block, f.Uid, f.Ca, f.Pa));
-        steps.Lap("read people");
-        _progress("clubs", 0.87);
+        // Each player's contract club (the owner), from the contract pointer the pass took along.
+        // The squad walk needs it for every player (loans), so it is read for all of them.
+        var clubNames = new ClubNames(this, mem);
+        var ownerClub = ContractClubs(mem, foundPlayers, maxDop);
+        var owners = new Dictionary<uint, string>(foundPlayers.Count);
+        var contractClubs = new HashSet<ulong>();
+        for (int i = 0; i < foundPlayers.Count; i++)
+        {
+            owners[foundPlayers[i].Uid] = clubNames.Name(ownerClub[i]);
+            if (ownerClub[i] != 0) contractClubs.Add(ownerClub[i]);
+        }
+        steps.Lap("contracts");
+        _progress("clubs", 0.40);
 
-        var squadClub = WalkSquads(mem, players, personToUid, clubObjs, managers, result);
-        foreach (var p in players.Values)
-            if (squadClub.TryGetValue(p.Uid, out var sc))
-            { p.Club = sc.club; if (sc.rep > 0) p.ClubRep = sc.rep; if (sc.div != null) p.Division = sc.div; p.TeamType = sc.tt; }
+        var squadClub = WalkSquads(mem, owners, personToUid, clubObjs, contractClubs, managers, result);
         steps.Lap("squads");
 
         // The human manager's team (person -> contract -> team): source of the in-game date.
@@ -341,21 +361,88 @@ internal sealed class Scanner
         // The current season year from the data: every youth intake adds a big cohort of 16-year-olds,
         // so the latest birth year with a large cohort, plus 16, is about the in-game year.
         var byYear = new Dictionary<int, int>();
-        foreach (var pl in players.Values)
-            if (pl.BirthYear is >= 1990 and <= 2100) byYear[pl.BirthYear] = byYear.GetValueOrDefault(pl.BirthYear) + 1;
+        foreach (var f in foundPlayers)
+        {
+            int year = Decode.FmDate(f.Dob).year;
+            if (year is >= 1990 and <= 2100) byYear[year] = byYear.GetValueOrDefault(year) + 1;
+        }
         int youngest = byYear.Where(kv => kv.Value >= 30).Select(kv => kv.Key).DefaultIfEmpty(0).Max();
         result.GameYear = youngest > 0 ? youngest + 16 : DateTime.Now.Year;
         FindGameDate(mem, myTeam, result);
         var today = result.GameDate ?? new DateTime(result.GameYear, DateTime.Now.Month, Math.Min(DateTime.Now.Day, 28));
-        foreach (var p in players.Values.Concat(staff.Values)) p.Age = Decode.AgeAt(p.BirthYear, p.BirthDoy, today);
-        result.Log.Add($"Found {players.Count:N0} players and {staff.Count:N0} staff ({staffRaw - foundStaff.Count:N0} staff entries were players).");
+        result.Log.Add($"Found {foundPlayers.Count:N0} players and {foundStaff.Count:N0} staff ({staffRaw - foundStaff.Count:N0} staff entries were players).");
         steps.Lap("date");
 
-        ReadSearchResults(mem, searchSessions, personToUid, staffToUid, players, staff, result);
+        var (searchPlayers, searchStaff) = ReadSearchResults(mem, searchSessions, personToUid, staffToUid, playerUids, staffUids, result);
+        steps.Lap("search");
+
+        // Who to read: everyone, or for a search scan only the people it keeps (KeepSearchOnly): the
+        // search result and your club. A player is at your club when he plays there (squad walk) or
+        // it owns him; a staff member when his contract is with it.
+        var readPlayers = foundPlayers;
+        var readStaff = foundStaff;
+        if (_onlySearch)
+        {
+            string mine = result.MyClub;
+            bool Mine(string club, string owner) => mine != null && (club == mine || owner == mine);
+            readPlayers = foundPlayers.Where(f =>
+            {
+                string owner = owners[f.Uid];
+                string club = squadClub.TryGetValue(f.Uid, out var sq) ? sq.club : owner;
+                return searchPlayers.Contains(f.Uid) || Mine(club, owner);
+            }).ToList();
+            var staffClub = ContractClubs(mem, foundStaff, maxDop);
+            readStaff = foundStaff.Where((f, i) => searchStaff.Contains(f.Uid) || Mine(clubNames.Name(staffClub[i]), null)).ToList();
+            result.Log.Add($"Search scan: reading {readPlayers.Count:N0} players and {readStaff.Count:N0} staff.");
+            steps.Lap("pick");
+        }
+
+        var players = ReadPeople(readPlayers, maxDop, 0.45, 0.80, result,
+            f => ReadPlayer(mem, f.Obj, f.Block, f.Uid, f.Ca, f.Pa, f.Female));
+        var staff = ReadPeople(readStaff, maxDop, 0.80, 0.85, result,
+            f => ReadStaff(mem, f.Obj, f.Block, f.Uid, f.Ca, f.Pa));
+        foreach (var p in players.Values)
+        {
+            if (squadClub.TryGetValue(p.Uid, out var sc))
+            { p.Club = sc.club; if (sc.rep > 0) p.ClubRep = sc.rep; if (sc.div != null) p.Division = sc.div; p.TeamType = sc.tt; }
+            p.InSearch = searchPlayers.Contains(p.Uid);
+        }
+        foreach (var s in staff.Values) s.InSearch = searchStaff.Contains(s.Uid);
+        foreach (var p in players.Values.Concat(staff.Values)) p.Age = Decode.AgeAt(p.BirthYear, p.BirthDoy, today);
+        result.SearchPlayers = searchPlayers.Count;
+        result.SearchStaff = searchStaff.Count;
 
         result.Players = players.Values.ToList();
         result.Staff = staff.Values.ToList();
-        steps.Lap("search");
+        steps.Lap("read people");
+    }
+
+    /// <summary>
+    /// The club on each found person's contract (contract -> team -> club), 0 when there is none, in
+    /// the order of `found`. Teams repeat a lot, so each team's club is read once.
+    /// </summary>
+    private ulong[] ContractClubs(MemScan mem, List<Found> found, int maxDop)
+    {
+        var clubs = new ulong[found.Count];
+        var teamClub = new System.Collections.Concurrent.ConcurrentDictionary<ulong, ulong>();
+        Parallel.For(0, found.Count, new ParallelOptions { MaxDegreeOfParallelism = maxDop }, i =>
+        {
+            ulong con = found[i].Contract;
+            ulong team = con == 0 ? 0 : mem.Ptr(con + F.CON_TEAM);
+            if (team == 0) return;
+            clubs[i] = teamClub.GetOrAdd(team, t => mem.Ptr(t + F.TEAM_CLUB));
+        });
+        return clubs;
+    }
+
+    /// <summary>Club names by club object, each read once (ClubNameOf, null for no club).</summary>
+    private sealed class ClubNames
+    {
+        private readonly Scanner _s;
+        private readonly MemScan _mem;
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<ulong, string> _names = new();
+        public ClubNames(Scanner s, MemScan mem) { _s = s; _mem = mem; }
+        public string Name(ulong club) => club == 0 ? null : _names.GetOrAdd(club, c => _s.ClubNameOf(_mem, c));
     }
 
     /// <summary>Progress share of the scan pass; reading the people found takes it up to 0.85.</summary>
@@ -404,19 +491,22 @@ internal sealed class Scanner
     internal static ushort BufU16(byte[] buf, int len, long at, MemScan mem, ulong addr) =>
         at >= 0 && at + 2 <= len ? BitConverter.ToUInt16(buf, (int)at) : mem.U16(addr);
 
+    internal static uint BufU32(byte[] buf, int len, long at, MemScan mem, ulong addr) =>
+        at >= 0 && at + 4 <= len ? BitConverter.ToUInt32(buf, (int)at) : mem.U32(addr);
+
     internal static ulong BufPtr(byte[] buf, int len, long at, MemScan mem, ulong addr) =>
         at >= 0 && at + 8 <= len ? BitConverter.ToUInt64(buf, (int)at) : mem.Ptr(addr);
 
     /// <summary>
-    /// Mark the people in FM's search result (the Player Search or Staff Search screen, after its
-    /// filters such as "Player's interest"). Each session object holds a vector of entry pointers;
+    /// The people in FM's search result (the Player Search or Staff Search screen, after its filters
+    /// such as "Player's interest"), as UIDs. Each session object holds a vector of entry pointers;
     /// an entry starts with a pointer to the person. With several lists of a kind, the longest wins.
     /// A list where fewer than 90% of the entries are people we know is something else: ignored.
     /// </summary>
-    private void ReadSearchResults(MemScan mem, HashSet<ulong> sessions, Dictionary<ulong, uint> personToUid, Dictionary<ulong, uint> staffToUid,
-        Dictionary<uint, Person> players, Dictionary<uint, Person> staff, ScanResult result)
+    private (HashSet<uint> players, HashSet<uint> staff) ReadSearchResults(MemScan mem, HashSet<ulong> sessions,
+        Dictionary<ulong, uint> personToUid, Dictionary<ulong, uint> staffToUid, HashSet<uint> players, HashSet<uint> staff, ScanResult result)
     {
-        List<Person> bestPlayers = null, bestStaff = null;
+        List<uint> bestPlayers = null, bestStaff = null;
         foreach (ulong session in sessions)
         {
             ulong begin = mem.Ptr(session + F.SEARCH_LIST), end = mem.Ptr(session + F.SEARCH_LIST + 8);
@@ -424,16 +514,16 @@ internal sealed class Scanner
             int n = (int)((end - begin) / 8);
             var slots = new byte[n * 8];
             if (!mem.ReadBlock(begin, slots, slots.Length)) continue;
-            var foundPlayers = new List<Person>();
-            var foundStaff = new List<Person>();
+            var foundPlayers = new List<uint>();
+            var foundStaff = new List<uint>();
             for (int i = 0; i < n; i++)
             {
                 ulong entry = BitConverter.ToUInt64(slots, i * 8);
                 if (entry < 0x10000) continue;
                 ulong person = mem.Ptr(entry + F.SEARCH_ENTRY_PERSON);
                 if (!personToUid.TryGetValue(person, out uint uid) && !staffToUid.TryGetValue(person, out uid)) continue;
-                if (players.TryGetValue(uid, out var pl)) foundPlayers.Add(pl);
-                else if (staff.TryGetValue(uid, out var st)) foundStaff.Add(st);
+                if (players.Contains(uid)) foundPlayers.Add(uid);
+                else if (staff.Contains(uid)) foundStaff.Add(uid);
             }
             if (foundPlayers.Count + foundStaff.Count < n * 0.9)
             {
@@ -443,12 +533,11 @@ internal sealed class Scanner
             if (foundPlayers.Count >= foundStaff.Count) { if (foundPlayers.Count > (bestPlayers?.Count ?? 0)) bestPlayers = foundPlayers; }
             else if (foundStaff.Count > (bestStaff?.Count ?? 0)) bestStaff = foundStaff;
         }
-        foreach (var p in bestPlayers ?? new()) p.InSearch = true;
-        foreach (var s in bestStaff ?? new()) s.InSearch = true;
-        result.SearchPlayers = players.Values.Count(p => p.InSearch);
-        result.SearchStaff = staff.Values.Count(s => s.InSearch);
-        if (result.SearchPlayers > 0 || result.SearchStaff > 0)
-            result.Log.Add($"FM search result: {result.SearchPlayers:N0} players, {result.SearchStaff:N0} staff.");
+        var inPlayers = new HashSet<uint>(bestPlayers ?? new());
+        var inStaff = new HashSet<uint>(bestStaff ?? new());
+        if (inPlayers.Count > 0 || inStaff.Count > 0)
+            result.Log.Add($"FM search result: {inPlayers.Count:N0} players, {inStaff.Count:N0} staff.");
+        return (inPlayers, inStaff);
     }
 
     private void ScanChunk(MemScan mem, byte[] buf, int want, ulong chunkBase, ulong modLo, ulong modHi, ScanLocal L)
@@ -484,7 +573,12 @@ internal sealed class Scanner
                 bool female = (BufU8(buf, want, i + F.PERO_GENDER, mem, p + F.PERO_GENDER) & F.GENDER_FEMALE_BIT) != 0;
                 if (female ? _db == DatabaseChoice.Men : _db == DatabaseChoice.Women) continue;
                 if (!L.PlayerUids.Add(uid)) continue;
-                L.Players.Add(new Found { Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa, Female = female });
+                L.Players.Add(new Found
+                {
+                    Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa, Female = female,
+                    Contract = BufPtr(buf, want, i + F.PERO_FULL_CONTRACT, mem, p + F.PERO_FULL_CONTRACT),
+                    Dob = BufU32(buf, want, i + F.PERO_DOB, mem, p + F.PERO_DOB),
+                });
             }
             else
             {
@@ -492,7 +586,12 @@ internal sealed class Scanner
                 ushort pa = BufU16(buf, want, blockAt + F.NPLO_PA, mem, block + F.NPLO_PA);
                 if (ca < 1 || ca > 200 || pa < 1 || pa > 200) continue;
                 if (cls.Kind == ObjKind.HumanManager) L.Managers.Add((p, p));
-                if (L.StaffUids.Add(uid)) L.Staff.Add(new Found { Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa });
+                if (L.StaffUids.Add(uid))
+                    L.Staff.Add(new Found
+                    {
+                        Obj = p, Block = block, Uid = uid, Ca = ca, Pa = pa,
+                        Contract = BufPtr(buf, want, i + F.PERO_FULL_CONTRACT, mem, p + F.PERO_FULL_CONTRACT),
+                    });
                 L.StaffToUid[p] = uid;
                 L.StaffToUid[block] = uid;
             }
@@ -655,7 +754,7 @@ internal sealed class Scanner
         return tb != 0 && te > tb && (te - tb) % 8 == 0 && (te - tb) / 8 is >= 1 and <= 64 && ClubNameOf(m, p) != null;
     }
 
-    private string ClubNameOf(MemScan m, ulong club)
+    internal string ClubNameOf(MemScan m, ulong club)
     {
         if (club == 0) return null;
         string name = m.IndirectString(club + F.CLUB_NAME) ?? m.IndirectString(club + F.CLUB_SHORT_NAME);
@@ -668,19 +767,11 @@ internal sealed class Scanner
     /// also probed for a pointer field that points at a known person (upstream, 15-07-2026).
     /// </summary>
     private Dictionary<uint, (string club, int tt, int rep, string div)> WalkSquads(
-        MemScan mem, Dictionary<uint, Person> players, Dictionary<ulong, uint> personToUid,
-        List<ulong> shapeClubs, List<(ulong obj, ulong person)> managers, ScanResult result)
+        MemScan mem, Dictionary<uint, string> owners, Dictionary<ulong, uint> personToUid,
+        List<ulong> shapeClubs, HashSet<ulong> contractClubs, List<(ulong obj, ulong person)> managers, ScanResult result)
     {
         var squad = new Dictionary<uint, (string club, int tt, int rep, string div)>();
         var managerAddrs = new HashSet<ulong>(managers.SelectMany(x => new[] { x.obj, x.person }));
-        var contractClubs = new HashSet<ulong>();
-        foreach (var p in players.Values)
-        {
-            ulong con = mem.Ptr(p.PersonAddr + F.PERO_FULL_CONTRACT);
-            ulong team = con == 0 ? 0 : mem.Ptr(con + F.CON_TEAM);
-            ulong club = team == 0 ? 0 : mem.Ptr(team + F.TEAM_CLUB);
-            if (club != 0) contractClubs.Add(club);
-        }
 
         foreach (ulong club in shapeClubs.Concat(contractClubs).Distinct())
         {
@@ -714,7 +805,7 @@ internal sealed class Scanner
                         }
                         if (!hit) continue;
                     }
-                    PickSquad(squad, players, uid, cname, tt, trep, div);
+                    PickSquad(squad, owners, uid, cname, tt, trep, div);
                 }
             }
         }
@@ -727,10 +818,9 @@ internal sealed class Scanner
     /// clubs the player is on loan, and the club that is not the contract owner is where he plays.
     /// </summary>
     private static void PickSquad(Dictionary<uint, (string club, int tt, int rep, string div)> squad,
-                                  Dictionary<uint, Person> players, uint uid, string cname, int tt, int trep, string div)
+                                  Dictionary<uint, string> owners, uint uid, string cname, int tt, int trep, string div)
     {
-        players.TryGetValue(uid, out var pe);
-        string owner = pe?.OwnerClub;
+        string owner = owners.GetValueOrDefault(uid);
         if (!squad.TryGetValue(uid, out var cur)) { squad[uid] = (cname, tt, trep, div); return; }
         bool take;
         if (cur.club == cname) take = tt < cur.tt;
