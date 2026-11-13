@@ -1,0 +1,19 @@
+{
+  "name": "@scoutreporter/desktop",
+  "productName": "Scout Reporter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scout Reporter desktop app: the website's screens plus scanning Football Manager's database.",
+  "author": "Sebastian Foder",
+  "main": "dist/main.js",
+  "devDependencies": {
+    "@scoutreporter/core": "workspace:*",
+    "electron": "45.3.1",
+    "electron-builder": "^26.18.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs all",
+    "dev": "node scripts/dev.mjs",
+    "dist": "node scripts/build.mjs all && node scripts/build.mjs electron && electron-builder --win nsis --x64 --publish never"
+  }
+}

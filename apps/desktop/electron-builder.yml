@@ -1,0 +1,39 @@
+# electron-builder config for the Windows installer (bun run desktop:dist).
+# Unsigned for now: Windows SmartScreen warns on first run (More info, Run anyway).
+appId: com.sebastianfoder.scoutreporter
+productName: Scout Reporter
+copyright: Copyright (c) 2026 Sebastian Foder
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**
+  - package.json
+extraResources:
+  # The website's pages, as a standalone Next.js server (scripts/build.mjs web).
+  - from: ../web/.next-desktop/standalone
+    to: web
+    # electron-builder skips node_modules here; scripts/after-pack.cjs copies them in.
+    filter: ["**/*"]
+  # The memory reader (bun run reader:build).
+  - from: ../../reader/dist/ScoutReporter.Reader.exe
+    to: reader/ScoutReporter.Reader.exe
+  - from: ../../reader/LICENSE-FMSuperScout
+    to: reader/LICENSE-FMSuperScout
+  # "Load sample scan".
+  - from: ../../packages/core/fixtures/scan-sample.json
+    to: sample/scan-sample.json
+afterPack: scripts/after-pack.cjs
+asar: true
+npmRebuild: false
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: Scout-Reporter-Setup-${version}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  shortcutName: Scout Reporter

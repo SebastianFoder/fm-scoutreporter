@@ -1,0 +1,29 @@
+{
+  "name": "@scoutreporter/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Scout Reporter's React components, feature screens and global styles, shared by the website and the desktop app.",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o ../../storybook-static"
+  },
+  "dependencies": {
+    "@scoutreporter/core": "workspace:*",
+    "@tanstack/react-virtual": "^3.13.23",
+    "lucide-react": "^0.577.0"
+  },
+  "peerDependencies": {
+    "next": "16.1.7",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.7",
+    "@storybook/addon-docs": "^10.6.7",
+    "@storybook/nextjs-vite": "^10.6.7",
+    "@tailwindcss/postcss": "^4",
+    "storybook": "^10.6.7",
+    "tailwindcss": "^4",
+    "vite": "^8.3.7"
+  }
+}

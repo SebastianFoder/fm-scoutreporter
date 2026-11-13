@@ -1,0 +1,31 @@
+import { readFile } from "fs/promises";
+import path from "path";
+import { NextResponse } from "next/server";
+
+const ALLOWED = new Set(["attribute", "attribute-fm27-hidden", "staff", "squad", "squad-hidden"]);
+
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ name: string }> },
+) {
+  const { name } = await params;
+
+  if (!ALLOWED.has(name)) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  // Fixtures live in the core package (they double as its test data). process.cwd() is apps/web.
+  const filePath = path.join(process.cwd(), "..", "..", "packages", "core", "fixtures", `${name}.csv`);
+
+  try {
+    const csv = await readFile(filePath, "utf-8");
+    return new NextResponse(csv, {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Cache-Control": "no-store",
+      },
+    });
+  } catch {
+    return new NextResponse("Fixture not found", { status: 404 });
+  }
+}
