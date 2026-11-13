@@ -132,6 +132,7 @@ internal sealed class Scanner
             if (useSnapshot)
                 Log(mem.Snapshotted ? "Retry reads from a frozen memory snapshot (VA clone)." : $"Snapshot unavailable ({mem.SnapshotError ?? "unknown"}): retry reads live memory.");
             if (mem.ImageNote != null) Log(mem.ImageNote);
+            Log("Opening: " + mem.OpenTimings);
             if (mem.GaBase == 0) throw new ScanException(ScanError.NotLoaded, "GameAssembly.dll not found. Is Football Manager fully loaded?");
             DetectGameVersion(mem, result);
             // game_plugin.dll (the native database) loads while FM starts up. A scan before that is
