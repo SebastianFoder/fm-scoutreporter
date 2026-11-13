@@ -255,6 +255,9 @@ async function createWindow() {
     title: "Scout Reporter",
     backgroundColor: "#162232",
     autoHideMenuBar: true,
+    // Installed, the window takes the exe's icon (build/icon.ico); in development the exe is
+    // Electron's own, so set ours.
+    ...(isDev && { icon: join(appRoot, "build", "icon.png") }),
     webPreferences: {
       preload: paths.preload,
       contextIsolation: true,
@@ -300,6 +303,9 @@ async function main() {
     db.stop();
   });
 
+  // The same id as the installer's shortcuts (electron-builder.yml appId), so Windows groups the
+  // window under the Scout Reporter shortcut and its icon on the taskbar.
+  app.setAppUserModelId("com.sebastianfoder.scoutreporter");
   await app.whenReady();
   if (!isDev) Menu.setApplicationMenu(null);
   await loadSettings();

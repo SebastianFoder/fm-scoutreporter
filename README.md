@@ -134,6 +134,7 @@ bun run reader:build     # the reader (needs the .NET 10 SDK): reader/dist/Scout
 bun run desktop:dev      # next dev for the desktop target + Electron, pages hot-reload
 bun run desktop:dist     # reader + pages + main process, then the NSIS installer in apps/desktop/release
 bun run desktop:smoke    # drive the built app (release/win-unpacked) end to end (with FM running, it also scans it)
+node apps/desktop/scripts/make-icon.mjs   # the app icons (build/icon.ico, icon.png) from apps/web/app/icon.svg
 ```
 
 The desktop pages are `apps/web` built with `SCOUTREPORTER_TARGET=desktop`: a standalone Next

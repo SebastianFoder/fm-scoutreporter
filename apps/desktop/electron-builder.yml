@@ -27,6 +27,8 @@ afterPack: scripts/after-pack.cjs
 asar: true
 npmRebuild: false
 win:
+  # Made from apps/web/app/icon.svg by scripts/make-icon.mjs (run it again after changing the icon).
+  icon: build/icon.ico
   target:
     - target: nsis
       arch: [x64]
@@ -37,3 +39,5 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   shortcutName: Scout Reporter
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
