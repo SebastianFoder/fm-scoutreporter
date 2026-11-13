@@ -1,3 +1,15 @@
+# [1.18.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.17.2...v1.18.0) (2026-11-13)
+
+
+### Bug Fixes
+
+* **desktop:** keep weights, highlights and formations between launches ([3ee1db5](https://github.com/SebastianFoder/fm-scoutreporter/commit/3ee1db534ad11accd35efe7db2f25643c69cb305))
+
+
+### Features
+
+* **desktop:** tell you about new versions and update in one click ([8b71fbe](https://github.com/SebastianFoder/fm-scoutreporter/commit/8b71fbe1f85082ab6a0ed0a568077bda9d3ba508))
+
 ## [1.17.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.17.1...v1.17.2) (2026-11-13)
 
 
