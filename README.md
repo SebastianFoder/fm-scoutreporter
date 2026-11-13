@@ -256,20 +256,26 @@ These releases (tags `vX.Y.Z`, `CHANGELOG.md`) are the website's. Pull requests 
 
 ### Desktop releases
 
-The desktop app is released by hand, with its own tag prefix, `desktop-v`:
+The desktop app is released by hand, with its own tag prefix, `desktop-v`. On GitHub open
+**Actions > Desktop release > Run workflow**, enter the version (`0.2.0`) and run it on master, or:
 
 ```bash
-git tag desktop-v0.2.0            # on master, at the commit to release
-git push origin desktop-v0.2.0
+gh workflow run desktop-release.yml -f version=0.2.0
 ```
 
-`.github/workflows/desktop-release.yml` then runs the tests, builds the installer with that version
+Pushing a tag (`git push origin desktop-v0.2.0`) also works, but not on a commit whose message
+contains `[skip ci]`, such as the website's release commits at the head of master: GitHub skips every
+workflow for those.
+
+`.github/workflows/desktop-release.yml` then creates the tag `desktop-v0.2.0` at the head of master (or
+uses it if it exists), runs the tests, builds the installer with that version
 (stamped into `apps/desktop/package.json` for the build only), smoke-tests it, and publishes a GitHub
 Release "Scout Reporter desktop 0.2.0" with `Scout-Reporter-Setup-0.2.0.exe`, `SHA256SUMS.txt` and
 notes listing the desktop, reader and package commits since the previous `desktop-v` tag. A tag with a
 suffix (`desktop-v0.2.0-beta.1`) makes a pre-release. Desktop releases are not marked "Latest" (the
 website's releases are), so the website's `/download` page finds the newest one through the GitHub API
-(cached for an hour). To rebuild an existing tag, run the workflow by hand with that tag.
+(cached for an hour). Running it again with a version that already has a tag rebuilds that tag and
+replaces the release's files.
 
 ## Tech stack
 
