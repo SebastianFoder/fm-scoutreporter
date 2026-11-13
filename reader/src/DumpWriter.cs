@@ -19,8 +19,9 @@ internal static class DumpWriter
     /// scan that could not read more than 10% of memory, even after the snapshot retry, is probably
     /// thinned out: it is refused when there is an earlier scan to keep using (an existing file, or
     /// the app's stored scans, see --previous-exists), but with nothing yet it is better than nothing.
+    /// A scan that should keep only FM's search result (--only-search) needs one.
     /// </summary>
-    public static (bool write, ScanError? error, string message) Check(ScanResult r, bool existingFile)
+    public static (bool write, ScanError? error, string message) Check(ScanResult r, bool existingFile, bool onlySearch = false)
     {
         if (r.Players.Count == 0 && r.Staff.Count == 0)
             return (false, ScanError.NothingFound,
@@ -29,6 +30,10 @@ internal static class DumpWriter
             return (false, ScanError.TooMuchUnread,
                 $"The scan could not read {Math.Round(r.UnreadFraction * 100)}% of FM's memory, even after a retry from a frozen snapshot. " +
                 "Windows is probably low on memory: close other apps or reboot, then scan again. Your previous scan was kept.");
+        if (onlySearch && r.SearchPlayers == 0 && r.SearchStaff == 0)
+            return (false, ScanError.NoSearch,
+                "Football Manager has no search result to read. In FM, open Player Search (or Staff Search), set your filters, " +
+                "leave the search on screen and scan again.");
         return (true, null, null);
     }
 
@@ -68,6 +73,8 @@ internal static class DumpWriter
         // People in FM's player/staff search at scan time ("inSearch" on each); 0 = no search found.
         j.Prop("searchPlayers", r.SearchPlayers);
         j.Prop("searchStaff", r.SearchStaff);
+        // "search": only FM's search result and your club were kept; "full": the whole database.
+        j.Prop("scope", r.SearchOnly ? "search" : "full");
         j.EndObj();
         j.EndObj();
         j.NewLine();

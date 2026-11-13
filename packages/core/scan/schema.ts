@@ -55,6 +55,11 @@ export interface ScanMeta {
   searchPlayers?: number;
   /** The same for FM's Staff Search. */
   searchStaff?: number;
+  /**
+   * "search": the reader kept only the people in FM's search result, plus your own club (playing
+   * there, or owned by it and out on loan). "full" or missing: the whole database.
+   */
+  scope?: "search" | "full";
 }
 
 export interface ScanPersonality {

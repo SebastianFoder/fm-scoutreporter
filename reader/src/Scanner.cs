@@ -20,6 +20,8 @@ internal sealed class ScanResult
     public string MyClub;
     /// <summary>Players and staff in FM's search result at scan time; 0 = no search found.</summary>
     public int SearchPlayers, SearchStaff;
+    /// <summary>Only FM's search result and your own club were kept (see KeepSearchOnly).</summary>
+    public bool SearchOnly;
     /// <summary>Share of the scanned memory that could not be read (0..1).</summary>
     public double UnreadFraction;
     public bool FromSnapshot;
@@ -29,6 +31,21 @@ internal sealed class ScanResult
     public List<string> Log = new();
     /// <summary>Player object and player block addresses, to UID (for the probe-lists experiment).</summary>
     public Dictionary<ulong, uint> PersonToUid = new();
+
+    /// <summary>
+    /// Drop everyone who is neither in FM's search result nor at your own club (playing there, or
+    /// owned by it and out on loan). This turns a scan of the whole database into an export of the
+    /// search on screen: the club stays so the Squad and Best XI screens keep working.
+    /// </summary>
+    public void KeepSearchOnly()
+    {
+        int players = Players.Count, staff = Staff.Count;
+        bool Mine(Person p) => MyClub != null && (p.Club == MyClub || p.OwnerClub == MyClub);
+        Players = Players.Where(p => p.InSearch || Mine(p)).ToList();
+        Staff = Staff.Where(s => s.InSearch || Mine(s)).ToList();
+        SearchOnly = true;
+        Log.Add($"Kept FM's search result and your club: {Players.Count:N0} of {players:N0} players, {Staff.Count:N0} of {staff:N0} staff.");
+    }
 }
 
 /// <summary>
@@ -651,7 +668,7 @@ internal sealed class Scanner
     }
 }
 
-internal enum ScanError { NotRunning = 2, NoAccess = 4, NotLoaded = 5, NothingFound = 6, TooMuchUnread = 7, Busy = 3 }
+internal enum ScanError { NotRunning = 2, NoAccess = 4, NotLoaded = 5, NothingFound = 6, TooMuchUnread = 7, NoSearch = 8, Busy = 3 }
 
 internal sealed class ScanException : Exception
 {

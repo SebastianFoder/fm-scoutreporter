@@ -28,7 +28,15 @@ export interface SnapshotInfo {
   searchPlayers?: number;
   /** The same for FM's Staff Search. */
   searchStaff?: number;
+  /** "search": the scan holds only FM's search result and your club. Missing or "full": the whole save. */
+  scope?: ScanScope;
 }
+
+/**
+ * What a scan keeps. "search": the people in FM's Player Search or Staff Search result when the
+ * scan ran, plus your own club (an export of the search on screen). "full": the whole database.
+ */
+export type ScanScope = "search" | "full";
 
 /**
  * Which part of a scan the screens load. A full FM database (about 400,000 players) is too much for
@@ -48,21 +56,26 @@ export interface LoadScope {
   staffMinCa: number;
   maxStaff: number;
   /**
-   * Load only people from FM's search result (plus your club), when the scan has one: the players
-   * FM's Player Search showed when the scan ran, after its filters such as "Player's interest".
+   * From a whole-save scan, load only people from FM's search result (plus your club), when the
+   * scan has one. Not a stored setting: it follows the scan mode (see loadScopeFor). A scan that
+   * kept only the search is loaded whole either way.
    */
   onlySearch: boolean;
 }
 
-export const DEFAULT_LOAD_SCOPE: LoadScope = {
+/** The limits part of LoadScope: what the settings store. */
+export type LoadLimits = Omit<LoadScope, "onlySearch">;
+
+export const DEFAULT_LOAD_LIMITS: LoadLimits = {
   minCa: 100,
   youngMaxAge: 21,
   youngMinPa: 130,
   maxPlayers: 40_000,
   staffMinCa: 80,
   maxStaff: 40_000,
-  onlySearch: false,
 };
+
+export const DEFAULT_LOAD_SCOPE: LoadScope = { ...DEFAULT_LOAD_LIMITS, onlySearch: false };
 
 /** A stored scan as the screens get it: the loaded part, and the totals of the whole scan. */
 export interface LoadedScan extends Omit<ScanFile, "schema" | "schemaVersion"> {
@@ -73,6 +86,8 @@ export interface LoadedScan extends Omit<ScanFile, "schema" | "schemaVersion"> {
   searchStaff: number;
   /** Whether only FM's search result (plus your club) was loaded. */
   bySearch: { players: boolean; staff: boolean };
+  /** What the scan itself holds. */
+  scope: ScanScope;
 }
 
 export interface GrowthQuery {
@@ -107,8 +122,13 @@ export interface DesktopSettings {
   database: "men" | "women" | "both";
   /** Hide CA, PA and hidden attributes (for players who consider them cheating). */
   hideHidden: boolean;
-  /** What the screens load from a big scan. */
-  load: LoadScope;
+  /**
+   * What a scan keeps. "search" (the default): your FM search and your club, like an export of the
+   * search on screen. "full": the whole save, of which the screens load the part within `load`.
+   */
+  scanMode: ScanScope;
+  /** How much the screens load from a scan too big for the window. */
+  load: LoadLimits;
 }
 
 export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
@@ -116,8 +136,14 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   hotkey: true,
   database: "men",
   hideHidden: false,
-  load: DEFAULT_LOAD_SCOPE,
+  scanMode: "search",
+  load: DEFAULT_LOAD_LIMITS,
 };
+
+/** What the screens load with these settings: in search mode, only FM's search and your club. */
+export function loadScopeFor(settings: Pick<DesktopSettings, "scanMode" | "load">): LoadScope {
+  return { ...settings.load, onlySearch: settings.scanMode === "search" };
+}
 
 export interface ScanProgress {
   phase: string;
@@ -129,7 +155,7 @@ export type ScanOutcome =
   | { ok: true; snapshot: SnapshotInfo; log: string[] }
   | {
       ok: false;
-      /** The reader's error code: not-running, no-access, not-loaded, nothing-found, too-much-unread, busy, failed, missing-reader. */
+      /** The reader's error code: not-running, no-access, not-loaded, nothing-found, too-much-unread, no-search, busy, failed, missing-reader. */
       code: string;
       message: string;
       log: string[];
@@ -180,9 +206,9 @@ function clampInt(value: unknown, min: number, max: number, fallback: number): n
   return value === null || value === undefined || value === "" || !Number.isFinite(n) ? fallback : Math.min(max, Math.max(min, Math.round(n)));
 }
 
-export function normaliseLoadScope(value: unknown): LoadScope {
-  const v = (value && typeof value === "object" ? value : {}) as Partial<LoadScope>;
-  const d = DEFAULT_LOAD_SCOPE;
+export function normaliseLoadLimits(value: unknown): LoadLimits {
+  const v = (value && typeof value === "object" ? value : {}) as Partial<LoadLimits>;
+  const d = DEFAULT_LOAD_LIMITS;
   return {
     minCa: clampInt(v.minCa, 1, 200, d.minCa),
     youngMaxAge: clampInt(v.youngMaxAge, 14, 45, d.youngMaxAge),
@@ -190,7 +216,6 @@ export function normaliseLoadScope(value: unknown): LoadScope {
     maxPlayers: clampInt(v.maxPlayers, 100, 100_000, d.maxPlayers),
     staffMinCa: clampInt(v.staffMinCa, 1, 200, d.staffMinCa),
     maxStaff: clampInt(v.maxStaff, 100, 100_000, d.maxStaff),
-    onlySearch: v.onlySearch === true,
   };
 }
 
@@ -202,6 +227,7 @@ export function normaliseSettings(value: unknown): DesktopSettings {
     hotkey: typeof v.hotkey === "boolean" ? v.hotkey : DEFAULT_DESKTOP_SETTINGS.hotkey,
     database: v.database === "women" || v.database === "both" ? v.database : "men",
     hideHidden: v.hideHidden === true,
-    load: normaliseLoadScope(v.load),
+    scanMode: v.scanMode === "full" ? "full" : "search",
+    load: normaliseLoadLimits(v.load),
   };
 }

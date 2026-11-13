@@ -154,7 +154,8 @@ export function allStaff(db: SqlDatabase): ScanStaff[] {
  *
  * The pool is the whole scan, or, with `scope.onlySearch` and a scan that has one, the result of
  * FM's search (the players FM found with the filters on its Player Search screen, such as
- * "Player's interest"; staff likewise). A pool that fits under the limit is loaded whole. A bigger
+ * "Player's interest"; staff likewise). A scan that kept only the search (`meta.scope` "search")
+ * is its own pool: everything in it is wanted. A pool that fits under the limit is loaded whole. A bigger
  * one (a full FM database is about 400,000 players) keeps every player at or above `minCa`, plus
  * young players (up to `youngMaxAge`) with a PA of at least `youngMinPa`, best CA first, up to
  * `maxPlayers`; and for staff everyone at or above `staffMinCa`, up to `maxStaff`.
@@ -177,23 +178,27 @@ export function loadScan(db: SqlDatabase, scope: LoadScope): LoadedScan {
       .all(myClub, ...(poolSize <= limit ? [] : worthItParams), myClub, limit) as SqlRow[];
   };
 
-  const playersBySearch = scope.onlySearch && searchPlayers > 0;
+  // A search scan holds nothing but the search and your club, so it needs no filter.
+  const searchScan = meta.scope === "search";
+  const playersBySearch = (searchScan || scope.onlySearch) && searchPlayers > 0;
+  const filterPlayers = playersBySearch && !searchScan;
   const players = load(
     PLAYER_SELECT,
     "p",
-    playersBySearch,
-    playersBySearch ? searchPlayers : totals.players,
+    filterPlayers,
+    filterPlayers ? searchPlayers : totals.players,
     scope.maxPlayers,
     "p.ca >= ? OR (p.age <= ? AND p.pa >= ?)",
     [scope.minCa, scope.youngMaxAge, scope.youngMinPa],
   ).map(rowToPlayer);
 
-  const staffBySearch = scope.onlySearch && searchStaff > 0;
+  const staffBySearch = (searchScan || scope.onlySearch) && searchStaff > 0;
+  const filterStaff = staffBySearch && !searchScan;
   const staff = load(
     STAFF_SELECT,
     "s",
-    staffBySearch,
-    staffBySearch ? searchStaff : totals.staff,
+    filterStaff,
+    filterStaff ? searchStaff : totals.staff,
     scope.maxStaff,
     "s.ca >= ?",
     [scope.staffMinCa],
@@ -208,5 +213,6 @@ export function loadScan(db: SqlDatabase, scope: LoadScope): LoadedScan {
     searchPlayers,
     searchStaff,
     bySearch: { players: playersBySearch, staff: staffBySearch },
+    scope: searchScan ? "search" : "full",
   };
 }

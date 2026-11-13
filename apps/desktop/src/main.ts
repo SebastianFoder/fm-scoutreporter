@@ -9,8 +9,9 @@
  * User data (%APPDATA%/Scout Reporter): settings.json, scans/<id>/scan.sqlite, scans/latest (work dir).
  *
  * A scan: the reader writes scans/latest/scan.ndjson (one JSON object per line), the database process
- * (db-process.ts) imports it into a new scan.sqlite, and the store keeps it. The screens then load
- * part of it (settings.load) and Growth compares two scans in SQL.
+ * (db-process.ts) imports it into a new scan.sqlite, and the store keeps it. By default a scan keeps
+ * only FM's search result and your club (settings.scanMode "search"), which the screens load whole;
+ * a whole-save scan ("full") is loaded in part (settings.load). Growth compares two scans in SQL.
  */
 import { app, BrowserWindow, globalShortcut, ipcMain, session, shell, Menu, type IpcMainInvokeEvent } from "electron";
 import { existsSync } from "node:fs";
@@ -18,6 +19,7 @@ import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
   IPC,
+  loadScopeFor,
   normaliseSettings,
   type DesktopSettings,
   type GrowthPage,
@@ -124,7 +126,7 @@ async function doScan(): Promise<ScanOutcome> {
       workDir,
       settings.database,
       (p: ScanProgress) => send(IPC.scanProgress, { phase: p.phase, progress: p.progress * READ_SHARE }),
-      previousExists ? ["--previous-exists"] : [],
+      [...(settings.scanMode === "search" ? ["--only-search"] : []), ...(previousExists ? ["--previous-exists"] : [])],
     );
     if (run.done) {
       const target = join(workDir, "scan.sqlite");
@@ -202,7 +204,7 @@ function registerIpc() {
   handle(IPC.scan, () => scan());
   handle(IPC.listSnapshots, () => store().list());
   handle(IPC.loadSnapshot, (id) =>
-    db.request<LoadedScan>({ op: "load", file: store().scanFile(String(id)), scope: settings.load }),
+    db.request<LoadedScan>({ op: "load", file: store().scanFile(String(id)), scope: loadScopeFor(settings) }),
   );
   handle(IPC.compareSnapshots, (fromId, toId, query) =>
     db.request<GrowthPage>({

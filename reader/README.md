@@ -11,7 +11,7 @@ and never writes to the game.
 ## Use
 
 ```bash
-ScoutReporter.Reader.exe scan --out <dir> [--db men|women|both] [--previous-exists]
+ScoutReporter.Reader.exe scan --out <dir> [--db men|women|both] [--only-search] [--previous-exists]
 ScoutReporter.Reader.exe version
 ```
 
@@ -20,11 +20,17 @@ ScoutReporter.Reader.exe version
 SQLite line by line), and `<dir>/diagnostics.txt`,
 and reports on stdout as JSON lines (`progress`, `log`, `done`, `error`). Exit codes: 0 done, 2 FM
 not running, 3 a scan is already running, 4 FM runs as administrator, 5 save not loaded, 6 nothing
-found, 7 too much memory unreadable, 64 usage.
+found, 7 too much memory unreadable, 8 no search result (with `--only-search`), 64 usage.
 
 The scan also reads the result of FM's Player Search and Staff Search screens (every person FM
 found with the filters set there, such as "Player's interest"): those people get `inSearch`, and
 `meta.searchPlayers` / `meta.searchStaff` count them. See `Fields.SEARCH_*` and `REPIN.md`.
+
+With `--only-search` (how the desktop app scans by default) only those people are written, plus
+your own club: its players and staff, and its players out on loan. The scan is then an export of
+the search on screen (`meta.scope` is "search", otherwise "full"). The reader still walks all of
+FM's memory, so the scan takes as long; the file is a few MB, not 700. When FM has no search
+result, nothing is written and the scan fails with `no-search`.
 
 Developer commands for finding things in FM's memory (plain text output, read-only like the scan):
 `probe-chain --uids a,b,c,d,...` finds a list that leads to the given players in order (for example

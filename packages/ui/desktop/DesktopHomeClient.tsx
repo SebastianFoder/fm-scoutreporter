@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, CheckCircle2, FolderOpen, Radar, RefreshCw, Trash2 } from "lucide-react";
-import type { LoadScope } from "@scoutreporter/core/desktop/bridge";
+import type { DesktopSettings, LoadLimits } from "@scoutreporter/core/desktop/bridge";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
@@ -17,6 +17,7 @@ const ERROR_TITLES: Record<string, string> = {
   "not-loaded": "No save loaded yet",
   "nothing-found": "No players found",
   "too-much-unread": "Scan incomplete",
+  "no-search": "No search found in Football Manager",
   busy: "A scan is already running",
   "missing-reader": "Reader missing",
 };
@@ -114,16 +115,27 @@ export function DesktopHomeClient() {
     fromScan && active && (loadedPlayers < active.players || loadedStaff < active.staff)
       ? { players: loadedPlayers, staff: loadedStaff, totalPlayers: active.players, totalStaff: active.staff }
       : null;
-  const setLoad = (patch: Partial<LoadScope>) => void updateSettings({ load: { ...settings!.load, ...patch } });
+  const setLoad = (patch: Partial<LoadLimits>) => void updateSettings({ load: { ...settings!.load, ...patch } });
+  /** A setting that changes what the screens get: save it, then load the scan in use again. */
+  const applyAndReload = (patch: Partial<DesktopSettings>) => void updateSettings(patch).then(() => reloadActive());
+  /** Scans keep only FM's search and your club (the default), not the whole save. */
+  const searchMode = settings?.scanMode !== "full";
+  const hotkeyHint = settings?.hotkey ? "" : " once the hotkey is on";
   // FM's search result in the scan in use, and whether the screens were loaded from it.
   const staffFromScan = staffState.source?.snapshotId === activeId ? staffState.source : null;
   const activeSearch = active && (active.searchPlayers || active.searchStaff) ? { players: active.searchPlayers ?? 0, staff: active.searchStaff ?? 0 } : null;
   const searchText = (s: { players: number; staff: number }) =>
     [s.players > 0 && `${n(s.players)} players`, s.staff > 0 && `${n(s.staff)} staff`].filter(Boolean).join(" and ");
+  // What was loaded next to your club, for the kinds (players, staff) of which only part was loaded.
   const loadedFrom = [
-    fromScan?.search ? `players from FM's player search (${n(fromScan.search)} found)` : "the players worth scouting",
-    staffFromScan?.search ? `staff from FM's staff search (${n(staffFromScan.search)} found)` : "the staff worth hiring",
-  ].join(" and ");
+    partial && partial.players < partial.totalPlayers &&
+      (fromScan?.search ? `players from FM's player search (${n(fromScan.search)} found)` : "the players worth scouting"),
+    partial && partial.staff < partial.totalStaff &&
+      (staffFromScan?.search ? `staff from FM's staff search (${n(staffFromScan.search)} found)` : "the staff worth hiring"),
+  ]
+    .filter(Boolean)
+    .join(" and ");
+  const lastScan = lastOutcome?.ok ? lastOutcome.snapshot : null;
 
   return (
     <div className="mx-auto max-w-5xl space-y-5 px-5 py-6 text-ink">
@@ -135,9 +147,39 @@ export function DesktopHomeClient() {
           </Button>
         }
       >
-        Start Football Manager 27, load your save, then press Scan FM (or F9{settings?.hotkey ? "" : " once the hotkey is on"}). The
-        whole database is read in seconds, read-only, and every screen (Attribute, Wonderkid, Best XI, Squad, Staff) uses it.
+        {searchMode ? (
+          <>
+            In Football Manager 27, open Player Search (or Staff Search), set your filters and leave the search on screen. Then press
+            Scan FM (or F9{hotkeyHint}, also inside FM). The app takes the people FM found, plus your own club, and every screen
+            (Attribute, Wonderkid, Best XI, Squad, Staff) works on them. Nothing in your game is changed.
+          </>
+        ) : (
+          <>
+            Start Football Manager 27, load your save, then press Scan FM (or F9{hotkeyHint}). The whole database is read in seconds,
+            read-only, and every screen (Attribute, Wonderkid, Best XI, Squad, Staff) uses it.
+          </>
+        )}
       </PageHeader>
+
+      {settings && (
+        <label className="panel flex items-start gap-2 px-4 py-3 text-sm">
+          <input
+            type="checkbox"
+            className="mt-1"
+            checked={!settings.hideHidden}
+            disabled={loading}
+            onChange={(e) => applyAndReload({ hideHidden: !e.target.checked })}
+          />
+          <span>
+            <span className="font-semibold">Use CA, PA and hidden attributes</span>
+            <span className="block text-[13px] text-muted">
+              On: the screens get every player&apos;s current and potential ability and Professionalism, which Wonderkid mode needs. Off:
+              they are left out, as in a normal FM export, and Growth shows attribute changes only. The visible attributes are FM&apos;s
+              exact values either way, also for players you have not fully scouted.
+            </span>
+          </span>
+        </label>
+      )}
 
       {scanning && (
         <div className="panel px-4 py-3" role="status">
@@ -156,16 +198,24 @@ export function DesktopHomeClient() {
           <div>
             <p className="font-semibold">{ERROR_TITLES[lastOutcome.code] ?? "The scan failed"}</p>
             <p className="text-muted">{lastOutcome.message}</p>
+            {lastOutcome.code === "no-search" && (
+              <p className="text-muted">
+                To scan without a search, choose The whole save under <a href="#keep-title" className="link">What a scan keeps</a>.
+              </p>
+            )}
           </div>
         </div>
       )}
 
-      {lastOutcome?.ok && !scanning && (
+      {lastScan && !scanning && (
         <div role="status" className="flex items-start gap-2.5 rounded-md border border-line bg-surface px-4 py-3 text-sm">
           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive" aria-hidden />
           <p>
-            <span className="font-semibold">{n(lastOutcome.snapshot.players)} players</span> and {n(lastOutcome.snapshot.staff)} staff
-            scanned{lastOutcome.snapshot.myClub ? `, your club: ${lastOutcome.snapshot.myClub}` : ""}. Open{" "}
+            <span className="font-semibold">{n(lastScan.players)} players</span> and {n(lastScan.staff)} staff{" "}
+            {lastScan.scope === "search"
+              ? `kept: your FM search (${searchText({ players: lastScan.searchPlayers ?? 0, staff: lastScan.searchStaff ?? 0 })}) plus your club${lastScan.myClub ? `, ${lastScan.myClub}` : ""}`
+              : `scanned${lastScan.myClub ? `, your club: ${lastScan.myClub}` : ""}`}
+            . Open{" "}
             <Link href="/attribute" className="link">Attribute</Link>, <Link href="/wonderkid" className="link">Wonderkid</Link> or{" "}
             <Link href="/growth" className="link">Growth</Link>.
           </p>
@@ -180,20 +230,20 @@ export function DesktopHomeClient() {
       {partial && !loading && (
         <p className="text-[13px] text-muted">
           The screens hold {n(partial.players)} of {n(partial.totalPlayers)} players and {n(partial.staff)} of {n(partial.totalStaff)} staff
-          from this scan: your club plus {loadedFrom} (see <a href="#load-title" className="link">What the screens load</a>). Growth
-          always compares every player.
+          from this scan: your club plus {loadedFrom} (see <a href="#keep-title" className="link">What a scan keeps</a>). Growth
+          always compares every player in both scans.
         </p>
       )}
-      {settings && active && !loading && activeSearch && !settings.load.onlySearch && (
+      {settings && active && !loading && activeSearch && !searchMode && active.scope !== "search" && (
         <p className="text-[13px] text-muted">
-          FM&apos;s search had {searchText(activeSearch)} when this scan ran. To load only those, tick{" "}
-          <a href="#load-title" className="link">Only players and staff from my FM search</a>.
+          FM&apos;s search had {searchText(activeSearch)} when this scan ran. To load only those, choose{" "}
+          <a href="#keep-title" className="link">My FM search and my club</a>.
         </p>
       )}
-      {settings?.load.onlySearch && active && !activeSearch && !loading && (
+      {settings && searchMode && active && !active.sample && active.scope !== "search" && !activeSearch && !loading && (
         <Notice title="This scan has no FM search result">
-          Only players and staff from your FM search is on, but FM had no search result when this scan ran, so the scan is loaded as
-          usual. In FM, open Player Search, set its filters, leave it on screen and scan again.
+          This scan holds the whole save, and FM had no search result when it ran, so the screens load it like a whole save. In FM,
+          open Player Search, set its filters, leave it on screen and scan again.
         </Notice>
       )}
 
@@ -239,8 +289,13 @@ export function DesktopHomeClient() {
                     {n(s.players)} players · {n(s.staff)} staff · {s.myClub ?? "no club"} · {s.game} {s.gameVersion ?? ""} · scanned{" "}
                     {formatTime(s.scannedAt)}
                     {s.bytes !== undefined && ` · ${formatBytes(s.bytes)}`}
-                    {(s.searchPlayers || s.searchStaff) &&
-                      ` · FM search: ${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}`}
+                    {s.scope === "search"
+                      ? ` · your FM search (${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}) and your club`
+                      : `${s.sample ? "" : " · whole save"}${
+                          s.searchPlayers || s.searchStaff
+                            ? ` · FM search: ${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}`
+                            : ""
+                        }`}
                   </p>
                 </div>
                 <Button color="alt" variant="outline" size="sm" disabled={s.id === activeId || loading} onClick={() => void loadSnapshot(s.id)}>
@@ -263,15 +318,6 @@ export function DesktopHomeClient() {
       {settings && (
         <section className="panel space-y-3 px-4 py-3" aria-labelledby="settings-title">
           <h2 id="settings-title" className="section-title">Settings</h2>
-          <label className="flex items-start gap-2 text-sm">
-            <input type="checkbox" className="mt-1" checked={settings.hideHidden} onChange={(e) => void updateSettings({ hideHidden: e.target.checked })} />
-            <span>
-              <span className="font-semibold">Hide CA, PA and hidden attributes</span>
-              <span className="block text-[13px] text-muted">
-                For players who see them as cheating. Applies the next time a scan is loaded (Use, or Load again below).
-              </span>
-            </span>
-          </label>
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={settings.hotkey} onChange={(e) => void updateSettings({ hotkey: e.target.checked })} />
             <span>
@@ -297,7 +343,7 @@ export function DesktopHomeClient() {
               value={settings.retention}
               min={1}
               max={500}
-              suffix="scans (a full database is about 140 MB each)"
+              suffix="scans (a search is a few MB, a whole save about 140 MB)"
               onSave={(retention) => void updateSettings({ retention })}
             />
           </div>
@@ -305,27 +351,57 @@ export function DesktopHomeClient() {
       )}
 
       {settings && (
-        <section className="panel space-y-3 px-4 py-3" aria-labelledby="load-title">
+        <section className="panel space-y-3 px-4 py-3" aria-labelledby="keep-title">
           <div>
-            <h2 id="load-title" className="section-title">What the screens load</h2>
+            <h2 id="keep-title" className="section-title">What a scan keeps</h2>
             <p className="text-[13px] text-muted">
-              A full FM database has about 400,000 players, too many for one window. A scan that fits under the limits below is loaded
-              whole; a bigger one loads your club plus the players and staff worth scouting, best CA first. Growth always compares every
-              player in both scans.
+              The reader always reads FM&apos;s whole database, which takes seconds. This sets how much of it a scan keeps.
             </p>
           </div>
-          <label className="flex items-start gap-2 text-sm">
-            <input type="checkbox" className="mt-1" checked={settings.load.onlySearch} onChange={(e) => setLoad({ onlySearch: e.target.checked })} />
-            <span>
-              <span className="font-semibold">Only players and staff from my FM search</span>
-              <span className="block text-[13px] text-muted">
-                A scan also reads the result of FM&apos;s Player Search and Staff Search, with every filter you set there. So to see only
-                players who would join you: in FM, open Player Search, set Player&apos;s interest (for example to Interested), leave the
-                search on screen and scan. The screens then load those players plus your own club. It is FM&apos;s own answer, not an
-                estimate. A result over the limit below keeps the best by the CA and PA limits.
+          <fieldset className="space-y-2 text-sm">
+            <legend className="sr-only">What a scan keeps</legend>
+            <label className="flex items-start gap-2">
+              <input
+                type="radio"
+                name="scan-mode"
+                className="mt-1"
+                checked={searchMode}
+                disabled={loading}
+                onChange={() => applyAndReload({ scanMode: "search" })}
+              />
+              <span>
+                <span className="font-semibold">My FM search and my club</span>
+                <span className="block text-[13px] text-muted">
+                  Like an export of the search on screen: the scan keeps the people in FM&apos;s Player Search or Staff Search, with
+                  every filter you set there, plus your own club for Squad and Best XI. Set Player&apos;s interest to Interested and you
+                  get only the players FM says would join you: FM&apos;s own answer, not an estimate. Scans are small and load at once.
+                  Growth compares the players that are in both scans.
+                </span>
               </span>
-            </span>
-          </label>
+            </label>
+            <label className="flex items-start gap-2">
+              <input
+                type="radio"
+                name="scan-mode"
+                className="mt-1"
+                checked={!searchMode}
+                disabled={loading}
+                onChange={() => applyAndReload({ scanMode: "full" })}
+              />
+              <span>
+                <span className="font-semibold">The whole save</span>
+                <span className="block text-[13px] text-muted">
+                  Every player and staff member in the save, about 140 MB per scan, with or without a search on screen. A full FM
+                  database has about 400,000 players, too many for one window, so the screens load your club plus the people within the
+                  limits below. Growth compares every player in the save.
+                </span>
+              </span>
+            </label>
+          </fieldset>
+          <p className="text-[13px] text-muted">
+            <span className="font-semibold text-ink">Limits.</span> A scan with more people than the caps (a whole save, or a very wide
+            search) loads your club plus the best by these limits, best CA first.
+          </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
             <NumberSetting label="Players with CA" suffix="or more" value={settings.load.minCa} min={1} max={200} onSave={(minCa) => setLoad({ minCa })} />
             <NumberSetting label="plus players up to age" value={settings.load.youngMaxAge} min={14} max={45} onSave={(youngMaxAge) => setLoad({ youngMaxAge })} />
@@ -348,7 +424,7 @@ export function DesktopHomeClient() {
               Load again
             </Button>
             <span className="text-[13px] text-muted">
-              Changes apply the next time a scan is loaded. More players means slower screens: 40,000 load in a few seconds.
+              The limits apply the next time a scan is loaded. More players means slower screens: 40,000 load in a few seconds.
             </span>
           </div>
         </section>

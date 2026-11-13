@@ -161,6 +161,7 @@ test("can load only the people from FM's search, plus your club", () => {
   const off = loadScan(db, DEFAULT_LOAD_SCOPE);
   assert.equal(off.players.length, scan.players.length);
   assert.deepEqual(off.bySearch, { players: false, staff: false });
+  assert.equal(off.scope, "full");
   assert.equal(off.searchPlayers, scan.meta.searchPlayers);
 
   const on = loadScan(db, { ...DEFAULT_LOAD_SCOPE, onlySearch: true });
@@ -174,6 +175,33 @@ test("can load only the people from FM's search, plus your club", () => {
   const cut = loadScan(db, scope);
   assert.ok(cut.players.length <= 5);
   assert.ok(cut.players.every((p) => p.club === myClub || (p.inSearch && p.ca >= 150)));
+});
+
+test("a scan that kept only the search loads whole, loaned-out players included", () => {
+  const full = searchedScan();
+  const myClub = full.meta.myClub!;
+  // What the reader keeps with --only-search: the search, your club, and your players out on loan.
+  const loanee = full.players.find((p) => p.club !== myClub && !p.inSearch)!;
+  const players = full.players
+    .map((p) => (p.uid === loanee.uid ? { ...p, ownerClub: myClub } : p))
+    .filter((p) => p.inSearch || p.club === myClub || p.uid === loanee.uid);
+  const staff = full.staff.filter((s) => s.club === myClub);
+  const scan: ScanFile = { ...full, meta: { ...full.meta, scope: "search", searchStaff: 0 }, players, staff };
+  assert.ok(players.length < full.players.length);
+
+  for (const onlySearch of [true, false]) {
+    const loaded = loadScan(memoryDb(scan), { ...DEFAULT_LOAD_SCOPE, onlySearch });
+    assert.equal(loaded.scope, "search");
+    assert.deepEqual(byUid(loaded.players), byUid(players));
+    assert.deepEqual(byUid(loaded.staff), byUid(staff));
+    assert.deepEqual(loaded.bySearch, { players: true, staff: false });
+    assert.equal(loaded.searchPlayers, scan.meta.searchPlayers);
+  }
+
+  // Over the limit it is cut like any big scan: your club first, then the best by the CA and PA limits.
+  const cut = loadScan(memoryDb(scan), { ...DEFAULT_LOAD_SCOPE, onlySearch: true, maxPlayers: 5, minCa: 150, youngMaxAge: 0, youngMinPa: 200 });
+  assert.ok(cut.players.length <= 5);
+  assert.ok(cut.players.every((p) => p.club === myClub || p.ca >= 150));
 });
 
 test("a scan without an FM search loads as usual when only the search is wanted", () => {

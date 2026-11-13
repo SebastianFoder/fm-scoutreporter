@@ -7,8 +7,10 @@ namespace ScoutReporter.Reader;
 /// memory, read-only, and writes it as a lines file (scan.ndjson, one JSON object per line) for the
 /// Scout Reporter desktop app.
 ///
-///   ScoutReporter.Reader.exe scan --out &lt;dir&gt; [--db men|women|both] [--previous-exists]
+///   ScoutReporter.Reader.exe scan --out &lt;dir&gt; [--db men|women|both] [--only-search] [--previous-exists]
 ///
+/// --only-search: keep only the people in FM's Player Search or Staff Search result, plus your own
+/// club, instead of the whole database. Fails (no-search) when FM has no search result.
 /// --previous-exists: the app already has a scan to fall back on, so a thinned-out scan (too much
 /// memory unreadable) is refused rather than stored.
 ///
@@ -22,7 +24,8 @@ namespace ScoutReporter.Reader;
 ///   {"type":"done","file":"...","players":51234,"staff":12000,"versionOk":true,"game":"FM27","gameVersion":"27.0.1.0"}
 ///   {"type":"error","code":"not-running","message":"..."}
 /// Exit codes: 0 done, 2 FM not running, 3 another scan is running, 4 no access (FM runs as
-/// administrator), 5 save not loaded, 6 nothing found, 7 too much unreadable, 64 usage, 1 other.
+/// administrator), 5 save not loaded, 6 nothing found, 7 too much unreadable, 8 no search result
+/// (with --only-search), 64 usage, 1 other.
 ///
 /// It only ever asks Windows for read access to fm.exe; nothing is written to the game.
 /// </summary>
@@ -62,7 +65,7 @@ internal static class Program
 
     private static int Usage()
     {
-        Console.Error.WriteLine("Usage: ScoutReporter.Reader scan --out <dir> [--db men|women|both] [--previous-exists] | version");
+        Console.Error.WriteLine("Usage: ScoutReporter.Reader scan --out <dir> [--db men|women|both] [--only-search] [--previous-exists] | version");
         return 64;
     }
 
@@ -121,8 +124,15 @@ internal static class Program
             try { WriteDiagnostics(Path.Combine(outDir, "diagnostics.txt"), result, ReaderVersion); }
             catch (Exception e) { Log("Could not write diagnostics.txt: " + e.Message); }   // best effort, but say so
             bool previous = File.Exists(target) || args.Contains("--previous-exists");
-            var (write, error, message) = DumpWriter.Check(result, previous);
+            bool onlySearch = args.Contains("--only-search");
+            var (write, error, message) = DumpWriter.Check(result, previous, onlySearch);
             if (!write) throw new ScanException(error!.Value, message);
+            if (onlySearch)
+            {
+                int before = result.Log.Count;
+                result.KeepSearchOnly();
+                foreach (var line in result.Log.Skip(before)) Log(line);
+            }
 
             Progress("writing", 0.95);
             DumpWriter.WriteFile(target, result, ReaderVersion, db, DateTime.UtcNow);
@@ -466,6 +476,7 @@ internal static class Program
             ScanError.NotLoaded => "not-loaded",
             ScanError.NothingFound => "nothing-found",
             ScanError.TooMuchUnread => "too-much-unread",
+            ScanError.NoSearch => "no-search",
             ScanError.Busy => "busy",
             _ => "failed",
         });

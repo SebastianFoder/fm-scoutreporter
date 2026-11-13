@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { DEFAULT_LOAD_SCOPE } from "@scoutreporter/core/desktop/bridge";
+import { DEFAULT_LOAD_LIMITS, DEFAULT_LOAD_SCOPE, loadScopeFor, normaliseSettings } from "@scoutreporter/core/desktop/bridge";
 import { scanToLines } from "@scoutreporter/core/scan/db/write";
 import type { ScanFile } from "@scoutreporter/core/scan/schema";
 import { compareScanFiles, importJsonFile, importLinesFile, loadScanFile, scanMeta } from "./db-ops";
@@ -114,6 +114,49 @@ test("stores scans newest first and prunes past the retention", async () => {
   assert.deepEqual((await store.list()).map((s) => s.id), [c.snapshot.id]);
 });
 
+test("scans keep FM's search and your club unless the whole save is chosen", () => {
+  const fresh = normaliseSettings({});
+  assert.equal(fresh.scanMode, "search");
+  assert.deepEqual(loadScopeFor(fresh), { ...DEFAULT_LOAD_LIMITS, onlySearch: true });
+
+  // Settings saved before the scan mode existed: the old tick box is dropped, the limits are kept.
+  const old = normaliseSettings({ hideHidden: true, load: { minCa: 120, onlySearch: false } });
+  assert.equal(old.scanMode, "search");
+  assert.equal(old.hideHidden, true);
+  assert.deepEqual(old.load, { ...DEFAULT_LOAD_LIMITS, minCa: 120 });
+
+  const full = normaliseSettings({ scanMode: "full" });
+  assert.equal(full.scanMode, "full");
+  assert.equal(loadScopeFor(full).onlySearch, false);
+  assert.equal(normaliseSettings({ scanMode: "everything" }).scanMode, "search");
+});
+
+test("a stored scan says when it kept only the search", async () => {
+  const work = tempDir();
+  const store = new SnapshotStore(join(work, "scans"));
+  const myClub = sample.meta.myClub!;
+  const searched: ScanFile = {
+    ...sample,
+    meta: { ...sample.meta, scope: "search", searchPlayers: 1 },
+    players: sample.players.filter((p, i) => p.club === myClub || i === 0).map((p, i) => (i === 0 ? { ...p, inSearch: true } : p)),
+    staff: sample.staff.filter((s) => s.club === myClub),
+  };
+  const a = await importedScan(work, "2026-11-10T10:00:00Z", searched);
+  const b = await importedScan(work, "2026-11-11T10:00:00Z");
+  const search = (await store.add(a.target, a, 5)).snapshot;
+  const whole = (await store.add(b.target, b, 5)).snapshot;
+  assert.equal(search.scope, "search");
+  assert.equal(search.searchPlayers, 1);
+  assert.equal(search.players, searched.players.length);
+  assert.equal(whole.scope, undefined);
+
+  // The screens get all of it, whichever scan mode is set.
+  const loaded = loadScanFile(store.scanFile(search.id), loadScopeFor(normaliseSettings({ scanMode: "full" })));
+  assert.equal(loaded.scope, "search");
+  assert.equal(loaded.players.length, searched.players.length);
+  assert.equal(loaded.staff.length, searched.staff.length);
+});
+
 test("marks the sample scan", async () => {
   const dir = tempDir();
   const store = new SnapshotStore(join(dir, "scans"));
@@ -147,5 +190,8 @@ test("reports the reader's error, or a missing result", () => {
   const out = new ReaderOutput();
   out.push('{"type":"error","code":"not-running","message":"Football Manager is not running."}\n');
   assert.equal(out.finish(2).error?.code, "not-running");
+  const noSearch = new ReaderOutput();
+  noSearch.push('{"type":"error","code":"no-search","message":"Football Manager has no search result to read."}\n');
+  assert.equal(noSearch.finish(8).error?.code, "no-search");
   assert.equal(new ReaderOutput().finish(1).error?.code, "failed");
 });

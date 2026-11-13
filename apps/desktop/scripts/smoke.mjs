@@ -4,8 +4,10 @@
  * Checks the bridge exists, a scan without FM fails cleanly, the sample scan is stored as a SQLite
  * scan database and loads into every screen, and Growth compares two scans.
  *
- * With Football Manager running, the scan step scans the real game instead: it then checks that the
- * scan was read and stored, deletes it, and carries on with the sample scans.
+ * With Football Manager running, the scan step scans the real game instead: first with the default
+ * setting (FM's search and your club; refused with an explanation when FM has no search result),
+ * then the whole save. It checks the scans were read and stored, deletes them, and carries on with
+ * the sample scans.
  *
  *   node apps/desktop/scripts/smoke.mjs [path to Scout Reporter.exe]
  */
@@ -106,18 +108,35 @@ try {
   );
   check("Node is not exposed to the page", (await page.eval("typeof require === 'undefined' && typeof process === 'undefined'")) === true);
 
+  // A scan with the default setting keeps only FM's search and your club.
   const firstScan = await page.eval("window.scoutReporterDesktop.scan()");
+  const fmRunning = firstScan?.ok === true || firstScan?.code === "no-search";
   if (firstScan?.ok) {
-    // FM is running: the app scanned the real game.
+    // FM is running with a search result: the app took that search.
     const live = firstScan.snapshot;
+    const found = (live.searchPlayers ?? 0) + (live.searchStaff ?? 0);
     check(
-      "FM is running: the live scan is read and stored as a scan database",
-      live.players > 1000 && existsSync(join(profile, "scans", live.id, "scan.sqlite")),
-      `${live.players} players, ${live.staff} staff, ${Math.round((live.bytes ?? 0) / 1e6)} MB`,
+      "FM is running: the scan keeps FM's search and your club",
+      live.scope === "search" && found > 0 && live.players + live.staff >= found && existsSync(join(profile, "scans", live.id, "scan.sqlite")),
+      `FM search ${live.searchPlayers ?? 0} players and ${live.searchStaff ?? 0} staff; kept ${live.players} players, ${live.staff} staff, ${Math.round((live.bytes ?? 0) / 1e6)} MB`,
     );
     await page.eval(`window.scoutReporterDesktop.deleteSnapshot(${JSON.stringify(live.id)})`);
+  } else if (fmRunning) {
+    check("FM is running without a search: the scan is refused with an explanation", typeof firstScan.message === "string" && firstScan.message.includes("Player Search"), firstScan.message);
   } else {
     check("scanning without FM fails cleanly", firstScan && firstScan.ok === false && typeof firstScan.message === "string", firstScan?.code);
+  }
+  if (fmRunning) {
+    // The whole save, as before the search mode existed.
+    await page.eval("window.scoutReporterDesktop.setSettings({ scanMode: 'full' })");
+    const whole = await page.eval("window.scoutReporterDesktop.scan()");
+    check(
+      "FM is running: a whole-save scan is read and stored as a scan database",
+      whole?.ok === true && whole.snapshot.scope !== "search" && whole.snapshot.players > 1000 && existsSync(join(profile, "scans", whole.snapshot.id, "scan.sqlite")),
+      whole?.ok ? `${whole.snapshot.players} players, ${whole.snapshot.staff} staff, ${Math.round((whole.snapshot.bytes ?? 0) / 1e6)} MB` : whole?.message,
+    );
+    if (whole?.ok) await page.eval(`window.scoutReporterDesktop.deleteSnapshot(${JSON.stringify(whole.snapshot.id)})`);
+    await page.eval("window.scoutReporterDesktop.setSettings({ scanMode: 'search' })");
   }
 
   const stored = await page.eval("window.scoutReporterDesktop.loadSampleScan()");

@@ -100,6 +100,7 @@ export class SnapshotStore {
       ...(scan.bytes !== undefined && { bytes: scan.bytes }),
       ...(meta.searchPlayers ? { searchPlayers: meta.searchPlayers } : {}),
       ...(meta.searchStaff ? { searchStaff: meta.searchStaff } : {}),
+      ...(meta.scope === "search" && { scope: "search" as const }),
     };
     const next = [snapshot, ...list].sort((a, b) => b.scannedAt.localeCompare(a.scannedAt));
     const keep = next.slice(0, Math.max(1, retention));

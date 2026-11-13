@@ -2,9 +2,11 @@
 
 How a scan travels: the reader (`reader/`, `ScoutReporter.Reader.exe scan`) writes a **lines file**
 (`scan.ndjson`), the desktop app imports it into a **scan database** (`scan.sqlite`, see
-[Scan database](#scan-database)) and keeps that. A full FM27 database is about 400,000 players and
-135,000 staff: over 700 MB as JSON, more than one JavaScript string can hold, and far too much for
-the window. So the file is read line by line, and the screens query the part they need.
+[Scan database](#scan-database)) and keeps that. By default a scan holds only the people in FM's
+search result plus your own club (`meta.scope` "search", a few MB). A whole-save scan (`meta.scope`
+"full") is about 400,000 players and 135,000 staff in FM27: over 700 MB as JSON, more than one
+JavaScript string can hold, and far too much for the window. So the file is read line by line, and
+the screens query the part they need.
 
 TypeScript types: `schema.ts`. Conversion to the app's import records: `convert.ts`. Growth between
 two scans: `growth.ts` (in memory) and `db/growth.ts` (in SQL). Example: `../fixtures/scan-sample.json`
@@ -47,7 +49,8 @@ The records, shown as the whole-file JSON form (`scan-sample.json`):
     "currency": "GBP",
     "unreadFraction": 0.0,                  // share of FM's memory that could not be read
     "searchPlayers": 164658,                // players in FM's Player Search result at scan time (0: none)
-    "searchStaff": 0                        // the same for FM's Staff Search
+    "searchStaff": 0,                       // the same for FM's Staff Search
+    "scope": "search"                       // "search": only that search and your club were kept; "full": everyone
   },
   "players": [{
     "uid": 2002083882,
@@ -97,9 +100,14 @@ attribute keys are the app's `StaffAttributeKey`s; adaptability is the personali
 **FM's search result.** FM keeps the whole result of its Player Search (and Staff Search) screen
 in memory, after every filter set there, including "Player's interest" (Interested, Persuadable,
 Doubtful), which FM computes itself and stores nowhere per player. The reader marks the people in
-that result with `inSearch` and counts them in `meta.searchPlayers` / `meta.searchStaff`. The app
-can then load only those (`LoadScope.onlySearch`): FM's own answer to "would he join my club",
-not an estimate. The counts are 0 when FM had no search result.
+that result with `inSearch` and counts them in `meta.searchPlayers` / `meta.searchStaff`: FM's own
+answer to "would he join my club", not an estimate. The counts are 0 when FM had no search result.
+
+With `--only-search` (the app's default scan mode, `DesktopSettings.scanMode` "search") the reader
+writes only those people plus your own club (playing there, or owned by it and out on loan) and
+sets `meta.scope` to "search"; it refuses to write a scan when FM has no search result. Without the
+flag everyone is written (`meta.scope` "full") and the app can still load only the search from it
+(`LoadScope.onlySearch`).
 
 A new field is a minor change (readers ignore unknown fields). Renaming or removing one, or
 changing a unit, bumps `schemaVersion`; `assertScanFile` and `assertScanHeader` reject versions they
@@ -125,7 +133,8 @@ rejected (scan again). Reading rows back (`db/read.ts`) gives exactly the record
 - `db/write.ts`: `importScanLines` (streams the lines file, a transaction per 5,000 rows),
   `writeScanFile` (an in-memory scan), `scanToLines`.
 - `db/read.ts`: `loadScan(db, scope)` returns what the screens load: your club plus a pool, which
-  is the whole scan or, with `scope.onlySearch`, FM's search result. A pool that fits under the
+  is the whole scan or, with `scope.onlySearch` on a whole-save scan, FM's search result (a scan
+  that kept only the search is its own pool). A pool that fits under the
   limits is loaded whole; a bigger one keeps players at or above a CA, plus young players with a
   high PA, best CA first, up to a cap (and staff likewise). See `LoadScope` in
   `../desktop/bridge.ts`.

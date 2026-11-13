@@ -201,6 +201,37 @@ public class DumpWriterTests
         Assert.Equal("Parent FC", meta.GetProperty("myClub").GetString());
         Assert.Equal("men", meta.GetProperty("database").GetString());
         Assert.Equal(0, meta.GetProperty("searchPlayers").GetInt32());
+        Assert.Equal("full", meta.GetProperty("scope").GetString());
+    }
+
+    [Fact]
+    public void A_search_only_scan_keeps_the_search_and_your_club()
+    {
+        var r = Sample();   // one player on loan from your club (Parent FC), one coach elsewhere
+        Person Player(uint uid, string club, bool inSearch = false) =>
+            new() { Uid = uid, IsPlayer = true, Name = "P" + uid, Club = club, InSearch = inSearch };
+        r.Players.Add(Player(1, "Parent FC"));
+        r.Players.Add(Player(2, "Other FC", inSearch: true));
+        r.Players.Add(Player(3, "Other FC"));
+        r.Players.Add(Player(4, null));
+        r.Staff.Add(new Person { Uid = 5, Name = "S5", Club = "Parent FC" });
+        r.SearchPlayers = 1;
+        Assert.True(DumpWriter.Check(r, existingFile: false, onlySearch: true).write);
+
+        r.KeepSearchOnly();
+        Assert.Equal(new uint[] { 2002083882, 1, 2 }, r.Players.Select(p => p.Uid).ToArray());
+        Assert.Equal(new uint[] { 5 }, r.Staff.Select(s => s.Uid).ToArray());
+        Assert.Equal("search", WriteSample(r)[0].GetProperty("meta").GetProperty("scope").GetString());
+    }
+
+    [Fact]
+    public void A_search_only_scan_needs_a_search_result()
+    {
+        var r = Sample();
+        Assert.Equal((false, ScanError.NoSearch), Pick(DumpWriter.Check(r, existingFile: false, onlySearch: true)));
+        Assert.True(DumpWriter.Check(r, existingFile: false).write);
+        r.SearchStaff = 1;
+        Assert.True(DumpWriter.Check(r, existingFile: false, onlySearch: true).write);
     }
 
     [Fact]

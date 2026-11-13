@@ -68,50 +68,57 @@ A modern web app for importing **Football Manager 26** player CSV exports and tu
 
 ## Desktop app (Windows)
 
-The desktop app (`apps/desktop`) has every screen of the website, plus **Scan FM**: it reads the
-whole database of a running Football Manager 27 (or 26) straight from the game's memory, in
-seconds, with no CSV export. Every scan includes real CA and PA, hidden attributes, personality,
-exact wages and values, and staff attributes as 1-20 numbers. The reader only reads FM's memory;
-it never changes the game or the save.
+The desktop app (`apps/desktop`) has every screen of the website, plus **Scan FM**: an enhanced
+player export. It takes the players (or staff) in the search you have on screen in a running
+Football Manager 27 (or 26), straight from the game's memory, in seconds, with no view to set up
+and no CSV export. Every scan includes real CA and PA, hidden attributes, personality, exact wages
+and values, and staff attributes as 1-20 numbers; one switch leaves the hidden ones out. The reader
+only reads FM's memory; it never changes the game or the save.
 
 **Install.** Run `Scout-Reporter-Setup-<version>.exe`. The installer is not code-signed yet, so
 Windows SmartScreen warns about an unknown publisher on first run: click **More info**, then
 **Run anyway**.
 
-**Scan.** Start FM, load your save, then press **Scan FM** in the app (or **F9** anywhere, also
-inside FM, while the app runs). A full FM27 database (about 400,000 players and 135,000 staff)
-takes about 20 seconds: reading FM, then saving the scan. If FM runs as administrator, run Scout
-Reporter as administrator too.
+**Scan.** In FM, open **Player Search** (or **Staff Search**), set your filters and leave the
+search on screen. Then press **Scan FM** in the app (or **F9** anywhere, also inside FM, while the
+app runs). The scan keeps the people FM found, with every filter you set, plus your own club (your
+players out on loan included) so Squad and Best XI keep working. It takes about 15 seconds, because
+the reader still has to walk FM's whole memory to find them; after that the scan is a few MB and
+loads at once. Without a search in FM the scan stops and tells you to open one. If FM runs as
+administrator, run Scout Reporter as administrator too.
 
-**What the screens load.** A whole database is too much for one window, so a big scan loads your
-club plus the players and staff worth scouting: by default every player with CA 100 or more, plus
-players up to 21 with PA 130 or more, best CA first, at most 40,000 (about 30,000 in a typical
-save), and staff with CA 80 or more. Squad gets your club's players. Change the limits under
-**What the screens load** on the Scans page, then press **Load again**. A smaller scan (a
-women's database, the sample scan) loads whole.
+**Only players who would join you.** In FM's Player Search, set **Player's interest** (for example
+Transfer only, Interested), plus any other filter you like, and scan. FM works that interest out
+itself and stores it nowhere per player, but its search result is in memory, so the app gets FM's
+own verdict, not an estimate.
 
-**Stored scans.** Every scan is kept as a SQLite database (about 140 MB for a full database) under
-`%APPDATA%\Scout Reporter\scans` (the **Scans** page lists them with their size; **Open folder**
-shows the files). By default the newest 10 are kept; change this under Settings. **Use** loads an
-older scan back into the app, and **Load sample scan** tries the app without FM.
+**Hidden attributes on or off.** **Use CA, PA and hidden attributes**, next to the Scan button,
+decides whether the screens get CA, PA and Professionalism. Off, they are left out, as with a
+Standard view export, and Wonderkid mode and the CA columns in Growth are unavailable. Changing it
+reloads the scan in use. The visible attributes are FM's exact values either way, also for players
+you have not fully scouted.
 
-**Growth.** The **Growth** page compares two scans of your save, every player in both, not just
-the loaded ones: CA, PA and attribute change per player, sortable, with filters such as "gained 10+
-CA" and a maximum age. Comparing two full databases takes a few seconds the first time, then
-filters and sorting are instant. Scan every few in-game months to follow your youngsters and spot
-breakout players worldwide.
+**The whole save (advanced).** Under **What a scan keeps** on the Scans page, **The whole save**
+makes a scan keep every player and staff member instead, with or without a search on screen: about
+400,000 players and 135,000 staff in a full FM27 database, 140 MB per scan and about 20 seconds.
+That is too much for one window, so the screens load your club plus the people within the limits
+set there: by default every player with CA 100 or more, plus players up to 21 with PA 130 or more,
+best CA first, at most 40,000 (about 30,000 in a typical save), and staff with CA 80 or more. With
+**My FM search and my club** chosen, a whole-save scan that has a search result loads only that
+search. A search wider than the caps is cut down by the same limits. Change the limits, then press
+**Load again**.
 
-**Only players who would join you.** A scan also reads the result of FM's own Player Search (and
-Staff Search), with every filter you set there. In FM, open Player Search and set **Player's
-interest** (for example Transfer only, Interested), plus any other filter you like; leave the
-search on screen and scan (F9 works inside FM). The Scans page then shows "FM search: 164,658
-players" on the scan. Tick **Only players and staff from my FM search** under **What the screens
-load** and the screens load only those players, plus your own club. This is FM's own verdict, read
-from the game, not an estimate. A scan without a search result loads as usual.
+**Stored scans.** Every scan is kept as a SQLite database under `%APPDATA%\Scout Reporter\scans`
+(the **Scans** page lists them with their size and what they hold; **Open folder** shows the
+files). By default the newest 10 are kept; change this under Settings. **Use** loads an older scan
+back into the app, and **Load sample scan** tries the app without FM.
 
-**Hide hidden stats.** If you see CA, PA and hidden attributes as cheating, switch on
-**Hide CA, PA and hidden attributes** under Settings, then press **Use** on your scan. The screens
-then work from visible attributes only, as with a Standard view export.
+**Growth.** The **Growth** page compares two scans of your save: CA, PA and attribute change per
+player, sortable, with filters such as "gained 10+ CA" and a maximum age. It covers every player
+who is in both scans, not just the loaded ones. Your own club is in every scan, so your squad can
+always be followed; scouted players can when they were in both searches. With whole-save scans it
+covers every player in the save (a few seconds the first time, then filters and sorting are
+instant), to spot breakout players worldwide.
 
 **Supported versions.** FM27 (game version 27.0) and FM26 (26.3), Windows, from Steam, Epic or
 Game Pass. The reader reads FM's memory at fixed places, and a big FM patch can move them. When

@@ -20,6 +20,7 @@ import type {
 import { SCAN_STAFF_COLUMNS, scanPlayers, scanStaff } from "@scoutreporter/core/scan/convert";
 import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
 import type { ImportSource } from "@scoutreporter/core/storage/stored-records";
+import { useRouter } from "next/navigation";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useSquadData } from "@scoutreporter/ui/components/SquadDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
@@ -81,7 +82,7 @@ type DesktopContextValue = {
   loading: boolean;
   scan: () => Promise<void>;
   loadSnapshot: (id: string) => Promise<void>;
-  /** Load the snapshot in use again (after changing what to load, or hiding hidden attributes). */
+  /** Load the snapshot in use again (after changing what a scan keeps, the limits, or hidden attributes). */
   reloadActive: () => Promise<void>;
   deleteSnapshot: (id: string) => Promise<void>;
   loadSample: () => Promise<void>;
@@ -149,9 +150,9 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
           scannedAt: scan.meta.scannedAt,
           gameDate: scan.meta.gameDate,
         };
-        // Settings load in the background; a scan used before they arrive must still honour them.
-        const current = settings ?? (await bridge.getSettings());
-        const hide = current.hideHidden === true;
+        // Ask for the settings now: a scan is also loaded right after a setting changed, or before
+        // the settings in state have arrived, and must honour them either way.
+        const hide = (await bridge.getSettings()).hideHidden === true;
         const strip = (list: PlayerAttributes[]) => (hide ? list.map(withoutHidden) : list);
         if (stale()) return;
         await players.importRecords(strip(scanPlayers(scan)), {
@@ -180,7 +181,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         if (!stale()) setLoading(false);
       }
     },
-    [bridge, snapshots, settings, players, squad, staff],
+    [bridge, snapshots, players, squad, staff],
   );
 
   const reloadActive = useCallback(async () => {
@@ -190,7 +191,9 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
   // The finished-scan listener is registered once; it calls the latest loadSnapshot through a ref.
   const loadSnapshotRef = useLatest(loadSnapshot);
 
-  // Every finished scan (button or F9): refresh the list and load a successful one.
+  // Every finished scan (button or F9): refresh the list and load a successful one. A failed scan
+  // is explained on the Scans page, so go there (F9 and the header button work on every page).
+  const router = useRouter();
   useEffect(() => {
     const offProgress = bridge.onScanProgress((p) => {
       setScanning(true);
@@ -200,6 +203,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       setScanning(false);
       setProgress(null);
       setLastOutcome(outcome);
+      if (!outcome.ok && window.location.pathname !== "/desktop") router.push("/desktop");
       void bridge.listSnapshots().then((list) => {
         setSnapshots(list);
         if (outcome.ok) void loadSnapshotRef.current(outcome.snapshot.id);
@@ -209,7 +213,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       offProgress();
       offFinished();
     };
-  }, [bridge, loadSnapshotRef]);
+  }, [bridge, loadSnapshotRef, router]);
 
   const scan = useCallback(async () => {
     setScanning(true);

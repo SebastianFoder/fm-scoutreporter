@@ -91,6 +91,9 @@ export function GrowthClient() {
     };
   }, [bridge, base, current, filters, limit]);
 
+  // A scan that kept only FM's search and your club: Growth then covers the players in both scans.
+  const searchScans = [base, current].some((id) => snapshots.find((s) => s.id === id)?.scope === "search");
+
   // Only loaded players have a profile page; the rest of the database is listed without a link.
   const loaded = useMemo(() => new Set(playersState.players.map((p) => p.raw.uniqueId)), [playersState.players]);
   const rows = report?.rows ?? [];
@@ -174,6 +177,13 @@ export function GrowthClient() {
             </label>
           </div>
 
+          {searchScans && base !== current && (
+            <p className="text-[13px] text-muted">
+              A scan of your FM search holds the players from that search and your own club, so Growth covers the players that are in
+              both scans. Your own club is in every scan. To follow every player in the save, choose The whole save under What a scan
+              keeps on the <Link href="/desktop" className="link">Scans page</Link>.
+            </p>
+          )}
           {base === current && <Notice title="Same scan twice">Pick two different scans.</Notice>}
           {error && <Notice title="Could not compare the scans">{error}</Notice>}
           {loading && !report && <p className="text-sm text-muted" role="status">Comparing scans…</p>}
@@ -183,7 +193,10 @@ export function GrowthClient() {
               <p className="border-b border-line px-4 py-2.5 text-[13px] text-muted">
                 {report.total.toLocaleString("en-GB")} players
                 {report.days !== null && ` over ${report.days} in-game days`}
-                {report.newPlayers > 0 && `, plus ${report.newPlayers.toLocaleString("en-GB")} new players (youth intakes or newly loaded leagues) with no earlier scan`}
+                {report.newPlayers > 0 &&
+                  (searchScans
+                    ? `, plus ${report.newPlayers.toLocaleString("en-GB")} players who are only in the later scan`
+                    : `, plus ${report.newPlayers.toLocaleString("en-GB")} new players (youth intakes or newly loaded leagues) with no earlier scan`)}
                 .{loading && " Updating…"}
               </p>
               <div className="overflow-x-auto">
