@@ -67,6 +67,8 @@ internal sealed class Scanner
     private readonly DatabaseChoice _db;
     private readonly Action<string, double> _progress;
     private readonly bool _onlySearch;
+    /// <summary>Developer option (--force-retry): retry from a snapshot even when memory read fine.</summary>
+    public bool ForceRetry { get; init; }
     private Fields F = Fields.All[0];
     /// <summary>Vtable of FM's person search session (0 = not found), see Fields.SEARCH_*.</summary>
     private ulong _searchVt;
@@ -146,9 +148,10 @@ internal sealed class Scanner
 
             Scan(mem, maxDop, result, sw, steps, out double unread);
             result.UnreadFraction = unread;
-            if (!useSnapshot && unread > 0.10)
+            if (!useSnapshot && (unread > 0.10 || ForceRetry))
             {
-                Log($"{Math.Round(unread * 100)}% of the memory regions could not be read live: retrying from a snapshot.");
+                Log(ForceRetry ? "--force-retry: retrying from a snapshot."
+                               : $"{Math.Round(unread * 100)}% of the memory regions could not be read live: retrying from a snapshot.");
                 retryWithSnapshot = true;
             }
             result.ElapsedMs = sw.ElapsedMilliseconds;

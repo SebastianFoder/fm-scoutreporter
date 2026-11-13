@@ -34,6 +34,23 @@ open 296 ms, version 124 ms, find 1,748 ms, merge 61 ms, read people 9,775 ms,
 squads 2,206 ms, date 104 ms, search 22 ms, diagnostics 22 ms, write 2,095 ms
 ```
 
+## The retry
+
+When more than 10 % of FM's memory cannot be read live, the reader scans again from a frozen copy
+of it (a VA clone snapshot). After the speed-ups this costs little: on 2026-11-14 a search scan with
+a retry took 4.2 s (taking the snapshot 0.35 s, the second scan about 2 s), and its output was
+identical to a normal scan. A full scan reads people more slowly from the snapshot (12 s instead of
+4 s), but full scans are rare. `--force-retry` forces the retry, to test it:
+
+```bash
+reader\dist\ScoutReporter.Reader.exe scan --out C:\tmp\retry --only-search --force-retry
+bun run reader:check -- --compare C:\tmp\ref\scan.ndjson C:\tmp\retry\scan.ndjson
+```
+
+A search scan could skip the retry when nothing it keeps was lost, but that cannot be told for
+sure: your club's squad lists normally hold a few entries that match no player, and staff at your
+club are found only through their contracts. So the retry stays.
+
 ## Checking a change
 
 `bun run reader:check` runs a reader against the running FM, prints the wall time and the steps,

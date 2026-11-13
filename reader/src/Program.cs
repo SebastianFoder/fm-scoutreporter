@@ -13,6 +13,8 @@ namespace ScoutReporter.Reader;
 /// club, instead of the whole database. Fails (no-search) when FM has no search result.
 /// --previous-exists: the app already has a scan to fall back on, so a thinned-out scan (too much
 /// memory unreadable) is refused rather than stored.
+/// --force-retry (developer): do the snapshot retry even when memory read fine, to test it
+/// (reader/PERFORMANCE.md).
 ///
 /// Developer commands (plain text, see reader/REPIN.md): probe-lists, probe-find, probe-chain,
 /// probe-peek.
@@ -120,7 +122,7 @@ internal static class Program
             Log($"Scout Reporter reader {ReaderVersion}: fm.exe pid {fm.Id}");
 
             bool onlySearch = args.Contains("--only-search");
-            var result = new Scanner(game, db, Progress, onlySearch).Run();
+            var result = new Scanner(game, db, Progress, onlySearch) { ForceRetry = args.Contains("--force-retry") }.Run();
             var steps = new StepTimer(result.Timings);
             foreach (var line in result.Log) Log(line);
             try { WriteDiagnostics(Path.Combine(outDir, "diagnostics.txt"), result, ReaderVersion); }
