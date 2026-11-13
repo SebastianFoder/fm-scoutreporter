@@ -1,13 +1,16 @@
 /**
  * End-to-end smoke test of the built desktop app (release/win-unpacked), without Football Manager:
  * starts the app with a throwaway profile, then drives the page over the Chrome DevTools protocol.
- * Checks the bridge exists, a scan without FM fails cleanly, the sample scan loads into every
- * screen, and Growth compares two scans.
+ * Checks the bridge exists, a scan without FM fails cleanly, the sample scan is stored as a SQLite
+ * scan database and loads into every screen, and Growth compares two scans.
+ *
+ * With Football Manager running, the scan step scans the real game instead: it then checks that the
+ * scan was read and stored, deletes it, and carries on with the sample scans.
  *
  *   node apps/desktop/scripts/smoke.mjs [path to Scout Reporter.exe]
  */
 import { spawn } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -103,11 +106,26 @@ try {
   );
   check("Node is not exposed to the page", (await page.eval("typeof require === 'undefined' && typeof process === 'undefined'")) === true);
 
-  const noFm = await page.eval("window.scoutReporterDesktop.scan()");
-  check("scanning without FM fails cleanly", noFm && noFm.ok === false && typeof noFm.message === "string", noFm?.code);
+  const firstScan = await page.eval("window.scoutReporterDesktop.scan()");
+  if (firstScan?.ok) {
+    // FM is running: the app scanned the real game.
+    const live = firstScan.snapshot;
+    check(
+      "FM is running: the live scan is read and stored as a scan database",
+      live.players > 1000 && existsSync(join(profile, "scans", live.id, "scan.sqlite")),
+      `${live.players} players, ${live.staff} staff, ${Math.round((live.bytes ?? 0) / 1e6)} MB`,
+    );
+    await page.eval(`window.scoutReporterDesktop.deleteSnapshot(${JSON.stringify(live.id)})`);
+  } else {
+    check("scanning without FM fails cleanly", firstScan && firstScan.ok === false && typeof firstScan.message === "string", firstScan?.code);
+  }
 
   const stored = await page.eval("window.scoutReporterDesktop.loadSampleScan()");
-  check("sample scan is stored", stored?.ok === true, stored?.snapshot?.id);
+  check(
+    "sample scan is stored as a scan database",
+    stored?.ok === true && existsSync(join(profile, "scans", stored.snapshot.id, "scan.sqlite")) && stored.snapshot.bytes > 0,
+    stored?.snapshot?.id ?? stored?.message,
+  );
   check(
     "sample scan loads into the app",
     await waitFor(page, "document.body.innerText.includes('66 players scanned')"),
@@ -149,10 +167,11 @@ try {
   // Hide hidden attributes: reload the scan, then Wonderkid has no CA/PA.
   await page.eval("window.scoutReporterDesktop.setSettings({ hideHidden: true })");
   await navigate(page, "/desktop");
-  await waitFor(page, "[...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Use' && !b.disabled)");
-  // Mark the button, click it, and wait until that scan is in use (its Use button turns disabled).
-  await page.eval("(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Use' && !b.disabled); b.dataset.smoke = 'use'; b.click(); return true; })()");
-  const inUse = await waitFor(page, "document.querySelector('[data-smoke=use]')?.disabled === true");
+  const useButton = "[...document.querySelectorAll('li')].filter((li) => li.innerText.includes('Sample scan')).flatMap((li) => [...li.querySelectorAll('button')]).find((b) => b.textContent.trim() === 'Use' && !b.disabled)";
+  await waitFor(page, `!!${useButton}`);
+  // Mark the scan's row, press Use, and wait until the row says "In use" (set once loading is done).
+  await page.eval(`(() => { const b = ${useButton}; b.closest('li').dataset.smoke = 'use'; b.click(); return true; })()`);
+  const inUse = await waitFor(page, "document.querySelector('[data-smoke=use]')?.innerText.includes('In use')");
   await navigate(page, "/wonderkid");
   const hidden =
     inUse &&

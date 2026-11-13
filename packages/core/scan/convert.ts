@@ -151,11 +151,11 @@ export interface ScanFilter {
   club?: string;
 }
 
-export function scanPlayers(scan: ScanFile, filter: ScanFilter = {}): PlayerAttributes[] {
+export function scanPlayers(scan: Pick<ScanFile, "players">, filter: ScanFilter = {}): PlayerAttributes[] {
   const players = filter.club ? scan.players.filter((p) => p.club === filter.club) : scan.players;
   return players.map(scanPlayerToAttributes);
 }
 
-export function scanStaff(scan: ScanFile): StaffMember[] {
+export function scanStaff(scan: Pick<ScanFile, "staff">): StaffMember[] {
   return scan.staff.map(scanStaffToMember);
 }

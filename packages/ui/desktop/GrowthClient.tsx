@@ -6,18 +6,26 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { Button } from "@scoutreporter/ui/components/Button";
-import {
-  compareScans,
-  filterGrowth,
-  sortGrowth,
-  type GrowthReport,
-  type GrowthSort,
-} from "@scoutreporter/core/scan/growth";
+import type { GrowthSort } from "@scoutreporter/core/scan/growth";
+import type { GrowthPage } from "@scoutreporter/core/desktop/bridge";
 import { attributeLabel } from "@scoutreporter/core/fm27/development";
 import type { AttributeKey } from "@scoutreporter/core/types/weights";
+import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { scanLabel, useDesktop } from "./DesktopProvider";
 
 const PAGE = 100;
+
+/** `value` once it has stopped changing for `ms` (so typing does not query on every key). */
+function useDebounced<T>(value: T, ms: number): T {
+  const [settled, setSettled] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setSettled(value), ms);
+    return () => clearTimeout(t);
+  }, [value, ms]);
+  return settled;
+}
+
+const optionalNumber = (v: string): number | undefined => (v.trim() === "" || !Number.isFinite(Number(v)) ? undefined : Number(v));
 
 function signed(n: number): string {
   return n > 0 ? `+${n}` : String(n);
@@ -27,13 +35,17 @@ function changeClass(n: number): string {
   return n > 0 ? "text-positive font-semibold" : n < 0 ? "text-red font-semibold" : "text-muted";
 }
 
-/** Growth between two stored scans: CA and attribute change per player. Desktop app only. */
+/**
+ * Growth between two stored scans: CA and attribute change per player, for every player in both
+ * scans (the comparison runs in the scan databases, not only on the loaded players). Desktop app only.
+ */
 export function GrowthClient() {
   const desktop = useDesktop();
+  const { state: playersState } = usePlayersData();
   const snapshots = useMemo(() => desktop?.snapshots ?? [], [desktop?.snapshots]);
   const [baseId, setBaseId] = useState<string>("");
   const [currentId, setCurrentId] = useState<string>("");
-  const [report, setReport] = useState<GrowthReport | null>(null);
+  const [report, setReport] = useState<GrowthPage | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [minCaGain, setMinCaGain] = useState("");
@@ -41,45 +53,47 @@ export function GrowthClient() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<GrowthSort>("caChange");
   const [dir, setDir] = useState<"asc" | "desc">("desc");
-  const [shown, setShown] = useState(PAGE);
+  const [limit, setLimit] = useState(PAGE);
   const hide = desktop?.settings?.hideHidden === true;
 
   // Default: the newest scan against the one before it.
   const current = currentId || snapshots[0]?.id || "";
   const base = baseId || snapshots.find((s) => s.id !== current)?.id || "";
 
-  const readSnapshot = desktop?.readSnapshot;
+  // Filters, sorting and paging run in the scan databases (main process), debounced while typing.
+  const filters = useDebounced(
+    JSON.stringify({
+      minCaGain: hide ? undefined : optionalNumber(minCaGain),
+      maxAge: optionalNumber(maxAge),
+      query: query.trim() || undefined,
+      sort: hide && (sort === "caChange" || sort === "paChange" || sort === "ca") ? "attributeChange" : sort,
+      dir,
+    }),
+    250,
+  );
+
+  const bridge = desktop?.bridge;
   useEffect(() => {
-    if (!readSnapshot || !current || !base || current === base) return;
+    if (!bridge || !current || !base || current === base) return;
     let active = true;
     queueMicrotask(() => {
       if (!active) return;
       setLoading(true);
       setError(null);
     });
-    void Promise.all([readSnapshot(base), readSnapshot(current)])
-      .then(([older, newer]) => {
-        if (!active) return;
-        // Compare in time order, whichever way round they were picked.
-        const swap = older.meta.scannedAt > newer.meta.scannedAt;
-        setReport(swap ? compareScans(newer, older) : compareScans(older, newer));
-      })
+    void bridge
+      .compareSnapshots(base, current, { ...JSON.parse(filters), limit })
+      .then((page) => active && setReport(page))
       .catch((e: Error) => active && setError(e.message))
       .finally(() => active && setLoading(false));
     return () => {
       active = false;
     };
-  }, [readSnapshot, base, current]);
+  }, [bridge, base, current, filters, limit]);
 
-  const rows = useMemo(() => {
-    if (!report) return [];
-    const filtered = filterGrowth(report.rows, {
-      minCaGain: !hide && minCaGain !== "" ? Number(minCaGain) : undefined,
-      maxAge: maxAge !== "" ? Number(maxAge) : undefined,
-      query,
-    });
-    return sortGrowth(filtered, hide && (sort === "caChange" || sort === "paChange" || sort === "ca") ? "attributeChange" : sort, dir);
-  }, [report, minCaGain, maxAge, query, sort, dir, hide]);
+  // Only loaded players have a profile page; the rest of the database is listed without a link.
+  const loaded = useMemo(() => new Set(playersState.players.map((p) => p.raw.uniqueId)), [playersState.players]);
+  const rows = report?.rows ?? [];
 
   if (!desktop) {
     return (
@@ -90,6 +104,7 @@ export function GrowthClient() {
   }
 
   const setSortTo = (s: GrowthSort) => {
+    setLimit(PAGE);
     if (s === sort) setDir(dir === "desc" ? "asc" : "desc");
     else {
       setSort(s);
@@ -122,7 +137,7 @@ export function GrowthClient() {
           <div className="panel flex flex-wrap items-end gap-4 px-4 py-3 text-sm">
             <label className="flex flex-col gap-1">
               <span className="font-semibold">From</span>
-              <select className="rounded-md border border-line bg-surface px-2 py-1" value={base} onChange={(e) => setBaseId(e.target.value)}>
+              <select className="rounded-md border border-line bg-surface px-2 py-1" value={base} onChange={(e) => { setBaseId(e.target.value); setLimit(PAGE); }}>
                 {snapshots.map((s) => (
                   <option key={s.id} value={s.id}>
                     {scanLabel(s)} ({s.players.toLocaleString("en-GB")} players)
@@ -132,7 +147,7 @@ export function GrowthClient() {
             </label>
             <label className="flex flex-col gap-1">
               <span className="font-semibold">To</span>
-              <select className="rounded-md border border-line bg-surface px-2 py-1" value={current} onChange={(e) => setCurrentId(e.target.value)}>
+              <select className="rounded-md border border-line bg-surface px-2 py-1" value={current} onChange={(e) => { setCurrentId(e.target.value); setLimit(PAGE); }}>
                 {snapshots.map((s) => (
                   <option key={s.id} value={s.id}>
                     {scanLabel(s)} ({s.players.toLocaleString("en-GB")} players)
@@ -144,32 +159,32 @@ export function GrowthClient() {
               <label className="flex flex-col gap-1">
                 <span className="font-semibold">Gained at least</span>
                 <span className="flex items-center gap-1">
-                  <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={minCaGain} placeholder="any" onChange={(e) => setMinCaGain(e.target.value)} />
+                  <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={minCaGain} placeholder="any" onChange={(e) => { setMinCaGain(e.target.value); setLimit(PAGE); }} />
                   <span className="text-muted">CA</span>
                 </span>
               </label>
             )}
             <label className="flex flex-col gap-1">
               <span className="font-semibold">Max age</span>
-              <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={maxAge} placeholder="any" onChange={(e) => setMaxAge(e.target.value)} />
+              <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={maxAge} placeholder="any" onChange={(e) => { setMaxAge(e.target.value); setLimit(PAGE); }} />
             </label>
             <label className="flex min-w-48 flex-1 flex-col gap-1">
               <span className="font-semibold">Search</span>
-              <input type="search" className="rounded-md border border-line bg-surface px-2 py-1" value={query} placeholder="Player or club" onChange={(e) => setQuery(e.target.value)} />
+              <input type="search" className="rounded-md border border-line bg-surface px-2 py-1" value={query} placeholder="Player or club" onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }} />
             </label>
           </div>
 
           {base === current && <Notice title="Same scan twice">Pick two different scans.</Notice>}
           {error && <Notice title="Could not compare the scans">{error}</Notice>}
-          {loading && <p className="text-sm text-muted" role="status">Comparing scans…</p>}
+          {loading && !report && <p className="text-sm text-muted" role="status">Comparing scans…</p>}
 
-          {report && !loading && (
-            <section className="panel" aria-label="Growth">
+          {report && (
+            <section className="panel" aria-label="Growth" aria-busy={loading}>
               <p className="border-b border-line px-4 py-2.5 text-[13px] text-muted">
-                {rows.length.toLocaleString("en-GB")} players
+                {report.total.toLocaleString("en-GB")} players
                 {report.days !== null && ` over ${report.days} in-game days`}
-                {report.newPlayers.length > 0 && `, plus ${report.newPlayers.length.toLocaleString("en-GB")} new players (youth intakes or newly loaded leagues) with no earlier scan`}
-                .
+                {report.newPlayers > 0 && `, plus ${report.newPlayers.toLocaleString("en-GB")} new players (youth intakes or newly loaded leagues) with no earlier scan`}
+                .{loading && " Updating…"}
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm tabular-nums">
@@ -186,10 +201,14 @@ export function GrowthClient() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-line">
-                    {rows.slice(0, shown).map((r) => (
+                    {rows.map((r) => (
                       <tr key={r.player.uid}>
                         <td className="px-3 py-1.5 font-semibold">
-                          <Link href={`/attribute/players/${r.player.uid}`} className="hover:underline">{r.player.name}</Link>
+                          {loaded.has(String(r.player.uid)) ? (
+                            <Link href={`/attribute/players/${r.player.uid}`} className="hover:underline">{r.player.name}</Link>
+                          ) : (
+                            r.player.name
+                          )}
                         </td>
                         <td className="px-3 py-1.5">{r.player.age ?? ""}</td>
                         <td className="px-3 py-1.5 text-muted">{r.player.club ?? ""}</td>
@@ -205,10 +224,10 @@ export function GrowthClient() {
                   </tbody>
                 </table>
               </div>
-              {rows.length > shown && (
+              {report.total > rows.length && (
                 <div className="border-t border-line px-4 py-2.5">
-                  <Button color="alt" variant="outline" size="md" onClick={() => setShown(shown + PAGE)}>
-                    Show {Math.min(PAGE, rows.length - shown)} more
+                  <Button color="alt" variant="outline" size="md" disabled={loading || limit >= 1000} onClick={() => setLimit(Math.min(1000, limit + PAGE))}>
+                    {limit >= 1000 ? "Showing the first 1,000: narrow the filters to see others" : `Show ${Math.min(PAGE, report.total - rows.length)} more`}
                   </Button>
                 </div>
               )}

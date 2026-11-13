@@ -21,6 +21,7 @@ const bridge: DesktopBridge = {
   onScanFinished: (listener) => subscribe<ScanOutcome>(IPC.scanFinished, listener),
   listSnapshots: () => ipcRenderer.invoke(IPC.listSnapshots),
   loadSnapshot: (id) => ipcRenderer.invoke(IPC.loadSnapshot, String(id)),
+  compareSnapshots: (fromId, toId, query) => ipcRenderer.invoke(IPC.compareSnapshots, String(fromId), String(toId), query),
   deleteSnapshot: (id) => ipcRenderer.invoke(IPC.deleteSnapshot, String(id)),
   loadSampleScan: () => ipcRenderer.invoke(IPC.loadSample),
   getSettings: () => ipcRenderer.invoke(IPC.getSettings),

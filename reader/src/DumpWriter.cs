@@ -1,21 +1,24 @@
 namespace ScoutReporter.Reader;
 
 /// <summary>
-/// Writes a scan in Scout Reporter's format (schema "scoutreporter-scan" version 1, documented in
-/// packages/core/scan/README.md and typed in packages/core/scan/schema.ts).
+/// Writes a scan in Scout Reporter's format (schema "scoutreporter-scan" version 2, documented in
+/// packages/core/scan/README.md and typed in packages/core/scan/schema.ts): a lines file, one JSON
+/// object per line. Line 1 holds the schema, version and meta; every further line is one player
+/// (`"kind":"player"`) or staff member (`"kind":"staff"`). A full database is over 700 MB, more than
+/// one JavaScript string can hold, so the desktop app reads it line by line into SQLite.
 /// </summary>
 internal static class DumpWriter
 {
     public const string Schema = "scoutreporter-scan";
-    public const int SchemaVersion = 1;
-    public const string FileName = "scan.json";
+    public const int SchemaVersion = 2;
+    public const string FileName = "scan.ndjson";
 
     /// <summary>
-    /// Decide whether a scan may be written over <paramref name="existingFile"/>. A loaded save
-    /// always has players, so an empty result means the scan failed (save not loaded, or offsets moved
-    /// after an FM patch): never write it. A scan that could not read more than 10% of memory, even
-    /// after the snapshot retry, is probably thinned out: it may not replace an existing file, but with
-    /// no file yet something is better than nothing.
+    /// Decide whether a scan may be written. A loaded save always has players, so an empty result
+    /// means the scan failed (save not loaded, or offsets moved after an FM patch): never write it. A
+    /// scan that could not read more than 10% of memory, even after the snapshot retry, is probably
+    /// thinned out: it is refused when there is an earlier scan to keep using (an existing file, or
+    /// the app's stored scans, see --previous-exists), but with nothing yet it is better than nothing.
     /// </summary>
     public static (bool write, ScanError? error, string message) Check(ScanResult r, bool existingFile)
     {
@@ -43,6 +46,7 @@ internal static class DumpWriter
 
     public static void Write(JsonWriter j, ScanResult r, string readerVersion, DatabaseChoice db, DateTime scannedAt)
     {
+        // Line 1: schema, version and meta.
         j.BeginObj();
         j.Prop("schema", Schema);
         j.Prop("schemaVersion", SchemaVersion);
@@ -62,14 +66,12 @@ internal static class DumpWriter
         j.Prop("currency", "GBP");
         j.Prop("unreadFraction", Math.Round(r.UnreadFraction, 4));
         j.EndObj();
-
-        j.Key("players"); j.BeginArr();
-        foreach (var p in r.Players) WritePlayer(j, p);
-        j.EndArr();
-        j.Key("staff"); j.BeginArr();
-        foreach (var s in r.Staff) WriteStaff(j, s);
-        j.EndArr();
         j.EndObj();
+        j.NewLine();
+
+        // Then one person per line.
+        foreach (var p in r.Players) { WritePlayer(j, p); j.NewLine(); }
+        foreach (var s in r.Staff) { WriteStaff(j, s); j.NewLine(); }
     }
 
     private static void WriteCommon(JsonWriter j, Person p)
@@ -115,6 +117,7 @@ internal static class DumpWriter
     private static void WritePlayer(JsonWriter j, Person p)
     {
         j.BeginObj();
+        j.Prop("kind", "player");
         WriteCommon(j, p);
         // Owner only when it differs from where the player plays now (a loan).
         if (p.OwnerClub != null && p.OwnerClub != p.Club) j.Prop("ownerClub", p.OwnerClub);
@@ -138,6 +141,7 @@ internal static class DumpWriter
     private static void WriteStaff(JsonWriter j, Person s)
     {
         j.BeginObj();
+        j.Prop("kind", "staff");
         WriteCommon(j, s);
         j.Prop("job", s.Job);
         if (s.JobId > 0) j.Prop("jobId", s.JobId);

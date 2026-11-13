@@ -11,18 +11,21 @@ and never writes to the game.
 ## Use
 
 ```bash
-ScoutReporter.Reader.exe scan --out <dir> [--db men|women|both]
+ScoutReporter.Reader.exe scan --out <dir> [--db men|women|both] [--previous-exists]
 ScoutReporter.Reader.exe version
 ```
 
-`scan` writes `<dir>/scan.json` (format: `packages/core/scan/README.md`) and `<dir>/diagnostics.txt`,
+`scan` writes `<dir>/scan.ndjson`, a lines file with one JSON object per line (format:
+`packages/core/scan/README.md`; a full database is over 700 MB, which the desktop app imports into
+SQLite line by line), and `<dir>/diagnostics.txt`,
 and reports on stdout as JSON lines (`progress`, `log`, `done`, `error`). Exit codes: 0 done, 2 FM
 not running, 3 a scan is already running, 4 FM runs as administrator, 5 save not loaded, 6 nothing
 found, 7 too much memory unreadable, 64 usage.
 
 Safety rules kept from upstream: a scan that finds nobody is never written; a scan that could not
-read more than 10% of memory (even after retrying from a frozen snapshot) never replaces an
-existing `scan.json`; and the file is written to a temp file, then moved into place. When
+read more than 10% of memory (even after retrying from a frozen snapshot) is refused when there is
+an earlier scan to keep using (an existing `scan.ndjson`, or `--previous-exists`, which the app
+passes when it has stored scans); and the file is written to a temp file, then moved into place. When
 `game_plugin.dll`'s version differs from the version the offsets were pinned on, the scan still
 runs, but `meta.versionOk` is false and the app warns.
 

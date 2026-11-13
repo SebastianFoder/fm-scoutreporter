@@ -4,9 +4,13 @@ namespace ScoutReporter.Reader;
 
 /// <summary>
 /// ScoutReporter.Reader: reads the database of a running Football Manager 27 (or 26) from fm.exe's
-/// memory, read-only, and writes it as one JSON file for the Scout Reporter desktop app.
+/// memory, read-only, and writes it as a lines file (scan.ndjson, one JSON object per line) for the
+/// Scout Reporter desktop app.
 ///
-///   ScoutReporter.Reader.exe scan --out &lt;dir&gt; [--db men|women|both]
+///   ScoutReporter.Reader.exe scan --out &lt;dir&gt; [--db men|women|both] [--previous-exists]
+///
+/// --previous-exists: the app already has a scan to fall back on, so a thinned-out scan (too much
+/// memory unreadable) is refused rather than stored.
 ///   ScoutReporter.Reader.exe version
 ///
 /// It reports on stdout as JSON lines, one object per line:
@@ -51,7 +55,7 @@ internal static class Program
 
     private static int Usage()
     {
-        Console.Error.WriteLine("Usage: ScoutReporter.Reader scan --out <dir> [--db men|women|both] | version");
+        Console.Error.WriteLine("Usage: ScoutReporter.Reader scan --out <dir> [--db men|women|both] [--previous-exists] | version");
         return 64;
     }
 
@@ -107,8 +111,10 @@ internal static class Program
 
             var result = new Scanner(game, db, Progress).Run();
             foreach (var line in result.Log) Log(line);
-            WriteDiagnostics(Path.Combine(outDir, "diagnostics.txt"), result);
-            var (write, error, message) = DumpWriter.Check(result, File.Exists(target));
+            try { WriteDiagnostics(Path.Combine(outDir, "diagnostics.txt"), result, ReaderVersion); }
+            catch (Exception e) { Log("Could not write diagnostics.txt: " + e.Message); }   // best effort, but say so
+            bool previous = File.Exists(target) || args.Contains("--previous-exists");
+            var (write, error, message) = DumpWriter.Check(result, previous);
             if (!write) throw new ScanException(error!.Value, message);
 
             Progress("writing", 0.95);
@@ -171,12 +177,11 @@ internal static class Program
     /// needed most): the log, the class-offset peaks and a sample of players and staff. With
     /// reader/REPIN.md this is most of the work of re-pinning after an FM patch.
     /// </summary>
-    private static void WriteDiagnostics(string path, ScanResult r)
+    internal static void WriteDiagnostics(string path, ScanResult r, string readerVersion)
     {
-        try
         {
             using var w = new StreamWriter(path, false);
-            w.WriteLine($"Scout Reporter reader {ReaderVersion} diagnostics, {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            w.WriteLine($"Scout Reporter reader {readerVersion} diagnostics, {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             w.WriteLine($"Game: {r.Game} (game_plugin {r.GameVersion ?? "?"}, offsets pinned on {r.SupportedVersion}.x, {(r.VersionOk ? "ok" : "DIFFERENT VERSION")})");
             w.WriteLine($"Players: {r.Players.Count:N0}  Staff: {r.Staff.Count:N0}  Unreadable: {r.UnreadFraction:P1}  Snapshot: {r.FromSnapshot}  Time: {r.ElapsedMs} ms");
             w.WriteLine($"Manager: {r.Manager ?? "?"}  Club: {r.MyClub ?? "?"}  In-game date: {r.GameDate?.ToString("yyyy-MM-dd") ?? "not found"} (year {r.GameYear})");
@@ -197,7 +202,6 @@ internal static class Program
             foreach (var s in r.Staff.Take(8))
                 w.WriteLine($"  {s.Name} age={s.Age} CA={s.Ca} PA={s.Pa} job={s.Job} club={s.Club}");
         }
-        catch { /* diagnostics are best effort */ }
     }
 
     // ---------- output ----------

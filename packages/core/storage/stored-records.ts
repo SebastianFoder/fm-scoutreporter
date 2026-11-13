@@ -13,6 +13,8 @@ export interface ImportSource {
   snapshotId?: string;
   scannedAt?: string;
   gameDate?: string | null;
+  /** How many the whole scan had, when only part of it was loaded (see LoadScope). */
+  total?: number;
 }
 
 export interface StoredPlayerRecords {

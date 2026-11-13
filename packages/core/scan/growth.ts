@@ -31,10 +31,32 @@ export interface GrowthReport {
   days: number | null;
 }
 
-function daysBetween(a: string | null, b: string | null): number | null {
+export function daysBetween(a: string | null, b: string | null): number | null {
   if (!a || !b) return null;
   const ms = Date.parse(b) - Date.parse(a);
   return Number.isFinite(ms) ? Math.round(ms / 86_400_000) : null;
+}
+
+/** How one player changed from `prev` (the older scan) to `p`. */
+export function playerGrowth(prev: ScanPlayer, p: ScanPlayer): PlayerGrowth {
+  const changes: AttributeChange[] = [];
+  let attributeChange = 0;
+  for (const [key, to] of Object.entries(p.attributes)) {
+    const from = prev.attributes[key];
+    if (from === undefined || from === to) continue;
+    changes.push({ key, from, to });
+    attributeChange += to - from;
+  }
+  changes.sort((a, b) => Math.abs(b.to - b.from) - Math.abs(a.to - a.from) || a.key.localeCompare(b.key));
+  return {
+    player: p,
+    caFrom: prev.ca,
+    caChange: p.ca - prev.ca,
+    paChange: p.pa - prev.pa,
+    attributeChange,
+    changes,
+    ageFrom: prev.age,
+  };
 }
 
 export function compareScans(older: ScanFile, newer: ScanFile): GrowthReport {
@@ -43,28 +65,8 @@ export function compareScans(older: ScanFile, newer: ScanFile): GrowthReport {
   const newPlayers: ScanPlayer[] = [];
   for (const p of newer.players) {
     const prev = before.get(p.uid);
-    if (!prev) {
-      newPlayers.push(p);
-      continue;
-    }
-    const changes: AttributeChange[] = [];
-    let attributeChange = 0;
-    for (const [key, to] of Object.entries(p.attributes)) {
-      const from = prev.attributes[key];
-      if (from === undefined || from === to) continue;
-      changes.push({ key, from, to });
-      attributeChange += to - from;
-    }
-    changes.sort((a, b) => Math.abs(b.to - b.from) - Math.abs(a.to - a.from) || a.key.localeCompare(b.key));
-    rows.push({
-      player: p,
-      caFrom: prev.ca,
-      caChange: p.ca - prev.ca,
-      paChange: p.pa - prev.pa,
-      attributeChange,
-      changes,
-      ageFrom: prev.age,
-    });
+    if (prev) rows.push(playerGrowth(prev, p));
+    else newPlayers.push(p);
   }
   return { rows, newPlayers, days: daysBetween(older.meta.gameDate, newer.meta.gameDate) };
 }

@@ -1,14 +1,23 @@
 /**
- * Stored scans: `<root>/<id>/scan.json` (+ diagnostics.txt), with `<root>/index.json` listing them so
- * the list does not have to open every (tens of MB) scan. No Electron imports, so it is unit-tested.
+ * Stored scans: `<root>/<id>/scan.sqlite` (+ diagnostics.txt), with `<root>/index.json` listing them
+ * so the list does not have to open every (100+ MB) scan. No Electron imports, so it is unit-tested.
  */
 import { existsSync } from "node:fs";
-import { mkdir, open, readFile, rename, rm, writeFile, copyFile } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile, copyFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { SnapshotInfo } from "@scoutreporter/core/desktop/bridge";
 import type { ScanMeta } from "@scoutreporter/core/scan/schema";
 
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$/;
+
+/** The database file in each snapshot folder. */
+export const SCAN_FILE = "scan.sqlite";
+
+/**
+ * Removing a snapshot folder. Windows cannot delete a scan the database process still has open
+ * (loading it into the screens, or comparing it), which takes a second or two: retry meanwhile.
+ */
+const REMOVE = { recursive: true, force: true, maxRetries: 20, retryDelay: 100 } as const;
 
 /** A snapshot id from its scan time: "2026-11-12T18-00-00Z" (file-name safe, sorts by time). */
 export function snapshotId(scannedAt: string, taken: Set<string> = new Set()): string {
@@ -16,26 +25,6 @@ export function snapshotId(scannedAt: string, taken: Set<string> = new Set()): s
   let id = ID_PATTERN.test(base) ? base : `scan-${Date.now()}`;
   for (let n = 2; taken.has(id); n++) id = `${base}-${n}`;
   return id;
-}
-
-/**
- * The `meta` object of a scan file without parsing the whole file: the reader writes `schema`,
- * `schemaVersion` and `meta` before `players`, so the head of the file holds them.
- */
-export async function readScanMeta(file: string): Promise<ScanMeta> {
-  const handle = await open(file, "r");
-  try {
-    const buf = Buffer.alloc(64 * 1024);
-    const { bytesRead } = await handle.read(buf, 0, buf.length, 0);
-    const head = buf.subarray(0, bytesRead).toString("utf8");
-    const end = head.search(/,\s*"players"\s*:/);
-    if (end < 0) throw new Error("The scan file has no players list.");
-    const parsed = JSON.parse(`${head.slice(0, end)}}`) as { schema?: string; meta?: ScanMeta };
-    if (parsed.schema !== "scoutreporter-scan" || !parsed.meta) throw new Error("Not a Scout Reporter scan file.");
-    return parsed.meta;
-  } finally {
-    await handle.close();
-  }
 }
 
 export class SnapshotStore {
@@ -52,7 +41,7 @@ export class SnapshotStore {
   }
 
   scanFile(id: string): string {
-    return join(this.dir(id), "scan.json");
+    return join(this.dir(id), SCAN_FILE);
   }
 
   private async readIndex(): Promise<SnapshotInfo[]> {
@@ -78,22 +67,21 @@ export class SnapshotStore {
   }
 
   /**
-   * Move a finished scan into the store and delete the oldest scans beyond `retention`. Returns the
-   * new snapshot and the ids that were deleted.
+   * Move a finished scan database into the store and delete the oldest scans beyond `retention`.
+   * Returns the new snapshot and the ids that were deleted.
    */
   async add(
     scanFile: string,
-    counts: { players: number; staff: number },
+    scan: { meta: ScanMeta; counts: { players: number; staff: number }; bytes?: number },
     retention: number,
-    opts: { diagnostics?: string; sample?: boolean; copy?: boolean } = {},
+    opts: { diagnostics?: string; sample?: boolean } = {},
   ): Promise<{ snapshot: SnapshotInfo; deleted: string[] }> {
-    const meta = await readScanMeta(scanFile);
+    const { meta, counts } = scan;
     const list = await this.list();
     const id = snapshotId(meta.scannedAt, new Set(list.map((s) => s.id)));
     const dir = this.dir(id);
     await mkdir(dir, { recursive: true });
-    if (opts.copy) await copyFile(scanFile, join(dir, "scan.json"));
-    else await rename(scanFile, join(dir, "scan.json"));
+    await rename(scanFile, this.scanFile(id));
     if (opts.diagnostics && existsSync(opts.diagnostics)) await copyFile(opts.diagnostics, join(dir, "diagnostics.txt"));
 
     const snapshot: SnapshotInfo = {
@@ -109,21 +97,18 @@ export class SnapshotStore {
       staff: counts.staff,
       database: meta.database,
       ...(opts.sample && { sample: true }),
+      ...(scan.bytes !== undefined && { bytes: scan.bytes }),
     };
     const next = [snapshot, ...list].sort((a, b) => b.scannedAt.localeCompare(a.scannedAt));
     const keep = next.slice(0, Math.max(1, retention));
     const deleted = next.slice(keep.length).map((s) => s.id);
-    for (const old of deleted) await rm(this.dir(old), { recursive: true, force: true });
+    for (const old of deleted) await rm(this.dir(old), REMOVE);
     await this.writeIndex(keep);
     return { snapshot, deleted };
   }
 
   async delete(id: string): Promise<void> {
-    await rm(this.dir(id), { recursive: true, force: true });
+    await rm(this.dir(id), REMOVE);
     await this.writeIndex((await this.readIndex()).filter((s) => s.id !== id));
-  }
-
-  async read(id: string): Promise<string> {
-    return readFile(this.scanFile(id), "utf8");
   }
 }

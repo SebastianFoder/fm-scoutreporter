@@ -1,11 +1,12 @@
 /**
- * A desktop scan: the file the reader (reader/, ScoutReporter.Reader.exe) writes, schema
- * "scoutreporter-scan" version 1. Documented in ./README.md. Money is in GBP (FM's internal
- * currency), dates are ISO yyyy-mm-dd, attributes are 1..20.
+ * A desktop scan: the records the reader (reader/, ScoutReporter.Reader.exe) writes, schema
+ * "scoutreporter-scan" version 2 (a lines file, one record per line; see ./README.md), which the
+ * desktop app keeps as a scan database (./db). Money is in GBP (FM's internal currency), dates are
+ * ISO yyyy-mm-dd, attributes are 1..20.
  */
 
 export const SCAN_SCHEMA = "scoutreporter-scan";
-export const SCAN_SCHEMA_VERSION = 1;
+export const SCAN_SCHEMA_VERSION = 2;
 
 /** FM's position ratings (1..20) by position; missing = 0. */
 export type ScanPositionKey =

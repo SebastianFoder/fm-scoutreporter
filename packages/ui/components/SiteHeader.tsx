@@ -72,7 +72,9 @@ export function SiteHeader() {
               className="hidden whitespace-nowrap text-[13px] text-on-chrome/65 md:inline"
               title="Imported players, shared by both modes"
             >
-              {count.toLocaleString("en-GB")} players {state.source ? "scanned" : "imported"}
+              {count.toLocaleString("en-GB")}
+              {state.source?.total && state.source.total > count ? ` of ${state.source.total.toLocaleString("en-GB")}` : ""} players{" "}
+              {state.source ? "scanned" : "imported"}
             </span>
           )}
           <AttributeColorConfig />

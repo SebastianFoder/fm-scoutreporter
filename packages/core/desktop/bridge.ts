@@ -3,6 +3,8 @@
  * the Electron main process. Shared by apps/desktop (which implements it) and packages/ui (which
  * uses it when present). On the website it is undefined.
  */
+import type { GrowthSort, PlayerGrowth } from "../scan/growth";
+import type { ScanFile } from "../scan/schema";
 
 /** One stored scan. */
 export interface SnapshotInfo {
@@ -20,6 +22,65 @@ export interface SnapshotInfo {
   database: string;
   /** True for the bundled sample scan (loaded without FM). */
   sample?: boolean;
+  /** Size of the stored scan on disk. */
+  bytes?: number;
+}
+
+/**
+ * Which part of a scan the screens load. A full FM database (about 400,000 players) is too much for
+ * the window, so a big scan loads your club plus the players worth scouting. A scan that fits under
+ * the limits is loaded whole.
+ */
+export interface LoadScope {
+  /** Players at or above this CA. */
+  minCa: number;
+  /** Plus young players up to this age... */
+  youngMaxAge: number;
+  /** ...with at least this PA. */
+  youngMinPa: number;
+  /** At most this many players (best CA first; your club always). */
+  maxPlayers: number;
+  /** Staff at or above this CA. */
+  staffMinCa: number;
+  maxStaff: number;
+}
+
+export const DEFAULT_LOAD_SCOPE: LoadScope = {
+  minCa: 100,
+  youngMaxAge: 21,
+  youngMinPa: 130,
+  maxPlayers: 40_000,
+  staffMinCa: 80,
+  maxStaff: 40_000,
+};
+
+/** A stored scan as the screens get it: the loaded part, and the totals of the whole scan. */
+export interface LoadedScan extends Omit<ScanFile, "schema" | "schemaVersion"> {
+  totalPlayers: number;
+  totalStaff: number;
+}
+
+export interface GrowthQuery {
+  /** Only players who gained at least this much CA. */
+  minCaGain?: number;
+  maxAge?: number;
+  /** Player or club name contains. */
+  query?: string;
+  sort: GrowthSort;
+  dir: "asc" | "desc";
+  offset?: number;
+  limit: number;
+}
+
+export interface GrowthPage {
+  /** The requested page of players found in both scans. */
+  rows: PlayerGrowth[];
+  /** Players found in both scans that match the filters. */
+  total: number;
+  /** Players in the later scan with no earlier scan (youth intakes, newly loaded leagues). */
+  newPlayers: number;
+  /** In-game days between the scans, when both have a date. */
+  days: number | null;
 }
 
 export interface DesktopSettings {
@@ -31,13 +92,16 @@ export interface DesktopSettings {
   database: "men" | "women" | "both";
   /** Hide CA, PA and hidden attributes (for players who consider them cheating). */
   hideHidden: boolean;
+  /** What the screens load from a big scan. */
+  load: LoadScope;
 }
 
 export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
-  retention: 20,
+  retention: 10,
   hotkey: true,
   database: "men",
   hideHidden: false,
+  load: DEFAULT_LOAD_SCOPE,
 };
 
 export interface ScanProgress {
@@ -67,8 +131,10 @@ export interface DesktopBridge {
   onScanFinished(listener: (outcome: ScanOutcome) => void): () => void;
   /** Stored scans, newest first. */
   listSnapshots(): Promise<SnapshotInfo[]>;
-  /** A stored scan's JSON text (see @scoutreporter/core/scan). */
-  loadSnapshot(id: string): Promise<string>;
+  /** The part of a stored scan the screens load (see LoadScope and the load setting). */
+  loadSnapshot(id: string): Promise<LoadedScan>;
+  /** Growth between two stored scans, filtered, sorted and paged. */
+  compareSnapshots(fromId: string, toId: string, query: GrowthQuery): Promise<GrowthPage>;
   deleteSnapshot(id: string): Promise<void>;
   /** Store the bundled sample scan as a snapshot, to try the app without FM. */
   loadSampleScan(): Promise<ScanOutcome>;
@@ -85,6 +151,7 @@ export const IPC = {
   scanFinished: "sr:scan-finished",
   listSnapshots: "sr:list-snapshots",
   loadSnapshot: "sr:load-snapshot",
+  compareSnapshots: "sr:compare-snapshots",
   deleteSnapshot: "sr:delete-snapshot",
   loadSample: "sr:load-sample",
   getSettings: "sr:get-settings",
@@ -92,14 +159,33 @@ export const IPC = {
   openDataFolder: "sr:open-data-folder",
 } as const;
 
+/** A whole number within [min, max], or `fallback`. */
+function clampInt(value: unknown, min: number, max: number, fallback: number): number {
+  const n = Number(value);
+  return value === null || value === undefined || value === "" || !Number.isFinite(n) ? fallback : Math.min(max, Math.max(min, Math.round(n)));
+}
+
+export function normaliseLoadScope(value: unknown): LoadScope {
+  const v = (value && typeof value === "object" ? value : {}) as Partial<LoadScope>;
+  const d = DEFAULT_LOAD_SCOPE;
+  return {
+    minCa: clampInt(v.minCa, 1, 200, d.minCa),
+    youngMaxAge: clampInt(v.youngMaxAge, 14, 45, d.youngMaxAge),
+    youngMinPa: clampInt(v.youngMinPa, 1, 200, d.youngMinPa),
+    maxPlayers: clampInt(v.maxPlayers, 100, 100_000, d.maxPlayers),
+    staffMinCa: clampInt(v.staffMinCa, 1, 200, d.staffMinCa),
+    maxStaff: clampInt(v.maxStaff, 100, 100_000, d.maxStaff),
+  };
+}
+
 /** Clamp and fill settings read from disk or sent by the renderer. */
 export function normaliseSettings(value: unknown): DesktopSettings {
   const v = (value && typeof value === "object" ? value : {}) as Partial<DesktopSettings>;
-  const retention = Number(v.retention);
   return {
-    retention: Number.isFinite(retention) ? Math.min(500, Math.max(1, Math.round(retention))) : DEFAULT_DESKTOP_SETTINGS.retention,
+    retention: clampInt(v.retention, 1, 500, DEFAULT_DESKTOP_SETTINGS.retention),
     hotkey: typeof v.hotkey === "boolean" ? v.hotkey : DEFAULT_DESKTOP_SETTINGS.hotkey,
     database: v.database === "women" || v.database === "both" ? v.database : "men",
     hideHidden: v.hideHidden === true,
+    load: normaliseLoadScope(v.load),
   };
 }

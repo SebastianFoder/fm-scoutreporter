@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useSyncExternalStore,
 } from "react";
@@ -16,7 +17,6 @@ import type {
   ScanProgress,
   SnapshotInfo,
 } from "@scoutreporter/core/desktop/bridge";
-import { assertScanFile, type ScanFile } from "@scoutreporter/core/scan/schema";
 import { SCAN_STAFF_COLUMNS, scanPlayers, scanStaff } from "@scoutreporter/core/scan/convert";
 import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
 import type { ImportSource } from "@scoutreporter/core/storage/stored-records";
@@ -77,10 +77,12 @@ type DesktopContextValue = {
   lastOutcome: ScanOutcome | null;
   /** Error while loading a snapshot into the app. */
   loadError: string | null;
+  /** A snapshot is being loaded into the screens. */
+  loading: boolean;
   scan: () => Promise<void>;
   loadSnapshot: (id: string) => Promise<void>;
-  /** A stored scan, parsed. */
-  readSnapshot: (id: string) => Promise<ScanFile>;
+  /** Load the snapshot in use again (after changing what to load, or hiding hidden attributes). */
+  reloadActive: () => Promise<void>;
   deleteSnapshot: (id: string) => Promise<void>;
   loadSample: () => Promise<void>;
 };
@@ -108,6 +110,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
   const [progress, setProgress] = useState<ScanProgress | null>(null);
   const [lastOutcome, setLastOutcome] = useState<ScanOutcome | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const refreshSnapshots = useCallback(async () => {
     setSnapshots(await bridge.listSnapshots());
@@ -124,20 +127,20 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
     };
   }, [bridge]);
 
-  const readSnapshot = useCallback(
-    async (id: string) => {
-      const scan: unknown = JSON.parse(await bridge.loadSnapshot(id));
-      assertScanFile(scan);
-      return scan;
-    },
-    [bridge],
-  );
+  // Loads can overlap (a finished scan loads itself while you press Use on another): the latest
+  // request wins, and an older one that finishes later is dropped.
+  const loadGenRef = useRef(0);
 
   const loadSnapshot = useCallback(
     async (id: string) => {
+      const gen = ++loadGenRef.current;
+      const stale = () => gen !== loadGenRef.current;
       setLoadError(null);
+      setLoading(true);
       try {
-        const scan = await readSnapshot(id);
+        // Only the part of the scan the load setting picks (a full database does not fit the window).
+        const scan = await bridge.loadSnapshot(id);
+        if (stale()) return;
         const info = snapshots.find((s) => s.id === id);
         const source: ImportSource = {
           kind: "scan",
@@ -150,9 +153,13 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         const current = settings ?? (await bridge.getSettings());
         const hide = current.hideHidden === true;
         const strip = (list: PlayerAttributes[]) => (hide ? list.map(withoutHidden) : list);
-        await players.importRecords(strip(scanPlayers(scan)), source);
+        if (stale()) return;
+        await players.importRecords(strip(scanPlayers(scan)), { ...source, total: scan.totalPlayers });
+        if (stale()) return;
         if (scan.meta.myClub) await squad.importRecords(strip(scanPlayers(scan, { club: scan.meta.myClub })), source);
-        await staff.importRecords(scanStaff(scan), SCAN_STAFF_COLUMNS, source);
+        if (stale()) return;
+        await staff.importRecords(scanStaff(scan), SCAN_STAFF_COLUMNS, { ...source, total: scan.totalStaff });
+        if (stale()) return;
         setActiveId(id);
         try {
           window.localStorage.setItem(ACTIVE_KEY, id);
@@ -160,11 +167,17 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
           // remembered for this session only
         }
       } catch (e) {
-        setLoadError((e as Error).message);
+        if (!stale()) setLoadError((e as Error).message);
+      } finally {
+        if (!stale()) setLoading(false);
       }
     },
-    [bridge, readSnapshot, snapshots, settings, players, squad, staff],
+    [bridge, snapshots, settings, players, squad, staff],
   );
+
+  const reloadActive = useCallback(async () => {
+    if (activeId) await loadSnapshot(activeId);
+  }, [activeId, loadSnapshot]);
 
   // The finished-scan listener is registered once; it calls the latest loadSnapshot through a ref.
   const loadSnapshotRef = useLatest(loadSnapshot);
@@ -227,9 +240,10 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       progress,
       lastOutcome,
       loadError,
+      loading,
       scan,
       loadSnapshot,
-      readSnapshot,
+      reloadActive,
       deleteSnapshot,
       loadSample,
     }),
@@ -244,9 +258,10 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       progress,
       lastOutcome,
       loadError,
+      loading,
       scan,
       loadSnapshot,
-      readSnapshot,
+      reloadActive,
       deleteSnapshot,
       loadSample,
     ],

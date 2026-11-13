@@ -79,18 +79,27 @@ Windows SmartScreen warns about an unknown publisher on first run: click **More 
 **Run anyway**.
 
 **Scan.** Start FM, load your save, then press **Scan FM** in the app (or **F9** anywhere, also
-inside FM, while the app runs). The scan loads into every screen: Attribute and Wonderkid get the
-whole database, Squad gets your club's players, and Staff gets every staff member. If FM runs as
-administrator, run Scout Reporter as administrator too.
+inside FM, while the app runs). A full FM27 database (about 400,000 players and 135,000 staff)
+takes about 20 seconds: reading FM, then saving the scan. If FM runs as administrator, run Scout
+Reporter as administrator too.
 
-**Stored scans.** Every scan is kept under `%APPDATA%\Scout Reporter\scans` (the **Scans** page
-lists them; **Open folder** shows the files). By default the newest 20 are kept; change this under
-Settings. **Use** loads an older scan back into the app, and **Load sample scan** tries the app
-without FM.
+**What the screens load.** A whole database is too much for one window, so a big scan loads your
+club plus the players and staff worth scouting: by default every player with CA 100 or more, plus
+players up to 21 with PA 130 or more, best CA first, at most 40,000 (about 30,000 in a typical
+save), and staff with CA 80 or more. Squad gets your club's players. Change the limits under
+**What the screens load** on the Scans page, then press **Load again**. A smaller scan (a
+women's database, the sample scan) loads whole.
 
-**Growth.** The **Growth** page compares two scans of your save: CA, PA and attribute change per
-player, sortable, with filters such as "gained 10+ CA" and a maximum age. Scan every few in-game
-months to follow your youngsters and spot breakout players worldwide.
+**Stored scans.** Every scan is kept as a SQLite database (about 140 MB for a full database) under
+`%APPDATA%\Scout Reporter\scans` (the **Scans** page lists them with their size; **Open folder**
+shows the files). By default the newest 10 are kept; change this under Settings. **Use** loads an
+older scan back into the app, and **Load sample scan** tries the app without FM.
+
+**Growth.** The **Growth** page compares two scans of your save, every player in both, not just
+the loaded ones: CA, PA and attribute change per player, sortable, with filters such as "gained 10+
+CA" and a maximum age. Comparing two full databases takes a few seconds the first time, then
+filters and sorting are instant. Scan every few in-game months to follow your youngsters and spot
+breakout players worldwide.
 
 **Hide hidden stats.** If you see CA, PA and hidden attributes as cheating, switch on
 **Hide CA, PA and hidden attributes** under Settings, then press **Use** on your scan. The screens
@@ -109,13 +118,15 @@ reader has to load inside FM, so the app will start FM itself).
 bun run reader:build     # the reader (needs the .NET 10 SDK): reader/dist/ScoutReporter.Reader.exe
 bun run desktop:dev      # next dev for the desktop target + Electron, pages hot-reload
 bun run desktop:dist     # reader + pages + main process, then the NSIS installer in apps/desktop/release
-bun run desktop:smoke    # drive the built app (release/win-unpacked) end to end, without FM
+bun run desktop:smoke    # drive the built app (release/win-unpacked) end to end (with FM running, it also scans it)
 ```
 
 The desktop pages are `apps/web` built with `SCOUTREPORTER_TARGET=desktop`: a standalone Next
 server (in `.next-desktop`) that the app runs on `127.0.0.1`. Pages only in the desktop app are named
 `page.desktop.tsx`. The screens talk to the app only through the preload bridge
-(`window.scoutReporterDesktop`, typed in `packages/core/desktop/bridge.ts`). The scan file format
+(`window.scoutReporterDesktop`, typed in `packages/core/desktop/bridge.ts`). Scans are imported,
+loaded and compared in a separate utility process (`apps/desktop/src/db-process.ts`) with Node's
+built-in SQLite, so the window never waits on them. The scan file format
 is documented in `packages/core/scan/README.md`.
 
 **Credits.** The reader is adapted from [FMSuperScout](https://github.com/mavarobli/FMSuperScout)

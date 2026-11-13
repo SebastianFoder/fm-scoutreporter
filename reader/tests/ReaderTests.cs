@@ -132,7 +132,7 @@ public class FieldsTests
 
 public class DumpWriterTests
 {
-    private static ScanResult Sample()
+    internal static ScanResult Sample()
     {
         var player = new Person
         {
@@ -158,7 +158,8 @@ public class DumpWriterTests
         };
     }
 
-    private static JsonElement WriteSample(ScanResult r)
+    /// <summary>The lines of the written scan, each parsed on its own.</summary>
+    private static JsonElement[] WriteSample(ScanResult r)
     {
         var sw = new StringWriter();
         using (var j = new JsonWriter(sw))
@@ -166,15 +167,32 @@ public class DumpWriterTests
             DumpWriter.Write(j, r, "0.1.0", DatabaseChoice.Men, new DateTime(2026, 11, 12, 18, 0, 0, DateTimeKind.Utc));
             j.Close();
         }
-        return JsonDocument.Parse(sw.ToString()).RootElement;
+        string text = sw.ToString();
+        Assert.EndsWith("\n", text);
+        return text.TrimEnd('\n').Split('\n').Select(line => JsonDocument.Parse(line).RootElement).ToArray();
+    }
+
+    private static JsonElement Kind(JsonElement[] lines, string kind) =>
+        lines.First(l => l.TryGetProperty("kind", out var k) && k.GetString() == kind);
+
+    [Fact]
+    public void Writes_one_line_per_person_after_the_meta_line()
+    {
+        var r = Sample();
+        r.Players.Add(new Person { Uid = 3, Name = "Line\nBreak", Ca = 50, Pa = 60 });
+        var lines = WriteSample(r);
+        Assert.Equal(1 + r.Players.Count + r.Staff.Count, lines.Length);
+        Assert.False(lines[0].TryGetProperty("kind", out _));
+        Assert.Equal(new[] { "player", "player", "staff" }, lines.Skip(1).Select(l => l.GetProperty("kind").GetString()));
+        Assert.Equal("Line\nBreak", lines[2].GetProperty("name").GetString());
     }
 
     [Fact]
     public void Writes_the_schema_and_meta()
     {
-        var root = WriteSample(Sample());
+        var root = WriteSample(Sample())[0];
         Assert.Equal("scoutreporter-scan", root.GetProperty("schema").GetString());
-        Assert.Equal(1, root.GetProperty("schemaVersion").GetInt32());
+        Assert.Equal(2, root.GetProperty("schemaVersion").GetInt32());
         var meta = root.GetProperty("meta");
         Assert.Equal("2026-11-12T18:00:00Z", meta.GetProperty("scannedAt").GetString());
         Assert.Equal("27.0.1.0", meta.GetProperty("gameVersion").GetString());
@@ -187,7 +205,7 @@ public class DumpWriterTests
     [Fact]
     public void Writes_players_in_our_keys()
     {
-        var p = WriteSample(Sample()).GetProperty("players")[0];
+        var p = Kind(WriteSample(Sample()), "player");
         Assert.Equal(2002083882u, p.GetProperty("uid").GetUInt32());
         Assert.Equal("Alex \"AW\" Williamson", p.GetProperty("name").GetString());
         Assert.Equal("2007-02-01", p.GetProperty("birthDate").GetString());
@@ -206,7 +224,7 @@ public class DumpWriterTests
     [Fact]
     public void Writes_staff_with_numeric_attributes()
     {
-        var s = WriteSample(Sample()).GetProperty("staff")[0];
+        var s = Kind(WriteSample(Sample()), "staff");
         Assert.Equal("Coach", s.GetProperty("job").GetString());
         Assert.Equal(2, s.GetProperty("preferredJobs")[0].GetInt32());
         Assert.Equal(14, s.GetProperty("attributes").GetProperty("attacking").GetInt32());
@@ -246,8 +264,28 @@ public class DumpWriterTests
             DumpWriter.WriteFile(path, Sample(), "0.1.0", DatabaseChoice.Both, DateTime.UtcNow);
             Assert.True(File.Exists(path));
             Assert.False(File.Exists(path + ".tmp"));
-            using var doc = JsonDocument.Parse(File.ReadAllText(path));
+            using var doc = JsonDocument.Parse(File.ReadLines(path).First());
             Assert.Equal("both", doc.RootElement.GetProperty("meta").GetProperty("database").GetString());
+        }
+        finally { Directory.Delete(dir, true); }
+    }
+}
+
+public class DiagnosticsTests
+{
+    [Fact]
+    public void Writes_the_diagnostics_report()
+    {
+        string dir = Path.Combine(Path.GetTempPath(), "sr-reader-test-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(dir);
+        try
+        {
+            string path = Path.Combine(dir, "diagnostics.txt");
+            Program.WriteDiagnostics(path, DumpWriterTests.Sample(), "0.1.0");
+            string text = File.ReadAllText(path);
+            Assert.Contains("Players: 1", text);
+            Assert.Contains("Alex \"AW\" Williamson", text);
+            Assert.Contains("Sample staff:", text);
         }
         finally { Directory.Delete(dir, true); }
     }

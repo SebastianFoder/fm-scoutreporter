@@ -1,17 +1,36 @@
-# Scan format (`scoutreporter-scan`, version 1)
+# Scan format (`scoutreporter-scan`, version 2)
 
-The file the reader (`reader/`, `ScoutReporter.Reader.exe scan`) writes and the desktop app loads.
+How a scan travels: the reader (`reader/`, `ScoutReporter.Reader.exe scan`) writes a **lines file**
+(`scan.ndjson`), the desktop app imports it into a **scan database** (`scan.sqlite`, see
+[Scan database](#scan-database)) and keeps that. A full FM27 database is about 400,000 players and
+135,000 staff: over 700 MB as JSON, more than one JavaScript string can hold, and far too much for
+the window. So the file is read line by line, and the screens query the part they need.
+
 TypeScript types: `schema.ts`. Conversion to the app's import records: `convert.ts`. Growth between
-two scans: `growth.ts`. Example: `../fixtures/scan-sample.json` (built from the CSV fixtures by
-`../fixtures/make-scan-sample.ts`).
+two scans: `growth.ts` (in memory) and `db/growth.ts` (in SQL). Example: `../fixtures/scan-sample.json`
+(the same records as one JSON document, built from the CSV fixtures by
+`../fixtures/make-scan-sample.ts`; `db/write.ts` turns either form into a database).
 
 Conventions: money in GBP (FM's internal currency) as whole numbers, dates as `yyyy-mm-dd`,
 attributes and personality as 1..20. Unknown values are `null`.
 
+## Lines file
+
+One JSON object per line, UTF-8. Line 1 is the header; every further line is one person, with
+`"kind": "player"` or `"kind": "staff"` and the fields below.
+
+```jsonc
+{"schema":"scoutreporter-scan","schemaVersion":2,"meta":{...}}
+{"kind":"player","uid":2002083882,"name":"Alex Williamson",...}
+{"kind":"staff","uid":7,"name":"Coach",...}
+```
+
+The records, shown as the whole-file JSON form (`scan-sample.json`):
+
 ```jsonc
 {
   "schema": "scoutreporter-scan",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "meta": {
     "scannedAt": "2026-11-12T18:00:00Z",   // UTC
     "readerVersion": "0.1.0",
@@ -72,4 +91,33 @@ including `teamWork`, `freeKickTaking`, `rushingOutTendency`, `punching`, `oneOn
 attribute keys are the app's `StaffAttributeKey`s; adaptability is the personality value.
 
 A new field is a minor change (readers ignore unknown fields). Renaming or removing one, or
-changing a unit, bumps `schemaVersion`; `assertScanFile` rejects versions it does not know.
+changing a unit, bumps `schemaVersion`; `assertScanFile` and `assertScanHeader` reject versions they
+do not know. Version 1 was a single JSON document (players and staff as arrays); version 2 is the
+lines file.
+
+## Scan database
+
+`db/` stores a scan in SQLite (Node's built-in `node:sqlite`; Bun runs it in tests). About 7x
+smaller than the JSON: a full FM27 database is about 140 MB.
+
+| Table | Holds |
+| --- | --- |
+| `meta` | `schema`, `schemaVersion` and the scan's `meta` (JSON) |
+| `club` | `id`, `name`, `division`, stored once and referenced by id |
+| `nation` | `id`, `name` |
+| `player` | one row per player: the fields above as columns, one column per 1..20 value (`a_<attribute>`, `h_<hidden>`, `per_<personality>`, `pos_<position>`), transfer status as bit flags |
+| `staff` | the same person columns, `job`, `job_id`, `preferred_jobs` and `job_preferences` (comma lists), one `a_<attribute>` column per staff attribute |
+
+`PRAGMA user_version` holds `SCAN_DB_VERSION` (`db/schema.ts`); a database of another version is
+rejected (scan again). Reading rows back (`db/read.ts`) gives exactly the records of the lines file.
+
+- `db/write.ts`: `importScanLines` (streams the lines file, a transaction per 5,000 rows),
+  `writeScanFile` (an in-memory scan), `scanToLines`.
+- `db/read.ts`: `loadScan(db, scope)` returns what the screens load. A scan that fits under the
+  limits is loaded whole; a bigger one loads your club, plus players at or above a CA, plus young
+  players with a high PA, best CA first, up to a cap (and staff likewise). See `LoadScope` in
+  `../desktop/bridge.ts`.
+- `db/growth.ts`: `prepareGrowth` joins two scan databases on uid once into a small `growth` table
+  in a scratch database (a few seconds for two full databases); `queryGrowth` filters, sorts and
+  pages it in milliseconds.
+- `db/open.ts`: opening and creating databases with `node:sqlite` (Node-side code only).

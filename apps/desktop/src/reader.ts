@@ -80,19 +80,20 @@ export class ReaderOutput {
   }
 }
 
-/** Run `<exe> scan --out <outDir> --db <db>`. Kills it after `timeoutMs`. */
+/** Run `<exe> scan --out <outDir> --db <db> [extraArgs]`. Kills it after `timeoutMs`. */
 export function runReader(
   exe: string,
   outDir: string,
   db: string,
   onProgress: (p: ScanProgress) => void,
+  extraArgs: string[] = [],
   timeoutMs = 5 * 60_000,
 ): Promise<ReaderRun> {
   return new Promise((resolve) => {
     const output = new ReaderOutput(onProgress);
     let child;
     try {
-      child = spawn(exe, ["scan", "--out", outDir, "--db", db], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
+      child = spawn(exe, ["scan", "--out", outDir, "--db", db, ...extraArgs], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
     } catch (e) {
       output.run.error = { type: "error", code: "missing-reader", message: `Could not start the reader: ${(e as Error).message}` };
       resolve(output.finish(null));

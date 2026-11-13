@@ -1,7 +1,7 @@
 /**
  * Build steps for the desktop app (run from the repo root through the root scripts):
  *
- *   node apps/desktop/scripts/build.mjs main     bundle src/main.ts and src/preload.ts into dist/
+ *   node apps/desktop/scripts/build.mjs main     bundle src/main.ts, preload.ts and db-process.ts into dist/
  *   node apps/desktop/scripts/build.mjs web      build apps/web for the desktop target (standalone server)
  *   node apps/desktop/scripts/build.mjs electron download Electron's binary if missing
  *   node apps/desktop/scripts/build.mjs all      reader, web, main (what the installer needs)
@@ -25,7 +25,7 @@ function run(cmd, args, opts = {}) {
 
 function buildMain() {
   rmSync(join(desktopDir, "dist"), { recursive: true, force: true });
-  for (const entry of ["main", "preload"]) {
+  for (const entry of ["main", "preload", "db-process"]) {
     run("bun", [
       "build",
       join(desktopDir, "src", `${entry}.ts`),

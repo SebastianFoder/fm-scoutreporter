@@ -28,6 +28,9 @@ internal sealed class JsonWriter : IDisposable
     public void BeginArr() { Sep(); _sb.Append('['); }
     public void EndArr() { _sb.Append(']'); _needComma = true; }
 
+    /// <summary>End a line of a lines file (one JSON value per line): the next value starts fresh.</summary>
+    public void NewLine() { _sb.Append('\n'); _needComma = false; }
+
     public void Key(string name)
     {
         Sep();
