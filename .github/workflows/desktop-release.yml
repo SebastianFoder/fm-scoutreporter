@@ -1,0 +1,149 @@
+name: Desktop release
+
+# Publishes the Windows desktop app as a GitHub Release when a tag `desktop-vX.Y.Z` is pushed:
+#
+#   git tag desktop-v0.2.0 && git push origin desktop-v0.2.0
+#
+# The version comes from the tag (it is stamped into apps/desktop/package.json for the build only,
+# nothing is committed). A tag with a suffix (desktop-v0.2.0-beta.1) makes a pre-release. The
+# release holds the unsigned NSIS installer and its SHA-256 checksum, and is not marked "Latest",
+# because the website's semantic-release releases (vX.Y.Z) share this repository's release list.
+# The website's /download page finds the newest desktop release through the GitHub API.
+#
+# The build steps match desktop.yml (the pull request build), plus the release steps.
+# Run it by hand (Actions > Desktop release > Run workflow) to rebuild an existing tag.
+
+on:
+  push:
+    tags: ["desktop-v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and publish, for example desktop-v0.1.0"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desktop-release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish the Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
+          fetch-depth: 0
+
+      - name: Read the version from the tag
+        run: |
+          VERSION="${TAG#desktop-v}"
+          if [[ "$TAG" != desktop-v* || ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::$TAG is not a desktop release tag (desktop-vX.Y.Z or desktop-vX.Y.Z-suffix)."
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          if [[ "$VERSION" == *-* ]]; then echo "PRERELEASE=true" >> "$GITHUB_ENV"; else echo "PRERELEASE=false" >> "$GITHUB_ENV"; fi
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Reader tests
+        run: bun run reader:test
+
+      - name: App tests
+        run: bun run test
+
+      - name: Stamp the version
+        working-directory: apps/desktop
+        run: npm pkg set version="$VERSION"
+
+      - name: Build reader, pages and main process
+        run: node apps/desktop/scripts/build.mjs all
+
+      - name: Download Electron
+        run: node apps/desktop/scripts/build.mjs electron
+
+      - name: Package installer
+        working-directory: apps/desktop
+        run: npx electron-builder --win nsis --x64 --publish never
+
+      - name: Smoke test the packaged app
+        run: node apps/desktop/scripts/smoke.mjs
+
+      - name: Checksum
+        working-directory: apps/desktop/release
+        run: |
+          INSTALLER="Scout-Reporter-Setup-$VERSION.exe"
+          test -f "$INSTALLER" || { echo "::error::$INSTALLER was not built."; ls; exit 1; }
+          sha256sum "$INSTALLER" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Release notes
+        run: |
+          PREV=$(git tag --list 'desktop-v*' --sort=-v:refname | grep -vx "$TAG" | head -n 1 || true)
+          {
+            echo "Scout Reporter for Windows: every screen of the website, plus **Scan FM**, which reads the players in your Football Manager search straight from the game (read-only)."
+            echo
+            echo "## Install"
+            echo
+            echo "1. Download **Scout-Reporter-Setup-$VERSION.exe** below and run it."
+            echo "2. The installer is not code-signed yet, so Windows SmartScreen warns about an unknown publisher: click **More info**, then **Run anyway**."
+            echo "3. Start Football Manager 27 (or 26), load your save, open Player Search, then press **Scan FM** in the app or **F9**."
+            echo
+            echo "Supports FM27 (27.0) and FM26 (26.3) on Windows 10 and 11, 64-bit, from Steam, Epic or Game Pass. To check the download: \`certutil -hashfile Scout-Reporter-Setup-$VERSION.exe SHA256\` should match SHA256SUMS.txt."
+            echo
+            if [ -n "$PREV" ]; then
+              echo "## Changes since $PREV"
+              echo
+              git log --no-merges --pretty='- %s' "$PREV..$TAG" -- apps/desktop reader packages
+            else
+              echo "## First release"
+            fi
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          FILES=("apps/desktop/release/Scout-Reporter-Setup-$VERSION.exe" "apps/desktop/release/SHA256SUMS.txt")
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            # A rebuild of an existing tag: replace the files, keep the text.
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+          else
+            EXTRA=()
+            if [ "$PRERELEASE" = true ]; then EXTRA+=(--prerelease); fi
+            gh release create "$TAG" "${FILES[@]}" \
+              --verify-tag \
+              --title "Scout Reporter desktop $VERSION" \
+              --notes-file release-notes.md \
+              --latest=false \
+              "${EXTRA[@]}"
+          fi

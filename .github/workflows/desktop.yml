@@ -2,8 +2,8 @@ name: Desktop app
 
 # Builds the Windows installer (unsigned) for pull requests that touch the desktop app, the reader or
 # the shared packages, runs the reader's and the app's tests and the end-to-end smoke test, and
-# uploads the installer as an artifact. No release yet: desktop releases will get their own
-# `desktop-v` tag prefix.
+# uploads the installer as an artifact. Releases are built by desktop-release.yml from a
+# `desktop-vX.Y.Z` tag; keep the build steps of the two in step.
 
 on:
   pull_request:

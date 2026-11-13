@@ -78,6 +78,10 @@ and no CSV export. Every scan includes real CA and PA, hidden attributes, person
 and values, and staff attributes as 1-20 numbers; one switch leaves the hidden ones out. The reader
 only reads FM's memory; it never changes the game or the save.
 
+**Download.** Get the installer from the website's [download page](https://fmscouting.sebastianfoder.com/download)
+or from the [desktop releases](https://github.com/SebastianFoder/fm-scoutreporter/releases?q=desktop-v&expanded=true)
+on GitHub (`Scout-Reporter-Setup-<version>.exe`, with a SHA-256 checksum).
+
 **Install.** Run `Scout-Reporter-Setup-<version>.exe`. The installer is not code-signed yet, so
 Windows SmartScreen warns about an unknown publisher on first run: click **More info**, then
 **Run anyway**.
@@ -248,7 +252,24 @@ Commit messages must follow the [Conventional Commits](https://www.conventionalc
 
 Other prefixes like `chore:`, `docs:`, `ci:` do not trigger a release.
 
-These releases (tags `vX.Y.Z`, `CHANGELOG.md`) are the website's. The desktop app is not released yet: pull requests that touch it build an unsigned installer in CI (`.github/workflows/desktop.yml`, artifact `scout-reporter-windows`). Desktop releases will get their own tag prefix, `desktop-v`.
+These releases (tags `vX.Y.Z`, `CHANGELOG.md`) are the website's. Pull requests that touch the desktop app build an unsigned installer in CI (`.github/workflows/desktop.yml`, artifact `scout-reporter-windows`).
+
+### Desktop releases
+
+The desktop app is released by hand, with its own tag prefix, `desktop-v`:
+
+```bash
+git tag desktop-v0.2.0            # on master, at the commit to release
+git push origin desktop-v0.2.0
+```
+
+`.github/workflows/desktop-release.yml` then runs the tests, builds the installer with that version
+(stamped into `apps/desktop/package.json` for the build only), smoke-tests it, and publishes a GitHub
+Release "Scout Reporter desktop 0.2.0" with `Scout-Reporter-Setup-0.2.0.exe`, `SHA256SUMS.txt` and
+notes listing the desktop, reader and package commits since the previous `desktop-v` tag. A tag with a
+suffix (`desktop-v0.2.0-beta.1`) makes a pre-release. Desktop releases are not marked "Latest" (the
+website's releases are), so the website's `/download` page finds the newest one through the GitHub API
+(cached for an hour). To rebuild an existing tag, run the workflow by hand with that tag.
 
 ## Tech stack
 

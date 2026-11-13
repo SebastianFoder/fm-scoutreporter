@@ -96,6 +96,18 @@ export default function Home() {
         runs in your browser; the CSV never leaves your machine.
       </p>
 
+      <aside className="panel mt-5 flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="section-title">Desktop app for Windows</h2>
+          <p className="mt-0.5 text-sm text-muted">
+            Skip the export: it reads the players in your FM player search straight from the game, with real CA and PA.
+          </p>
+        </div>
+        <Link href="/download" className="btn h-8 shrink-0 border border-line px-2.5 text-[13px] hover:bg-paper">
+          Download <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+        </Link>
+      </aside>
+
       <section aria-labelledby="modes" className="mt-8">
         <h2 id="modes" className="section-title mb-2">
           Modes
