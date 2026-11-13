@@ -1,3 +1,20 @@
+# [1.14.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.13.0...v1.14.0) (2026-11-13)
+
+
+### Bug Fixes
+
+* **desktop:** honour Hide CA/PA when a scan is used before settings load ([0836614](https://github.com/SebastianFoder/fm-scoutreporter/commit/083661402da86a9cdf1d369d81d89e6f5b452578))
+
+
+### Features
+
+* **desktop:** add the Electron desktop app for Windows ([0aba791](https://github.com/SebastianFoder/fm-scoutreporter/commit/0aba7918f9f1b53ea39d6e9059b8b5e71f7f5aec))
+* **desktop:** make a scan an export of your FM search, with a hidden attributes switch ([2c5b921](https://github.com/SebastianFoder/fm-scoutreporter/commit/2c5b92170fda2ff14cce0609a8e2974c91cbb5e8))
+* **desktop:** read FM's own search result, to load only players who would join ([62bd2eb](https://github.com/SebastianFoder/fm-scoutreporter/commit/62bd2eb7742b3da831dd35eb5645e9b1ac157091))
+* **desktop:** store scans in SQLite and load only what the screens need ([fb0cee6](https://github.com/SebastianFoder/fm-scoutreporter/commit/fb0cee60d1a2cd39203a02c0cb64482cad6f83ab))
+* keep imports in IndexedDB so full-database imports fit ([4c2233d](https://github.com/SebastianFoder/fm-scoutreporter/commit/4c2233d83f2ea5301051c86972a1f53c6e83971c))
+* **reader:** add the Windows memory reader, adapted from FMSuperScout ([55ea9a4](https://github.com/SebastianFoder/fm-scoutreporter/commit/55ea9a4413e67822f10bdc56958aa20bce393ed5))
+
 # [1.13.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.12.0...v1.13.0) (2026-11-11)
 
 
