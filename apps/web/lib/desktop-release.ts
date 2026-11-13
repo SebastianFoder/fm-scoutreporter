@@ -1,66 +1,13 @@
 /**
- * The newest desktop app release on GitHub, for the /download page. Desktop releases are tagged
- * `desktop-vX.Y.Z` (.github/workflows/desktop-release.yml) and share the release list with the
- * website's semantic-release releases (vX.Y.Z), so "latest" cannot be used: the list is searched.
+ * The newest desktop app release on GitHub, for the /download page. The release logic is shared
+ * with the desktop app's update check (packages/core/desktop/releases.ts).
  */
+import { pickDesktopRelease, RELEASES_API_URL, type DesktopRelease } from "@scoutreporter/core/desktop/releases";
 
-export const GITHUB_REPO = "SebastianFoder/fm-scoutreporter";
-export const REPO_URL = `https://github.com/${GITHUB_REPO}`;
-/**
- * Every desktop release, newest first. GitHub's release search matches titles and notes, not tags,
- * so it searches for the desktop releases' title ("Scout Reporter desktop X.Y.Z").
- */
-export const DESKTOP_RELEASES_URL = `${REPO_URL}/releases?q=%22Scout+Reporter+desktop%22&expanded=true`;
+export { DESKTOP_RELEASES_URL, REPO_URL, GITHUB_REPO, pickDesktopRelease, type DesktopRelease } from "@scoutreporter/core/desktop/releases";
 
 /** How often (seconds) the newest release is looked up: a new release shows within this time. */
 export const RELEASE_CHECK_SECONDS = 600;
-
-export interface DesktopRelease {
-  version: string;
-  /** The release page. */
-  pageUrl: string;
-  /** The installer itself. */
-  downloadUrl: string;
-  fileName: string;
-  bytes: number;
-  /** ISO date. */
-  publishedAt: string;
-}
-
-interface GitHubAsset {
-  name?: unknown;
-  browser_download_url?: unknown;
-  size?: unknown;
-}
-
-interface GitHubRelease {
-  tag_name?: unknown;
-  html_url?: unknown;
-  draft?: unknown;
-  prerelease?: unknown;
-  published_at?: unknown;
-  assets?: unknown;
-}
-
-/** The newest published, non-pre-release desktop release with an installer, from GitHub's list. */
-export function pickDesktopRelease(list: unknown): DesktopRelease | null {
-  if (!Array.isArray(list)) return null;
-  for (const r of list as GitHubRelease[]) {
-    if (typeof r?.tag_name !== "string" || !r.tag_name.startsWith("desktop-v") || r.draft || r.prerelease) continue;
-    const assets = Array.isArray(r.assets) ? (r.assets as GitHubAsset[]) : [];
-    const installer = assets.find((a) => typeof a.name === "string" && /\.exe$/i.test(a.name));
-    if (!installer || typeof installer.browser_download_url !== "string") continue;
-    return {
-      version: r.tag_name.slice("desktop-v".length),
-      pageUrl: typeof r.html_url === "string" ? r.html_url : DESKTOP_RELEASES_URL,
-      downloadUrl: installer.browser_download_url,
-      fileName: String(installer.name),
-      bytes: typeof installer.size === "number" ? installer.size : 0,
-      publishedAt: typeof r.published_at === "string" ? r.published_at : "",
-    };
-  }
-  return null;
-}
 
 /**
  * Asks GitHub, cached for RELEASE_CHECK_SECONDS (six requests an hour, far below the anonymous
@@ -70,7 +17,7 @@ export function pickDesktopRelease(list: unknown): DesktopRelease | null {
  */
 export async function latestDesktopRelease(): Promise<DesktopRelease | null> {
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases?per_page=50&page=1`, {
+    const res = await fetch(RELEASES_API_URL, {
       headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
       next: { revalidate: RELEASE_CHECK_SECONDS },
     });

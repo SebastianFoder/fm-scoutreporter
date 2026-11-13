@@ -8,6 +8,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 import { usePlayersData } from "./PlayersDataProvider";
 import { ScanButton } from "../desktop/ScanButton";
 import { useDesktopBridge } from "../desktop/DesktopProvider";
+import { UpdateBanner } from "../desktop/UpdateBanner";
 
 const NAV = [
   { href: "/attribute", label: "Attribute" },
@@ -33,6 +34,7 @@ export function SiteHeader() {
   const nav = useDesktopBridge() ? DESKTOP_NAV : NAV;
 
   return (
+    <>
     <header className="bg-chrome text-on-chrome">
       <div className="mx-auto flex h-12 max-w-7xl items-stretch gap-1 px-3 sm:px-5">
         <Link
@@ -83,5 +85,8 @@ export function SiteHeader() {
         </div>
       </div>
     </header>
+    {/* Desktop app only: a newer version is out. */}
+    <UpdateBanner />
+    </>
   );
 }

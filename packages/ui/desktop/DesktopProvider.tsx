@@ -16,6 +16,7 @@ import type {
   ScanOutcome,
   ScanProgress,
   SnapshotInfo,
+  UpdateState,
 } from "@scoutreporter/core/desktop/bridge";
 import { SCAN_STAFF_COLUMNS, scanPlayers, scanStaff } from "@scoutreporter/core/scan/convert";
 import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
@@ -86,6 +87,11 @@ type DesktopContextValue = {
   reloadActive: () => Promise<void>;
   deleteSnapshot: (id: string) => Promise<void>;
   loadSample: () => Promise<void>;
+  /** Newer versions: what the last check found, and a running update. Null until the app answers. */
+  update: UpdateState | null;
+  checkForUpdate: () => Promise<void>;
+  /** Download, check and install the newest version; the app restarts by itself. */
+  installUpdate: () => Promise<void>;
 };
 
 const DesktopContext = createContext<DesktopContextValue | null>(null);
@@ -112,6 +118,25 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
   const [lastOutcome, setLastOutcome] = useState<ScanOutcome | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [update, setUpdate] = useState<UpdateState | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const off = bridge.onUpdateState((s) => active && setUpdate(s));
+    void bridge.getUpdateState().then((s) => active && setUpdate(s));
+    return () => {
+      active = false;
+      off();
+    };
+  }, [bridge]);
+
+  const checkForUpdate = useCallback(async () => {
+    setUpdate(await bridge.checkForUpdate());
+  }, [bridge]);
+
+  const installUpdate = useCallback(async () => {
+    setUpdate(await bridge.installUpdate());
+  }, [bridge]);
 
   const refreshSnapshots = useCallback(async () => {
     setSnapshots(await bridge.listSnapshots());
@@ -258,6 +283,9 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       reloadActive,
       deleteSnapshot,
       loadSample,
+      update,
+      checkForUpdate,
+      installUpdate,
     }),
     [
       bridge,
@@ -276,6 +304,9 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       reloadActive,
       deleteSnapshot,
       loadSample,
+      update,
+      checkForUpdate,
+      installUpdate,
     ],
   );
 

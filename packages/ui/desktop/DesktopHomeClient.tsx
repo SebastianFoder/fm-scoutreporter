@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, CheckCircle2, FolderOpen, Radar, RefreshCw, Trash2 } from "lucide-react";
-import type { DesktopSettings, LoadLimits } from "@scoutreporter/core/desktop/bridge";
+import type { DesktopSettings, LoadLimits, UpdateState } from "@scoutreporter/core/desktop/bridge";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
@@ -33,6 +33,17 @@ function formatBytes(bytes: number): string {
 const n = (v: number) => v.toLocaleString("en-GB");
 
 /** A number setting that is saved when you leave the field or press Enter (not on every key). */
+/** Under "Check for updates": what the last check found. */
+function UpdateStatusLine({ update }: { update: UpdateState }) {
+  let text: string;
+  if (update.checking) text = "Checking…";
+  else if (update.error) text = update.error;
+  else if (update.available && update.latest) text = `Version ${update.latest.version} is out (you have ${update.current}): see the bar at the top.`;
+  else if (update.checkedAt) text = `You have the newest version (${update.current}).`;
+  else text = `Version ${update.current}.`;
+  return <span className={`mt-1 block text-[13px] ${update.error ? "text-red" : "text-muted"}`}>{text}</span>;
+}
+
 function NumberSetting({
   label,
   value,
@@ -103,6 +114,8 @@ export function DesktopHomeClient() {
     reloadActive,
     deleteSnapshot,
     loadSample,
+    update,
+    checkForUpdate,
   } = desktop;
   const active = snapshots.find((s) => s.id === activeId) ?? null;
   const pct = progress ? Math.round(progress.progress * 100) : 0;
@@ -346,6 +359,27 @@ export function DesktopHomeClient() {
               suffix="scans (a search is a few MB, a whole save about 140 MB)"
               onSave={(retention) => void updateSettings({ retention })}
             />
+          </div>
+          <div className="flex flex-wrap items-start justify-between gap-3 border-t border-line pt-3">
+            <label className="flex items-start gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={settings.checkUpdates}
+                onChange={(e) => void updateSettings({ checkUpdates: e.target.checked })}
+              />
+              <span>
+                <span className="font-semibold">Check for updates</span>
+                <span className="block text-[13px] text-muted">
+                  Asks GitHub for the newest version when the app starts and every few hours. Nothing about you or your
+                  save is sent. Updating keeps your settings, scans, weights and formations.
+                </span>
+                {update && <UpdateStatusLine update={update} />}
+              </span>
+            </label>
+            <Button size="sm" color="alt" variant="outline" disabled={!update || update.checking} onClick={() => void checkForUpdate()}>
+              {update?.checking ? "Checking…" : "Check now"}
+            </Button>
           </div>
         </section>
       )}
