@@ -191,12 +191,17 @@ try {
   const hidden = inUse && (await waitFor(page, `${listColumn("vs Age")} && !${listColumn("Potential")}`));
   check("hiding hidden attributes removes CA/PA", hidden, hidden ? "" : inUse ? await pageText(page) : "the scan never showed as in use");
 
-  // The CSV import still works inside the app.
-  await navigate(page, "/players");
-  await waitFor(page, "[...document.querySelectorAll('button')].some((b) => b.textContent.includes('Load test data'))");
-  await page.eval("[...document.querySelectorAll('button')].find((b) => b.textContent.includes('Load test data')).click(), true");
-  const csvOk = await waitFor(page, "/players imported/.test(document.querySelector('header').innerText)");
-  check("CSV test data imports in the app", csvOk, csvOk ? "" : await pageText(page));
+  // The app has no CSV import panel: its data comes from Scan FM.
+  const withImport = [];
+  for (const path of ["/players", "/players/best-xi", "/squad", "/staff", "/staff/backroom"]) {
+    await navigate(page, path);
+    await waitFor(page, "!!document.querySelector('main h1')");
+    const shown = await page.eval(
+      "!!document.querySelector('section[aria-label=Import]') || [...document.querySelectorAll('button')].some((b) => b.textContent.includes('Load test data'))",
+    );
+    if (shown) withImport.push(path);
+  }
+  check("no CSV import panel in the app", withImport.length === 0, withImport.join(", "));
   page.close();
 } catch (e) {
   check("smoke test ran", false, e.message);

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { usePlayersData, type PlayerWithGroups } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useSquadData } from "@scoutreporter/ui/components/SquadDataProvider";
-import { ImportPanel, STORAGE_FULL_MESSAGE } from "@scoutreporter/ui/components/ImportPanel";
+import { ImportPanel, NoImport, STORAGE_FULL_MESSAGE } from "@scoutreporter/ui/components/ImportPanel";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { Notice } from "@scoutreporter/ui/components/Notice";
@@ -197,7 +197,7 @@ export default function SquadClient() {
         />
 
         {players.length === 0 && (
-          <div className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+          <NoImport desktop={<>No squad yet. Every Scan FM reads your own club&apos;s players too.</>}>
             <p>No squad imported yet. Choose your squad CSV above, or load the test data to look around.</p>
             {scoutingCount > 0 && scouting.state.csvText && (
               <p className="mt-2">
@@ -211,7 +211,7 @@ export default function SquadClient() {
                 </button>
               </p>
             )}
-          </div>
+          </NoImport>
         )}
 
         {analysis && (

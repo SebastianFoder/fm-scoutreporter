@@ -27,6 +27,7 @@ import {
 } from "@scoutreporter/core/staff/staff-roles";
 import { StaffDetailModal } from "./StaffDetailModal";
 import { StaffImportPanel } from "./StaffImportPanel";
+import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
 import { RatingCell, ScoreCell, type ValueMode } from "./StaffCells";
 import { compareNames } from "@scoutreporter/core/text";
 
@@ -194,10 +195,10 @@ export default function StaffClient() {
         <StaffImportPanel onImported={resetPage} />
 
         {staff.length === 0 && (
-          <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
             No staff imported yet. In FM, open a staff search, import the Staff view, select the staff and export
             a CSV, then import it above.
-          </p>
+          </NoImport>
         )}
 
         {staff.length > 0 && (

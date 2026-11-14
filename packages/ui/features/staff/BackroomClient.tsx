@@ -21,6 +21,7 @@ import {
 } from "@scoutreporter/core/staff/backroom";
 import { STAFF_ROLES, STAFF_ROLE_GROUPS, rolesForJob, scoreStaff } from "@scoutreporter/core/staff/staff-roles";
 import { StaffImportPanel } from "./StaffImportPanel";
+import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
 import { StaffDetailModal } from "./StaffDetailModal";
 import { ScoreCell } from "./StaffCells";
 
@@ -150,9 +151,9 @@ export default function BackroomClient() {
         <StaffImportPanel onImported={() => update({ excluded: [] })} />
 
         {staff.length === 0 && (
-          <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
             No staff imported yet. Choose a staff CSV above, or load the test data to look around.
-          </p>
+          </NoImport>
         )}
 
         {staff.length > 0 && (

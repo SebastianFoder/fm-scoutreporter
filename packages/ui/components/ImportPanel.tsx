@@ -3,10 +3,12 @@
 import { useState, type ReactNode } from "react";
 import { AlertTriangle, Upload } from "lucide-react";
 import { Button, LINK_BUTTON_CLASS } from "./Button";
+import { DESKTOP_BUILD } from "../desktop/target";
 
 /**
  * CSV import row: title, one-line help, and Clear / Load test data / Choose file. The data side
  * (parsing, storage) belongs to the caller: `onLoad` returns a message to show, or null when all went well.
+ * Not shown in the desktop app, where the data comes from Scan FM.
  */
 export function ImportPanel({
   title,
@@ -59,6 +61,8 @@ export function ImportPanel({
       event.target.value = "";
     }
   };
+
+  if (DESKTOP_BUILD) return null;
 
   return (
     <section aria-label="Import" className="panel">
@@ -114,3 +118,15 @@ export function ImportPanel({
 
 export const STORAGE_FULL_MESSAGE =
   "Import loaded in this tab only: browser storage is full or blocked. Free space or allow storage to keep data across tabs and visits.";
+
+/**
+ * What a screen shows before there is any data: how to import a CSV on the website, or how to scan
+ * in the desktop app (which has no import panel).
+ */
+export function NoImport({ children, desktop }: { children: ReactNode; desktop: ReactNode }) {
+  return (
+    <div className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+      {DESKTOP_BUILD ? desktop : children}
+    </div>
+  );
+}

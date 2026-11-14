@@ -11,6 +11,7 @@ import { usePlayersData } from "./PlayersDataProvider";
 import { HighlightConfigModal } from "./HighlightedAttributesConfig";
 import { CsvImportPanel } from "./CsvImportPanel";
 import { PageHeader } from "./PageHeader";
+import { NoImport } from "./ImportPanel";
 
 export default function AttributeModeHome() {
   const { state } = usePlayersData();
@@ -32,7 +33,7 @@ export default function AttributeModeHome() {
             </Link>
           }
         >
-          Import a player export CSV to score, rank and compare players. With a Hidden Attributes export,
+          Score, rank and compare players. With CA and PA (a scan, or a Hidden Attributes export),
           Potential and vs Age find the wonderkids: sort by Potential to see who could become the best. FM27
           role profiles (benchmarked by fm-scoring) are included under Weights.
         </PageHeader>
@@ -100,9 +101,9 @@ export default function AttributeModeHome() {
         )}
 
         {!players && (
-          <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+          <NoImport desktop={<>No players yet. In FM, open a Player Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
             No CSV imported yet. Choose a CSV file above, or load the test data to look around.
-          </p>
+          </NoImport>
         )}
       </main>
 

@@ -14,6 +14,8 @@ const desktop = process.env.SCOUTREPORTER_TARGET === "desktop";
 const nextConfig: NextConfig = {
   ...(desktop && { output: "standalone" as const, distDir: ".next-desktop" }),
   pageExtensions: desktop ? ["desktop.tsx", "tsx", "ts", "jsx", "js"] : ["tsx", "ts", "jsx", "js"],
+  /* Read by the pages (packages/ui/desktop/target.ts) to leave out what the desktop app does not need. */
+  env: { SCOUTREPORTER_TARGET: desktop ? "desktop" : "web" },
   transpilePackages: ["@scoutreporter/core", "@scoutreporter/ui"],
   outputFileTracingRoot: repoRoot,
   /* The fixtures route reads the CSVs at request time; make sure deployments ship them. */

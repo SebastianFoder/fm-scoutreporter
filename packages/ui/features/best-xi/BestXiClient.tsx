@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, RotateCcw, X } from "lucide-react";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { CsvImportPanel } from "@scoutreporter/ui/components/CsvImportPanel";
+import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { Notice } from "@scoutreporter/ui/components/Notice";
@@ -236,9 +237,9 @@ export default function BestXiClient() {
         <CsvImportPanel testFixture="attribute" onImported={() => update({ excluded: [] })} />
 
         {players.length === 0 && (
-          <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+          <NoImport desktop={<>No players yet. In FM, open a Player Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
             No CSV imported yet. Choose a CSV file above, or load the test data to look around.
-          </p>
+          </NoImport>
         )}
 
         {players.length > 0 && (
