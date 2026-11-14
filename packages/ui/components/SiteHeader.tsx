@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "./BrandMark";
-import { AttributeColorConfig } from "./AttributeColorConfig";
-import { ThemeSwitcher } from "./ThemeSwitcher";
+import { ThemeSync } from "./ThemeSwitcher";
+import { SettingsButton } from "./Settings";
 import { usePlayersData } from "./PlayersDataProvider";
 import { ScanButton } from "../desktop/ScanButton";
 import { useDesktopBridge } from "../desktop/DesktopProvider";
@@ -78,8 +78,8 @@ export function SiteHeader() {
               {state.source ? "scanned" : "imported"}
             </span>
           )}
-          <AttributeColorConfig />
-          <ThemeSwitcher />
+          <SettingsButton />
+          <ThemeSync />
         </div>
       </div>
     </header>

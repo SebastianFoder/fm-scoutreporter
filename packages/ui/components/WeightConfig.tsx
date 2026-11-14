@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -15,7 +14,6 @@ import type {
   WeightEmphasis,
   WeightProfile,
 } from "@scoutreporter/core/types/weights";
-import { Modal } from "./Modal";
 import { Button } from "./Button";
 import {
   ALL_ATTRIBUTE_KEYS as ALL_KEYS,
@@ -166,26 +164,16 @@ function safeNumber(v: string) {
   return clampWeight(rounded);
 }
 
-export function WeightConfigModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+/** The Weights tab in Settings: weight profiles and every attribute's weight. */
+export function WeightSettings() {
   const { state, setState } = useWeightContext();
   const { activeId, profiles } = state;
 
   const active =
     profiles.find((p) => p.id === activeId) ?? profiles[0] ?? DEFAULT_PROFILE;
 
+  // Starts empty every time the tab is opened (switching tabs or closing Settings unmounts it).
   const [json, setJson] = useState("");
-
-  /* The panel only closes through onClose, so clearing here means it always reopens empty. */
-  const close = () => {
-    setJson("");
-    onClose();
-  };
 
   const updateActive = (updater: (p: WeightProfile) => WeightProfile) => {
     setState((prev) => ({
@@ -318,25 +306,10 @@ export function WeightConfigModal({
     );
   };
 
-  const footer = useMemo(
-    () => (
-      <p className="text-[13px] text-muted">
-        Weights are applied to the score immediately.
-      </p>
-    ),
-    [],
-  );
-
   return (
-    <Modal
-      open={open}
-      onClose={close}
-      title="Attribute Weights"
-      description="Adjust how each attribute contributes to the computed score. Higher weight means more impact."
-      placement="side"
-      footer={footer}
-    >
       <div className="space-y-4">
+      <p className="text-[13px] text-muted">How much each attribute counts towards a player&apos;s score. The scores update as you type. The FM27 role profiles are benchmarked by fm-scoring.</p>
+
         <div className="space-y-2">
           <label className="flex flex-col gap-1 text-[13px] text-muted">
             Profile
@@ -441,7 +414,6 @@ export function WeightConfigModal({
           </div>
         </details>
       </div>
-    </Modal>
   );
 }
 

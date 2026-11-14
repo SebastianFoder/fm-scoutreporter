@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Columns3, GitCompareArrows, SlidersHorizontal } from "lucide-react";
 import PlayersListClient from "@scoutreporter/ui/features/attribute/players/PlayerListClient";
-import { WeightConfigModal, useActiveWeightProfile } from "./WeightConfig";
+import { useActiveWeightProfile } from "./WeightConfig";
 import { Button } from "./Button";
 import { usePlayersData } from "./PlayersDataProvider";
-import { HighlightConfigModal } from "./HighlightedAttributesConfig";
+import { useSettings } from "./Settings";
 import { CsvImportPanel } from "./CsvImportPanel";
 import { PageHeader } from "./PageHeader";
 import { NoImport } from "./ImportPanel";
@@ -17,8 +17,8 @@ export default function AttributeModeHome() {
   const { state } = usePlayersData();
   const players = state.players.length > 0 ? state.players : null;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [weightsOpen, setWeightsOpen] = useState(false);
-  const [highlightsOpen, setHighlightsOpen] = useState(false);
+  // Weights and Columns live in Settings; these buttons open it at their tab.
+  const { openSettings } = useSettings();
   const router = useRouter();
   const weightProfile = useActiveWeightProfile();
 
@@ -45,7 +45,7 @@ export default function AttributeModeHome() {
             <div className="flex flex-col gap-3 border-b border-line px-4 py-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted">
                 Scored with{" "}
-                <button type="button" onClick={() => setWeightsOpen(true)} className="link">
+                <button type="button" onClick={() => openSettings("weights")} className="link">
                   {weightProfile.name}
                 </button>
                 {selectedIds.length > 0 && (
@@ -60,7 +60,7 @@ export default function AttributeModeHome() {
                   color="alt"
                   variant="outline"
                   size="md"
-                  onClick={() => setWeightsOpen(true)}
+                  onClick={() => openSettings("weights")}
                   icon={<SlidersHorizontal className="h-4 w-4" aria-hidden />}
                 >
                   Weights
@@ -69,7 +69,7 @@ export default function AttributeModeHome() {
                   color="alt"
                   variant="outline"
                   size="md"
-                  onClick={() => setHighlightsOpen(true)}
+                  onClick={() => openSettings("columns")}
                   icon={<Columns3 className="h-4 w-4" aria-hidden />}
                 >
                   Columns
@@ -106,9 +106,6 @@ export default function AttributeModeHome() {
           </NoImport>
         )}
       </main>
-
-      <WeightConfigModal open={weightsOpen} onClose={() => setWeightsOpen(false)} />
-      <HighlightConfigModal open={highlightsOpen} onClose={() => setHighlightsOpen(false)} />
     </div>
   );
 }

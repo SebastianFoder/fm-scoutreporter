@@ -7,6 +7,7 @@ import { StaffDataProvider } from "@scoutreporter/ui/components/StaffDataProvide
 import { SquadDataProvider } from "@scoutreporter/ui/components/SquadDataProvider";
 import { WeightProvider } from "@scoutreporter/ui/components/WeightConfig";
 import { PlayerPanelProvider } from "@scoutreporter/ui/components/PlayerPanel";
+import { SettingsProvider } from "@scoutreporter/ui/components/Settings";
 import { resetImportStoreToMemory } from "@scoutreporter/core/storage/import-store";
 import { API_FIXTURES, FIXTURE_CSV, STAFF_FIXTURE_CSV, type FixtureName } from "./fixtures";
 
@@ -81,7 +82,9 @@ function AppProviders({
           <StaffDataProvider>
             <SquadDataProvider>
               <HighlightedAttributesProvider>
-                <PlayerPanelProvider>{children}</PlayerPanelProvider>
+                <PlayerPanelProvider>
+                  <SettingsProvider>{children}</SettingsProvider>
+                </PlayerPanelProvider>
               </HighlightedAttributesProvider>
             </SquadDataProvider>
           </StaffDataProvider>

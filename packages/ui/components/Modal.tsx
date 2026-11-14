@@ -13,6 +13,8 @@ export interface ModalProps {
   description?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  /** Below the title, outside the scrolling body: tabs, for example. */
+  toolbar?: React.ReactNode;
   size?: ModalSize;
   /**
    * "center" is a classic dialog. "side" docks a panel to the right and keeps the
@@ -38,6 +40,7 @@ export function Modal({
   description,
   children,
   footer,
+  toolbar,
   size = "md",
   placement = "center",
   closeOnOverlayClick = true,
@@ -141,6 +144,8 @@ export function Modal({
               </button>
             </div>
           )}
+
+          {toolbar && <div className="shrink-0 border-b border-line">{toolbar}</div>}
 
           <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
 

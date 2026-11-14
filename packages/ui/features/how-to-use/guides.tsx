@@ -535,10 +535,11 @@ FM26: Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vi
 
         <MiniStep title="4. Tune weights and columns">
           <p>
-            Click <span className="font-bold">Weights</span> to open the weight panel and drag
-            each attribute importance slider. The player list re-ranks live. Click{" "}
+            Click <span className="font-bold">Weights</span> to open Settings at the weights and set how
+            much each attribute counts. The player list re-ranks live next to it. Click{" "}
             <span className="font-bold">Columns</span> to choose which attributes are highlighted
-            in the table.
+            in the table. Both, and the attribute colours, are also under the{" "}
+            <span className="font-bold">Settings</span> button at the top.
           </p>
         </MiniStep>
 
@@ -577,7 +578,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 
         <InfoBox label="FM27 benchmark profiles">
           <p>
-            The Weights panel ships with five role profiles (Centre-back, Wing-back / DM (6),
+            The weights come with five role profiles (Centre-back, Wing-back / DM (6),
             Attacker / Winger (10), Striker (9) and Goalkeeper) taken from{" "}
             <a
               href="https://github.com/jamiebolden/fm-scoring"

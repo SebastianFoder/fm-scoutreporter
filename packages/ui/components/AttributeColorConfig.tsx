@@ -8,9 +8,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { SlidersHorizontal } from "lucide-react";
 import { Button } from "./Button";
-import { Modal } from "./Modal";
 
 export type AttributeBand = "excellent" | "good" | "average" | "low";
 
@@ -191,8 +189,8 @@ function useAttributeColorContext(): AttributeColorContextValue {
   return ctx;
 }
 
-export function AttributeColorConfig() {
-  const [open, setOpen] = useState(false);
+/** The colour bands for attribute values (1 to 20), in the Look tab of Settings. */
+export function AttributeColourSettings() {
   const { state, setState } = useAttributeColorContext();
   const { activeId, profiles } = state;
 
@@ -231,25 +229,10 @@ export function AttributeColorConfig() {
   };
 
   return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        title="Attribute thresholds"
-        aria-label="Attribute thresholds"
-        className="btn h-8 gap-1.5 px-2 text-[13px] font-medium text-on-chrome/80 hover:bg-on-chrome/10 hover:text-on-chrome"
-      >
-        <SlidersHorizontal className="h-4 w-4" aria-hidden />
-        <span className="hidden sm:inline">Thresholds</span>
-      </button>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        title="Attribute thresholds"
-        description="Set numeric bands for attribute values (1–20). Colours follow the current light or dark theme. Saved per profile."
-        size="lg"
-      >
         <div className="space-y-5">
+          <p className="text-[13px] text-muted">
+            The value an attribute (1 to 20) needs for each colour. The colours follow the light or dark theme.
+          </p>
           <div className="grid gap-2 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-[13px] text-muted">
               Profile
@@ -340,8 +323,6 @@ export function AttributeColorConfig() {
             </div>
           </div>
         </div>
-      </Modal>
-    </div>
   );
 }
 
