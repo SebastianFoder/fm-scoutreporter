@@ -119,7 +119,10 @@ export function DesktopSettingsPanel() {
           </label>
           <NumberSetting label="Keep" value={settings.retention} min={1} max={500} suffix="scans" onSave={(retention) => void updateSettings({ retention })} />
         </div>
-        <p className="text-[13px] text-muted">A search scan takes a few MB, a whole save about 140 MB.</p>
+        <p className="text-[13px] text-muted">
+          Starred scans are kept on top of these and never deleted to make room. A search scan takes a few MB, a whole
+          save about 140 MB.
+        </p>
       </section>
 
       <section className="space-y-3 border-t border-line pt-4">

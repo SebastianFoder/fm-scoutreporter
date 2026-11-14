@@ -31,6 +31,33 @@ export interface SnapshotInfo {
   searchStaff?: number;
   /** "search": the scan holds only FM's search result and your club. Missing or "full": the whole save. */
   scope?: ScanScope;
+  /** Your own name for the scan; without one it is called after its in-game date. */
+  name?: string;
+  /** Starred: never deleted to make room for new scans (only when you delete it yourself). */
+  favorite?: boolean;
+}
+
+/** Longest scan name kept. */
+export const SNAPSHOT_NAME_MAX = 60;
+
+/** A change to a stored scan: `name` (empty or null clears it) and `favorite`. */
+export interface SnapshotPatch {
+  name?: string | null;
+  favorite?: boolean;
+}
+
+/** A scan name as stored: spaces collapsed, trimmed, at most SNAPSHOT_NAME_MAX characters. Empty: no name. */
+export function cleanSnapshotName(name: unknown): string {
+  return typeof name === "string" ? name.replace(/\s+/g, " ").trim().slice(0, SNAPSHOT_NAME_MAX).trim() : "";
+}
+
+/** Only the known fields of a patch sent by the renderer. */
+export function normaliseSnapshotPatch(value: unknown): SnapshotPatch {
+  const v = (value && typeof value === "object" ? value : {}) as Record<string, unknown>;
+  return {
+    ...(v.name === null || typeof v.name === "string" ? { name: v.name } : {}),
+    ...(typeof v.favorite === "boolean" ? { favorite: v.favorite } : {}),
+  };
 }
 
 /**
@@ -116,7 +143,7 @@ export interface GrowthPage {
 }
 
 export interface DesktopSettings {
-  /** Scans to keep; older ones are deleted after each new scan. */
+  /** Scans to keep, not counting starred ones; older ones are deleted after each new scan. */
   retention: number;
   /** F9 starts a search scan from anywhere (also inside FM) while the app runs. */
   hotkey: boolean;
@@ -189,6 +216,8 @@ export interface DesktopBridge {
   /** Growth between two stored scans, filtered, sorted and paged. */
   compareSnapshots(fromId: string, toId: string, query: GrowthQuery): Promise<GrowthPage>;
   deleteSnapshot(id: string): Promise<void>;
+  /** Rename a stored scan, or star it (starred scans are never deleted to make room). */
+  updateSnapshot(id: string, patch: SnapshotPatch): Promise<SnapshotInfo>;
   /** Store the bundled sample scan as a snapshot, to try the app without FM. */
   loadSampleScan(): Promise<ScanOutcome>;
   getSettings(): Promise<DesktopSettings>;
@@ -218,6 +247,7 @@ export const IPC = {
   loadSnapshot: "sr:load-snapshot",
   compareSnapshots: "sr:compare-snapshots",
   deleteSnapshot: "sr:delete-snapshot",
+  updateSnapshot: "sr:update-snapshot",
   loadSample: "sr:load-sample",
   getSettings: "sr:get-settings",
   setSettings: "sr:set-settings",

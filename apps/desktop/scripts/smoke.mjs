@@ -161,6 +161,17 @@ try {
     await waitFor(page, "document.body.innerText.includes('66 players scanned')"),
   );
 
+  // Rename and star a scan: stored in the index, and shown on the Scans page.
+  const renamed = await page.eval(
+    `window.scoutReporterDesktop.updateSnapshot(${JSON.stringify(stored?.snapshot?.id)}, { name: "Smoke test scan", favorite: true })`,
+  );
+  await navigate(page, "/desktop");
+  const shown = await waitFor(
+    page,
+    "[...document.querySelectorAll('main li')].some((li) => li.innerText.includes('Smoke test scan') && li.querySelector('button[aria-pressed=true]'))",
+  );
+  check("a stored scan can be renamed and starred", renamed?.name === "Smoke test scan" && renamed?.favorite === true && shown, JSON.stringify(renamed));
+
   await navigate(page, "/players");
   // The Potential column only appears when the import has CA and PA.
   check("player list scores scanned players, with CA/PA", await waitFor(page, `${listColumn("vs Age")} && ${listColumn("Potential")}`));

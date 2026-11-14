@@ -21,6 +21,7 @@ import {
   IPC,
   DEFAULT_LOAD_SCOPE,
   normaliseSettings,
+  normaliseSnapshotPatch,
   type DesktopSettings,
   type GrowthPage,
   type GrowthQuery,
@@ -335,6 +336,7 @@ function registerIpc() {
     }),
   );
   handle(IPC.deleteSnapshot, (id) => store().delete(String(id)));
+  handle(IPC.updateSnapshot, (id, patch) => store().update(String(id), normaliseSnapshotPatch(patch)));
   handle(IPC.loadSample, () => loadSample());
   handle(IPC.getSettings, () => settings);
   handle(IPC.setSettings, (patch) => saveSettings(patch));

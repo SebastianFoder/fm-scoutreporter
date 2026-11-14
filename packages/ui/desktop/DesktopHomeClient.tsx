@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, FolderOpen, Trash2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, FolderOpen } from "lucide-react";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { useSettings } from "@scoutreporter/ui/components/Settings";
-import { scanLabel, useDesktop } from "./DesktopProvider";
+import { useDesktop } from "./DesktopProvider";
 import { ScanButton } from "./ScanButton";
+import { StoredScanRow } from "./StoredScanRow";
 
 const ERROR_TITLES: Record<string, string> = {
   "not-running": "Football Manager is not running",
@@ -62,6 +63,7 @@ export function DesktopHomeClient() {
     scan,
     loadSnapshot,
     deleteSnapshot,
+    updateSnapshot,
     loadSample,
   } = desktop;
   const active = snapshots.find((s) => s.id === activeId) ?? null;
@@ -179,7 +181,8 @@ export function DesktopHomeClient() {
           <div>
             <h2 id="scans-title" className="section-title">Stored scans</h2>
             <p className="text-[13px] text-muted">
-              Every scan is kept (up to {settings?.retention ?? "…"}), so <Link href="/growth" className="link">Growth</Link> can compare them.
+              The newest {settings?.retention ?? "…"} are kept, plus starred ones, so <Link href="/growth" className="link">Growth</Link> can
+              compare them.
               {diskBytes > 0 && ` They use ${formatBytes(diskBytes)} on disk.`}
             </p>
           </div>
@@ -197,14 +200,16 @@ export function DesktopHomeClient() {
         ) : (
           <ul className="divide-y divide-line">
             {snapshots.map((s) => (
-              <li key={s.id} className="flex flex-wrap items-center gap-3 px-4 py-2.5 text-sm">
-                <div className="min-w-0 flex-1">
-                  <p className="font-semibold">
-                    {scanLabel(s)}
-                    {s.id === activeId && <span className="ml-2 rounded bg-accent/12 px-1.5 py-0.5 text-[12px] font-semibold text-accent">In use</span>}
-                    {!s.versionOk && <span className="ml-2 text-[12px] font-normal text-red">version differs</span>}
-                  </p>
-                  <p className="text-[13px] text-muted">
+              <StoredScanRow
+                key={s.id}
+                scan={s}
+                inUse={s.id === activeId}
+                loading={loading}
+                onUse={() => void loadSnapshot(s.id)}
+                onDelete={() => void deleteSnapshot(s.id)}
+                onUpdate={(patch) => updateSnapshot(s.id, patch)}
+                details={
+                  <>
                     {n(s.players)} players · {n(s.staff)} staff · {s.myClub ?? "no club"} · {s.game} {s.gameVersion ?? ""} · scanned{" "}
                     {formatTime(s.scannedAt)}
                     {s.bytes !== undefined && ` · ${formatBytes(s.bytes)}`}
@@ -215,20 +220,9 @@ export function DesktopHomeClient() {
                             ? ` · FM search: ${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}`
                             : ""
                         }`}
-                  </p>
-                </div>
-                <Button color="alt" variant="outline" size="sm" disabled={s.id === activeId || loading} onClick={() => void loadSnapshot(s.id)}>
-                  Use
-                </Button>
-                <Button
-                  color="red"
-                  variant="ghost"
-                  size="sm"
-                  aria-label={`Delete ${scanLabel(s)}`}
-                  icon={<Trash2 className="h-4 w-4" aria-hidden />}
-                  onClick={() => void deleteSnapshot(s.id)}
-                />
-              </li>
+                  </>
+                }
+              />
             ))}
           </ul>
         )}

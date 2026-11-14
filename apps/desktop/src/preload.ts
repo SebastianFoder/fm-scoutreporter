@@ -23,6 +23,7 @@ const bridge: DesktopBridge = {
   loadSnapshot: (id) => ipcRenderer.invoke(IPC.loadSnapshot, String(id)),
   compareSnapshots: (fromId, toId, query) => ipcRenderer.invoke(IPC.compareSnapshots, String(fromId), String(toId), query),
   deleteSnapshot: (id) => ipcRenderer.invoke(IPC.deleteSnapshot, String(id)),
+  updateSnapshot: (id, patch) => ipcRenderer.invoke(IPC.updateSnapshot, String(id), patch),
   loadSampleScan: () => ipcRenderer.invoke(IPC.loadSample),
   getSettings: () => ipcRenderer.invoke(IPC.getSettings),
   setSettings: (patch) => ipcRenderer.invoke(IPC.setSettings, patch),
