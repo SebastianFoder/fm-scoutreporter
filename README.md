@@ -11,7 +11,7 @@ directly with the desktop app, and rank players on weighted attributes and FM27 
 ## What it does
 
 - **Players**: scores from your own attribute weights or the FM27 benchmark roles
-  (from [jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring)), a vs-age column, a
+  (from [FM Match Lab](https://github.com/caiograco289/Fm-Match-Lab)'s position study), a vs-age column, a
   development plan per player and a side-by-side compare. With CA and PA, a Potential score
   estimates each player at full potential, to find wonderkids.
 - **Best XI** (a button on Players): the best eleven for a formation, with an optional transfer budget
@@ -95,5 +95,10 @@ bun run desktop:dist     # Windows installer in apps/desktop/release
 ## Credits
 
 The reader is adapted from [FMSuperScout](https://github.com/mavarobli/FMSuperScout) by mavarobli
-(MIT, see `reader/LICENSE-FMSuperScout`). FM27 weights, age benchmarks and training research come
-from [jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring).
+(MIT, see `reader/LICENSE-FMSuperScout`). The FM27 role weights come from
+[FM Match Lab](https://github.com/caiograco289/Fm-Match-Lab) by caiograco289
+([Study 13b](https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md),
+attribute value by position), checked against Purity's
+[FM-Arena position test](https://fm-arena.com/threads/attribute-importance-by-position-in-fm27-a-test-on-my-own-tactic.125/).
+The age benchmarks, CA costs, staff weights and training research, and the role weights up to v1.23, come from
+[jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring).

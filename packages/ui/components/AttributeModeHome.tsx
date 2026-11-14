@@ -46,7 +46,7 @@ export default function AttributeModeHome() {
         >
           Score, rank and compare players. With CA and PA (a scan, or a Hidden Attributes export),
           Potential and vs Age find the wonderkids: sort by Potential to see who could become the best. FM27
-          role profiles (benchmarked by fm-scoring) are included under Weights.
+          role profiles (benchmarked on FM Match Lab&apos;s position study) are included under Weights.
         </PageHeader>
 
         <CsvImportPanel testFixture="attribute-fm27-hidden" onImported={() => setSelectedIds([])} />

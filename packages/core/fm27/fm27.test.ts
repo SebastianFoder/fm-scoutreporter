@@ -14,7 +14,12 @@ import {
 import { developmentPlan } from "./development";
 import { GRADE_SCALE, gradeFor } from "../grades";
 import { groupPlayerAttributes } from "../parser/attribute-grouper";
-import { ageBenchmark, bestFm27Role, fm27BenchmarkProfiles } from "./benchmarks";
+import { ageBenchmark, bestFm27Role, fm27BenchmarkProfiles, fm27RoleScores, FM27_ROLES, type Fm27Role } from "./benchmarks";
+import { deriveGoalkeeperWeights, deriveOutfieldWeights, type MatchLabPosition } from "./match-lab";
+import { FM_SCORING_FM27_WEIGHTS } from "./fm-scoring-weights";
+import { migrateWeightConfig, WEIGHT_SEED_VERSION } from "./profile-migration";
+import { DEFAULT_SLOT_ROLE } from "../best-xi/formations";
+import type { WeightProfile } from "../types/weights";
 import { CA_COSTS } from "./ca-costs";
 import { ALL_ATTRIBUTE_KEYS } from "../attribute-keys";
 
@@ -137,7 +142,9 @@ test("projectPotential returns null without CA/PA (Standard view export)", () =>
 });
 
 test("FM27 benchmark helpers", () => {
-  assert.equal(fm27BenchmarkProfiles().length, 5);
+  assert.equal(fm27BenchmarkProfiles().length, 6);
+  assert.deepEqual(fm27RoleScores(() => 12, false).map((r) => r.role), ["CB", "WB", "DM", "10", "9"]);
+  assert.deepEqual(fm27RoleScores(() => 12, true).map((r) => r.role), ["GK"]);
   assert.equal(ageBenchmark(14), 10.3);
   assert.equal(ageBenchmark(19), 12.6);
   assert.equal(ageBenchmark(31), 13.8);
@@ -159,4 +166,88 @@ test("grade scale: anchored on the prime benchmark, S tiers above A+", () => {
   for (let i = 1; i < GRADE_SCALE.length - 1; i += 1) {
     assert.equal(GRADE_SCALE[i - 1].min - GRADE_SCALE[i].min, 0.5);
   }
+});
+
+test("FM27 role weights are Match Lab Study 13b's values under the documented rule", () => {
+  const position: Record<Exclude<Fm27Role, "GK">, MatchLabPosition> = { CB: "CB", WB: "FB", DM: "DM", "10": "AM", "9": "ST" };
+  for (const r of FM27_ROLES) {
+    const derived = r.role === "GK" ? deriveGoalkeeperWeights() : deriveOutfieldWeights(position[r.role]);
+    assert.deepEqual(r.weights, derived, r.role);
+    assert.equal(Math.max(...Object.values(r.weights)), 10, r.role);
+  }
+  // The study's headline differences survive the rule.
+  const w = (role: Fm27Role) => FM27_ROLES.find((r) => r.role === role)!.weights;
+  assert.equal(w("CB").jumpingReach, 10);
+  assert.equal(w("DM").jumpingReach, undefined);
+  assert.equal(w("9").finishing, 6);
+  assert.deepEqual(Object.keys(w("GK")).sort(), ["acceleration", "aerialReach", "agility", "determination", "reflexes"]);
+});
+
+test("Best XI slots use the split WB and DM roles", () => {
+  assert.equal(DEFAULT_SLOT_ROLE.DR, "WB");
+  assert.equal(DEFAULT_SLOT_ROLE.WBL, "WB");
+  assert.equal(DEFAULT_SLOT_ROLE.DM, "DM");
+  assert.equal(DEFAULT_SLOT_ROLE.MC, "DM");
+  const roles = new Set(FM27_ROLES.map((r) => r.role));
+  for (const role of Object.values(DEFAULT_SLOT_ROLE)) assert.ok(roles.has(role), role);
+});
+
+/** A v1 saved config: Default plus the five fm-scoring profiles as WeightConfig stored them. */
+function v1Config(): { activeId: string; profiles: WeightProfile[]; seeded: number } {
+  const names: Record<string, string> = {
+    "fm27-cb": "FM27 · Centre-back",
+    "fm27-wb6": "FM27 · Wing-back / DM (6)",
+    "fm27-10": "FM27 · Attacker / Winger (10)",
+    "fm27-9": "FM27 · Striker (9)",
+    "fm27-gk": "FM27 · Goalkeeper",
+  };
+  const profiles: WeightProfile[] = [
+    { id: "default", name: "Default", weights: {}, emphasis: 1 },
+    ...Object.entries(FM_SCORING_FM27_WEIGHTS).map(([id, weights]) => ({
+      id,
+      name: names[id],
+      weights: { ...weights, crossing: 0, marking: 0 },
+      emphasis: 1 as const,
+      builtIn: "fm27" as const,
+    })),
+    { id: "profile-1", name: "Mine", weights: { pace: 3 }, emphasis: 2 },
+  ];
+  return { activeId: "fm27-wb6", profiles, seeded: 1 };
+}
+
+test("saved fm-scoring profiles move to the Match Lab benchmarks", () => {
+  const out = migrateWeightConfig(v1Config());
+  assert.equal(out.seeded, WEIGHT_SEED_VERSION);
+  assert.deepEqual(out.profiles.map((p) => p.id), ["default", "fm27-cb", "fm27-wb", "fm27-dm", "fm27-10", "fm27-9", "fm27-gk", "profile-1"]);
+  assert.equal(out.activeId, "fm27-wb");
+  const bench = new Map(fm27BenchmarkProfiles().map((p) => [p.id, p]));
+  for (const p of out.profiles.filter((x) => x.builtIn)) assert.deepEqual(p.weights, bench.get(p.id)!.weights, p.id);
+  assert.deepEqual(out.profiles.at(-1), v1Config().profiles.at(-1));
+  // Idempotent.
+  assert.deepEqual(migrateWeightConfig(out), out);
+});
+
+test("edited fm-scoring profiles keep the user's weights", () => {
+  const config = v1Config();
+  config.activeId = "fm27-9";
+  for (const p of config.profiles) {
+    if (p.id === "fm27-wb6" || p.id === "fm27-9") p.weights = { ...p.weights, pace: 9 };
+  }
+  config.profiles = config.profiles.filter((p) => p.id !== "fm27-gk"); // deleted by the user: stays deleted
+  const out = migrateWeightConfig(config);
+  assert.deepEqual(out.profiles.map((p) => p.id), ["default", "fm27-cb", "fm27-wb", "fm27-dm", "fm27-wb6", "fm27-10", "fm27-9", "profile-1"]);
+  const wb6 = out.profiles.find((p) => p.id === "fm27-wb6")!;
+  assert.equal(wb6.builtIn, undefined);
+  assert.equal(wb6.name, "Wing-back / DM (6), edited");
+  assert.equal(wb6.weights.pace, 9);
+  const striker = out.profiles.find((p) => p.id === "fm27-9")!;
+  assert.equal(striker.builtIn, "fm27");
+  assert.equal(striker.weights.pace, 9);
+  assert.equal(out.activeId, "fm27-9");
+});
+
+test("a config from before any seeding gets every Match Lab benchmark", () => {
+  const out = migrateWeightConfig({ activeId: "default", profiles: [{ id: "default", name: "Default", weights: {} }] });
+  assert.deepEqual(out.profiles.map((p) => p.id), ["default", ...FM27_ROLES.map((r) => r.profileId)]);
+  assert.equal(out.activeId, "default");
 });
