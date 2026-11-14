@@ -32,9 +32,8 @@ const only = (() => {
  * website are in apps/web/lib/screenshots.ts; keep the names in step.
  */
 export const SCREENS = [
-  { name: "players", id: "pages-players--squad-import", height: 650 },
+  { name: "players", id: "pages-players--squad-import" },
   { name: "player", id: "components-playerpanel--open-outfield" },
-  { name: "wonderkid", id: "pages-wonderkid--squad-import" },
   { name: "best-xi", id: "pages-best-xi--imported" },
   { name: "squad", id: "pages-squad-analysis--hidden-attributes" },
   { name: "staff", id: "pages-staff--rank-by-role" },

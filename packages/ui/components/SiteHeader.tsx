@@ -11,9 +11,7 @@ import { useDesktopBridge } from "../desktop/DesktopProvider";
 import { UpdateBanner } from "../desktop/UpdateBanner";
 
 const NAV = [
-  { href: "/attribute", label: "Attribute" },
-  { href: "/wonderkid", label: "Wonderkid" },
-  { href: "/best-xi", label: "Best XI" },
+  { href: "/players", label: "Players" },
   { href: "/squad", label: "Squad" },
   { href: "/staff", label: "Staff" },
   { href: "/how-to-use", label: "How to use" },

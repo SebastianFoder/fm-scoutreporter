@@ -4,7 +4,7 @@ import { ImportPanel, STORAGE_FULL_MESSAGE } from "./ImportPanel";
 import { usePlayersData } from "./PlayersDataProvider";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@scoutreporter/core/view-files";
 
-/** CSV import + view download, shared by Attribute and Wonderkid mode (both use the same imported data). */
+/** CSV import + view download, shared by Players and Best XI (both use the same imported data). */
 export function CsvImportPanel({
   testFixture = "attribute",
   onImported,

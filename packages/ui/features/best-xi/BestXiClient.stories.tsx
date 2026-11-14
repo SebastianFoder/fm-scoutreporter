@@ -6,7 +6,7 @@ const meta = {
   component: BestXiClient,
   parameters: {
     layout: "fullscreen",
-    nextjs: { navigation: { pathname: "/best-xi" } },
+    nextjs: { navigation: { pathname: "/players/best-xi" } },
   },
 } satisfies Meta<typeof BestXiClient>;
 

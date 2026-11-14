@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, FolderOpen, Radar, RefreshCw, Trash2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronDown, FolderOpen, RefreshCw, Trash2 } from "lucide-react";
 import type { DesktopSettings, LoadLimits, UpdateState } from "@scoutreporter/core/desktop/bridge";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
@@ -10,6 +10,7 @@ import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { scanLabel, useDesktop } from "./DesktopProvider";
+import { ScanButton } from "./ScanButton";
 
 const ERROR_TITLES: Record<string, string> = {
   "not-running": "Football Manager is not running",
@@ -131,12 +132,9 @@ export function DesktopHomeClient() {
   const setLoad = (patch: Partial<LoadLimits>) => void updateSettings({ load: { ...settings!.load, ...patch } });
   /** A setting that changes what the screens get: save it, then load the scan in use again. */
   const applyAndReload = (patch: Partial<DesktopSettings>) => void updateSettings(patch).then(() => reloadActive());
-  /** Scans keep only FM's search and your club (the default), not the whole save. */
-  const searchMode = settings?.scanMode !== "full";
   const hotkeyHint = settings?.hotkey ? "" : " once the hotkey is on";
   // FM's search result in the scan in use, and whether the screens were loaded from it.
   const staffFromScan = staffState.source?.snapshotId === activeId ? staffState.source : null;
-  const activeSearch = active && (active.searchPlayers || active.searchStaff) ? { players: active.searchPlayers ?? 0, staff: active.searchStaff ?? 0 } : null;
   const searchText = (s: { players: number; staff: number }) =>
     [s.players > 0 && `${n(s.players)} players`, s.staff > 0 && `${n(s.staff)} staff`].filter(Boolean).join(" and ");
   // What was loaded next to your club, for the kinds (players, staff) of which only part was loaded.
@@ -154,24 +152,12 @@ export function DesktopHomeClient() {
     <div className="mx-auto max-w-5xl space-y-5 px-5 py-6 text-ink">
       <PageHeader
         title="Scan Football Manager"
-        aside={
-          <Button color="primary" size="lg" icon={<Radar className="h-4 w-4" aria-hidden />} disabled={scanning} onClick={() => void scan()}>
-            {scanning ? `Scanning ${pct}%` : "Scan FM"}
-          </Button>
-        }
+        aside={<ScanButton variant="page" />}
       >
-        {searchMode ? (
-          <>
-            In Football Manager 27, open Player Search (or Staff Search), set your filters and leave the search on screen. Then press
-            Scan FM (or F9{hotkeyHint}, also inside FM). The app takes the people FM found, plus your own club, and every screen
-            (Attribute, Wonderkid, Best XI, Squad, Staff) works on them. Nothing in your game is changed.
-          </>
-        ) : (
-          <>
-            Start Football Manager 27, load your save, then press Scan FM (or F9{hotkeyHint}). The whole database is read in seconds,
-            read-only, and every screen (Attribute, Wonderkid, Best XI, Squad, Staff) uses it.
-          </>
-        )}
+        <span className="font-semibold text-ink">Scan search</span> (or F9{hotkeyHint}, also inside FM): open Player Search or Staff
+        Search in Football Manager, set your filters, and the app takes the people FM found plus your own club.{" "}
+        <span className="font-semibold text-ink">Scan save</span>: every player and staff member in the save, no search needed.
+        Every screen (Players, Best XI, Squad, Staff) works on the scan. Nothing in your game is changed.
       </PageHeader>
 
       {settings && (
@@ -186,7 +172,7 @@ export function DesktopHomeClient() {
           <span>
             <span className="font-semibold">Use CA, PA and hidden attributes</span>
             <span className="block text-[13px] text-muted">
-              On: the screens get every player&apos;s current and potential ability and Professionalism, which Wonderkid mode needs. Off:
+              On: the screens get every player&apos;s current and potential ability and Professionalism, which the Potential scores need. Off:
               they are left out, as in a normal FM export, and Growth shows attribute changes only. The visible attributes are FM&apos;s
               exact values either way, also for players you have not fully scouted.
             </span>
@@ -213,7 +199,11 @@ export function DesktopHomeClient() {
             <p className="text-muted">{lastOutcome.message}</p>
             {lastOutcome.code === "no-search" && (
               <p className="text-muted">
-                To scan without a search, choose The whole save under <a href="#keep-title" className="link">What a scan keeps</a>.
+                Or{" "}
+                <button type="button" className="link" onClick={() => void scan("full")}>
+                  scan the whole save
+                </button>{" "}
+                instead.
               </p>
             )}
           </div>
@@ -229,7 +219,7 @@ export function DesktopHomeClient() {
               ? `kept: your FM search (${searchText({ players: lastScan.searchPlayers ?? 0, staff: lastScan.searchStaff ?? 0 })}) plus your club${lastScan.myClub ? `, ${lastScan.myClub}` : ""}`
               : `scanned${lastScan.myClub ? `, your club: ${lastScan.myClub}` : ""}`}
             . Open{" "}
-            <Link href="/attribute" className="link">Attribute</Link>, <Link href="/wonderkid" className="link">Wonderkid</Link> or{" "}
+            <Link href="/players" className="link">Players</Link>, <Link href="/squad" className="link">Squad</Link> or{" "}
             <Link href="/growth" className="link">Growth</Link>.
           </p>
         </div>
@@ -243,21 +233,9 @@ export function DesktopHomeClient() {
       {partial && !loading && (
         <p className="text-[13px] text-muted">
           The screens hold {n(partial.players)} of {n(partial.totalPlayers)} players and {n(partial.staff)} of {n(partial.totalStaff)} staff
-          from this scan: your club plus {loadedFrom} (see <a href="#keep-title" className="link">What a scan keeps</a>). Growth
+          from this scan: your club plus {loadedFrom} (see <a href="#limits-title" className="link">Whole-save limits</a>). Growth
           always compares every player in both scans.
         </p>
-      )}
-      {settings && active && !loading && activeSearch && !searchMode && active.scope !== "search" && (
-        <p className="text-[13px] text-muted">
-          FM&apos;s search had {searchText(activeSearch)} when this scan ran. To load only those, choose{" "}
-          <a href="#keep-title" className="link">My FM search and my club</a>.
-        </p>
-      )}
-      {settings && searchMode && active && !active.sample && active.scope !== "search" && !activeSearch && !loading && (
-        <Notice title="This scan has no FM search result">
-          This scan holds the whole save, and FM had no search result when it ran, so the screens load it like a whole save. In FM,
-          open Player Search, set its filters, leave it on screen and scan again.
-        </Notice>
       )}
 
       {active && !active.versionOk && (
@@ -287,7 +265,7 @@ export function DesktopHomeClient() {
           </div>
         </div>
         {snapshots.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-muted">No scans yet. Scan FM, or load the sample scan to look around.</p>
+          <p className="px-4 py-8 text-center text-sm text-muted">No scans yet. Press Scan search or Scan save, or load the sample scan to look around.</p>
         ) : (
           <ul className="divide-y divide-line">
             {snapshots.map((s) => (
@@ -334,8 +312,8 @@ export function DesktopHomeClient() {
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={settings.hotkey} onChange={(e) => void updateSettings({ hotkey: e.target.checked })} />
             <span>
-              <span className="font-semibold">F9 scans from anywhere</span>
-              <span className="block text-[13px] text-muted">While the app runs, F9 starts a scan, also inside FM. Other apps do not get F9 meanwhile.</span>
+              <span className="font-semibold">F9 scans your search from anywhere</span>
+              <span className="block text-[13px] text-muted">While the app runs, F9 does Scan search, also inside FM. Other apps do not get F9 meanwhile.</span>
             </span>
           </label>
           <div className="flex flex-wrap items-center gap-4 text-sm">
@@ -385,83 +363,48 @@ export function DesktopHomeClient() {
       )}
 
       {settings && (
-        <section className="panel space-y-3 px-4 py-3" aria-labelledby="keep-title">
-          <div>
-            <h2 id="keep-title" className="section-title">What a scan keeps</h2>
-            <p className="text-[13px] text-muted">
-              The reader always reads FM&apos;s whole database, which takes seconds. This sets how much of it a scan keeps.
-            </p>
-          </div>
-          <fieldset className="space-y-2 text-sm">
-            <legend className="sr-only">What a scan keeps</legend>
-            <label className="flex items-start gap-2">
-              <input
-                type="radio"
-                name="scan-mode"
-                className="mt-1"
-                checked={searchMode}
-                disabled={loading}
-                onChange={() => applyAndReload({ scanMode: "search" })}
-              />
-              <span>
-                <span className="font-semibold">My FM search and my club</span>
-                <span className="block text-[13px] text-muted">
-                  Like an export of the search on screen: the scan keeps the people in FM&apos;s Player Search or Staff Search, with
-                  every filter you set there, plus your own club for Squad and Best XI. Set Player&apos;s interest to Interested and you
-                  get only the players FM says would join you: FM&apos;s own answer, not an estimate. Scans are small and load at once.
-                  Growth compares the players that are in both scans.
-                </span>
+        <details className="panel group px-4 py-3">
+          <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm [&::-webkit-details-marker]:hidden">
+            <span>
+              <span id="limits-title" className="section-title">
+                Whole-save limits
               </span>
-            </label>
-            <label className="flex items-start gap-2">
-              <input
-                type="radio"
-                name="scan-mode"
-                className="mt-1"
-                checked={!searchMode}
-                disabled={loading}
-                onChange={() => applyAndReload({ scanMode: "full" })}
-              />
-              <span>
-                <span className="font-semibold">The whole save</span>
-                <span className="block text-[13px] text-muted">
-                  Every player and staff member in the save, about 140 MB per scan, with or without a search on screen. A full FM
-                  database has about 400,000 players, too many for one window, so the screens load your club plus the people within the
-                  limits below. Growth compares every player in the save.
-                </span>
+              <span className="block text-[13px] text-muted">
+                A whole save has about 400,000 players, too many for the screens, so they load your club plus the best of the rest.
+                Most people never need to change this.
               </span>
-            </label>
-          </fieldset>
-          <p className="text-[13px] text-muted">
-            <span className="font-semibold text-ink">Limits.</span> A scan with more people than the caps (a whole save, or a very wide
-            search) loads your club plus the best by these limits, best CA first.
-          </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-            <NumberSetting label="Players with CA" suffix="or more" value={settings.load.minCa} min={1} max={200} onSave={(minCa) => setLoad({ minCa })} />
-            <NumberSetting label="plus players up to age" value={settings.load.youngMaxAge} min={14} max={45} onSave={(youngMaxAge) => setLoad({ youngMaxAge })} />
-            <NumberSetting label="with PA" suffix="or more" value={settings.load.youngMinPa} min={1} max={200} onSave={(youngMinPa) => setLoad({ youngMinPa })} />
-            <NumberSetting label="At most" suffix="players" value={settings.load.maxPlayers} min={100} max={100_000} onSave={(maxPlayers) => setLoad({ maxPlayers })} />
-          </div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-            <NumberSetting label="Staff with CA" suffix="or more" value={settings.load.staffMinCa} min={1} max={200} onSave={(staffMinCa) => setLoad({ staffMinCa })} />
-            <NumberSetting label="At most" suffix="staff" value={settings.load.maxStaff} min={100} max={100_000} onSave={(maxStaff) => setLoad({ maxStaff })} />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              color="alt"
-              variant="outline"
-              size="md"
-              icon={<RefreshCw className="h-4 w-4" aria-hidden />}
-              disabled={!activeId || loading}
-              onClick={() => void reloadActive()}
-            >
-              Load again
-            </Button>
-            <span className="text-[13px] text-muted">
-              The limits apply the next time a scan is loaded. More players means slower screens: 40,000 load in a few seconds.
             </span>
+            <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" aria-hidden />
+          </summary>
+          <div className="mt-3 space-y-3 border-t border-line pt-3">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              <NumberSetting label="Players with CA" suffix="or more" value={settings.load.minCa} min={1} max={200} onSave={(minCa) => setLoad({ minCa })} />
+              <NumberSetting label="plus players up to age" value={settings.load.youngMaxAge} min={14} max={45} onSave={(youngMaxAge) => setLoad({ youngMaxAge })} />
+              <NumberSetting label="with PA" suffix="or more" value={settings.load.youngMinPa} min={1} max={200} onSave={(youngMinPa) => setLoad({ youngMinPa })} />
+            </div>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              <NumberSetting label="At most" suffix="players" value={settings.load.maxPlayers} min={100} max={100_000} onSave={(maxPlayers) => setLoad({ maxPlayers })} />
+              <NumberSetting label="Staff with CA" suffix="or more" value={settings.load.staffMinCa} min={1} max={200} onSave={(staffMinCa) => setLoad({ staffMinCa })} />
+              <NumberSetting label="At most" suffix="staff" value={settings.load.maxStaff} min={100} max={100_000} onSave={(maxStaff) => setLoad({ maxStaff })} />
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                color="alt"
+                variant="outline"
+                size="md"
+                icon={<RefreshCw className="h-4 w-4" aria-hidden />}
+                disabled={!activeId || loading}
+                onClick={() => void reloadActive()}
+              >
+                Load again
+              </Button>
+              <span className="text-[13px] text-muted">
+                The limits apply the next time a whole-save scan is loaded. More players means slower screens: 40,000 load in a few
+                seconds.
+              </span>
+            </div>
           </div>
-        </section>
+        </details>
       )}
 
       <section className="panel space-y-1.5 px-4 py-3 text-[13px] text-muted" aria-labelledby="about-title">

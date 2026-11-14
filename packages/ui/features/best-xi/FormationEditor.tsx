@@ -351,8 +351,8 @@ export function FormationEditor({
       </table>
       <p className="mt-2 text-[12px] text-muted">
         Roles are your weight profiles from{" "}
-        <Link href="/attribute" className="link">
-          Attribute mode
+        <Link href="/players" className="link">
+          Players
         </Link>
         .
       </p>

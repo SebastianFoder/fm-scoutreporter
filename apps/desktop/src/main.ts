@@ -9,9 +9,9 @@
  * User data (%APPDATA%/Scout Reporter): settings.json, scans/<id>/scan.sqlite, scans/latest (work dir).
  *
  * A scan: the reader writes scans/latest/scan.ndjson (one JSON object per line), the database process
- * (db-process.ts) imports it into a new scan.sqlite, and the store keeps it. By default a scan keeps
- * only FM's search result and your club (settings.scanMode "search"), which the screens load whole;
- * a whole-save scan ("full") is loaded in part (settings.load). Growth compares two scans in SQL.
+ * (db-process.ts) imports it into a new scan.sqlite, and the store keeps it. Scan search (and F9)
+ * keeps only FM's search result and your club, which the screens load whole; Scan save keeps the
+ * whole save, which is loaded in part (settings.load). Growth compares two scans in SQL.
  */
 import { app, BrowserWindow, globalShortcut, ipcMain, net, session, shell, Menu, type IpcMainInvokeEvent } from "electron";
 import { existsSync } from "node:fs";
@@ -27,6 +27,7 @@ import {
   type LoadedScan,
   type ScanOutcome,
   type ScanProgress,
+  type ScanScope,
   type UpdateState,
 } from "@scoutreporter/core/desktop/bridge";
 import { compareVersions } from "@scoutreporter/core/desktop/releases";
@@ -191,10 +192,10 @@ async function installUpdate(): Promise<UpdateState> {
   return update;
 }
 
-/** F9 scans from anywhere while the app runs (it is a global shortcut, so other apps lose F9 meanwhile). */
+/** F9 scans FM's search from anywhere while the app runs (a global shortcut: other apps lose F9 meanwhile). */
 function applyHotkey() {
   globalShortcut.unregister("F9");
-  if (settings.hotkey) globalShortcut.register("F9", () => void scan());
+  if (settings.hotkey) globalShortcut.register("F9", () => void scan("search"));
 }
 
 function send(channel: string, value: unknown) {
@@ -202,14 +203,14 @@ function send(channel: string, value: unknown) {
 }
 
 /** One scan at a time; a second request (button and F9 together) joins the running one. */
-function scan(): Promise<ScanOutcome> {
-  scanning ??= doScan().finally(() => {
+function scan(scope: ScanScope): Promise<ScanOutcome> {
+  scanning ??= doScan(scope).finally(() => {
     scanning = null;
   });
   return scanning;
 }
 
-async function doScan(): Promise<ScanOutcome> {
+async function doScan(scope: ScanScope): Promise<ScanOutcome> {
   let outcome: ScanOutcome;
   if (!existsSync(paths.reader)) {
     outcome = {
@@ -229,7 +230,7 @@ async function doScan(): Promise<ScanOutcome> {
       workDir,
       settings.database,
       (p: ScanProgress) => send(IPC.scanProgress, { phase: p.phase, progress: p.progress * READ_SHARE }),
-      [...(settings.scanMode === "search" ? ["--only-search"] : []), ...(previousExists ? ["--previous-exists"] : [])],
+      [...(scope === "search" ? ["--only-search"] : []), ...(previousExists ? ["--previous-exists"] : [])],
     );
     const readerMs = performance.now() - started;
     if (run.done) {
@@ -317,7 +318,7 @@ function handle(channel: string, fn: (...args: unknown[]) => unknown) {
 }
 
 function registerIpc() {
-  handle(IPC.scan, () => scan());
+  handle(IPC.scan, (scope) => scan(scope === "full" ? "full" : "search"));
   handle(IPC.listSnapshots, () => store().list());
   handle(IPC.loadSnapshot, async (id) => {
     const started = performance.now();

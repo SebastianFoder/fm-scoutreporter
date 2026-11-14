@@ -116,21 +116,16 @@ test("stores scans newest first and prunes past the retention", async () => {
   assert.deepEqual((await store.list()).map((s) => s.id), [c.snapshot.id]);
 });
 
-test("scans keep FM's search and your club unless the whole save is chosen", () => {
+test("whole-save scans load by the limits, and old settings keep their limits", () => {
   const fresh = normaliseSettings({});
-  assert.equal(fresh.scanMode, "search");
-  assert.deepEqual(loadScopeFor(fresh), { ...DEFAULT_LOAD_LIMITS, onlySearch: true });
+  assert.deepEqual(loadScopeFor(fresh), { ...DEFAULT_LOAD_LIMITS, onlySearch: false });
 
-  // Settings saved before the scan mode existed: the old tick box is dropped, the limits are kept.
-  const old = normaliseSettings({ hideHidden: true, load: { minCa: 120, onlySearch: false } });
-  assert.equal(old.scanMode, "search");
+  // Settings from older versions: the old tick box and scan mode are dropped, the limits are kept.
+  const old = normaliseSettings({ hideHidden: true, scanMode: "full", load: { minCa: 120, onlySearch: true } });
+  assert.equal("scanMode" in old, false);
   assert.equal(old.hideHidden, true);
   assert.deepEqual(old.load, { ...DEFAULT_LOAD_LIMITS, minCa: 120 });
-
-  const full = normaliseSettings({ scanMode: "full" });
-  assert.equal(full.scanMode, "full");
-  assert.equal(loadScopeFor(full).onlySearch, false);
-  assert.equal(normaliseSettings({ scanMode: "everything" }).scanMode, "search");
+  assert.equal(loadScopeFor(old).onlySearch, false);
 });
 
 test("a stored scan says when it kept only the search", async () => {
@@ -152,8 +147,8 @@ test("a stored scan says when it kept only the search", async () => {
   assert.equal(search.players, searched.players.length);
   assert.equal(whole.scope, undefined);
 
-  // The screens get all of it, whichever scan mode is set.
-  const loaded = loadScanFile(store.scanFile(search.id), loadScopeFor(normaliseSettings({ scanMode: "full" })));
+  // The screens get all of it.
+  const loaded = loadScanFile(store.scanFile(search.id), loadScopeFor(normaliseSettings({})));
   assert.equal(loaded.scope, "search");
   assert.equal(loaded.players.length, searched.players.length);
   assert.equal(loaded.staff.length, searched.staff.length);

@@ -21,6 +21,7 @@ import {
 } from "@scoutreporter/core/staff/backroom";
 import { STAFF_ROLES, STAFF_ROLE_GROUPS, rolesForJob, scoreStaff } from "@scoutreporter/core/staff/staff-roles";
 import { StaffImportPanel } from "./StaffImportPanel";
+import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
 import { StaffDetailModal } from "./StaffDetailModal";
 import { ScoreCell } from "./StaffCells";
 
@@ -150,9 +151,9 @@ export default function BackroomClient() {
         <StaffImportPanel onImported={() => update({ excluded: [] })} />
 
         {staff.length === 0 && (
-          <p className="rounded-md border border-dashed border-line px-6 py-10 text-center text-sm text-muted">
+          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
             No staff imported yet. Choose a staff CSV above, or load the test data to look around.
-          </p>
+          </NoImport>
         )}
 
         {staff.length > 0 && (
@@ -323,7 +324,7 @@ export default function BackroomClient() {
               <p className="max-w-3xl text-[13px] leading-relaxed text-muted">
                 Each role is scored with fm-scoring&apos;s staff weights (see{" "}
                 <Link href="/staff" className="link">
-                  Staff mode
+                  Staff
                 </Link>
                 ). The backroom shown has the highest total score of every way to fill the roles with different
                 people, so a strong all-rounder goes where they add the most rather than to the first role that

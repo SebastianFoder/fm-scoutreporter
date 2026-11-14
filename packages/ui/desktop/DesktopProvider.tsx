@@ -15,6 +15,7 @@ import type {
   DesktopSettings,
   ScanOutcome,
   ScanProgress,
+  ScanScope,
   SnapshotInfo,
   UpdateState,
 } from "@scoutreporter/core/desktop/bridge";
@@ -81,9 +82,10 @@ type DesktopContextValue = {
   loadError: string | null;
   /** A snapshot is being loaded into the screens. */
   loading: boolean;
-  scan: () => Promise<void>;
+  /** "search": FM's search and your club (Scan search, F9). "full": the whole save (Scan save). */
+  scan: (scope: ScanScope) => Promise<void>;
   loadSnapshot: (id: string) => Promise<void>;
-  /** Load the snapshot in use again (after changing what a scan keeps, the limits, or hidden attributes). */
+  /** Load the snapshot in use again (after changing the limits or hidden attributes). */
   reloadActive: () => Promise<void>;
   deleteSnapshot: (id: string) => Promise<void>;
   loadSample: () => Promise<void>;
@@ -240,11 +242,14 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
     };
   }, [bridge, loadSnapshotRef, router]);
 
-  const scan = useCallback(async () => {
-    setScanning(true);
-    setProgress({ phase: "starting", progress: 0 });
-    await bridge.scan();
-  }, [bridge]);
+  const scan = useCallback(
+    async (scope: ScanScope) => {
+      setScanning(true);
+      setProgress({ phase: "starting", progress: 0 });
+      await bridge.scan(scope);
+    },
+    [bridge],
+  );
 
   const loadSample = useCallback(async () => {
     await bridge.loadSampleScan();

@@ -36,7 +36,7 @@ export const API_FIXTURES: Record<string, string> = {
   "squad-hidden": squadHiddenCsv,
 };
 
-/** FM26 Staff view export (words, 518 rows with 120 duplicates), for Staff mode. */
+/** FM26 Staff view export (words, 518 rows with 120 duplicates), for the Staff screens. */
 export const STAFF_FIXTURE_CSV = staffCsv;
 
 const cache = new Map<FixtureName, ReturnType<typeof parseAndGroup>>();

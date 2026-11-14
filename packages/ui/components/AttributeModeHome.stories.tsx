@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import AttributeModeHome from "./AttributeModeHome";
 
 const meta = {
-  title: "Pages/AttributeHome",
+  title: "Pages/Players",
   component: AttributeModeHome,
   parameters: {
     layout: "fullscreen",
-    nextjs: { navigation: { pathname: "/attribute" } },
+    nextjs: { navigation: { pathname: "/players" } },
   },
 } satisfies Meta<typeof AttributeModeHome>;
 
@@ -22,3 +22,9 @@ export const FM26Import: Story = {
 export const FM27V2Import: Story = {
   parameters: { appProviders: { players: "fm27hidden" } },
 };
+
+/** A whole squad with hidden attributes, every position (used for the README screenshots). */
+export const SquadImport: Story = {
+  parameters: { appProviders: { players: "squadHidden" } },
+};
+

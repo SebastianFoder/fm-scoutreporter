@@ -10,7 +10,7 @@ hints in `diagnostics.txt` this is usually hours of work, not days.
 ## Step 1: scan the new version
 
 Start FM on the new patch, load a save and run
-`reader/dist/ScoutReporter.Reader.exe scan --out <dir>`, or press Scan FM in the app (its files are
+`reader/dist/ScoutReporter.Reader.exe scan --out <dir>`, or press Scan save in the app (its files are
 in the app's data folder under `scans/latest`). No game restart or mod is needed. Open
 `diagnostics.txt`: it lists the pinned class offsets and the class-offset histogram.
 

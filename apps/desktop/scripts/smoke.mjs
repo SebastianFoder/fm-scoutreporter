@@ -89,10 +89,15 @@ const pageText = (page) =>
     .eval("`${location.pathname} | header: ${document.querySelector('header')?.innerText ?? ''} | main: ${document.querySelector('main')?.innerText ?? ''}`.replace(/\\s+/g, ' ').slice(0, 600)")
     .catch((e) => `page unreachable (${e.message})`);
 
-// Wonderkid mode says this when the import has no CA/PA (its table always has CA and PA headers).
-const NO_CA_PA = "This import has no CA / PA columns";
+/** True when the player list's table has a column headed `name`. */
+const listColumn = (name) => `[...document.querySelectorAll("main th")].some((th) => th.innerText.includes(${JSON.stringify(name)}))`;
 
-const navigate = (page, path) => page.eval(`(location.href = new URL(${JSON.stringify(path)}, location.origin).href, true)`);
+/** Open a page and wait until it is the one showing: setting location.href only starts the load. */
+const navigate = async (page, path) => {
+  const url = `new URL(${JSON.stringify(path)}, location.origin).href`;
+  await page.eval(`(location.href = ${url}, true)`);
+  await waitFor(page, `location.href === ${url} && document.readyState === "complete"`);
+};
 
 try {
   const page = cdp(await pageSocket());
@@ -108,8 +113,8 @@ try {
   );
   check("Node is not exposed to the page", (await page.eval("typeof require === 'undefined' && typeof process === 'undefined'")) === true);
 
-  // A scan with the default setting keeps only FM's search and your club.
-  const firstScan = await page.eval("window.scoutReporterDesktop.scan()");
+  // Scan search (also F9) keeps only FM's search and your club.
+  const firstScan = await page.eval("window.scoutReporterDesktop.scan('search')");
   const fmRunning = firstScan?.ok === true || firstScan?.code === "no-search";
   if (firstScan?.ok) {
     // FM is running with a search result: the app took that search.
@@ -127,16 +132,14 @@ try {
     check("scanning without FM fails cleanly", firstScan && firstScan.ok === false && typeof firstScan.message === "string", firstScan?.code);
   }
   if (fmRunning) {
-    // The whole save, as before the search mode existed.
-    await page.eval("window.scoutReporterDesktop.setSettings({ scanMode: 'full' })");
-    const whole = await page.eval("window.scoutReporterDesktop.scan()");
+    // Scan save: the whole save.
+    const whole = await page.eval("window.scoutReporterDesktop.scan('full')");
     check(
       "FM is running: a whole-save scan is read and stored as a scan database",
       whole?.ok === true && whole.snapshot.scope !== "search" && whole.snapshot.players > 1000 && existsSync(join(profile, "scans", whole.snapshot.id, "scan.sqlite")),
       whole?.ok ? `${whole.snapshot.players} players, ${whole.snapshot.staff} staff, ${Math.round((whole.snapshot.bytes ?? 0) / 1e6)} MB` : whole?.message,
     );
     if (whole?.ok) await page.eval(`window.scoutReporterDesktop.deleteSnapshot(${JSON.stringify(whole.snapshot.id)})`);
-    await page.eval("window.scoutReporterDesktop.setSettings({ scanMode: 'search' })");
   }
 
   const stored = await page.eval("window.scoutReporterDesktop.loadSampleScan()");
@@ -150,23 +153,14 @@ try {
     await waitFor(page, "document.body.innerText.includes('66 players scanned')"),
   );
 
-  await navigate(page, "/attribute/players");
+  await navigate(page, "/players");
   // The Potential column only appears when the import has CA and PA.
-  check("player list scores scanned players", await waitFor(page, "/vs Age/.test(document.querySelector('main').innerText) && /Potential/.test(document.querySelector('main').innerText)"));
+  check("player list scores scanned players, with CA/PA", await waitFor(page, `${listColumn("vs Age")} && ${listColumn("Potential")}`));
 
-  await navigate(page, `/attribute/players/${samplePlayer.uid}`);
+  await navigate(page, `/players/${samplePlayer.uid}`);
   check(
     "player profile opens from the scan",
     await waitFor(page, `document.querySelector('main').innerText.includes(${JSON.stringify(samplePlayer.name)}) && document.querySelector('main').innerText.includes("Current ability")`),
-  );
-
-  await navigate(page, "/wonderkid");
-  check(
-    "Wonderkid mode has CA/PA from the scan",
-    await waitFor(
-      page,
-      `/of 66 players/.test(document.querySelector('main').innerText) && !document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`,
-    ),
   );
 
   await navigate(page, "/staff");
@@ -183,7 +177,7 @@ try {
   const clubSize = sample.players.filter((p) => p.club === sample.meta.myClub).length;
   check("Squad uses the scanned club's players", await waitFor(page, `document.querySelector('main').innerText.includes(${JSON.stringify(sample.players.find((p) => p.club === sample.meta.myClub).name)})`), `${clubSize} players`);
 
-  // Hide hidden attributes: reload the scan, then Wonderkid has no CA/PA.
+  // Hide hidden attributes: reload the scan, then the player list has no Potential column.
   await page.eval("window.scoutReporterDesktop.setSettings({ hideHidden: true })");
   await navigate(page, "/desktop");
   const useButton = "[...document.querySelectorAll('li')].filter((li) => li.innerText.includes('Sample scan')).flatMap((li) => [...li.querySelectorAll('button')]).find((b) => b.textContent.trim() === 'Use' && !b.disabled)";
@@ -191,18 +185,21 @@ try {
   // Mark the scan's row, press Use, and wait until the row says "In use" (set once loading is done).
   await page.eval(`(() => { const b = ${useButton}; b.closest('li').dataset.smoke = 'use'; b.click(); return true; })()`);
   const inUse = await waitFor(page, "document.querySelector('[data-smoke=use]')?.innerText.includes('In use')");
-  await navigate(page, "/wonderkid");
-  const hidden =
-    inUse &&
-    (await waitFor(page, `/of 66 players/.test(document.querySelector('main').innerText) && document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`));
+  await navigate(page, "/players");
+  const hidden = inUse && (await waitFor(page, `${listColumn("vs Age")} && !${listColumn("Potential")}`));
   check("hiding hidden attributes removes CA/PA", hidden, hidden ? "" : inUse ? await pageText(page) : "the scan never showed as in use");
 
-  // The CSV import still works inside the app.
-  await navigate(page, "/attribute");
-  await waitFor(page, "[...document.querySelectorAll('button')].some((b) => b.textContent.includes('Load test data'))");
-  await page.eval("[...document.querySelectorAll('button')].find((b) => b.textContent.includes('Load test data')).click(), true");
-  const csvOk = await waitFor(page, "/players imported/.test(document.querySelector('header').innerText)");
-  check("CSV test data imports in the app", csvOk, csvOk ? "" : await pageText(page));
+  // The app has no CSV import panel: its data comes from scanning FM.
+  const withImport = [];
+  for (const path of ["/players", "/players/best-xi", "/squad", "/staff", "/staff/backroom"]) {
+    await navigate(page, path);
+    await waitFor(page, "!!document.querySelector('main h1')");
+    const shown = await page.eval(
+      "!!document.querySelector('section[aria-label=Import]') || [...document.querySelectorAll('button')].some((b) => b.textContent.includes('Load test data'))",
+    );
+    if (shown) withImport.push(path);
+  }
+  check("no CSV import panel in the app", withImport.length === 0, withImport.join(", "));
   page.close();
 } catch (e) {
   check("smoke test ran", false, e.message);

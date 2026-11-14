@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 
 export const HOW_TO_PAGES = [
   { href: "/how-to-use", label: "Setup guide" },
-  { href: "/how-to-use/attribute-mode", label: "Attribute" },
-  { href: "/how-to-use/wonderkid-mode", label: "Wonderkid" },
+  { href: "/how-to-use/players", label: "Players" },
+  { href: "/how-to-use/wonderkids", label: "Wonderkids" },
 ] as const;
 
 /** Section tabs for the how-to pages. Real links, so each guide has its own URL. */

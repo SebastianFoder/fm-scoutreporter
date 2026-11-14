@@ -1,5 +1,5 @@
 /**
- * Times scans in the desktop app with Football Manager running: clicks "Scan FM" and measures until
+ * Times scans in the desktop app with Football Manager running: clicks "Scan search" and measures until
  * the scan has finished and until the screen shows the players, like a user pressing F9 and
  * waiting. Prints the reader's steps and the app's own reader/import times for each run. Uses a
  * throwaway profile, so the app's settings apply (by default a search scan: FM's Player Search must
@@ -76,10 +76,10 @@ const send = (method, params = {}) =>
 const evaluate = async (expression) =>
   (await send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true })).result?.result?.value;
 
-const scanButton = `[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Scan FM")`;
+const scanButton = `[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Scan search")`;
 for (let i = 0; i < 120 && !(await evaluate(`!!${scanButton}`)); i++) await sleep(250);
 
-// In the page: click Scan FM, note when the scan finishes, then when the header shows the players.
+// In the page: click Scan search, note when the scan finishes, then when the header shows the players.
 const oneScan = `new Promise((resolve) => {
   const t0 = performance.now();
   let finished = null, outcome = null;

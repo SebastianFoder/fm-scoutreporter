@@ -6,7 +6,7 @@ export const metadata: Metadata = pageMetadata({
   title: "Compare players",
   description:
     "Compare selected Football Manager players across highlighted attributes, with gold, silver and bronze per attribute.",
-  path: "/attribute/compare",
+  path: "/players/compare",
   noindex: true,
 });
 
