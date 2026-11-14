@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from "no
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { DEFAULT_LOAD_SCOPE, normaliseSettings } from "@scoutreporter/core/desktop/bridge";
+import { DEFAULT_LOAD_SCOPE, SNAPSHOT_NAME_MAX, cleanSnapshotName, normaliseSettings, normaliseSnapshotPatch } from "@scoutreporter/core/desktop/bridge";
 import { scanToLines } from "@scoutreporter/core/scan/db/write";
 import type { ScanFile } from "@scoutreporter/core/scan/schema";
 import { compareScanFiles, importJsonFile, importLinesFile, loadScanFile, scanMeta } from "./db-ops";
@@ -114,6 +114,60 @@ test("stores scans newest first and prunes past the retention", async () => {
 
   await store.delete(b.snapshot.id);
   assert.deepEqual((await store.list()).map((s) => s.id), [c.snapshot.id]);
+});
+
+test("starred scans are never pruned and do not count towards the retention", async () => {
+  const work = tempDir();
+  const store = new SnapshotStore(join(work, "scans"));
+  const add = async (at: string) => {
+    const scan = await importedScan(work, at);
+    return store.add(scan.target, scan, 2);
+  };
+  const a = await add("2026-11-10T10:00:00Z");
+  await store.update(a.snapshot.id, { favorite: true });
+  const b = await add("2026-11-11T10:00:00Z");
+  const c = await add("2026-11-12T10:00:00Z");
+  // Two unstarred (b, c) plus the starred one: nothing deleted yet.
+  assert.deepEqual(c.deleted, []);
+  const d = await add("2026-11-13T10:00:00Z");
+  // The oldest unstarred one goes, not the older starred one.
+  assert.deepEqual(d.deleted, [b.snapshot.id]);
+  const list = await store.list();
+  assert.deepEqual(list.map((s) => s.id), [d.snapshot.id, c.snapshot.id, a.snapshot.id]);
+  assert.equal(list[2].favorite, true);
+  assert.equal(existsSync(store.dir(a.snapshot.id)), true);
+
+  // Unstarred, it is pruned like any other on the next scan.
+  await store.update(a.snapshot.id, { favorite: false });
+  assert.equal("favorite" in (await store.list())[2], false);
+  const e = await add("2026-11-14T10:00:00Z");
+  assert.deepEqual(e.deleted.sort(), [a.snapshot.id, c.snapshot.id].sort());
+
+  // Deleting a starred scan yourself still works.
+  await store.update(e.snapshot.id, { favorite: true });
+  await store.delete(e.snapshot.id);
+  assert.deepEqual((await store.list()).map((s) => s.id), [d.snapshot.id]);
+});
+
+test("renames a stored scan; an empty name brings back the date", async () => {
+  const work = tempDir();
+  const store = new SnapshotStore(join(work, "scans"));
+  const scan = await importedScan(work, "2026-11-10T10:00:00Z");
+  const { snapshot } = await store.add(scan.target, scan, 5);
+
+  const named = await store.update(snapshot.id, { name: "  Before the   January window  " });
+  assert.equal(named.name, "Before the January window");
+  assert.equal((await store.list())[0].name, "Before the January window");
+  assert.equal((await store.update(snapshot.id, { name: "x".repeat(200) })).name?.length, SNAPSHOT_NAME_MAX);
+  assert.equal("name" in (await store.update(snapshot.id, { name: "   " })), false);
+  assert.equal("name" in (await store.update(snapshot.id, { name: null })), false);
+  await assert.rejects(store.update("2020-01-01T00-00-00Z", { name: "gone" }), /no longer stored/);
+
+  // What the renderer may send: only a string or null name and a boolean favorite.
+  assert.deepEqual(normaliseSnapshotPatch({ name: "A", favorite: true, id: "x", players: 9 }), { name: "A", favorite: true });
+  assert.deepEqual(normaliseSnapshotPatch({ name: 5, favorite: "yes" }), {});
+  assert.deepEqual(normaliseSnapshotPatch(null), {});
+  assert.equal(cleanSnapshotName(" a \n b "), "a b");
 });
 
 test("settings from older versions drop the scan mode and load limits, and keep the rest", () => {

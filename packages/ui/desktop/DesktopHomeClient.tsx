@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, FolderOpen, Trash2 } from "lucide-react";
-import type { DesktopSettings, UpdateState } from "@scoutreporter/core/desktop/bridge";
+import { AlertTriangle, CheckCircle2, FolderOpen } from "lucide-react";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
-import { scanLabel, useDesktop } from "./DesktopProvider";
+import { useSettings } from "@scoutreporter/ui/components/Settings";
+import { useDesktop } from "./DesktopProvider";
 import { ScanButton } from "./ScanButton";
+import { StoredScanRow } from "./StoredScanRow";
 
 const ERROR_TITLES: Record<string, string> = {
   "not-running": "Football Manager is not running",
@@ -33,61 +33,12 @@ function formatBytes(bytes: number): string {
 
 const n = (v: number) => v.toLocaleString("en-GB");
 
-/** A number setting that is saved when you leave the field or press Enter (not on every key). */
-/** Under "Check for updates": what the last check found. */
-function UpdateStatusLine({ update }: { update: UpdateState }) {
-  let text: string;
-  if (update.checking) text = "Checking…";
-  else if (update.error) text = update.error;
-  else if (update.available && update.latest) text = `Version ${update.latest.version} is out (you have ${update.current}): see the bar at the top.`;
-  else if (update.checkedAt) text = `You have the newest version (${update.current}).`;
-  else text = `Version ${update.current}.`;
-  return <span className={`mt-1 block text-[13px] ${update.error ? "text-red" : "text-muted"}`}>{text}</span>;
-}
-
-function NumberSetting({
-  label,
-  value,
-  min,
-  max,
-  onSave,
-  suffix,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  onSave: (value: number) => void;
-  suffix?: string;
-}) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const save = () => {
-    if (draft !== null && draft.trim() !== "" && Number.isFinite(Number(draft))) onSave(Number(draft));
-    setDraft(null);
-  };
-  return (
-    <label className="flex items-center gap-2">
-      <span className="font-semibold">{label}</span>
-      <input
-        type="number"
-        min={min}
-        max={max}
-        className="w-24 rounded-md border border-line bg-surface px-2 py-1"
-        value={draft ?? value}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={save}
-        onKeyDown={(e) => e.key === "Enter" && save()}
-      />
-      {suffix && <span className="text-muted">{suffix}</span>}
-    </label>
-  );
-}
-
-/** The desktop app's home: scan FM, the stored scans, settings and credits. */
+/** The desktop app's home: scan FM, the stored scans and credits. Its settings are in Settings > App. */
 export function DesktopHomeClient() {
   const desktop = useDesktop();
   const { state: playersState } = usePlayersData();
   const { state: staffState } = useStaffData();
+  const { openSettings } = useSettings();
   if (!desktop) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-10 text-ink">
@@ -102,7 +53,6 @@ export function DesktopHomeClient() {
   const {
     bridge,
     settings,
-    updateSettings,
     snapshots,
     activeId,
     scanning,
@@ -112,11 +62,9 @@ export function DesktopHomeClient() {
     loading,
     scan,
     loadSnapshot,
-    reloadActive,
     deleteSnapshot,
+    updateSnapshot,
     loadSample,
-    update,
-    checkForUpdate,
   } = desktop;
   const active = snapshots.find((s) => s.id === activeId) ?? null;
   const pct = progress ? Math.round(progress.progress * 100) : 0;
@@ -129,8 +77,6 @@ export function DesktopHomeClient() {
     fromScan && active && (loadedPlayers < active.players || loadedStaff < active.staff)
       ? { players: loadedPlayers, staff: loadedStaff, totalPlayers: active.players, totalStaff: active.staff }
       : null;
-  /** A setting that changes what the screens get: save it, then load the scan in use again. */
-  const applyAndReload = (patch: Partial<DesktopSettings>) => void updateSettings(patch).then(() => reloadActive());
   const hotkeyHint = settings?.hotkey ? "" : " once the hotkey is on";
   // FM's search result in the scan in use, and whether the screens were loaded from it.
   const staffFromScan = staffState.source?.snapshotId === activeId ? staffState.source : null;
@@ -156,28 +102,13 @@ export function DesktopHomeClient() {
         <span className="font-semibold text-ink">Scan search</span> (or F9{hotkeyHint}, also inside FM): open Player Search or Staff
         Search in Football Manager, set your filters, and the app takes the people FM found plus your own club.{" "}
         <span className="font-semibold text-ink">Scan save</span>: every player and staff member in the save, no search needed.
-        Every screen (Players, Best XI, Squad, Staff) works on the scan. Nothing in your game is changed.
+        Every screen (Players, Best XI, Squad, Staff) works on the scan. Nothing in your game is changed. The F9 key, hidden
+        attributes and updates are under{" "}
+        <button type="button" className="link" onClick={() => openSettings("app")}>
+          Settings
+        </button>
+        .
       </PageHeader>
-
-      {settings && (
-        <label className="panel flex items-start gap-2 px-4 py-3 text-sm">
-          <input
-            type="checkbox"
-            className="mt-1"
-            checked={!settings.hideHidden}
-            disabled={loading}
-            onChange={(e) => applyAndReload({ hideHidden: !e.target.checked })}
-          />
-          <span>
-            <span className="font-semibold">Use CA, PA and hidden attributes</span>
-            <span className="block text-[13px] text-muted">
-              On: the screens get every player&apos;s current and potential ability and Professionalism, which the Potential scores need. Off:
-              they are left out, as in a normal FM export, and Growth shows attribute changes only. The visible attributes are FM&apos;s
-              exact values either way, also for players you have not fully scouted.
-            </span>
-          </span>
-        </label>
-      )}
 
       {scanning && (
         <div className="panel px-4 py-3" role="status">
@@ -250,7 +181,8 @@ export function DesktopHomeClient() {
           <div>
             <h2 id="scans-title" className="section-title">Stored scans</h2>
             <p className="text-[13px] text-muted">
-              Every scan is kept (up to {settings?.retention ?? "…"}), so <Link href="/growth" className="link">Growth</Link> can compare them.
+              The newest {settings?.retention ?? "…"} are kept, plus starred ones, so <Link href="/growth" className="link">Growth</Link> can
+              compare them.
               {diskBytes > 0 && ` They use ${formatBytes(diskBytes)} on disk.`}
             </p>
           </div>
@@ -268,14 +200,16 @@ export function DesktopHomeClient() {
         ) : (
           <ul className="divide-y divide-line">
             {snapshots.map((s) => (
-              <li key={s.id} className="flex flex-wrap items-center gap-3 px-4 py-2.5 text-sm">
-                <div className="min-w-0 flex-1">
-                  <p className="font-semibold">
-                    {scanLabel(s)}
-                    {s.id === activeId && <span className="ml-2 rounded bg-accent/12 px-1.5 py-0.5 text-[12px] font-semibold text-accent">In use</span>}
-                    {!s.versionOk && <span className="ml-2 text-[12px] font-normal text-red">version differs</span>}
-                  </p>
-                  <p className="text-[13px] text-muted">
+              <StoredScanRow
+                key={s.id}
+                scan={s}
+                inUse={s.id === activeId}
+                loading={loading}
+                onUse={() => void loadSnapshot(s.id)}
+                onDelete={() => void deleteSnapshot(s.id)}
+                onUpdate={(patch) => updateSnapshot(s.id, patch)}
+                details={
+                  <>
                     {n(s.players)} players · {n(s.staff)} staff · {s.myClub ?? "no club"} · {s.game} {s.gameVersion ?? ""} · scanned{" "}
                     {formatTime(s.scannedAt)}
                     {s.bytes !== undefined && ` · ${formatBytes(s.bytes)}`}
@@ -286,80 +220,13 @@ export function DesktopHomeClient() {
                             ? ` · FM search: ${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}`
                             : ""
                         }`}
-                  </p>
-                </div>
-                <Button color="alt" variant="outline" size="sm" disabled={s.id === activeId || loading} onClick={() => void loadSnapshot(s.id)}>
-                  Use
-                </Button>
-                <Button
-                  color="red"
-                  variant="ghost"
-                  size="sm"
-                  aria-label={`Delete ${scanLabel(s)}`}
-                  icon={<Trash2 className="h-4 w-4" aria-hidden />}
-                  onClick={() => void deleteSnapshot(s.id)}
-                />
-              </li>
+                  </>
+                }
+              />
             ))}
           </ul>
         )}
       </section>
-
-      {settings && (
-        <section className="panel space-y-3 px-4 py-3" aria-labelledby="settings-title">
-          <h2 id="settings-title" className="section-title">Settings</h2>
-          <label className="flex items-start gap-2 text-sm">
-            <input type="checkbox" className="mt-1" checked={settings.hotkey} onChange={(e) => void updateSettings({ hotkey: e.target.checked })} />
-            <span>
-              <span className="font-semibold">F9 scans your search from anywhere</span>
-              <span className="block text-[13px] text-muted">While the app runs, F9 does Scan search, also inside FM. Other apps do not get F9 meanwhile.</span>
-            </span>
-          </label>
-          <div className="flex flex-wrap items-center gap-4 text-sm">
-            <label className="flex items-center gap-2">
-              <span className="font-semibold">Database</span>
-              <select
-                className="rounded-md border border-line bg-surface px-2 py-1"
-                value={settings.database}
-                onChange={(e) => void updateSettings({ database: e.target.value as typeof settings.database })}
-              >
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-                <option value="both">Both</option>
-              </select>
-            </label>
-            <NumberSetting
-              label="Keep"
-              value={settings.retention}
-              min={1}
-              max={500}
-              suffix="scans (a search is a few MB, a whole save about 140 MB)"
-              onSave={(retention) => void updateSettings({ retention })}
-            />
-          </div>
-          <div className="flex flex-wrap items-start justify-between gap-3 border-t border-line pt-3">
-            <label className="flex items-start gap-2 text-sm">
-              <input
-                type="checkbox"
-                className="mt-1"
-                checked={settings.checkUpdates}
-                onChange={(e) => void updateSettings({ checkUpdates: e.target.checked })}
-              />
-              <span>
-                <span className="font-semibold">Check for updates</span>
-                <span className="block text-[13px] text-muted">
-                  Asks GitHub for the newest version when the app starts and every few hours. Nothing about you or your
-                  save is sent. Updating keeps your settings, scans, weights and formations.
-                </span>
-                {update && <UpdateStatusLine update={update} />}
-              </span>
-            </label>
-            <Button size="sm" color="alt" variant="outline" disabled={!update || update.checking} onClick={() => void checkForUpdate()}>
-              {update?.checking ? "Checking…" : "Check now"}
-            </Button>
-          </div>
-        </section>
-      )}
 
       <section className="panel space-y-1.5 px-4 py-3 text-[13px] text-muted" aria-labelledby="about-title">
         <h2 id="about-title" className="section-title text-ink">About</h2>

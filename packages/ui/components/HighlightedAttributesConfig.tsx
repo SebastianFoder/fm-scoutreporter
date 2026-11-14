@@ -4,13 +4,11 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type Dispatch,
   type SetStateAction,
 } from "react";
 import type { AttributeKey } from "@scoutreporter/core/types/weights";
-import { Modal } from "./Modal";
 import { Button } from "./Button";
 
 export interface HighlightProfile {
@@ -176,13 +174,8 @@ function titleCaseFromCamel(key: string) {
     .join(" ");
 }
 
-export function HighlightConfigModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+/** The Columns tab in Settings: which attributes the player list and compare show as columns. */
+export function HighlightSettings() {
   const { state, setState } = useHighlightContext();
   const { activeId, profiles } = state;
 
@@ -270,26 +263,10 @@ export function HighlightConfigModal({
     );
   };
 
-  const footer = useMemo(
-    () => (
-      <p className="text-[13px] text-muted">
-        Selected attributes appear as highlighted columns in the player list and
-        comparison.
-      </p>
-    ),
-    [],
-  );
-
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Highlighted Attributes"
-      description="Choose which attributes show as highlighted columns, and save sets as profiles."
-      placement="side"
-      footer={footer}
-    >
       <div className="space-y-4">
+      <p className="text-[13px] text-muted">The attributes the player list and compare show as columns. Save different sets as profiles.</p>
+
         <div className="space-y-2">
           <label className="flex flex-col gap-1 text-[13px] text-muted">
             Profile
@@ -345,6 +322,5 @@ export function HighlightConfigModal({
           {renderGroup("Goalkeeping", GOALKEEPING_KEYS)}
         </div>
       </div>
-    </Modal>
   );
 }

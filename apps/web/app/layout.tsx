@@ -11,6 +11,7 @@ import { HighlightedAttributesProvider } from "@scoutreporter/ui/components/High
 import { SiteHeader } from "@scoutreporter/ui/components/SiteHeader";
 import { DesktopProvider } from "@scoutreporter/ui/desktop/DesktopProvider";
 import { PlayerPanelProvider } from "@scoutreporter/ui/components/PlayerPanel";
+import { SettingsProvider } from "@scoutreporter/ui/components/Settings";
 import {
   AUTHOR,
   SITE_DESCRIPTION,
@@ -98,6 +99,8 @@ export default function RootLayout({
                     <DesktopProvider>
                     {/* Clicking a player opens them in a side panel (PlayerLink). */}
                     <PlayerPanelProvider>
+                    {/* Settings (the gear in the header): weights, columns, look, and the desktop app's own. */}
+                    <SettingsProvider>
                     <div className="flex min-h-screen flex-col">
                       <SiteHeader />
                       <main className="flex-1">{children}</main>
@@ -122,6 +125,7 @@ export default function RootLayout({
                         </div>
                       </footer>
                     </div>
+                    </SettingsProvider>
                     </PlayerPanelProvider>
                     </DesktopProvider>
                   </HighlightedAttributesProvider>

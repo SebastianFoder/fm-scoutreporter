@@ -5,7 +5,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, rename, rm, writeFile, copyFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { SnapshotInfo } from "@scoutreporter/core/desktop/bridge";
+import { cleanSnapshotName, type SnapshotInfo, type SnapshotPatch } from "@scoutreporter/core/desktop/bridge";
 import type { ScanMeta } from "@scoutreporter/core/scan/schema";
 
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$/;
@@ -68,7 +68,8 @@ export class SnapshotStore {
 
   /**
    * Move a finished scan database into the store and delete the oldest scans beyond `retention`.
-   * Returns the new snapshot and the ids that were deleted.
+   * Starred scans are never deleted and do not count towards it. Returns the new snapshot and the
+   * ids that were deleted.
    */
   async add(
     scanFile: string,
@@ -103,11 +104,37 @@ export class SnapshotStore {
       ...(meta.scope === "search" && { scope: "search" as const }),
     };
     const next = [snapshot, ...list].sort((a, b) => b.scannedAt.localeCompare(a.scannedAt));
-    const keep = next.slice(0, Math.max(1, retention));
-    const deleted = next.slice(keep.length).map((s) => s.id);
+    const deleted: string[] = [];
+    let unstarred = 0;
+    const keep = next.filter((s) => {
+      if (s.favorite) return true;
+      if (++unstarred <= Math.max(1, retention)) return true;
+      deleted.push(s.id);
+      return false;
+    });
     for (const old of deleted) await rm(this.dir(old), REMOVE);
     await this.writeIndex(keep);
     return { snapshot, deleted };
+  }
+
+  /** Rename or star a stored scan. Returns it as stored. */
+  async update(id: string, patch: SnapshotPatch): Promise<SnapshotInfo> {
+    const index = await this.readIndex();
+    const at = index.findIndex((s) => s.id === id);
+    if (at < 0) throw new Error("This scan is no longer stored.");
+    const next: SnapshotInfo = { ...index[at] };
+    if (patch.name !== undefined) {
+      const name = cleanSnapshotName(patch.name);
+      if (name) next.name = name;
+      else delete next.name;
+    }
+    if (patch.favorite !== undefined) {
+      if (patch.favorite) next.favorite = true;
+      else delete next.favorite;
+    }
+    index[at] = next;
+    await this.writeIndex(index);
+    return next;
   }
 
   async delete(id: string): Promise<void> {

@@ -17,6 +17,7 @@ import type {
   ScanProgress,
   ScanScope,
   SnapshotInfo,
+  SnapshotPatch,
   UpdateState,
 } from "@scoutreporter/core/desktop/bridge";
 import { SCAN_STAFF_COLUMNS, scanPlayers, scanStaff } from "@scoutreporter/core/scan/convert";
@@ -61,7 +62,8 @@ function withoutHidden(p: PlayerAttributes): PlayerAttributes {
   return { ...p, currentAbility: null, potentialAbility: null, professionalism: null };
 }
 
-export function scanLabel(s: Pick<SnapshotInfo, "gameDate" | "scannedAt" | "sample">): string {
+export function scanLabel(s: Pick<SnapshotInfo, "gameDate" | "scannedAt" | "sample" | "name">): string {
+  if (s.name) return s.name;
   if (s.sample) return "Sample scan";
   const date = s.gameDate ?? s.scannedAt.slice(0, 10);
   return `Scan of ${new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`;
@@ -88,6 +90,8 @@ type DesktopContextValue = {
   /** Load the snapshot in use again (after changing the limits or hidden attributes). */
   reloadActive: () => Promise<void>;
   deleteSnapshot: (id: string) => Promise<void>;
+  /** Rename (empty name: back to the date) or star a stored scan. */
+  updateSnapshot: (id: string, patch: SnapshotPatch) => Promise<void>;
   loadSample: () => Promise<void>;
   /** Newer versions: what the last check found, and a running update. Null until the app answers. */
   update: UpdateState | null;
@@ -172,7 +176,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         const info = snapshots.find((s) => s.id === id);
         const source: ImportSource = {
           kind: "scan",
-          label: scanLabel({ gameDate: scan.meta.gameDate, scannedAt: scan.meta.scannedAt, sample: info?.sample }),
+          label: scanLabel({ gameDate: scan.meta.gameDate, scannedAt: scan.meta.scannedAt, sample: info?.sample, name: info?.name }),
           snapshotId: id,
           scannedAt: scan.meta.scannedAt,
           gameDate: scan.meta.gameDate,
@@ -263,6 +267,14 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
     [bridge, refreshSnapshots],
   );
 
+  const updateSnapshot = useCallback(
+    async (id: string, patch: SnapshotPatch) => {
+      await bridge.updateSnapshot(id, patch);
+      await refreshSnapshots();
+    },
+    [bridge, refreshSnapshots],
+  );
+
   const updateSettings = useCallback(
     async (patch: Partial<DesktopSettings>) => {
       setSettings(await bridge.setSettings(patch));
@@ -287,6 +299,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       loadSnapshot,
       reloadActive,
       deleteSnapshot,
+      updateSnapshot,
       loadSample,
       update,
       checkForUpdate,
@@ -308,6 +321,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
       loadSnapshot,
       reloadActive,
       deleteSnapshot,
+      updateSnapshot,
       loadSample,
       update,
       checkForUpdate,
