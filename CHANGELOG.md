@@ -1,3 +1,11 @@
+# [1.22.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.21.0...v1.22.0) (2026-11-14)
+
+
+### Features
+
+* **desktop:** rename and star stored scans ([de7ece9](https://github.com/SebastianFoder/fm-scoutreporter/commit/de7ece9429b52362a6bf4a85474800ce9f5c258d))
+* one Settings panel for weights, columns, look and the desktop app ([d25b542](https://github.com/SebastianFoder/fm-scoutreporter/commit/d25b5421ea2437e91dd20c2a54c819794ed526f4))
+
 # [1.21.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.20.0...v1.21.0) (2026-11-14)
 
 
