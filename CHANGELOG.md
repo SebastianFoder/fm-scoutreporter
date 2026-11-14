@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.23.0...v1.24.0) (2026-11-14)
+
+
+### Features
+
+* FM27 role weights from FM Match Lab's position study, WB/6 split into WB and DM ([5c50b77](https://github.com/SebastianFoder/fm-scoutreporter/commit/5c50b7744d3775c06a24d7542b8c5d172f8ff0ac))
+
 # [1.23.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.22.0...v1.23.0) (2026-11-14)
 
 
