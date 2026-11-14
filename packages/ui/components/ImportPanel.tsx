@@ -8,7 +8,7 @@ import { DESKTOP_BUILD } from "../desktop/target";
 /**
  * CSV import row: title, one-line help, and Clear / Load test data / Choose file. The data side
  * (parsing, storage) belongs to the caller: `onLoad` returns a message to show, or null when all went well.
- * Not shown in the desktop app, where the data comes from Scan FM.
+ * Not shown in the desktop app, where the data comes from scanning FM.
  */
 export function ImportPanel({
   title,

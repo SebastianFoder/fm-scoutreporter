@@ -237,7 +237,7 @@ export default function BestXiClient() {
         <CsvImportPanel testFixture="attribute" onImported={() => update({ excluded: [] })} />
 
         {players.length === 0 && (
-          <NoImport desktop={<>No players yet. In FM, open a Player Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
+          <NoImport desktop={<>No players yet. In FM, open a Player Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
             No CSV imported yet. Choose a CSV file above, or load the test data to look around.
           </NoImport>
         )}

@@ -41,9 +41,9 @@ The screenshots are made from Storybook with `bun run screenshots` (sample data,
 
 ## Desktop app (Windows)
 
-The desktop app has every screen of the website, plus **Scan FM**: open a Player Search (or Staff
+The desktop app has every screen of the website, plus **Scan search**: open a Player Search (or Staff
 Search) in a running FM, press **F9**, and the players it found, with your own club, are in the app
-a couple of seconds later. No view or CSV export needed, and it includes real CA, PA and hidden
+a couple of seconds later. **Scan save** reads the whole save instead. No view or CSV export needed, and it includes real CA, PA and hidden
 attributes (one switch turns those off). It only reads FM's memory; it never changes the game or
 your save.
 

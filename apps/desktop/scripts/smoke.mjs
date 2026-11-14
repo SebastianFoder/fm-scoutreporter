@@ -113,8 +113,8 @@ try {
   );
   check("Node is not exposed to the page", (await page.eval("typeof require === 'undefined' && typeof process === 'undefined'")) === true);
 
-  // A scan with the default setting keeps only FM's search and your club.
-  const firstScan = await page.eval("window.scoutReporterDesktop.scan()");
+  // Scan search (also F9) keeps only FM's search and your club.
+  const firstScan = await page.eval("window.scoutReporterDesktop.scan('search')");
   const fmRunning = firstScan?.ok === true || firstScan?.code === "no-search";
   if (firstScan?.ok) {
     // FM is running with a search result: the app took that search.
@@ -132,16 +132,14 @@ try {
     check("scanning without FM fails cleanly", firstScan && firstScan.ok === false && typeof firstScan.message === "string", firstScan?.code);
   }
   if (fmRunning) {
-    // The whole save, as before the search mode existed.
-    await page.eval("window.scoutReporterDesktop.setSettings({ scanMode: 'full' })");
-    const whole = await page.eval("window.scoutReporterDesktop.scan()");
+    // Scan save: the whole save.
+    const whole = await page.eval("window.scoutReporterDesktop.scan('full')");
     check(
       "FM is running: a whole-save scan is read and stored as a scan database",
       whole?.ok === true && whole.snapshot.scope !== "search" && whole.snapshot.players > 1000 && existsSync(join(profile, "scans", whole.snapshot.id, "scan.sqlite")),
       whole?.ok ? `${whole.snapshot.players} players, ${whole.snapshot.staff} staff, ${Math.round((whole.snapshot.bytes ?? 0) / 1e6)} MB` : whole?.message,
     );
     if (whole?.ok) await page.eval(`window.scoutReporterDesktop.deleteSnapshot(${JSON.stringify(whole.snapshot.id)})`);
-    await page.eval("window.scoutReporterDesktop.setSettings({ scanMode: 'search' })");
   }
 
   const stored = await page.eval("window.scoutReporterDesktop.loadSampleScan()");
@@ -191,7 +189,7 @@ try {
   const hidden = inUse && (await waitFor(page, `${listColumn("vs Age")} && !${listColumn("Potential")}`));
   check("hiding hidden attributes removes CA/PA", hidden, hidden ? "" : inUse ? await pageText(page) : "the scan never showed as in use");
 
-  // The app has no CSV import panel: its data comes from Scan FM.
+  // The app has no CSV import panel: its data comes from scanning FM.
   const withImport = [];
   for (const path of ["/players", "/players/best-xi", "/squad", "/staff", "/staff/backroom"]) {
     await navigate(page, path);

@@ -133,7 +133,7 @@ export function GrowthClient() {
 
       {snapshots.length < 2 ? (
         <Notice title="Two scans needed">
-          Growth compares two scans. You have {snapshots.length}. <Link href="/desktop" className="link">Scan FM</Link> again later in your
+          Growth compares two scans. You have {snapshots.length}. <Link href="/desktop" className="link">Scan</Link> again later in your
           save.
         </Notice>
       ) : (

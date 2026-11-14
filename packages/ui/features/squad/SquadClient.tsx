@@ -197,7 +197,7 @@ export default function SquadClient() {
         />
 
         {players.length === 0 && (
-          <NoImport desktop={<>No squad yet. Every Scan FM reads your own club&apos;s players too.</>}>
+          <NoImport desktop={<>No squad yet. Every scan reads your own club&apos;s players too.</>}>
             <p>No squad imported yet. Choose your squad CSV above, or load the test data to look around.</p>
             {scoutingCount > 0 && scouting.state.csvText && (
               <p className="mt-2">

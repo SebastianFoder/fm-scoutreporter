@@ -16,7 +16,7 @@ const version = process.argv.find((a) => a.startsWith("--sr-version="))?.slice("
 
 const bridge: DesktopBridge = {
   version,
-  scan: () => ipcRenderer.invoke(IPC.scan),
+  scan: (scope) => ipcRenderer.invoke(IPC.scan, scope),
   onScanProgress: (listener) => subscribe<ScanProgress>(IPC.scanProgress, listener),
   onScanFinished: (listener) => subscribe<ScanOutcome>(IPC.scanFinished, listener),
   listSnapshots: () => ipcRenderer.invoke(IPC.listSnapshots),

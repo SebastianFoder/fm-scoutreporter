@@ -103,7 +103,7 @@ Doubtful), which FM computes itself and stores nowhere per player. The reader ma
 that result with `inSearch` and counts them in `meta.searchPlayers` / `meta.searchStaff`: FM's own
 answer to "would he join my club", not an estimate. The counts are 0 when FM had no search result.
 
-With `--only-search` (the app's default scan mode, `DesktopSettings.scanMode` "search") the reader
+With `--only-search` (the app's Scan search button and F9) the reader
 writes only those people plus your own club (playing there, or owned by it and out on loan) and
 sets `meta.scope` to "search"; it refuses to write a scan when FM has no search result. Without the
 flag everyone is written (`meta.scope` "full") and the app can still load only the search from it

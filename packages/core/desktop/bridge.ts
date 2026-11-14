@@ -58,8 +58,8 @@ export interface LoadScope {
   maxStaff: number;
   /**
    * From a whole-save scan, load only people from FM's search result (plus your club), when the
-   * scan has one. Not a stored setting: it follows the scan mode (see loadScopeFor). A scan that
-   * kept only the search is loaded whole either way.
+   * scan has one. Not a stored setting: the app loads a whole-save scan by the limits (see
+   * loadScopeFor). A scan that kept only the search is loaded whole either way.
    */
   onlySearch: boolean;
 }
@@ -117,18 +117,13 @@ export interface GrowthPage {
 export interface DesktopSettings {
   /** Scans to keep; older ones are deleted after each new scan. */
   retention: number;
-  /** F9 starts a scan from anywhere (also inside FM) while the app runs. */
+  /** F9 starts a search scan from anywhere (also inside FM) while the app runs. */
   hotkey: boolean;
   /** Which half of FM's database to scan. */
   database: "men" | "women" | "both";
   /** Hide CA, PA and hidden attributes (for players who consider them cheating). */
   hideHidden: boolean;
-  /**
-   * What a scan keeps. "search" (the default): your FM search and your club, like an export of the
-   * search on screen. "full": the whole save, of which the screens load the part within `load`.
-   */
-  scanMode: ScanScope;
-  /** How much the screens load from a scan too big for the window. */
+  /** How much the screens load from a whole-save scan, which is too big for the window. */
   load: LoadLimits;
   /** Ask GitHub for a newer version when the app starts and every few hours. */
   checkUpdates: boolean;
@@ -139,14 +134,13 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   hotkey: true,
   database: "men",
   hideHidden: false,
-  scanMode: "search",
   load: DEFAULT_LOAD_LIMITS,
   checkUpdates: true,
 };
 
-/** What the screens load with these settings: in search mode, only FM's search and your club. */
-export function loadScopeFor(settings: Pick<DesktopSettings, "scanMode" | "load">): LoadScope {
-  return { ...settings.load, onlySearch: settings.scanMode === "search" };
+/** What the screens load with these settings: a search scan whole, a whole-save scan by the limits. */
+export function loadScopeFor(settings: Pick<DesktopSettings, "load">): LoadScope {
+  return { ...settings.load, onlySearch: false };
 }
 
 export interface ScanProgress {
@@ -185,8 +179,11 @@ export interface UpdateState {
 export interface DesktopBridge {
   /** The desktop app's version. */
   version: string;
-  /** Run the reader against FM. Resolves when the scan is stored (or failed). */
-  scan(): Promise<ScanOutcome>;
+  /**
+   * Run the reader against FM. "search": keep FM's Player Search or Staff Search result and your
+   * club (what F9 does). "full": keep the whole save. Resolves when the scan is stored (or failed).
+   */
+  scan(scope: ScanScope): Promise<ScanOutcome>;
   /** Progress of a running scan (also one started with F9). Returns an unsubscribe. */
   onScanProgress(listener: (progress: ScanProgress) => void): () => void;
   /** Every finished scan, including F9 scans. Returns an unsubscribe. */
@@ -264,7 +261,6 @@ export function normaliseSettings(value: unknown): DesktopSettings {
     hotkey: typeof v.hotkey === "boolean" ? v.hotkey : DEFAULT_DESKTOP_SETTINGS.hotkey,
     database: v.database === "women" || v.database === "both" ? v.database : "men",
     hideHidden: v.hideHidden === true,
-    scanMode: v.scanMode === "full" ? "full" : "search",
     load: normaliseLoadLimits(v.load),
     checkUpdates: v.checkUpdates !== false,
   };

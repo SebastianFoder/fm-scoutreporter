@@ -32,7 +32,7 @@ export default async function DownloadPage() {
     <div className="mx-auto max-w-3xl space-y-6 px-5 py-8 text-ink md:py-10">
       <JsonLd data={breadcrumbLd([{ name: "Desktop app", path: "/download" }])} />
       <PageHeader title="Scout Reporter for Windows">
-        Every screen of this website, plus <span className="font-semibold text-ink">Scan FM</span>: set up a Player
+        Every screen of this website, plus <span className="font-semibold text-ink">Scan search</span>: set up a Player
         Search in Football Manager, press <kbd className={kbd}>F9</kbd>, and the players FM found, with your own
         squad, are in Players, Best XI, Squad and Staff a few seconds later. No view files and no CSV
         export.
@@ -114,8 +114,9 @@ export default async function DownloadPage() {
             for example Player&apos;s interest: Interested, to see only players who would join you.
           </li>
           <li>
-            Press <kbd className={kbd}>F9</kbd> (it works inside FM) or <span className="font-semibold">Scan FM</span>{" "}
-            in the app. The players from the search and your own club appear in every screen.
+            Press <kbd className={kbd}>F9</kbd> (it works inside FM) or <span className="font-semibold">Scan search</span>{" "}
+            in the app. The players from the search and your own club appear in every screen.{" "}
+            <span className="font-semibold">Scan save</span> reads the whole save instead, no search needed.
           </li>
           <li>
             Switch <span className="font-semibold">Use CA, PA and hidden attributes</span> off if you would rather not

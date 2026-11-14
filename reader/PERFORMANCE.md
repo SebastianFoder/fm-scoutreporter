@@ -24,7 +24,7 @@ diagnostics.txt, and in the `timings` object of the `done` line.
 
 The app adds its own part to the scan log and diagnostics.txt: `App: reader ... (start to finish),
 import ...`. `node apps/desktop/scripts/time-scan.mjs` (or `bun run desktop:time-scan`) times
-scans in the built app, from clicking Scan FM to the players on screen.
+scans in the built app, from clicking Scan search to the players on screen.
 
 Copying FM's memory is cheap: about 0.5 s for 5 to 9 GB with 8 threads. A single small read costs
 about 0.8 µs, because every one goes through Windows (ReadProcessMemory), and reading a person took

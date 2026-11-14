@@ -2,7 +2,7 @@
 
 A small Windows program that reads the database of a running Football Manager 27 (or 26) from
 `fm.exe`'s memory and writes it as one JSON file. The desktop app (`apps/desktop`) runs it when you
-press **Scan FM** or F9. Adapted from [FMSuperScout](https://github.com/mavarobli/FMSuperScout) (MIT),
+press **Scan search** (or F9) or **Scan save**. Adapted from [FMSuperScout](https://github.com/mavarobli/FMSuperScout) (MIT),
 see `UPSTREAM.md`.
 
 It only asks Windows for read access to `fm.exe` (`PROCESS_VM_READ | PROCESS_QUERY_INFORMATION`)

@@ -151,7 +151,7 @@ export default function BackroomClient() {
         <StaffImportPanel onImported={() => update({ excluded: [] })} />
 
         {staff.length === 0 && (
-          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
+          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
             No staff imported yet. Choose a staff CSV above, or load the test data to look around.
           </NoImport>
         )}

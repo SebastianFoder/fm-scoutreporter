@@ -195,7 +195,7 @@ export default function StaffClient() {
         <StaffImportPanel onImported={resetPage} />
 
         {staff.length === 0 && (
-          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan FM.</>}>
+          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
             No staff imported yet. In FM, open a staff search, import the Staff view, select the staff and export
             a CSV, then import it above.
           </NoImport>
