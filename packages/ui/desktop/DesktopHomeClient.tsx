@@ -240,7 +240,11 @@ export function DesktopHomeClient() {
           by mavarobli (MIT licence). Thank you!
         </p>
         <p>
-          Scoring weights from{" "}
+          FM27 role weights from{" "}
+          <a href="https://github.com/caiograco289/Fm-Match-Lab" className="link" target="_blank" rel="noreferrer">
+            FM Match Lab
+          </a>
+          ; age benchmarks, CA costs and staff weights from{" "}
           <a href="https://github.com/jamiebolden/fm-scoring" className="link" target="_blank" rel="noreferrer">
             jamiebolden/fm-scoring
           </a>

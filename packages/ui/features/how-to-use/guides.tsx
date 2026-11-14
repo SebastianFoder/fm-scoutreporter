@@ -578,8 +578,31 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 
         <InfoBox label="FM27 benchmark profiles">
           <p>
-            The weights come with five role profiles (Centre-back, Wing-back / DM (6),
-            Attacker / Winger (10), Striker (9) and Goalkeeper) taken from{" "}
+            The weights come with six role profiles (Centre-back, Full-back / Wing-back, Defensive /
+            Central midfielder, Attacker / Winger (10), Striker (9) and Goalkeeper) built from{" "}
+            <a
+              href="https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md"
+              target="_blank"
+              rel="noreferrer"
+              className="link"
+            >
+              FM Match Lab&apos;s Study 13b
+            </a>
+            , which measured what one level of each attribute is worth in each position over 50,000 FM27
+            matches. Each role keeps the attributes the study confirms, scaled so the most valuable one
+            weighs 10: pace and acceleration everywhere, jumping reach mostly for centre-backs and
+            strikers, finishing and strength for forwards, agility and reflexes for keepers. Most
+            technical and mental attributes barely register in the study, so the roles leave them out.
+            Purity&apos;s{" "}
+            <a
+              href="https://fm-arena.com/threads/attribute-importance-by-position-in-fm27-a-test-on-my-own-tactic.125/"
+              target="_blank"
+              rel="noreferrer"
+              className="link"
+            >
+              FM-Arena position test
+            </a>{" "}
+            on another tactic finds the same pattern. Before v1.24 the roles used{" "}
             <a
               href="https://github.com/jamiebolden/fm-scoring"
               target="_blank"
@@ -588,8 +611,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
             >
               fm-scoring
             </a>
-            &apos;s FM27 weights, which are tuned toward harvestgreen22&apos;s FM27 match-engine
-            attribute test (pace, acceleration and jumping reach matter most). Edit them freely;
+            &apos;s FM27 weights, which still supply the vs Age table. Edit them freely;
             &ldquo;Reset to benchmark&rdquo; restores the originals.
           </p>
         </InfoBox>

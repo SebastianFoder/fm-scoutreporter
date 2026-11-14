@@ -77,7 +77,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "What are the FM27 benchmark role profiles?",
-        a: "Five weight profiles, Centre-back, Wing-back / DM (6), Attacker / Winger (10), Striker (9) and Goalkeeper, taken from fm-scoring's FM27 weights. They are tuned toward an FM27 match-engine attribute test, where pace, acceleration and jumping reach matter most. You can edit them and reset them to the benchmark at any time.",
+        a: "Six weight profiles, Centre-back, Full-back / Wing-back, Defensive / Central midfielder, Attacker / Winger (10), Striker (9) and Goalkeeper, built from FM Match Lab's Study 13b, which measured what each attribute is worth in each position over 50,000 FM27 matches. Pace and acceleration lead everywhere, jumping reach counts most for centre-backs and strikers, agility and reflexes for keepers, and most technical and mental attributes barely register. You can edit them and reset them to the benchmark at any time. The vs Age table still comes from fm-scoring, whose role weights the app used before.",
       },
       {
         q: "What do the S++ to F grades mean?",

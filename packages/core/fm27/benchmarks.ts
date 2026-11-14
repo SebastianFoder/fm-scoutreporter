@@ -1,14 +1,38 @@
 import type { AttributeKey, AttributeWeights, WeightProfile } from "@scoutreporter/core/types/weights";
 
 /**
- * FM27 role weights benchmarked by jamiebolden/fm-scoring (`weights/fm27.toml`), which are tuned toward
- * harvestgreen22's FM27 match-engine attribute test (fm-arena thread 20925).
+ * FM27 role weights from FM Match Lab Study 13b (caiograco289/Fm-Match-Lab, "what is an attribute worth in each
+ * position?", 50,000 matches with every starter's attributes moved ±5 at random, one regression per position).
  * Role score = Σ(attribute × weight) / Σ(weight), on FM's 1–20 scale (linear weighting).
  *
- * The goalkeeper weights are doubled from the source (which uses 0.5 steps) so they stay whole numbers;
- * the ratios, and therefore the scores, are unchanged.
+ * Rule (recomputed from the study's numbers in `match-lab.ts` by `fm27.test.ts`):
+ * 1. value = expected points per season for +1 level in one player of the position; Strength and Finishing, which
+ *    work through conversion rather than chances, use goal difference × 0.6 points per goal; the keeper uses points
+ *    (his shot-stopping changes goals, not xG);
+ * 2. keep cells the study confirms (|t| > 2 in both random halves; for the keeper, |t| > 2) worth at least 0.04;
+ * 3. scale each position so its top attribute = 10, round half up.
+ * Study positions map to roles: CB → CB, FB → WB, DM → DM, AM → 10, ST → 9, GK → GK.
+ *
+ * Source values per season per level (13b; † = goal difference × 0.6; the keeper in points):
+ *          Acc   Pace  JumpR Stam  Antic Bal   Drib  Conc  Vision Str†  Fin†
+ *   ST     .20   .21   .19   .07   .10   .09   .05   .06   .02    .10   .13
+ *   AM     .15   .17   .10   .10   .07  (.03)  .07  (.03) (.01)   .08  (.04)
+ *   DM     .15   .12  (.06)  .09   .07  (.04) (.02) (.02)  .05    .09  (.02)
+ *   FB     .17   .17   .08   .10   .07   .06   .08   .07  (.00)  (.05) (.00)
+ *   CB     .20   .13   .32   .08   .10   .10  (.03)  .05  (.03)   .10  (.02)
+ *   GK     Agility .58, Reflexes .50, Aerial Reach .16, Acceleration .16, Determination .12 (t 2.8);
+ *          Handling, Concentration, Positioning, One on Ones under t 2.
+ * Brackets: dropped (not confirmed or under 0.04). Every other outfield attribute (Passing, Technique, Tackling,
+ * Marking, Positioning, Decisions, Composure, First Touch, Off the Ball, Work Rate, ...) is within ±0.04 in every
+ * position in the study, so no role weights it.
+ *
+ * Caveats from the studies: one tactic (Gegenpress with two strikers; a Catenaccio run is pending), averages over
+ * ±5 around levels of 6-18; Study 12 shows Work Rate is a floor (costly below 9, worth nothing above) and Jumping
+ * Reach pays little below 9 and most from 12 to 18, which a linear weight can't express. Study 14b found the same
+ * values in every English league tier. Purity's FM-Arena test on a 3-4-2-1 (200,000 matches) correlates 0.80 with
+ * 13b. Up to v1.23 the app used jamiebolden/fm-scoring's weights instead (`fm-scoring-weights.ts`).
  */
-export type Fm27Role = "CB" | "WB/6" | "10" | "9" | "GK";
+export type Fm27Role = "CB" | "WB" | "DM" | "10" | "9" | "GK";
 
 export interface Fm27RoleDef {
   role: Fm27Role;
@@ -23,113 +47,92 @@ export const FM27_ROLES: Fm27RoleDef[] = [
     role: "CB",
     profileId: "fm27-cb",
     name: "FM27 · Centre-back",
-    description: "fm-scoring FM27 benchmark: CB",
+    description: "FM Match Lab FM27 benchmark (Study 13b): centre-backs",
     weights: {
-      acceleration: 5,
+      jumpingReach: 10,
+      acceleration: 6,
+      pace: 4,
       anticipation: 3,
-      composure: 2,
-      decisions: 1,
-      firstTouch: 1,
-      heading: 3,
-      jumpingReach: 5,
-      pace: 5,
-      passing: 2,
-      positioning: 2,
-      stamina: 1,
+      balance: 3,
+      stamina: 3,
       strength: 3,
-      tackling: 1,
-      workRate: 1,
+      concentration: 2,
     },
   },
   {
-    role: "WB/6",
-    profileId: "fm27-wb6",
-    name: "FM27 · Wing-back / DM (6)",
-    description: "fm-scoring FM27 benchmark: WB/6 (full-backs, wing-backs, holding midfielders)",
+    role: "WB",
+    profileId: "fm27-wb",
+    name: "FM27 · Full-back / Wing-back",
+    description: "FM Match Lab FM27 benchmark (Study 13b): full-backs and wing-backs",
     weights: {
-      acceleration: 5,
-      anticipation: 3,
-      composure: 1,
-      decisions: 1,
-      dribbling: 3,
-      firstTouch: 1,
-      pace: 5,
-      passing: 2,
-      positioning: 2,
-      stamina: 4,
-      strength: 1,
-      tackling: 1,
-      teamWork: 2,
-      workRate: 3,
+      acceleration: 10,
+      pace: 10,
+      stamina: 6,
+      dribbling: 5,
+      jumpingReach: 5,
+      anticipation: 4,
+      balance: 4,
+      concentration: 4,
+    },
+  },
+  {
+    role: "DM",
+    profileId: "fm27-dm",
+    name: "FM27 · Defensive / Central midfielder",
+    description: "FM Match Lab FM27 benchmark (Study 13b): defensive midfielders, also used for central midfielders",
+    weights: {
+      acceleration: 10,
+      pace: 8,
+      stamina: 6,
+      strength: 6,
+      anticipation: 5,
+      vision: 3,
     },
   },
   {
     role: "10",
     profileId: "fm27-10",
     name: "FM27 · Attacker / Winger (10)",
-    description: "fm-scoring FM27 benchmark: 10 (attacking midfielders and wingers)",
+    description: "FM Match Lab FM27 benchmark (Study 13b): attacking midfielders and wingers",
     weights: {
-      acceleration: 5,
-      anticipation: 3,
-      composure: 2,
-      decisions: 1,
-      dribbling: 5,
-      finishing: 1,
-      firstTouch: 1,
-      offTheBall: 2,
-      pace: 5,
-      passing: 2,
-      stamina: 2,
-      strength: 1,
-      teamWork: 1,
-      workRate: 2,
+      pace: 10,
+      acceleration: 9,
+      jumpingReach: 6,
+      stamina: 6,
+      strength: 5,
+      anticipation: 4,
+      dribbling: 4,
     },
   },
   {
     role: "9",
     profileId: "fm27-9",
     name: "FM27 · Striker (9)",
-    description: "fm-scoring FM27 benchmark: 9 (strikers)",
+    description: "FM Match Lab FM27 benchmark (Study 13b): strikers",
     weights: {
-      acceleration: 5,
-      anticipation: 3,
-      composure: 2,
-      decisions: 1,
-      dribbling: 3,
-      finishing: 3,
-      firstTouch: 1,
-      heading: 1,
-      jumpingReach: 5,
-      offTheBall: 2,
-      pace: 5,
-      stamina: 2,
-      strength: 1,
-      teamWork: 1,
-      workRate: 2,
+      acceleration: 10,
+      pace: 10,
+      jumpingReach: 9,
+      finishing: 6,
+      anticipation: 5,
+      strength: 5,
+      balance: 4,
+      concentration: 3,
+      stamina: 3,
+      dribbling: 2,
     },
   },
   {
     role: "GK",
     profileId: "fm27-gk",
     name: "FM27 · Goalkeeper",
-    description: "fm-scoring FM27 benchmark: GK",
+    description: "FM Match Lab FM27 benchmark (Study 13b): goalkeepers",
     weights: {
-      acceleration: 6,
-      anticipation: 2,
-      aerialReach: 6,
       agility: 10,
-      commandOfArea: 4,
-      communication: 2,
-      composure: 2,
-      concentration: 2,
-      decisions: 2,
-      handling: 1,
-      kicking: 1,
-      oneOnOnes: 2,
-      passing: 2,
-      positioning: 4,
-      reflexes: 10,
-      throwing: 1,
+      reflexes: 9,
+      acceleration: 3,
+      aerialReach: 3,
+      determination: 2,
     },
   },
 ];
@@ -151,7 +154,10 @@ export function fm27BenchmarkProfiles(): WeightProfile[] {
 /**
  * Expected best-role score by age (fm-scoring `[age_benchmark]`). 100% "vs Age" means the player is on
  * track to be a high-end Championship / low-end Premier League player in their prime once fully developed.
- * Ages outside the table use the nearest end.
+ * Ages outside the table use the nearest end. There is one table for every role. fm-scoring calibrated it on its
+ * own role weights; the Match Lab weights put fewer attributes in each role, and on this repo's fixtures a
+ * player's best role scores about 0.5 higher for outfielders and 0.9 for keepers, so vs Age reads a few percent
+ * high until the table is recalibrated.
  */
 export const AGE_BENCHMARK: Record<number, number> = {
   15: 10.3,
@@ -201,7 +207,7 @@ export interface RoleScore {
   score: number;
 }
 
-/** Score every FM27 role that fits the player (keepers only as GK, outfielders on the four outfield roles). */
+/** Score every FM27 role that fits the player (keepers only as GK, outfielders on the five outfield roles). */
 export function fm27RoleScores(
   get: (key: AttributeKey) => number,
   isGoalkeeper: boolean,

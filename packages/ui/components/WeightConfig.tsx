@@ -23,6 +23,11 @@ import {
   TECHNICAL_KEYS,
 } from "@scoutreporter/core/attribute-keys";
 import { fm27BenchmarkProfiles } from "@scoutreporter/core/fm27/benchmarks";
+import {
+  migrateWeightConfig,
+  WEIGHT_SEED_VERSION,
+  type StoredWeightConfig,
+} from "@scoutreporter/core/fm27/profile-migration";
 import { LEGACY_EMPHASIS } from "@scoutreporter/core/scoring";
 
 const STORAGE_KEY = "weightProfiles";
@@ -37,15 +42,9 @@ const DEFAULT_PROFILE: WeightProfile = {
   emphasis: 1,
 };
 
-/** Bump to seed newly added benchmark profiles into existing users' saved profiles once. */
-const SEED_VERSION = 1;
 const FIRST_RUN_ACTIVE_ID = "fm27-10";
 
-type StoredConfig = {
-  activeId: string;
-  profiles: WeightProfile[];
-  seeded?: number;
-};
+type StoredConfig = StoredWeightConfig;
 
 type WeightContextValue = {
   state: StoredConfig;
@@ -58,18 +57,8 @@ function initialConfig(): StoredConfig {
   return {
     activeId: FIRST_RUN_ACTIVE_ID,
     profiles: [DEFAULT_PROFILE, ...fm27BenchmarkProfiles()].map(withNormalizedWeights),
-    seeded: SEED_VERSION,
+    seeded: WEIGHT_SEED_VERSION,
   };
-}
-
-/** Add benchmark profiles the user hasn't had yet (deleted ones stay deleted after the first seed). */
-function seedBenchmarks(config: StoredConfig): StoredConfig {
-  if ((config.seeded ?? 0) >= SEED_VERSION) return config;
-  const ids = new Set(config.profiles.map((p) => p.id));
-  const missing = fm27BenchmarkProfiles()
-    .filter((p) => !ids.has(p.id))
-    .map(withNormalizedWeights);
-  return { ...config, profiles: [...config.profiles, ...missing], seeded: SEED_VERSION };
 }
 
 function loadFromStorage(): StoredConfig {
@@ -79,11 +68,13 @@ function loadFromStorage(): StoredConfig {
     if (!raw) return initialConfig();
     const parsed = JSON.parse(raw) as StoredConfig;
     if (!parsed.profiles?.length) return initialConfig();
-    return seedBenchmarks({
+    // Seed benchmark profiles the user hasn't had yet and move saved FM27 profiles to the current benchmarks.
+    const migrated = migrateWeightConfig({
       activeId: parsed.activeId ?? DEFAULT_PROFILE.id,
       profiles: parsed.profiles.map(withNormalizedWeights),
       seeded: parsed.seeded,
     });
+    return { ...migrated, profiles: migrated.profiles.map(withNormalizedWeights) };
   } catch {
     return initialConfig();
   }
@@ -308,7 +299,7 @@ export function WeightSettings() {
 
   return (
       <div className="space-y-4">
-      <p className="text-[13px] text-muted">How much each attribute counts towards a player&apos;s score. The scores update as you type. The FM27 role profiles are benchmarked by fm-scoring.</p>
+      <p className="text-[13px] text-muted">How much each attribute counts towards a player&apos;s score. The scores update as you type. The FM27 role profiles are benchmarked on FM Match Lab&apos;s position study (13b).</p>
 
         <div className="space-y-2">
           <label className="flex flex-col gap-1 text-[13px] text-muted">
@@ -372,7 +363,18 @@ export function WeightSettings() {
           </label>
           {active.builtIn === "fm27" ? (
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-muted">Benchmarked FM27 role weights (fm-scoring).</span>
+              <span className="text-muted">
+                Benchmarked FM27 role weights (FM Match Lab{" "}
+                <a
+                  href="https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md"
+                  className="link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Study 13b
+                </a>
+                ).
+              </span>
               <Button color="alt" variant="outline" size="sm" onClick={resetBenchmark}>
                 Reset to benchmark
               </Button>

@@ -82,7 +82,7 @@ export function attributeLabel(k: AttributeKey): string {
   return LABELS[k] ?? k.charAt(0).toUpperCase() + k.slice(1);
 }
 
-/** Pace and Acceleration are at or near the top of every outfield role's weights. */
+/** Pace and Acceleration are among the heaviest weights of every outfield role (a centre-back's Jumping Reach weighs more). */
 const QUICKNESS_KEYS: AttributeKey[] = ["pace", "acceleration"];
 const QUICKNESS_DONE = 18;
 
@@ -179,7 +179,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   } else if (QUICKNESS_KEYS.some((k) => raw[k] < QUICKNESS_DONE)) {
     focus = {
       name: "Quickness",
-      reason: `Pace and Acceleration weigh the most in every outfield role. In harvestgreen22's test the focus took them from about +1.6 to +2.7 a season. Current Pace ${raw.pace}, Acceleration ${raw.acceleration}.`,
+      reason: `Pace and Acceleration are among the heaviest weights in every outfield role. In harvestgreen22's test the focus took them from about +1.6 to +2.7 a season. Current Pace ${raw.pace}, Acceleration ${raw.acceleration}.`,
     };
   } else {
     const next = weighted
@@ -190,7 +190,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
           name: attributeLabel(next.k),
           reason: `Pace and Acceleration are already ${raw.pace} and ${raw.acceleration}, so Quickness has little left to add. ${attributeLabel(next.k)} is where the ${role.role} score has the most to gain.`,
         }
-      : { name: "Quickness", reason: "Pace and Acceleration weigh the most in every outfield role." };
+      : { name: "Quickness", reason: "Pace and Acceleration are among the heaviest weights in every outfield role." };
   }
 
   // Training role.
