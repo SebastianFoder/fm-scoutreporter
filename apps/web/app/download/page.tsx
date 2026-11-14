@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Download, ExternalLink } from "lucide-react";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
+import { Screenshot } from "@/components/Screenshot";
+import { screenshot } from "@/lib/screenshots";
 import { pageMetadata } from "@/lib/site";
 import { DESKTOP_RELEASES_URL, REPO_URL, latestDesktopRelease } from "@/lib/desktop-release";
 
@@ -35,6 +37,15 @@ export default async function DownloadPage() {
         squad, are in Attribute, Wonderkid, Best XI, Squad and Staff a few seconds later. No view files and no CSV
         export.
       </PageHeader>
+
+      <figure className="panel overflow-hidden">
+        <Screenshot
+          shot={screenshot("players")}
+          alt="The player list: every player scored on your weights or an FM27 role"
+          sizes="(min-width: 768px) 720px, 100vw"
+          priority
+        />
+      </figure>
 
       <section className="panel space-y-3 px-5 py-4" aria-labelledby="get-title">
         <h2 id="get-title" className="section-title">

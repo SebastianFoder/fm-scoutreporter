@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { VIEW_HIDDEN, VIEW_SQUAD, VIEW_SQUAD_HIDDEN, VIEW_STAFF, VIEW_STANDARD } from "@scoutreporter/core/view-files";
 import { AUTHOR_LD, JsonLd } from "@/components/JsonLd";
+import { Screenshot } from "@/components/Screenshot";
+import { SCREENSHOTS, type ScreenshotInfo } from "@/lib/screenshots";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 const MODES = [
@@ -86,6 +88,33 @@ const SITE_LD = [
   },
 ];
 
+/** A screenshot linking to its screen, with its title and caption. */
+function ScreenshotFigure({
+  shot,
+  sizes,
+  priority,
+  framed,
+  className = "",
+}: {
+  shot: ScreenshotInfo;
+  sizes: string;
+  priority?: boolean;
+  framed?: boolean;
+  className?: string;
+}) {
+  return (
+    <figure className={`panel overflow-hidden ${className}`}>
+      <Link href={shot.href} className="block border-b border-line" aria-label={`Open ${shot.title}`}>
+        <Screenshot shot={shot} alt={`${shot.title}: ${shot.caption}`} sizes={sizes} priority={priority} framed={framed} />
+      </Link>
+      <figcaption className="px-4 py-2.5 text-sm">
+        <span className="font-semibold">{shot.title}</span>
+        <span className="text-muted"> · {shot.caption}</span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-5 py-8 text-ink md:py-12">
@@ -107,6 +136,8 @@ export default function Home() {
           Download <ArrowRight className="h-3.5 w-3.5" aria-hidden />
         </Link>
       </aside>
+
+      <ScreenshotFigure shot={SCREENSHOTS[0]} sizes="(min-width: 1024px) 984px, 100vw" priority className="mt-5" />
 
       <section aria-labelledby="modes" className="mt-8">
         <h2 id="modes" className="section-title mb-2">
@@ -150,6 +181,17 @@ export default function Home() {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="screens" className="mt-8">
+        <h2 id="screens" className="section-title mb-2">
+          More screens
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {SCREENSHOTS.slice(1).map((s) => (
+            <ScreenshotFigure key={s.name} shot={s} framed sizes="(min-width: 1024px) 484px, (min-width: 640px) 50vw, 100vw" />
+          ))}
         </div>
       </section>
 
