@@ -5,6 +5,9 @@
 @source "../../../apps/web/app";
 @source "../../../apps/web/components";
 
+/* `dark:` follows the app's theme switch (data-theme on <html>), not the OS setting. */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 /*
  * Scout Reporter UI.
  * A working tool for people who already live in Football Manager's screens:

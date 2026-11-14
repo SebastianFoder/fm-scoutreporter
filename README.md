@@ -6,6 +6,8 @@ directly with the desktop app, and rank players on weighted attributes and FM27 
 **Website:** [fmscouting.sebastianfoder.com](https://fmscouting.sebastianfoder.com) ·
 **Desktop app:** [download for Windows](https://fmscouting.sebastianfoder.com/download)
 
+<picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/squad-dark.png"><img src="apps/web/public/screenshots/squad-light.png" alt="Squad analysis: first and second eleven, thin cover and weak links"></picture>
+
 ## What it does
 
 - **Player list and profiles**: scores from your own attribute weights or the FM27 benchmark roles
@@ -20,6 +22,23 @@ directly with the desktop app, and rank players on weighted attributes and FM27 
 The website reads CSV exports made with the views in `apps/web/public/*.fmf`; the site's
 [How to use](https://fmscouting.sebastianfoder.com/how-to-use) page walks through it. Everything runs
 in the browser: the CSV never leaves your machine.
+
+<table>
+<tr>
+<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/players-dark.png"><img src="apps/web/public/screenshots/players-light.png" alt="Player list: scores on your weights or an FM27 role"></picture><br><b>Player list</b>: scores on your weights or an FM27 role</td>
+<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/wonderkid-dark.png"><img src="apps/web/public/screenshots/wonderkid-light.png" alt="Wonderkid: prospects ranked at full potential"></picture><br><b>Wonderkid</b>: prospects ranked at full potential</td>
+</tr>
+<tr>
+<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/best-xi-dark.png"><img src="apps/web/public/screenshots/best-xi-light.png" alt="Best XI: the best eleven for a formation, within a budget"></picture><br><b>Best XI</b>: the best eleven for a formation, within a budget</td>
+<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/player-dark.png"><img src="apps/web/public/screenshots/player-light.png" alt="Player panel: click any player for their profile"></picture><br><b>Player panel</b>: click any player for their profile</td>
+</tr>
+<tr>
+<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/staff-dark.png"><img src="apps/web/public/screenshots/staff-light.png" alt="Staff: scored on 17 staff roles"></picture><br><b>Staff</b>: scored on 17 staff roles</td>
+<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/backroom-dark.png"><img src="apps/web/public/screenshots/backroom-light.png" alt="Best backroom: the staff to hire for every role"></picture><br><b>Best backroom</b>: the staff to hire for every role</td>
+</tr>
+</table>
+
+The screenshots are made from Storybook with `bun run screenshots` (sample data, light and dark).
 
 ## Desktop app (Windows)
 

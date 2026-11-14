@@ -23,3 +23,8 @@ export const V1Import: Story = {
 export const V2Import: Story = {
   parameters: { appProviders: { players: "fm27hidden" } },
 };
+
+/** A whole squad with hidden attributes, every position (used for the README screenshots). */
+export const SquadImport: Story = {
+  parameters: { appProviders: { players: "squadHidden" } },
+};

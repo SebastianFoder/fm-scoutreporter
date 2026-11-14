@@ -8,10 +8,11 @@ import { PlayerLink, usePlayerPanel } from "./PlayerPanel";
  * player here, Ctrl/Cmd-click still opens the player page. The panel is not modal, so another
  * name can be clicked while it is open.
  */
-function PlayerNames({ openFirst }: { openFirst?: boolean }) {
+function PlayerNames({ openFirst, outfield }: { openFirst?: boolean; outfield?: boolean }) {
   const { state } = usePlayersData();
   const panel = usePlayerPanel();
-  const first = state.players[0]?.raw.uniqueId;
+  // `outfield`: open the first player who is not a goalkeeper.
+  const first = (outfield ? state.players.find((p) => !p.raw.position.startsWith("GK")) : state.players[0])?.raw.uniqueId;
   useEffect(() => {
     if (openFirst && first) panel?.openPlayer(first);
     // Open once the import has loaded.
@@ -46,6 +47,12 @@ export const Closed: Story = {};
 
 /** A Hidden Attributes export: CA, PA and the Full potential view. */
 export const Open: Story = { args: { openFirst: true } };
+
+/** An outfield player from a Squad Hidden Attributes export (used for the README screenshots). */
+export const OpenOutfield: Story = {
+  args: { openFirst: true, outfield: true },
+  parameters: { appProviders: { players: "squadHidden" } },
+};
 
 /** A Standard export (no CA/PA). */
 export const OpenStandardExport: Story = {
