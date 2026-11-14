@@ -1,3 +1,15 @@
+# [1.21.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.20.0...v1.21.0) (2026-11-14)
+
+
+### Bug Fixes
+
+* **desktop:** load the bundled fonts, so text is not blurry ([44feacf](https://github.com/SebastianFoder/fm-scoutreporter/commit/44feacf95f3a3d965d6d50cf02babb8c1c2b3601))
+
+
+### Features
+
+* **desktop:** load whole-save scans automatically, no limit settings ([181ad15](https://github.com/SebastianFoder/fm-scoutreporter/commit/181ad15abcdfb03d05d494b6e25da24fa41425b1))
+
 # [1.20.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.19.0...v1.20.0) (2026-11-14)
 
 
