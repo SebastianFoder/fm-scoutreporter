@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from "no
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { DEFAULT_LOAD_LIMITS, DEFAULT_LOAD_SCOPE, loadScopeFor, normaliseSettings } from "@scoutreporter/core/desktop/bridge";
+import { DEFAULT_LOAD_SCOPE, normaliseSettings } from "@scoutreporter/core/desktop/bridge";
 import { scanToLines } from "@scoutreporter/core/scan/db/write";
 import type { ScanFile } from "@scoutreporter/core/scan/schema";
 import { compareScanFiles, importJsonFile, importLinesFile, loadScanFile, scanMeta } from "./db-ops";
@@ -116,16 +116,12 @@ test("stores scans newest first and prunes past the retention", async () => {
   assert.deepEqual((await store.list()).map((s) => s.id), [c.snapshot.id]);
 });
 
-test("whole-save scans load by the limits, and old settings keep their limits", () => {
-  const fresh = normaliseSettings({});
-  assert.deepEqual(loadScopeFor(fresh), { ...DEFAULT_LOAD_LIMITS, onlySearch: false });
-
-  // Settings from older versions: the old tick box and scan mode are dropped, the limits are kept.
-  const old = normaliseSettings({ hideHidden: true, scanMode: "full", load: { minCa: 120, onlySearch: true } });
+test("settings from older versions drop the scan mode and load limits, and keep the rest", () => {
+  const old = normaliseSettings({ hideHidden: true, retention: 3, scanMode: "full", load: { minCa: 70, maxPlayers: 5000 } });
   assert.equal("scanMode" in old, false);
+  assert.equal("load" in old, false);
   assert.equal(old.hideHidden, true);
-  assert.deepEqual(old.load, { ...DEFAULT_LOAD_LIMITS, minCa: 120 });
-  assert.equal(loadScopeFor(old).onlySearch, false);
+  assert.equal(old.retention, 3);
 });
 
 test("a stored scan says when it kept only the search", async () => {
@@ -148,7 +144,7 @@ test("a stored scan says when it kept only the search", async () => {
   assert.equal(whole.scope, undefined);
 
   // The screens get all of it.
-  const loaded = loadScanFile(store.scanFile(search.id), loadScopeFor(normaliseSettings({})));
+  const loaded = loadScanFile(store.scanFile(search.id), DEFAULT_LOAD_SCOPE);
   assert.equal(loaded.scope, "search");
   assert.equal(loaded.players.length, searched.players.length);
   assert.equal(loaded.staff.length, searched.staff.length);

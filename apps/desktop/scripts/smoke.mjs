@@ -112,6 +112,14 @@ try {
     await page.eval("location.href").catch(() => "page unreachable"),
   );
   check("Node is not exposed to the page", (await page.eval("typeof require === 'undefined' && typeof process === 'undefined'")) === true);
+  // The bundled fonts come through the scoutreporter:// handler; when they fail, the window quietly
+  // falls back to a system font with faked bold.
+  const fonts = "[...document.fonts].map((f) => `${f.family} ${f.status}`)";
+  const fontsOk = await waitFor(
+    page,
+    "document.fonts.ready.then(() => [...document.fonts].some((f) => f.family === 'Sofia Sans' && f.status === 'loaded') && ![...document.fonts].some((f) => f.status === 'error'))",
+  );
+  check("the bundled fonts load", fontsOk, fontsOk ? "" : JSON.stringify(await page.eval(fonts)));
 
   // Scan search (also F9) keeps only FM's search and your club.
   const firstScan = await page.eval("window.scoutReporterDesktop.scan('search')");

@@ -34,17 +34,29 @@ export function serveAppScheme(backend: string, csp: string) {
     const url = new URL(request.url);
     if (url.host !== "app") return new Response("Not found", { status: 404 });
     const hasBody = request.method !== "GET" && request.method !== "HEAD";
-    const res = await net.fetch(`${backend}${url.pathname}${url.search}`, {
-      method: request.method,
-      headers: request.headers,
-      body: hasBody ? request.body : undefined,
-      // Streaming a request body needs this (Electron's fetch, like Node's).
-      ...(hasBody && { duplex: "half" }),
-    } as RequestInit);
-    const headers = new Headers(res.headers);
-    const location = headers.get("location");
-    if (location?.startsWith(backend)) headers.set("location", APP_ORIGIN + location.slice(backend.length));
-    headers.set("Content-Security-Policy", csp);
-    return new Response(NO_BODY.has(res.status) ? null : res.body, { status: res.status, statusText: res.statusText, headers });
+    // Fonts (and anything else fetched in CORS mode) come with Origin: scoutreporter://app. Passed
+    // on, it makes net.fetch treat the request to the local server as cross-origin, and without
+    // CORS headers in the answer it fails (net::ERR_FAILED): the window then fell back to a system
+    // font with faked bold. The server never needs it for reading pages and files.
+    const headers = new Headers(request.headers);
+    if (!hasBody) headers.delete("origin");
+    let res: Response;
+    try {
+      res = await net.fetch(`${backend}${url.pathname}${url.search}`, {
+        method: request.method,
+        headers,
+        body: hasBody ? request.body : undefined,
+        // Streaming a request body needs this (Electron's fetch, like Node's).
+        ...(hasBody && { duplex: "half" }),
+      } as RequestInit);
+    } catch (e) {
+      console.error(`app scheme: ${request.method} ${url.pathname} failed: ${(e as Error).message}`);
+      return new Response("Bad gateway", { status: 502 });
+    }
+    const answer = new Headers(res.headers);
+    const location = answer.get("location");
+    if (location?.startsWith(backend)) answer.set("location", APP_ORIGIN + location.slice(backend.length));
+    answer.set("Content-Security-Policy", csp);
+    return new Response(NO_BODY.has(res.status) ? null : res.body, { status: res.status, statusText: res.statusText, headers: answer });
   });
 }
