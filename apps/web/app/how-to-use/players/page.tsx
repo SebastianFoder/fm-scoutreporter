@@ -5,10 +5,10 @@ import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "How Attribute mode scores FM players",
+  title: "How Scout Reporter scores FM players",
   description:
     "How Scout Reporter scores Football Manager players: weighted attribute averages, the FM27 benchmark role profiles, vs Age, Potential, and the S++ to F grade scale.",
-  path: "/how-to-use/attribute-mode",
+  path: "/how-to-use/players",
 });
 
 export default function AttributeGuidePage() {
@@ -17,13 +17,13 @@ export default function AttributeGuidePage() {
       <JsonLd
         data={breadcrumbLd([
           { name: "Setup guide", path: "/how-to-use" },
-          { name: "Attribute mode", path: "/how-to-use/attribute-mode" },
+          { name: "Players", path: "/how-to-use/players" },
         ])}
       />
       <HowToShell
-        title="Attribute mode"
+        title="Players"
         description="Score and rank players by a weighted average of their attributes. No baseline needed: import and go."
-        link={{ href: "/attribute", label: "Go to Attribute mode" }}
+        link={{ href: "/players", label: "Go to Players" }}
       >
         <AttributeGuide />
       </HowToShell>

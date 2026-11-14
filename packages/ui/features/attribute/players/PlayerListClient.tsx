@@ -298,7 +298,7 @@ function SortableTh({
 function NewTabPlayerLink({ uniqueId, name }: { uniqueId: string; name: string }) {
   return (
     <Link
-      href={`/attribute/players/${uniqueId}`}
+      href={`/players/${uniqueId}`}
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex shrink-0 rounded p-1 text-muted/70 hover:bg-ink/6 hover:text-ink"

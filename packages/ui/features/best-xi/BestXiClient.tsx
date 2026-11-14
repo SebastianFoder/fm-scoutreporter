@@ -6,6 +6,7 @@ import { RotateCcw, X } from "lucide-react";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { CsvImportPanel } from "@scoutreporter/ui/components/CsvImportPanel";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
+import { PLAYERS_TABS, SectionTabs } from "@scoutreporter/ui/components/SectionTabs";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { useWeightProfiles } from "@scoutreporter/ui/components/WeightConfig";
@@ -224,6 +225,7 @@ export default function BestXiClient() {
           Picks the highest-scoring eleven from your import for a formation, with an optional
           minimum and maximum on what the eleven costs in total.
         </PageHeader>
+        <SectionTabs tabs={PLAYERS_TABS} label="Player screens" />
 
         <CsvImportPanel testFixture="attribute" onImported={() => update({ excluded: [] })} />
 

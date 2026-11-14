@@ -112,7 +112,7 @@ function PlayerSidePanel({ player, onClose }: { player: PlayerWithGroups; onClos
         <p className="text-[13px] font-semibold text-muted">Player</p>
         <div className="flex items-center gap-1">
           <Link
-            href={`/attribute/players/${id}`}
+            href={`/players/${id}`}
             className="btn h-8 gap-1.5 rounded-md px-2.5 text-[13px] text-muted hover:bg-ink/6 hover:text-ink"
           >
             <Maximize2 className="h-3.5 w-3.5" aria-hidden />
@@ -155,7 +155,7 @@ export function PlayerLink({
   const open = panel?.openId === id;
   return (
     <Link
-      href={`/attribute/players/${id}`}
+      href={`/players/${id}`}
       className={className}
       aria-current={open ? "true" : undefined}
       onClick={(e) => {

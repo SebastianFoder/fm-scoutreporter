@@ -164,12 +164,12 @@ export function DesktopHomeClient() {
           <>
             In Football Manager 27, open Player Search (or Staff Search), set your filters and leave the search on screen. Then press
             Scan FM (or F9{hotkeyHint}, also inside FM). The app takes the people FM found, plus your own club, and every screen
-            (Attribute, Wonderkid, Best XI, Squad, Staff) works on them. Nothing in your game is changed.
+            (Players, Wonderkids, Best XI, Squad, Staff) works on them. Nothing in your game is changed.
           </>
         ) : (
           <>
             Start Football Manager 27, load your save, then press Scan FM (or F9{hotkeyHint}). The whole database is read in seconds,
-            read-only, and every screen (Attribute, Wonderkid, Best XI, Squad, Staff) uses it.
+            read-only, and every screen (Players, Wonderkids, Best XI, Squad, Staff) uses it.
           </>
         )}
       </PageHeader>
@@ -186,7 +186,7 @@ export function DesktopHomeClient() {
           <span>
             <span className="font-semibold">Use CA, PA and hidden attributes</span>
             <span className="block text-[13px] text-muted">
-              On: the screens get every player&apos;s current and potential ability and Professionalism, which Wonderkid mode needs. Off:
+              On: the screens get every player&apos;s current and potential ability and Professionalism, which Wonderkids needs. Off:
               they are left out, as in a normal FM export, and Growth shows attribute changes only. The visible attributes are FM&apos;s
               exact values either way, also for players you have not fully scouted.
             </span>
@@ -229,7 +229,7 @@ export function DesktopHomeClient() {
               ? `kept: your FM search (${searchText({ players: lastScan.searchPlayers ?? 0, staff: lastScan.searchStaff ?? 0 })}) plus your club${lastScan.myClub ? `, ${lastScan.myClub}` : ""}`
               : `scanned${lastScan.myClub ? `, your club: ${lastScan.myClub}` : ""}`}
             . Open{" "}
-            <Link href="/attribute" className="link">Attribute</Link>, <Link href="/wonderkid" className="link">Wonderkid</Link> or{" "}
+            <Link href="/players" className="link">Players</Link>, <Link href="/players?view=wonderkids" className="link">Wonderkids</Link> or{" "}
             <Link href="/growth" className="link">Growth</Link>.
           </p>
         </div>

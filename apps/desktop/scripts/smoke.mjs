@@ -89,10 +89,15 @@ const pageText = (page) =>
     .eval("`${location.pathname} | header: ${document.querySelector('header')?.innerText ?? ''} | main: ${document.querySelector('main')?.innerText ?? ''}`.replace(/\\s+/g, ' ').slice(0, 600)")
     .catch((e) => `page unreachable (${e.message})`);
 
-// Wonderkid mode says this when the import has no CA/PA (its table always has CA and PA headers).
+// Wonderkids says this when the import has no CA/PA (its table always has CA and PA headers).
 const NO_CA_PA = "This import has no CA / PA columns";
 
-const navigate = (page, path) => page.eval(`(location.href = new URL(${JSON.stringify(path)}, location.origin).href, true)`);
+/** Open a page and wait until it is the one showing: setting location.href only starts the load. */
+const navigate = async (page, path) => {
+  const url = `new URL(${JSON.stringify(path)}, location.origin).href`;
+  await page.eval(`(location.href = ${url}, true)`);
+  await waitFor(page, `location.href === ${url} && document.readyState === "complete"`);
+};
 
 try {
   const page = cdp(await pageSocket());
@@ -150,19 +155,19 @@ try {
     await waitFor(page, "document.body.innerText.includes('66 players scanned')"),
   );
 
-  await navigate(page, "/attribute/players");
+  await navigate(page, "/players");
   // The Potential column only appears when the import has CA and PA.
   check("player list scores scanned players", await waitFor(page, "/vs Age/.test(document.querySelector('main').innerText) && /Potential/.test(document.querySelector('main').innerText)"));
 
-  await navigate(page, `/attribute/players/${samplePlayer.uid}`);
+  await navigate(page, `/players/${samplePlayer.uid}`);
   check(
     "player profile opens from the scan",
     await waitFor(page, `document.querySelector('main').innerText.includes(${JSON.stringify(samplePlayer.name)}) && document.querySelector('main').innerText.includes("Current ability")`),
   );
 
-  await navigate(page, "/wonderkid");
+  await navigate(page, "/players?view=wonderkids");
   check(
-    "Wonderkid mode has CA/PA from the scan",
+    "Wonderkids has CA/PA from the scan",
     await waitFor(
       page,
       `/of 66 players/.test(document.querySelector('main').innerText) && !document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`,
@@ -191,14 +196,14 @@ try {
   // Mark the scan's row, press Use, and wait until the row says "In use" (set once loading is done).
   await page.eval(`(() => { const b = ${useButton}; b.closest('li').dataset.smoke = 'use'; b.click(); return true; })()`);
   const inUse = await waitFor(page, "document.querySelector('[data-smoke=use]')?.innerText.includes('In use')");
-  await navigate(page, "/wonderkid");
+  await navigate(page, "/players?view=wonderkids");
   const hidden =
     inUse &&
     (await waitFor(page, `/of 66 players/.test(document.querySelector('main').innerText) && document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`));
   check("hiding hidden attributes removes CA/PA", hidden, hidden ? "" : inUse ? await pageText(page) : "the scan never showed as in use");
 
   // The CSV import still works inside the app.
-  await navigate(page, "/attribute");
+  await navigate(page, "/players");
   await waitFor(page, "[...document.querySelectorAll('button')].some((b) => b.textContent.includes('Load test data'))");
   await page.eval("[...document.querySelectorAll('button')].find((b) => b.textContent.includes('Load test data')).click(), true");
   const csvOk = await waitFor(page, "/players imported/.test(document.querySelector('header').innerText)");

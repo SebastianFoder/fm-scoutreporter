@@ -41,8 +41,8 @@ const HOW_TO_LD = {
     },
     {
       name: "Import the CSV",
-      text: "Open Attribute mode on Scout Reporter, click Choose CSV file and pick the newest file in Documents\Sports Interactive\FM View Exporter.",
-      url: absoluteUrl("/attribute"),
+      text: "Open Players on Scout Reporter, click Choose CSV file and pick the newest file in Documents\Sports Interactive\FM View Exporter.",
+      url: absoluteUrl("/players"),
     },
   ].map((s, i) => ({ "@type": "HowToStep", position: i + 1, ...s })),
 };
@@ -54,7 +54,7 @@ export default function HowToUsePage() {
       <HowToShell
         title="Setup guide"
         description="Follow these steps to export a player list from Football Manager 27 or 26 and import it into this app."
-        link={{ href: "/attribute", label: "Go to the importer" }}
+        link={{ href: "/players", label: "Go to the importer" }}
       >
         <SetupGuide />
       </HowToShell>

@@ -13,7 +13,7 @@ const meta = {
   parameters: {
     layout: "fullscreen",
     appProviders: { players: "fm27outfield" },
-    nextjs: { navigation: { pathname: "/attribute/compare", query: { ids } } },
+    nextjs: { navigation: { pathname: "/players/compare", query: { ids } } },
   },
 } satisfies Meta<typeof ComparePageClient>;
 

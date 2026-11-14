@@ -21,12 +21,21 @@ const nextConfig: NextConfig = {
     "/api/fixtures/[name]": ["../../packages/core/fixtures/*.csv"],
   },
   turbopack: { root: repoRoot },
-  /* Pre-mode URLs. Permanent (308) so search engines move any ranking to the new paths. */
+  /*
+   * Old URLs: Attribute, Wonderkid and Best XI were separate menu items before they became the
+   * Players section. Permanent (308) so search engines move any ranking to the new paths.
+   */
   async redirects() {
     return [
-      { source: "/players", destination: "/attribute/players", permanent: true },
-      { source: "/players/:id", destination: "/attribute/players/:id", permanent: true },
-      { source: "/compare", destination: "/attribute/compare", permanent: true },
+      { source: "/attribute", destination: "/players", permanent: true },
+      { source: "/attribute/players", destination: "/players", permanent: true },
+      { source: "/attribute/players/:id", destination: "/players/:id", permanent: true },
+      { source: "/attribute/compare", destination: "/players/compare", permanent: true },
+      { source: "/compare", destination: "/players/compare", permanent: true },
+      { source: "/wonderkid", destination: "/players?view=wonderkids", permanent: true },
+      { source: "/best-xi", destination: "/players/best-xi", permanent: true },
+      { source: "/how-to-use/attribute-mode", destination: "/how-to-use/players", permanent: true },
+      { source: "/how-to-use/wonderkid-mode", destination: "/how-to-use/wonderkids", permanent: true },
     ];
   },
 };

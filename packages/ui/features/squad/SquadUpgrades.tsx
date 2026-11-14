@@ -42,8 +42,8 @@ export function SquadUpgrades({
         scoutingCount === 0 && (
           <p className="px-4 py-4 text-sm text-muted">
             Import a scouting export (a player search) in{" "}
-            <Link href="/attribute" className="link">
-              Attribute mode
+            <Link href="/players" className="link">
+              Players
             </Link>{" "}
             to see who would improve each position.
           </p>

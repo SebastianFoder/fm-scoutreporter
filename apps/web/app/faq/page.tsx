@@ -46,7 +46,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Which view file should I use?",
-        a: `The ${VIEW_HIDDEN.name} is recommended: it exports every attribute plus the hidden Professionalism, Current Ability (CA) and Potential Ability (PA), which unlocks Potential scores and Wonderkid mode. The ${VIEW_STANDARD.name} exports the visible attributes only, which is enough for Attribute mode and Best XI.`,
+        a: `The ${VIEW_HIDDEN.name} is recommended: it exports every attribute plus the hidden Professionalism, Current Ability (CA) and Potential Ability (PA), which unlocks Potential scores and Wonderkids. The ${VIEW_STANDARD.name} exports the visible attributes only, which is enough for the player list and Best XI.`,
       },
       {
         q: "Does it work on Mac or Linux?",
@@ -73,7 +73,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       {
         q: "How are players scored?",
         a: "Each attribute gets a weight. A player's score is the weighted average of their attributes on FM's 1 to 20 scale, and the 100-point score divides that average by 13 (a solid professional) and multiplies by 100. Change the weights and the list re-ranks instantly.",
-        more: { href: "/how-to-use/attribute-mode", label: "How Attribute mode scores players" },
+        more: { href: "/how-to-use/players", label: "How players are scored" },
       },
       {
         q: "What are the FM27 benchmark role profiles?",
@@ -93,9 +93,9 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     title: "Wonderkids, Best XI and squads",
     items: [
       {
-        q: "How does Wonderkid mode find wonderkids?",
+        q: "How does Scout Reporter find wonderkids?",
         a: "With a Hidden Attributes export it fits CA as a position-weighted sum of attributes, works out how many attribute points the gap between CA and PA buys, and spreads them over the attributes that can still grow, following how fast each one grew in an FM27 training test. It then ranks prospects on the FM27 roles at full potential. Filter by age, professionalism and best role.",
-        more: { href: "/how-to-use/wonderkid-mode", label: "How the potential estimate works" },
+        more: { href: "/how-to-use/wonderkids", label: "How the potential estimate works" },
       },
       {
         q: "Will a player actually reach the potential shown?",
@@ -104,7 +104,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       {
         q: "How does the Best XI picker work?",
         a: `Choose one of ${formationCount} FM preset formations, or build your own on an FM-style tactics pitch and save it, and Scout Reporter picks the eleven players from your import with the highest combined score, with each position scored on a weight profile you choose (the FM27 benchmark roles by default). You can set a minimum and maximum total transfer value, and exclude players to see the next best option.`,
-        more: { href: "/best-xi", label: "Open Best XI" },
+        more: { href: "/players/best-xi", label: "Open Best XI" },
       },
       {
         q: "How does Squad analysis work?",
@@ -114,16 +114,16 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     ],
   },
   {
-    title: "Staff mode",
+    title: "Staff",
     items: [
       {
         q: "How do I scout staff?",
-        a: "Import the Scout Reporter Staff view in an FM staff search (right-click a column header, then Import View), select the staff and export a CSV the same way as players. Import that CSV in Staff mode. It is stored separately from your player import, so both can be loaded at once.",
-        more: { href: "/staff", label: "Open Staff mode" },
+        a: "Import the Scout Reporter Staff view in an FM staff search (right-click a column header, then Import View), select the staff and export a CSV the same way as players. Import that CSV under Staff. It is stored separately from your player import, so both can be loaded at once.",
+        more: { href: "/staff", label: "Open Staff" },
       },
       {
         q: "FM26 shows staff attributes as words. How are they scored?",
-        a: "Each word covers a fixed range of the old 1 to 20 scale: Unsuited 1 to 3, Reasonable 4 to 6, Competent 7 to 9, Average 10 to 11, Good 12 to 14, Very Good 15 to 17, Outstanding 18 to 19 and Elite 20. Staff mode scores each word at the middle of its range, and uses exact numbers when an export has them.",
+        a: "Each word covers a fixed range of the old 1 to 20 scale: Unsuited 1 to 3, Reasonable 4 to 6, Competent 7 to 9, Average 10 to 11, Good 12 to 14, Very Good 15 to 17, Outstanding 18 to 19 and Elite 20. Scout Reporter scores each word at the middle of its range, and uses exact numbers when an export has them.",
       },
       {
         q: "How are staff role scores worked out?",

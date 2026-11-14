@@ -71,7 +71,7 @@ export function StaffDataProvider({ children }: { children: React.ReactNode }) {
         return {
           ok: false,
           error:
-            "No staff attributes found in this file. Export it from a staff search with the Scout Reporter Staff view (player exports go in Attribute mode).",
+            "No staff attributes found in this file. Export it from a staff search with the Scout Reporter Staff view (player exports go in Players).",
         };
       }
       setState({ csvText, source: null, staff: parsed.staff, columns: parsed.columns });

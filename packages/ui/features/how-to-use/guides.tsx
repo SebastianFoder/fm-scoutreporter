@@ -100,12 +100,12 @@ const VIEW_OPTIONS = [
     view: VIEW_HIDDEN,
     label: "Recommended",
     detail:
-      "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores and Wonderkid mode.",
+      "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores and Wonderkids.",
   },
   {
     view: VIEW_STANDARD,
     label: "Attributes only",
-    detail: "Every visible attribute. Enough for Attribute mode and Best XI.",
+    detail: "Every visible attribute. Enough for the player list and Best XI.",
   },
 ] as const;
 
@@ -285,7 +285,7 @@ function Fm27SetupGuide() {
         <p>
           Go to{" "}
           <Link
-            href="/attribute"
+            href="/players"
             className="link"
           >
             this site&apos;s importer
@@ -453,7 +453,7 @@ function Fm26SetupGuide() {
         <p>
           Go to{" "}
           <Link
-            href="/attribute"
+            href="/players"
             className="link"
           >
             this site&apos;s importer
@@ -476,9 +476,9 @@ function Fm26SetupGuide() {
 export function AttributeGuide() {
   return (
     <div>
-      <Step index="Use" title="How to use Attribute mode" defaultOpen>
+      <Step index="Use" title="How to use the player list" defaultOpen>
         <p>
-          Attribute mode lets you import a player export and instantly rank players by
+          Players lets you import a player export and instantly rank players by
           a weighted average of their FM26 attributes. No baseline required: just
           import and score.
         </p>
@@ -516,10 +516,10 @@ export function AttributeGuide() {
           <p>
             Go to{" "}
             <Link
-              href="/attribute"
+              href="/players"
               className="link"
             >
-              Attribute Mode
+              Players
             </Link>
             , click <span className="font-bold">Choose CSV file</span>, and navigate to your
             exporter&apos;s output folder:
@@ -551,9 +551,9 @@ FM26: Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vi
         </MiniStep>
       </Step>
 
-      <Step index="Math" title="How Attribute mode scores players" defaultOpen>
+      <Step index="Math" title="How players are scored" defaultOpen>
         <p>
-          Attribute mode scores players using a weighted average of their raw FM26
+          Scout Reporter scores players using a weighted average of their raw FM26
           attribute values (1–20 scale), then normalises that average to a 100-point scale.
         </p>
 
@@ -602,8 +602,8 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
           <p className="mt-2">
             With a Hidden Attributes export a <span className="font-bold">Potential</span> column appears: the
             same score using attributes projected to PA.{" "}
-            <Link href="/how-to-use/wonderkid-mode" className="link">
-              How Wonderkid mode works
+            <Link href="/how-to-use/wonderkids" className="link">
+              How Wonderkids works
             </Link>{" "}
             explains the projection.
           </p>
@@ -674,7 +674,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 export function WonderkidGuide() {
   return (
     <div>
-      <Step index="Use" title="How to use Wonderkid mode" defaultOpen>
+      <Step index="Use" title="How to use Wonderkids" defaultOpen>
         <MiniStep title="1. Export with the Hidden Attributes view">
           <p>
             Import the Hidden Attributes view in FM and export as usual. It adds the hidden{" "}
@@ -687,12 +687,12 @@ export function WonderkidGuide() {
           <p>
             Open{" "}
             <Link
-              href="/wonderkid"
+              href="/players?view=wonderkids"
               className="link"
             >
-              Wonderkid Mode
+              Wonderkids
             </Link>{" "}
-            (it shares the import with Attribute mode). Filter by max age, minimum
+            (the Wonderkids switch on the Players page). Filter by max age, minimum
             professionalism and best role; sort by Potential, vs Prime or vs Age.
           </p>
         </MiniStep>

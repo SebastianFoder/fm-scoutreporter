@@ -6,29 +6,20 @@ import { Screenshot } from "@/components/Screenshot";
 import { SCREENSHOTS, type ScreenshotInfo } from "@/lib/screenshots";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
+/** The sections of the main menu, with the screens inside each one. */
 const MODES = [
   {
-    href: "/attribute",
-    name: "Attribute mode",
-    blurb: "Import CSV exports, tune weights, and compare players by attributes.",
-    needs: "Standard or Hidden Attributes view",
-    cta: "Open Attribute Mode",
-  },
-  {
-    href: "/wonderkid",
-    name: "Wonderkid mode",
+    href: "/players",
+    name: "Players",
     blurb:
-      "Import a Hidden Attributes view export (CA, PA, Professionalism) to estimate full-potential attributes and rank prospects on FM27 roles.",
-    needs: "Hidden Attributes view (CA, PA, Professionalism)",
-    cta: "Open Wonderkid Mode",
-  },
-  {
-    href: "/best-xi",
-    name: "Best XI",
-    blurb:
-      "Pick the highest-scoring eleven for a formation from your import, within a minimum and maximum total budget.",
+      "Score and rank players on your own attribute weights or the FM27 roles and compare them. Wonderkids estimates prospects at full potential (needs CA, PA and Professionalism); Best XI picks the strongest eleven for a formation within a budget.",
     needs: "Standard or Hidden Attributes view",
-    cta: "Open Best XI",
+    cta: "Open Players",
+    screens: [
+      { href: "/players", label: "Players" },
+      { href: "/players?view=wonderkids", label: "Wonderkids" },
+      { href: "/players/best-xi", label: "Best XI" },
+    ],
   },
   {
     href: "/squad",
@@ -37,22 +28,19 @@ const MODES = [
       "Import your own squad and pick your formation to see your first and second eleven, thin or weak positions, ageing starters, youngsters ready to step up, squad-status problems and upgrades from your scouting import.",
     needs: "Squad or Squad Hidden Attributes view",
     cta: "Open Squad analysis",
+    screens: [],
   },
   {
     href: "/staff",
-    name: "Staff mode",
+    name: "Staff",
     blurb:
-      "Import a staff search export to rank coaches, scouts, analysts and directors on every staff role, with FM26's word ratings mapped back to 1–20.",
+      "Rank coaches, scouts, analysts and directors on every staff role, with FM26's word ratings mapped back to 1–20. Best backroom picks the strongest set of staff for the roles you need, nobody used twice.",
     needs: "Staff view",
-    cta: "Open Staff Mode",
-  },
-  {
-    href: "/staff/backroom",
-    name: "Best backroom",
-    blurb:
-      "Pick the staff roles you need and how many of each, and get the strongest backroom your staff import can make, nobody used twice.",
-    needs: "Staff view",
-    cta: "Open Best backroom",
+    cta: "Open Staff",
+    screens: [
+      { href: "/staff", label: "Staff" },
+      { href: "/staff/backroom", label: "Best backroom" },
+    ],
   },
 ] as const;
 
@@ -141,13 +129,13 @@ export default function Home() {
 
       <section aria-labelledby="modes" className="mt-8">
         <h2 id="modes" className="section-title mb-2">
-          Modes
+          Sections
         </h2>
         <div className="panel overflow-hidden">
           <table className="data-table">
             <thead>
               <tr>
-                <th className="px-4 py-2 text-left">Mode</th>
+                <th className="px-4 py-2 text-left">Section</th>
                 <th className="hidden px-4 py-2 text-left md:table-cell">What it does</th>
                 <th className="hidden px-4 py-2 text-left sm:table-cell">Needs</th>
                 <th className="px-4 py-2">
@@ -162,6 +150,15 @@ export default function Home() {
                     <Link href={m.href} className="whitespace-nowrap text-base font-semibold hover:underline">
                       {m.name}
                     </Link>
+                    {m.screens.length > 0 && (
+                      <p className="mt-0.5 flex flex-wrap gap-x-2 text-[13px]">
+                        {m.screens.map((sc) => (
+                          <Link key={sc.href} href={sc.href} className="link whitespace-nowrap">
+                            {sc.label}
+                          </Link>
+                        ))}
+                      </p>
+                    )}
                     <p className="mt-0.5 text-sm text-muted md:hidden">{m.blurb}</p>
                   </td>
                   <td className="hidden px-4 py-3.5 align-top text-sm text-muted md:table-cell">
@@ -212,7 +209,7 @@ export default function Home() {
             <li>
               Select players and press <kbd className="rounded border border-line bg-surface px-1.5 text-[13px] font-semibold">F9</kbd> to export a CSV.
             </li>
-            <li>Import that CSV in Attribute or Wonderkid mode.</li>
+            <li>Import that CSV under Players.</li>
           </ol>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
             <Link href="/how-to-use" className="link">

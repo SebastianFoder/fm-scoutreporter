@@ -15,7 +15,7 @@ const meta = {
   args: { players: fixturePlayers("fm26") },
   parameters: {
     layout: "fullscreen",
-    nextjs: { navigation: { pathname: "/attribute" } },
+    nextjs: { navigation: { pathname: "/players" } },
   },
 } satisfies Meta<typeof PlayersListClient>;
 
@@ -49,21 +49,21 @@ export const Selectable: Story = {
 
 export const SortedByAgeAsc: Story = {
   parameters: {
-    nextjs: { navigation: { pathname: "/attribute", query: { sort: "age", sortDir: "asc" } } },
+    nextjs: { navigation: { pathname: "/players", query: { sort: "age", sortDir: "asc" } } },
   },
 };
 
 export const Searched: Story = {
   args: { players: fixturePlayers("fm27outfield") },
   parameters: {
-    nextjs: { navigation: { pathname: "/attribute", query: { q: "an" } } },
+    nextjs: { navigation: { pathname: "/players", query: { q: "an" } } },
   },
 };
 
 export const SecondPage: Story = {
   args: { players: fixturePlayers("fm27outfield") },
   parameters: {
-    nextjs: { navigation: { pathname: "/attribute", query: { page: "2", pageSize: "25" } } },
+    nextjs: { navigation: { pathname: "/players", query: { page: "2", pageSize: "25" } } },
   },
 };
 
