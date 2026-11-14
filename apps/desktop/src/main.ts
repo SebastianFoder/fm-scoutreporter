@@ -11,7 +11,7 @@
  * A scan: the reader writes scans/latest/scan.ndjson (one JSON object per line), the database process
  * (db-process.ts) imports it into a new scan.sqlite, and the store keeps it. Scan search (and F9)
  * keeps only FM's search result and your club, which the screens load whole; Scan save keeps the
- * whole save, which is loaded in part (settings.load). Growth compares two scans in SQL.
+ * whole save, of which the screens load the part in DEFAULT_LOAD_SCOPE. Growth compares two scans in SQL.
  */
 import { app, BrowserWindow, globalShortcut, ipcMain, net, session, shell, Menu, type IpcMainInvokeEvent } from "electron";
 import { existsSync } from "node:fs";
@@ -19,7 +19,7 @@ import { appendFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
   IPC,
-  loadScopeFor,
+  DEFAULT_LOAD_SCOPE,
   normaliseSettings,
   type DesktopSettings,
   type GrowthPage,
@@ -95,7 +95,7 @@ async function loadSettings() {
 
 async function saveSettings(patch: unknown) {
   const p = (patch && typeof patch === "object" ? patch : {}) as Partial<DesktopSettings>;
-  settings = normaliseSettings({ ...settings, ...p, load: { ...settings.load, ...(p.load ?? {}) } });
+  settings = normaliseSettings({ ...settings, ...p });
   await mkdir(userData(), { recursive: true });
   await writeFile(settingsFile(), JSON.stringify(settings, null, 2));
   applyHotkey();
@@ -322,7 +322,7 @@ function registerIpc() {
   handle(IPC.listSnapshots, () => store().list());
   handle(IPC.loadSnapshot, async (id) => {
     const started = performance.now();
-    const loaded = await db.request<LoadedScan>({ op: "load", file: store().scanFile(String(id)), scope: loadScopeFor(settings) });
+    const loaded = await db.request<LoadedScan>({ op: "load", file: store().scanFile(String(id)), scope: DEFAULT_LOAD_SCOPE });
     console.info(`Loaded scan ${String(id)} in ${ms(performance.now() - started)}`);
     return loaded;
   });

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, ChevronDown, FolderOpen, RefreshCw, Trash2 } from "lucide-react";
-import type { DesktopSettings, LoadLimits, UpdateState } from "@scoutreporter/core/desktop/bridge";
+import { AlertTriangle, CheckCircle2, FolderOpen, Trash2 } from "lucide-react";
+import type { DesktopSettings, UpdateState } from "@scoutreporter/core/desktop/bridge";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
@@ -129,7 +129,6 @@ export function DesktopHomeClient() {
     fromScan && active && (loadedPlayers < active.players || loadedStaff < active.staff)
       ? { players: loadedPlayers, staff: loadedStaff, totalPlayers: active.players, totalStaff: active.staff }
       : null;
-  const setLoad = (patch: Partial<LoadLimits>) => void updateSettings({ load: { ...settings!.load, ...patch } });
   /** A setting that changes what the screens get: save it, then load the scan in use again. */
   const applyAndReload = (patch: Partial<DesktopSettings>) => void updateSettings(patch).then(() => reloadActive());
   const hotkeyHint = settings?.hotkey ? "" : " once the hotkey is on";
@@ -233,7 +232,7 @@ export function DesktopHomeClient() {
       {partial && !loading && (
         <p className="text-[13px] text-muted">
           The screens hold {n(partial.players)} of {n(partial.totalPlayers)} players and {n(partial.staff)} of {n(partial.totalStaff)} staff
-          from this scan: your club plus {loadedFrom} (see <a href="#limits-title" className="link">Whole-save limits</a>). Growth
+          from this scan: your club plus {loadedFrom}, best CA first, to keep the screens quick. Growth
           always compares every player in both scans.
         </p>
       )}
@@ -360,51 +359,6 @@ export function DesktopHomeClient() {
             </Button>
           </div>
         </section>
-      )}
-
-      {settings && (
-        <details className="panel group px-4 py-3">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm [&::-webkit-details-marker]:hidden">
-            <span>
-              <span id="limits-title" className="section-title">
-                Whole-save limits
-              </span>
-              <span className="block text-[13px] text-muted">
-                A whole save has about 400,000 players, too many for the screens, so they load your club plus the best of the rest.
-                Most people never need to change this.
-              </span>
-            </span>
-            <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" aria-hidden />
-          </summary>
-          <div className="mt-3 space-y-3 border-t border-line pt-3">
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-              <NumberSetting label="Players with CA" suffix="or more" value={settings.load.minCa} min={1} max={200} onSave={(minCa) => setLoad({ minCa })} />
-              <NumberSetting label="plus players up to age" value={settings.load.youngMaxAge} min={14} max={45} onSave={(youngMaxAge) => setLoad({ youngMaxAge })} />
-              <NumberSetting label="with PA" suffix="or more" value={settings.load.youngMinPa} min={1} max={200} onSave={(youngMinPa) => setLoad({ youngMinPa })} />
-            </div>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-              <NumberSetting label="At most" suffix="players" value={settings.load.maxPlayers} min={100} max={100_000} onSave={(maxPlayers) => setLoad({ maxPlayers })} />
-              <NumberSetting label="Staff with CA" suffix="or more" value={settings.load.staffMinCa} min={1} max={200} onSave={(staffMinCa) => setLoad({ staffMinCa })} />
-              <NumberSetting label="At most" suffix="staff" value={settings.load.maxStaff} min={100} max={100_000} onSave={(maxStaff) => setLoad({ maxStaff })} />
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <Button
-                color="alt"
-                variant="outline"
-                size="md"
-                icon={<RefreshCw className="h-4 w-4" aria-hidden />}
-                disabled={!activeId || loading}
-                onClick={() => void reloadActive()}
-              >
-                Load again
-              </Button>
-              <span className="text-[13px] text-muted">
-                The limits apply the next time a whole-save scan is loaded. More players means slower screens: 40,000 load in a few
-                seconds.
-              </span>
-            </div>
-          </div>
-        </details>
       )}
 
       <section className="panel space-y-1.5 px-4 py-3 text-[13px] text-muted" aria-labelledby="about-title">

@@ -42,7 +42,7 @@ export type ScanScope = "search" | "full";
 /**
  * Which part of a scan the screens load. A full FM database (about 400,000 players) is too much for
  * the window, so a big scan loads your club plus the players worth scouting. A scan that fits under
- * the limits is loaded whole.
+ * the limits is loaded whole. The scan file itself always keeps everyone, and Growth compares them all.
  */
 export interface LoadScope {
   /** Players at or above this CA. */
@@ -58,25 +58,26 @@ export interface LoadScope {
   maxStaff: number;
   /**
    * From a whole-save scan, load only people from FM's search result (plus your club), when the
-   * scan has one. Not a stored setting: the app loads a whole-save scan by the limits (see
-   * loadScopeFor). A scan that kept only the search is loaded whole either way.
+   * scan has one. The app does not use it: it loads a whole-save scan by the limits
+   * (DEFAULT_LOAD_SCOPE). A scan that kept only the search is loaded whole either way.
    */
   onlySearch: boolean;
 }
 
-/** The limits part of LoadScope: what the settings store. */
-export type LoadLimits = Omit<LoadScope, "onlySearch">;
-
-export const DEFAULT_LOAD_LIMITS: LoadLimits = {
+/**
+ * What the app loads from every scan: your club, plus players with CA 100 or more and young players
+ * (21 or under) with PA 130 or more, at most 40,000, best CA first; staff with CA 80 or more, at most
+ * 40,000. Fixed, not a setting: 40,000 players load in a few seconds, and the screens stay quick.
+ */
+export const DEFAULT_LOAD_SCOPE: LoadScope = {
   minCa: 100,
   youngMaxAge: 21,
   youngMinPa: 130,
   maxPlayers: 40_000,
   staffMinCa: 80,
   maxStaff: 40_000,
+  onlySearch: false,
 };
-
-export const DEFAULT_LOAD_SCOPE: LoadScope = { ...DEFAULT_LOAD_LIMITS, onlySearch: false };
 
 /** A stored scan as the screens get it: the loaded part, and the totals of the whole scan. */
 export interface LoadedScan extends Omit<ScanFile, "schema" | "schemaVersion"> {
@@ -123,8 +124,6 @@ export interface DesktopSettings {
   database: "men" | "women" | "both";
   /** Hide CA, PA and hidden attributes (for players who consider them cheating). */
   hideHidden: boolean;
-  /** How much the screens load from a whole-save scan, which is too big for the window. */
-  load: LoadLimits;
   /** Ask GitHub for a newer version when the app starts and every few hours. */
   checkUpdates: boolean;
 }
@@ -134,14 +133,9 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   hotkey: true,
   database: "men",
   hideHidden: false,
-  load: DEFAULT_LOAD_LIMITS,
   checkUpdates: true,
 };
 
-/** What the screens load with these settings: a search scan whole, a whole-save scan by the limits. */
-export function loadScopeFor(settings: Pick<DesktopSettings, "load">): LoadScope {
-  return { ...settings.load, onlySearch: false };
-}
 
 export interface ScanProgress {
   phase: string;
@@ -240,20 +234,7 @@ function clampInt(value: unknown, min: number, max: number, fallback: number): n
   return value === null || value === undefined || value === "" || !Number.isFinite(n) ? fallback : Math.min(max, Math.max(min, Math.round(n)));
 }
 
-export function normaliseLoadLimits(value: unknown): LoadLimits {
-  const v = (value && typeof value === "object" ? value : {}) as Partial<LoadLimits>;
-  const d = DEFAULT_LOAD_LIMITS;
-  return {
-    minCa: clampInt(v.minCa, 1, 200, d.minCa),
-    youngMaxAge: clampInt(v.youngMaxAge, 14, 45, d.youngMaxAge),
-    youngMinPa: clampInt(v.youngMinPa, 1, 200, d.youngMinPa),
-    maxPlayers: clampInt(v.maxPlayers, 100, 100_000, d.maxPlayers),
-    staffMinCa: clampInt(v.staffMinCa, 1, 200, d.staffMinCa),
-    maxStaff: clampInt(v.maxStaff, 100, 100_000, d.maxStaff),
-  };
-}
-
-/** Clamp and fill settings read from disk or sent by the renderer. */
+/** Clamp and fill settings read from disk or sent by the renderer. Old fields (scanMode, load) are dropped. */
 export function normaliseSettings(value: unknown): DesktopSettings {
   const v = (value && typeof value === "object" ? value : {}) as Partial<DesktopSettings>;
   return {
@@ -261,7 +242,6 @@ export function normaliseSettings(value: unknown): DesktopSettings {
     hotkey: typeof v.hotkey === "boolean" ? v.hotkey : DEFAULT_DESKTOP_SETTINGS.hotkey,
     database: v.database === "women" || v.database === "both" ? v.database : "men",
     hideHidden: v.hideHidden === true,
-    load: normaliseLoadLimits(v.load),
     checkUpdates: v.checkUpdates !== false,
   };
 }
