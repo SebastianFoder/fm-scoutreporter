@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       { source: "/attribute/players/:id", destination: "/players/:id", permanent: true },
       { source: "/attribute/compare", destination: "/players/compare", permanent: true },
       { source: "/compare", destination: "/players/compare", permanent: true },
-      { source: "/wonderkid", destination: "/players?view=wonderkids", permanent: true },
+      { source: "/wonderkid", destination: "/players", permanent: true },
       { source: "/best-xi", destination: "/players/best-xi", permanent: true },
       { source: "/how-to-use/attribute-mode", destination: "/how-to-use/players", permanent: true },
       { source: "/how-to-use/wonderkid-mode", destination: "/how-to-use/wonderkids", permanent: true },

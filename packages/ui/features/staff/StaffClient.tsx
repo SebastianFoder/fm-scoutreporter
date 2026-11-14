@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import { STAFF_TABS, SectionTabs } from "@scoutreporter/ui/components/SectionTabs";
+import Link from "next/link";
+import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { SegmentedControl } from "@scoutreporter/ui/components/SegmentedControl";
@@ -179,11 +179,17 @@ export default function StaffClient() {
   return (
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
-        <PageHeader title="Staff">
+        <PageHeader
+          title="Staff"
+          aside={
+            <Link href="/staff/backroom" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
+              Best backroom <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          }
+        >
           Rank coaches, scouts, analysts and directors from an FM26 staff search export. FM26&apos;s word
           ratings are mapped back to the 1–20 scale and every staff member is scored on each staff role.
         </PageHeader>
-        <SectionTabs tabs={STAFF_TABS} label="Staff screens" />
 
         <StaffImportPanel onImported={resetPage} />
 

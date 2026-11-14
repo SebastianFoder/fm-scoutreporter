@@ -100,7 +100,7 @@ const VIEW_OPTIONS = [
     view: VIEW_HIDDEN,
     label: "Recommended",
     detail:
-      "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores and Wonderkids.",
+      "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores, for finding wonderkids.",
   },
   {
     view: VIEW_STANDARD,
@@ -603,7 +603,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
             With a Hidden Attributes export a <span className="font-bold">Potential</span> column appears: the
             same score using attributes projected to PA.{" "}
             <Link href="/how-to-use/wonderkids" className="link">
-              How Wonderkids works
+              How the potential estimate works
             </Link>{" "}
             explains the projection.
           </p>
@@ -674,7 +674,7 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 export function WonderkidGuide() {
   return (
     <div>
-      <Step index="Use" title="How to use Wonderkids" defaultOpen>
+      <Step index="Use" title="How to find wonderkids" defaultOpen>
         <MiniStep title="1. Export with the Hidden Attributes view">
           <p>
             Import the Hidden Attributes view in FM and export as usual. It adds the hidden{" "}
@@ -683,17 +683,18 @@ export function WonderkidGuide() {
             still scored on their current attributes.
           </p>
         </MiniStep>
-        <MiniStep title="2. Import and filter">
+        <MiniStep title="2. Import and sort">
           <p>
-            Open{" "}
+            Import it on{" "}
             <Link
-              href="/players?view=wonderkids"
+              href="/players"
               className="link"
             >
-              Wonderkids
+              Players
             </Link>{" "}
-            (the Wonderkids switch on the Players page). Filter by max age, minimum
-            professionalism and best role; sort by Potential, vs Prime or vs Age.
+            and sort by <span className="font-bold">Potential</span> (the score at full potential on
+            the weight profile you picked) or <span className="font-bold">vs Age</span> (how far ahead of
+            their age they are now).
           </p>
         </MiniStep>
         <MiniStep title="3. Inspect a prospect">

@@ -12,11 +12,11 @@ directly with the desktop app, and rank players on weighted attributes and FM27 
 
 - **Players**: scores from your own attribute weights or the FM27 benchmark roles
   (from [jamiebolden/fm-scoring](https://github.com/jamiebolden/fm-scoring)), a vs-age column, a
-  development plan per player and a side-by-side compare. Switch to **Wonderkids** to rank
-  prospects on their estimated attributes at full potential.
-- **Best XI** (a tab under Players): the best eleven for a formation, with an optional transfer budget
+  development plan per player and a side-by-side compare. With CA and PA, a Potential score
+  estimates each player at full potential, to find wonderkids.
+- **Best XI** (a button on Players): the best eleven for a formation, with an optional transfer budget
 - **Squad analysis**: your first and second eleven, gaps, weak spots, ageing starters and upgrades from your scouting
-- **Staff**: staff scored on 17 roles, with a **Best backroom** tab that picks the best combination to hire
+- **Staff**: staff scored on 17 roles, with **Best backroom** to pick the best combination to hire
 - **Growth** (desktop): CA, PA and attribute changes between two scans of your save
 
 The website reads CSV exports made with the views in `apps/web/public/*.fmf`; the site's
@@ -25,8 +25,7 @@ in the browser: the CSV never leaves your machine.
 
 <table>
 <tr>
-<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/players-dark.png"><img src="apps/web/public/screenshots/players-light.png" alt="Player list: scores on your weights or an FM27 role"></picture><br><b>Player list</b>: scores on your weights or an FM27 role</td>
-<td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/wonderkid-dark.png"><img src="apps/web/public/screenshots/wonderkid-light.png" alt="Wonderkids: prospects ranked at full potential"></picture><br><b>Wonderkids</b>: prospects ranked at full potential</td>
+<td colspan="2"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/players-dark.png"><img src="apps/web/public/screenshots/players-light.png" alt="Player list: scores on your weights or an FM27 role, with Potential"></picture><br><b>Player list</b>: scores on your weights or an FM27 role, with Potential</td>
 </tr>
 <tr>
 <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="apps/web/public/screenshots/best-xi-dark.png"><img src="apps/web/public/screenshots/best-xi-light.png" alt="Best XI: the best eleven for a formation, within a budget"></picture><br><b>Best XI</b>: the best eleven for a formation, within a budget</td>

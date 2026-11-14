@@ -2,8 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { STAFF_TABS, SectionTabs } from "@scoutreporter/ui/components/SectionTabs";
-import { Lock, LockOpen, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { ArrowLeft, Lock, LockOpen, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { Button } from "@scoutreporter/ui/components/Button";
@@ -135,12 +134,18 @@ export default function BackroomClient() {
   return (
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
-        <PageHeader title="Best backroom">
+        <PageHeader
+          title="Best backroom"
+          aside={
+            <Link href="/staff" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
+              <ArrowLeft className="h-4 w-4" aria-hidden /> Staff list
+            </Link>
+          }
+        >
           Choose the roles you need and how many of each. Scout Reporter hires the combination of staff with
           the highest total role score, never using one person twice. Lock in staff you&apos;ve signed, and
           remove anyone who turns you down to get the next best pick for that slot.
         </PageHeader>
-        <SectionTabs tabs={STAFF_TABS} label="Staff screens" />
 
         <StaffImportPanel onImported={() => update({ excluded: [] })} />
 

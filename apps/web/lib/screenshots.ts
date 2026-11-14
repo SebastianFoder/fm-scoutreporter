@@ -16,8 +16,6 @@ import squadDark from "../public/screenshots/squad-dark.png";
 import squadLight from "../public/screenshots/squad-light.png";
 import staffDark from "../public/screenshots/staff-dark.png";
 import staffLight from "../public/screenshots/staff-light.png";
-import wonderkidDark from "../public/screenshots/wonderkid-dark.png";
-import wonderkidLight from "../public/screenshots/wonderkid-light.png";
 
 export interface ScreenshotInfo {
   name: string;
@@ -31,7 +29,6 @@ export interface ScreenshotInfo {
 export const SCREENSHOTS: ScreenshotInfo[] = [
   { name: "squad", title: "Squad analysis", caption: "Your first and second eleven, thin cover, weak links and who should start.", href: "/squad", light: squadLight, dark: squadDark },
   { name: "players", title: "Player list", caption: "Every player scored on your weights or an FM27 role, with grades, vs-age and value.", href: "/players", light: playersLight, dark: playersDark },
-  { name: "wonderkid", title: "Wonderkids", caption: "Prospects ranked on what they could become at full potential.", href: "/players?view=wonderkids", light: wonderkidLight, dark: wonderkidDark },
   { name: "best-xi", title: "Best XI", caption: "The best eleven for any formation, within a transfer budget.", href: "/players/best-xi", light: bestXiLight, dark: bestXiDark },
   { name: "player", title: "Player panel", caption: "Click any player for their profile, CA, PA and attributes in a side panel.", href: "/players", light: playerLight, dark: playerDark },
   { name: "staff", title: "Staff", caption: "Coaches, scouts and directors scored on 17 staff roles.", href: "/staff", light: staffLight, dark: staffDark },

@@ -23,7 +23,7 @@ export default function WonderkidGuidePage() {
       <HowToShell
         title="Wonderkids"
         description="Estimate full-potential attributes from a Hidden Attributes view export (CA, PA, Professionalism) and rank prospects on benchmarked FM27 roles."
-        link={{ href: "/players?view=wonderkids", label: "Go to Wonderkids" }}
+        link={{ href: "/players", label: "Go to Players" }}
       >
         <WonderkidGuide />
       </HowToShell>

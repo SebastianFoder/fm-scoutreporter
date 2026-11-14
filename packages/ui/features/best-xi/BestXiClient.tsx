@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
-import { RotateCcw, X } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, RotateCcw, X } from "lucide-react";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { CsvImportPanel } from "@scoutreporter/ui/components/CsvImportPanel";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
-import { PLAYERS_TABS, SectionTabs } from "@scoutreporter/ui/components/SectionTabs";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { useWeightProfiles } from "@scoutreporter/ui/components/WeightConfig";
@@ -221,11 +221,17 @@ export default function BestXiClient() {
   return (
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
-        <PageHeader title="Best XI">
+        <PageHeader
+          title="Best XI"
+          aside={
+            <Link href="/players" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
+              <ArrowLeft className="h-4 w-4" aria-hidden /> Players
+            </Link>
+          }
+        >
           Picks the highest-scoring eleven from your import for a formation, with an optional
           minimum and maximum on what the eleven costs in total.
         </PageHeader>
-        <SectionTabs tabs={PLAYERS_TABS} label="Player screens" />
 
         <CsvImportPanel testFixture="attribute" onImported={() => update({ excluded: [] })} />
 

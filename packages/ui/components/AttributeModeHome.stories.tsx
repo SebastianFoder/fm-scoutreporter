@@ -28,18 +28,3 @@ export const SquadImport: Story = {
   parameters: { appProviders: { players: "squadHidden" } },
 };
 
-/** The Wonderkids view: prospects ranked at full potential (used for the README screenshots). */
-export const Wonderkids: Story = {
-  parameters: {
-    appProviders: { players: "squadHidden" },
-    nextjs: { navigation: { pathname: "/players", query: { view: "wonderkids" } } },
-  },
-};
-
-/** Wonderkids on a standard view export: no CA/PA, so no potential estimates. */
-export const WonderkidsWithoutCaPa: Story = {
-  parameters: {
-    appProviders: { players: "fm26" },
-    nextjs: { navigation: { pathname: "/players", query: { view: "wonderkids" } } },
-  },
-};

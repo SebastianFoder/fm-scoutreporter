@@ -34,7 +34,6 @@ const only = (() => {
 export const SCREENS = [
   { name: "players", id: "pages-players--squad-import" },
   { name: "player", id: "components-playerpanel--open-outfield" },
-  { name: "wonderkid", id: "pages-players--wonderkids" },
   { name: "best-xi", id: "pages-best-xi--imported" },
   { name: "squad", id: "pages-squad-analysis--hidden-attributes" },
   { name: "staff", id: "pages-staff--rank-by-role" },

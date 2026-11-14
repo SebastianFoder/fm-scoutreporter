@@ -34,7 +34,7 @@ export default async function DownloadPage() {
       <PageHeader title="Scout Reporter for Windows">
         Every screen of this website, plus <span className="font-semibold text-ink">Scan FM</span>: set up a Player
         Search in Football Manager, press <kbd className={kbd}>F9</kbd>, and the players FM found, with your own
-        squad, are in Players, Wonderkids, Best XI, Squad and Staff a few seconds later. No view files and no CSV
+        squad, are in Players, Best XI, Squad and Staff a few seconds later. No view files and no CSV
         export.
       </PageHeader>
 

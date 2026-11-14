@@ -46,7 +46,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Which view file should I use?",
-        a: `The ${VIEW_HIDDEN.name} is recommended: it exports every attribute plus the hidden Professionalism, Current Ability (CA) and Potential Ability (PA), which unlocks Potential scores and Wonderkids. The ${VIEW_STANDARD.name} exports the visible attributes only, which is enough for the player list and Best XI.`,
+        a: `The ${VIEW_HIDDEN.name} is recommended: it exports every attribute plus the hidden Professionalism, Current Ability (CA) and Potential Ability (PA), which unlocks Potential scores for finding wonderkids. The ${VIEW_STANDARD.name} exports the visible attributes only, which is enough for the player list and Best XI.`,
       },
       {
         q: "Does it work on Mac or Linux?",

@@ -89,8 +89,8 @@ const pageText = (page) =>
     .eval("`${location.pathname} | header: ${document.querySelector('header')?.innerText ?? ''} | main: ${document.querySelector('main')?.innerText ?? ''}`.replace(/\\s+/g, ' ').slice(0, 600)")
     .catch((e) => `page unreachable (${e.message})`);
 
-// Wonderkids says this when the import has no CA/PA (its table always has CA and PA headers).
-const NO_CA_PA = "This import has no CA / PA columns";
+/** True when the player list's table has a column headed `name`. */
+const listColumn = (name) => `[...document.querySelectorAll("main th")].some((th) => th.innerText.includes(${JSON.stringify(name)}))`;
 
 /** Open a page and wait until it is the one showing: setting location.href only starts the load. */
 const navigate = async (page, path) => {
@@ -157,21 +157,12 @@ try {
 
   await navigate(page, "/players");
   // The Potential column only appears when the import has CA and PA.
-  check("player list scores scanned players", await waitFor(page, "/vs Age/.test(document.querySelector('main').innerText) && /Potential/.test(document.querySelector('main').innerText)"));
+  check("player list scores scanned players, with CA/PA", await waitFor(page, `${listColumn("vs Age")} && ${listColumn("Potential")}`));
 
   await navigate(page, `/players/${samplePlayer.uid}`);
   check(
     "player profile opens from the scan",
     await waitFor(page, `document.querySelector('main').innerText.includes(${JSON.stringify(samplePlayer.name)}) && document.querySelector('main').innerText.includes("Current ability")`),
-  );
-
-  await navigate(page, "/players?view=wonderkids");
-  check(
-    "Wonderkids has CA/PA from the scan",
-    await waitFor(
-      page,
-      `/of 66 players/.test(document.querySelector('main').innerText) && !document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`,
-    ),
   );
 
   await navigate(page, "/staff");
@@ -188,7 +179,7 @@ try {
   const clubSize = sample.players.filter((p) => p.club === sample.meta.myClub).length;
   check("Squad uses the scanned club's players", await waitFor(page, `document.querySelector('main').innerText.includes(${JSON.stringify(sample.players.find((p) => p.club === sample.meta.myClub).name)})`), `${clubSize} players`);
 
-  // Hide hidden attributes: reload the scan, then Wonderkid has no CA/PA.
+  // Hide hidden attributes: reload the scan, then the player list has no Potential column.
   await page.eval("window.scoutReporterDesktop.setSettings({ hideHidden: true })");
   await navigate(page, "/desktop");
   const useButton = "[...document.querySelectorAll('li')].filter((li) => li.innerText.includes('Sample scan')).flatMap((li) => [...li.querySelectorAll('button')]).find((b) => b.textContent.trim() === 'Use' && !b.disabled)";
@@ -196,10 +187,8 @@ try {
   // Mark the scan's row, press Use, and wait until the row says "In use" (set once loading is done).
   await page.eval(`(() => { const b = ${useButton}; b.closest('li').dataset.smoke = 'use'; b.click(); return true; })()`);
   const inUse = await waitFor(page, "document.querySelector('[data-smoke=use]')?.innerText.includes('In use')");
-  await navigate(page, "/players?view=wonderkids");
-  const hidden =
-    inUse &&
-    (await waitFor(page, `/of 66 players/.test(document.querySelector('main').innerText) && document.querySelector('main').innerText.includes(${JSON.stringify(NO_CA_PA)})`));
+  await navigate(page, "/players");
+  const hidden = inUse && (await waitFor(page, `${listColumn("vs Age")} && !${listColumn("Potential")}`));
   check("hiding hidden attributes removes CA/PA", hidden, hidden ? "" : inUse ? await pageText(page) : "the scan never showed as in use");
 
   // The CSV import still works inside the app.

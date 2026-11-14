@@ -12,12 +12,11 @@ const MODES = [
     href: "/players",
     name: "Players",
     blurb:
-      "Score and rank players on your own attribute weights or the FM27 roles and compare them. Wonderkids estimates prospects at full potential (needs CA, PA and Professionalism); Best XI picks the strongest eleven for a formation within a budget.",
+      "Score and rank players on your own attribute weights or the FM27 roles, compare them and find wonderkids: with CA and PA, every player gets a Potential score at full potential. Best XI picks the strongest eleven for a formation within a budget.",
     needs: "Standard or Hidden Attributes view",
     cta: "Open Players",
     screens: [
       { href: "/players", label: "Players" },
-      { href: "/players?view=wonderkids", label: "Wonderkids" },
       { href: "/players/best-xi", label: "Best XI" },
     ],
   },
@@ -186,8 +185,15 @@ export default function Home() {
           More screens
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          {SCREENSHOTS.slice(1).map((s) => (
-            <ScreenshotFigure key={s.name} shot={s} framed sizes="(min-width: 1024px) 484px, (min-width: 640px) 50vw, 100vw" />
+          {/* The first one spans both columns, so the rest fill whole rows. */}
+          {SCREENSHOTS.slice(1).map((s, i) => (
+            <ScreenshotFigure
+              key={s.name}
+              shot={s}
+              framed
+              className={i === 0 ? "sm:col-span-2" : ""}
+              sizes={i === 0 ? "(min-width: 1024px) 984px, 100vw" : "(min-width: 1024px) 484px, (min-width: 640px) 50vw, 100vw"}
+            />
           ))}
         </div>
       </section>
