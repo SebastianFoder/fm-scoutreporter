@@ -17,6 +17,8 @@ export interface ImportSource {
   total?: number;
   /** Size of FM's search result, when only people from it (plus your club) were loaded. */
   search?: number;
+  /** Your club in the save the scan came from (for "show my club" on the staff list). */
+  myClub?: string | null;
 }
 
 export interface StoredPlayerRecords {

@@ -199,7 +199,8 @@ export function DesktopHomeClient() {
           <p className="px-4 py-8 text-center text-sm text-muted">No scans yet. Press Scan search or Scan save, or load the sample scan to look around.</p>
         ) : (
           <ul className="divide-y divide-line">
-            {snapshots.map((s) => (
+            {/* Starred scans first, then the rest; newest first within each. */}
+            {[...snapshots.filter((s) => s.favorite), ...snapshots.filter((s) => !s.favorite)].map((s) => (
               <StoredScanRow
                 key={s.id}
                 scan={s}

@@ -4,6 +4,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
+import { useStoredToggle } from "@scoutreporter/ui/components/useStoredToggle";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { SegmentedControl } from "@scoutreporter/ui/components/SegmentedControl";
 import { PaginationControls, type PageSizeChoice } from "@scoutreporter/ui/components/PaginationControls";
@@ -98,15 +99,22 @@ export default function StaffClient() {
     );
   }, [columns, narrowToJob, jobWeights]);
 
+  // Your club, known when the staff came from a scan.
+  const myClub = state.source?.myClub ?? null;
+  const mine = useMemo(() => (myClub ? staff.filter((s) => s.club === myClub).length : 0), [staff, myClub]);
+  const [showMine, setShowMine] = useStoredToggle("staffShowMyClub", true);
+  const hideMine = !showMine && mine > 0;
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return rows.filter(({ s }) => {
       if (job !== "all" && s.preferredJob !== job) return false;
       if (freeOnly && !isFreeAgent(s)) return false;
+      if (hideMine && s.club === myClub) return false;
       if (q && !s.name.toLowerCase().includes(q) && !s.club.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [rows, job, freeOnly, query]);
+  }, [rows, job, freeOnly, query, hideMine, myClub]);
 
   const sorted = useMemo(() => {
     const m = dir === "asc" ? 1 : -1;
@@ -282,6 +290,20 @@ export default function StaffClient() {
                 />
                 Free agents only
               </label>
+              {mine > 0 && (
+                <label className="flex h-9 items-center gap-2 text-sm" title={`Staff at ${myClub}`}>
+                  <input
+                    type="checkbox"
+                    checked={showMine}
+                    onChange={(e) => {
+                      setShowMine(e.target.checked);
+                      resetPage();
+                    }}
+                    className="h-4 w-4 accent-accent"
+                  />
+                  Show my staff ({mine})
+                </label>
+              )}
               <div className="flex flex-col gap-1 text-[13px] text-muted">
                 <span id="value-mode">Ratings as</span>
                 <SegmentedControl

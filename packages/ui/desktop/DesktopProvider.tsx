@@ -180,6 +180,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
           snapshotId: id,
           scannedAt: scan.meta.scannedAt,
           gameDate: scan.meta.gameDate,
+          myClub: scan.meta.myClub,
         };
         // Ask for the settings now: a scan is also loaded right after a setting changed, or before
         // the settings in state have arrived, and must honour them either way.
