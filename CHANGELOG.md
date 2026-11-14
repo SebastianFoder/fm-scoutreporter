@@ -1,3 +1,13 @@
+# [1.20.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.19.0...v1.20.0) (2026-11-14)
+
+
+### Features
+
+* **desktop:** no CSV import panel in the desktop app ([497eb3c](https://github.com/SebastianFoder/fm-scoutreporter/commit/497eb3c234a440e1bad1f8eecdc1c7db8d34d149))
+* **desktop:** Scan search and Scan save buttons, simpler scan settings ([416362b](https://github.com/SebastianFoder/fm-scoutreporter/commit/416362b5551d41c7ead654dce7eede2774a7a3dc))
+* one Players section with a Wonderkids view and Best XI tab ([4021928](https://github.com/SebastianFoder/fm-scoutreporter/commit/4021928e2e547eb2e513878b5926d159afc94248))
+* Players is one page with a Best XI button ([cc687e9](https://github.com/SebastianFoder/fm-scoutreporter/commit/cc687e97a7f571e42866ebd7c7495f2070ce3729))
+
 # [1.19.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.18.0...v1.19.0) (2026-11-14)
 
 
