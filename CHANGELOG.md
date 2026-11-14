@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.22.0...v1.23.0) (2026-11-14)
+
+
+### Features
+
+* show or hide your own players and staff, starred scans first ([0403732](https://github.com/SebastianFoder/fm-scoutreporter/commit/040373227c2de5273181c4fdc4a6a9b06541f9cf))
+
 # [1.22.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.21.0...v1.22.0) (2026-11-14)
 
 
