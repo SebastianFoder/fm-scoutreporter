@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.18.0...v1.19.0) (2026-11-14)
+
+
+### Features
+
+* screenshots of the app on the home page, download page and README ([0cfbcb6](https://github.com/SebastianFoder/fm-scoutreporter/commit/0cfbcb68697368405c40c6059a5c577d1779815b))
+
 # [1.18.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.17.2...v1.18.0) (2026-11-13)
 
 
