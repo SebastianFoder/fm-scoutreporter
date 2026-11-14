@@ -176,6 +176,16 @@ try {
   // The Potential column only appears when the import has CA and PA.
   check("player list scores scanned players, with CA/PA", await waitFor(page, `${listColumn("vs Age")} && ${listColumn("Potential")}`));
 
+  // "Show my players": your club's players (the squad from the scan) can be hidden from the list.
+  const clubPlayers = sample.players.filter((p) => p.club === sample.meta.myClub).length;
+  const toggle = `[...document.querySelectorAll("main label")].find((l) => l.innerText.includes("Show my players (${clubPlayers})"))?.querySelector("input")`;
+  const toggleShown = await waitFor(page, `!!${toggle}`);
+  if (toggleShown) await page.eval(`(${toggle}.click(), true)`);
+  const hidesMine = toggleShown && (await waitFor(page, `document.querySelector("main").innerText.includes("of ${sample.players.length - clubPlayers}")`));
+  if (toggleShown) await page.eval(`(${toggle}.click(), true)`);
+  const showsAgain = hidesMine && (await waitFor(page, `document.querySelector("main").innerText.includes("of ${sample.players.length}")`));
+  check("the player list can hide your own players", showsAgain, toggleShown ? "" : await pageText(page));
+
   await navigate(page, `/players/${samplePlayer.uid}`);
   check(
     "player profile opens from the scan",

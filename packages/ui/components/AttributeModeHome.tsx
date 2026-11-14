@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Columns3, GitCompareArrows, SlidersHorizontal } from "lucide-react";
@@ -8,6 +8,8 @@ import PlayersListClient from "@scoutreporter/ui/features/attribute/players/Play
 import { useActiveWeightProfile } from "./WeightConfig";
 import { Button } from "./Button";
 import { usePlayersData } from "./PlayersDataProvider";
+import { useSquadData } from "./SquadDataProvider";
+import { useStoredToggle } from "./useStoredToggle";
 import { useSettings } from "./Settings";
 import { CsvImportPanel } from "./CsvImportPanel";
 import { PageHeader } from "./PageHeader";
@@ -15,7 +17,16 @@ import { NoImport } from "./ImportPanel";
 
 export default function AttributeModeHome() {
   const { state } = usePlayersData();
-  const players = state.players.length > 0 ? state.players : null;
+  // Your own players are the ones in your squad import: your club from a scan, or your squad CSV.
+  const { state: squadState } = useSquadData();
+  const squadIds = useMemo(() => new Set(squadState.players.map((p) => p.raw.uniqueId)), [squadState.players]);
+  const mine = useMemo(() => state.players.filter((p) => squadIds.has(p.raw.uniqueId)).length, [state.players, squadIds]);
+  const [showMine, setShowMine] = useStoredToggle("playersShowMyClub", true);
+  const shown = useMemo(
+    () => (showMine || mine === 0 ? state.players : state.players.filter((p) => !squadIds.has(p.raw.uniqueId))),
+    [state.players, showMine, mine, squadIds],
+  );
+  const players = state.players.length > 0 ? shown : null;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   // Weights and Columns live in Settings; these buttons open it at their tab.
   const { openSettings } = useSettings();
@@ -55,6 +66,17 @@ export default function AttributeModeHome() {
                   </>
                 )}
               </p>
+              {mine > 0 && (
+                <label className="flex items-center gap-2 text-sm md:mr-auto md:ml-4" title="Your players are the ones in your squad import">
+                  <input
+                    type="checkbox"
+                    checked={showMine}
+                    onChange={(e) => setShowMine(e.target.checked)}
+                    className="h-4 w-4 accent-accent"
+                  />
+                  Show my players ({mine})
+                </label>
+              )}
               <div className="flex flex-wrap items-center gap-2">
                 <Button
                   color="alt"
