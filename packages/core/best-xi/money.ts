@@ -41,7 +41,8 @@ export type TransferValue =
 export function parseTransferValue(text: string | null): TransferValue {
   if (text === null || text.trim() === "") return { kind: "none" };
   const amounts = text
-    .split(/\s+[-\u2013]\s+/)
+    // "€250K - €2.5M" from FM; other exporters may drop the spaces or use an en dash.
+    .split(/\s*[-\u2013]\s*/)
     .map(parseMoney)
     .filter((n): n is number => n !== null);
   if (amounts.length === 0) return { kind: "unavailable" };

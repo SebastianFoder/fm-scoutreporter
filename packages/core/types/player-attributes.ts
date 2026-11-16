@@ -1,3 +1,5 @@
+import type { AttributeKey } from "./weights";
+
 export interface PlayerAttributes {
   player: string;
 
@@ -67,4 +69,11 @@ export interface PlayerAttributes {
 
   communication: number;
   aerialReach: number;
+
+  /**
+   * Attributes FM did not show exactly (a partly scouted player). A range ("12-15") is stored as
+   * its rounded midpoint; an unknown cell ("-", "?", blank) stays 0, because scoring has no
+   * "missing" path. Absent when every attribute is exact.
+   */
+  estimatedAttributes?: AttributeKey[];
 }
