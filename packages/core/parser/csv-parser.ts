@@ -1,8 +1,9 @@
 import { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
+import type { AttributeKey } from "@scoutreporter/core/types/weights";
 import { csvLines, detectDelimiter, splitCsvLine } from "./csv-utils";
 
 type NumKey = {
-  [K in keyof PlayerAttributes]: PlayerAttributes[K] extends number ? K : never;
+  [K in keyof PlayerAttributes]-?: PlayerAttributes[K] extends number ? K : never;
 }[keyof PlayerAttributes];
 
 /** Header (normalised) → numeric attribute field. */
@@ -93,9 +94,26 @@ function normalizeHeader(h: string): string {
   return ALIASES[n] ?? n;
 }
 
-function numeric(v: string): number {
-  const n = Number(v.replace(/[^\d.-]/g, ""));
-  return Number.isFinite(n) ? n : 0;
+const NUMBER = String.raw`\d+(?:[.,]\d+)?`;
+const EXACT = new RegExp(`^${NUMBER}$`);
+const FIRST_NUMBER = new RegExp(NUMBER);
+/** "12-15", "12 - 15", "12–15": FM shows partly scouted attributes as a range. */
+const RANGE = new RegExp(String.raw`^(${NUMBER})\s*[-\u2013]\s*(${NUMBER})$`);
+
+const toNumber = (s: string) => Number(s.replace(",", "."));
+
+/**
+ * One attribute (or age) cell. Exact values are whole numbers on FM's scale. A range counts as its
+ * midpoint, rounded like the rest of scoring (13.5 → 14). A cell with no number ("-", "?", blank)
+ * stays 0: scoring has no "missing" path. Both are flagged as estimated.
+ */
+function attributeCell(v: string): { value: number; estimated: boolean } {
+  if (EXACT.test(v)) return { value: Math.round(toNumber(v)), estimated: false };
+  const range = RANGE.exec(v);
+  if (range) return { value: Math.round((toNumber(range[1]) + toNumber(range[2])) / 2), estimated: true };
+  // Anything else: the first number in it, if any, and not trusted as exact.
+  const first = FIRST_NUMBER.exec(v);
+  return { value: first ? Math.round(toNumber(first[0])) : 0, estimated: true };
 }
 
 /** CA/PA/Professionalism: null when missing, hidden ("-", "?") or a range FM shows for unknown values. */
@@ -153,9 +171,15 @@ export function parsePlayersCsv(csv: string): PlayerAttributes[] {
     } as unknown as PlayerAttributes;
 
     // Two headers can alias one field (e.g. "Rushing Out" / "Rushing Out (Tendency)"): the first present wins.
+    const estimated: AttributeKey[] = [];
     for (const [header, field] of Object.entries(NUMERIC_COLUMNS)) {
-      if (row[field] === undefined && index.has(header)) row[field] = numeric(get(header));
+      if (row[field] !== undefined || !index.has(header)) continue;
+      const cell = attributeCell(get(header));
+      row[field] = cell.value;
+      if (cell.estimated && field !== "age") estimated.push(field);
     }
+    if (estimated.length > 0) row.estimatedAttributes = estimated;
+    // Columns the view doesn't have at all stay 0 and are not flagged: that is the file, not the player.
     for (const field of Object.values(NUMERIC_COLUMNS)) {
       if (row[field] === undefined) row[field] = 0;
     }

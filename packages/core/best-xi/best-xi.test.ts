@@ -231,3 +231,18 @@ test("solves a full eleven from a large pool quickly", () => {
   }
   assert.ok(Date.now() - started < 5000, `took ${Date.now() - started}ms`);
 });
+
+test("parses transfer value and wage formats from other exports and locales", () => {
+  assert.deepEqual(parseTransferValue("€1.2M - €3.4M"), { kind: "range", low: 1_200_000, high: 3_400_000 });
+  assert.deepEqual(parseTransferValue("£500K - £1M"), { kind: "range", low: 500_000, high: 1_000_000 });
+  assert.deepEqual(parseTransferValue("€1,2M - €3,4M"), { kind: "range", low: 1_200_000, high: 3_400_000 });
+  assert.deepEqual(parseTransferValue("€1.2M \u2013 €3.4M"), { kind: "range", low: 1_200_000, high: 3_400_000 });
+  assert.deepEqual(parseTransferValue("€1.2M-€3.4M"), { kind: "range", low: 1_200_000, high: 3_400_000 });
+  assert.deepEqual(parseTransferValue("€1.2M\u2013€3.4M"), { kind: "range", low: 1_200_000, high: 3_400_000 });
+  assert.deepEqual(parseTransferValue("€0 - €75K"), { kind: "range", low: 0, high: 75_000 });
+  assert.equal(parseWeeklyWage("€1,9K p/w"), 1900);
+  assert.equal(parseWeeklyWage("€14,25K p/w"), 14_250);
+  assert.equal(parseWeeklyWage("£12,500 p/w"), 12_500);
+  assert.equal(parseWeeklyWage("€1.250 p/w"), 1250);
+  assert.equal(parseWeeklyWage("$2.5k p/w"), 2500);
+});

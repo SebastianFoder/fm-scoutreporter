@@ -21,6 +21,7 @@ import {
 import { attributeLabel } from "@scoutreporter/core/attribute-labels";
 import { ageBenchmark } from "@scoutreporter/core/fm27/benchmarks";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
+import { EstimatedMark } from "@scoutreporter/ui/components/EstimatedMark";
 import {
   getBandForValue,
   useActiveAttributeProfile,
@@ -649,7 +650,10 @@ function PlayersListClientInner({
                 <td className="px-3 py-2 text-right">{p.raw.age}</td>
                 <td className="px-3 py-2 text-right font-bold">
                   <span className="inline-flex items-center justify-end gap-2">
-                    {score.toFixed(2)}
+                    <span>
+                      <EstimatedMark player={p.raw} />
+                      {score.toFixed(2)}
+                    </span>
                     <GradeStamp score={avg} label="Score" />
                   </span>
                 </td>

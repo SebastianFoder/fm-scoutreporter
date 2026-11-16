@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { PlayerWithGroups } from "@scoutreporter/core/players";
 import { groupPlayerAttributes } from "@scoutreporter/core/parser/attribute-grouper";
 import { isGoalkeeperPosition } from "@scoutreporter/core/fm27/benchmarks";
 import { fm27PlayerScores } from "@scoutreporter/core/fm27/player-scores";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
+import { EstimatedMark } from "@scoutreporter/ui/components/EstimatedMark";
 import { PositionMap } from "@scoutreporter/ui/components/PositionMap";
 import { PlayerAttributesClient } from "./PlayerAttributesClient";
 import { Fm27RolePanel } from "@scoutreporter/ui/features/fm27/Fm27RolePanel";
@@ -56,7 +57,12 @@ export function PlayerProfile({
 
           {scores && (
             <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="Grades">
-              <GradeLine label="Now" role={scores.best.role} score={scores.best.score} />
+              <GradeLine
+                label="Now"
+                role={scores.best.role}
+                score={scores.best.score}
+                mark={<EstimatedMark player={raw} />}
+              />
               {scores.bestPotential && (
                 <GradeLine label="Potential" role={scores.bestPotential.role} score={scores.bestPotential.score} />
               )}
@@ -124,14 +130,18 @@ export function PlayerProfile({
   );
 }
 
-function GradeLine({ label, role, score }: { label: string; role: string; score: number }) {
+function GradeLine({ label, role, score, mark }: { label: string; role: string; score: number; mark?: ReactNode }) {
   return (
     <div className="flex items-center gap-2.5">
       <GradeStamp score={score} size="lg" label={label} />
       <div className="leading-tight">
         <p className="text-[12px] text-muted">{label}</p>
         <p className="text-sm font-semibold">
-          {role} <span className="font-normal text-muted">{score.toFixed(1)}</span>
+          {role}{" "}
+          <span className="font-normal text-muted">
+            {mark}
+            {score.toFixed(1)}
+          </span>
         </p>
       </div>
     </div>
