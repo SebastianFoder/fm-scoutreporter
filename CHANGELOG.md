@@ -1,3 +1,10 @@
+## [1.24.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.24.0...v1.24.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* score attribute ranges at their midpoint instead of 0 in CSV import ([b91831c](https://github.com/SebastianFoder/fm-scoutreporter/commit/b91831cc95bf72cf3ef605b4d737f760ab5c3aab))
+
 # [1.24.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.23.0...v1.24.0) (2026-11-14)
 
 
