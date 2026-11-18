@@ -42,8 +42,8 @@ Safety rules kept from upstream: a scan that finds nobody is never written; a sc
 read more than 10% of memory (even after retrying from a frozen snapshot) is refused when there is
 an earlier scan to keep using (an existing `scan.ndjson`, or `--previous-exists`, which the app
 passes when it has stored scans); and the file is written to a temp file, then moved into place. When
-`game_plugin.dll`'s version differs from the version the offsets were pinned on, the scan still
-runs, but `meta.versionOk` is false and the app warns.
+`game_plugin.dll`'s version is not one the offsets are verified on (`Fields.VerifiedMinors`), the
+scan still runs, but `meta.versionOk` is false and the app warns.
 
 ## Build and test
 
@@ -64,9 +64,9 @@ field by field; see [PERFORMANCE.md](PERFORMANCE.md).
 
 ## Supported versions
 
-| Game | Pinned on | Notes |
+| Game | Verified on | Notes |
 |---|---|---|
-| FM27 | game_plugin 27.0.x | Verified upstream against FM 27.0 (02-11-2026) |
+| FM27 | game_plugin 27.0.x and 27.1.x | Pinned on 27.0.1, verified upstream against FM 27.0 (02-11-2026); 27.1 confirmed by a user scan (17-11-2026) |
 | FM26 | game_plugin 26.3.x | From tdg6661's Cheat Engine tables |
 
 After an FM patch, see `REPIN.md`.

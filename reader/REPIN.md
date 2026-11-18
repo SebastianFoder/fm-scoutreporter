@@ -3,9 +3,19 @@
 Adapted from FMSuperScout's `docs/repin-guide.md` (MIT).
 
 The reader reads FM's memory at fixed places (offsets in `src/Fields.cs`, one layout per FM
-version). A big patch (27.0 to 27.1) or a new edition (FM28) can move them. Signs: the app shows
-the "game version differs" warning, and the scan has rubbish or (almost) nothing in it. With the
+version). A big patch (a new minor version such as 27.2) or a new edition (FM28) can move them, though
+many patches move nothing (27.1 did not). Signs: the scan has rubbish or (almost) nothing in it.
+The app also shows the "game version differs" warning, but it shows that for every version not
+yet marked as verified, also one where the data is fine. With the
 hints in `diagnostics.txt` this is usually hours of work, not days.
+
+## Step 0: if nothing moved, mark the version as verified
+
+Scan the new version first (step 1) and check the data as in step 4, point 2. If it is right,
+no re-pin is needed: add the new minor to the layout's `VerifiedMinors` in `src/Fields.cs` (for
+27.1 that was `f.VerifiedMinors = new[] { 0, 1 };`), add a test case to `Fields.Resolve` in
+`tests/ReaderTests.cs`, and update the support tables in `README.md` and `reader/README.md`.
+Then do step 4, points 3 and 4.
 
 ## Step 1: scan the new version
 
@@ -22,12 +32,14 @@ A new edition gets its own layout with only the fields that moved, plus a line i
 ```csharp
 public static readonly Fields FM27 = FM26.With(f =>
 {
-    f.Game = "FM27"; f.SupportedMajor = 27; f.SupportedMinor = 0;
+    f.Game = "FM27"; f.SupportedMajor = 27; f.VerifiedMinors = new[] { 0, 1 };
     f.HUMAN_MANAGER_OFFSET = 0x440;
 });
 ```
 
-For a patch within the same edition, change that layout's values.
+For a patch within the same edition, change that layout's values. If an older minor of the
+edition is still played and the offsets differ between them, give the patch its own layout
+instead, and choose between the two in `Fields.Resolve`.
 
 Read the histogram "Class offsets (meta+4) with a plausible UID". Patterns that held on 26.3 and
 very likely come back:
@@ -61,7 +73,8 @@ players in `diagnostics.txt`: are names, ages, CA/PA and clubs right?
 
 ## Step 4: finish
 
-1. Update `SupportedMajor`/`SupportedMinor` of the layout in `src/Fields.cs`.
+1. Update `SupportedMajor`/`VerifiedMinors` of the layout in `src/Fields.cs`: the minors the
+   new offsets are checked on (drop the old minors if the offsets moved).
 2. Run a full scan and spot-check it in the app (known players, clubs, values, loans). Put an FM
    squad screen next to the app: age, contract, nationality and wage must match exactly (FM shows
    your currency, the scan is in GBP). Compare attribute profiles per position (GK/ST/DC) with the

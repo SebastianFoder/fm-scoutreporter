@@ -38,7 +38,8 @@ The records, shown as the whole-file JSON form (`scan-sample.json`):
     "readerVersion": "0.1.0",
     "game": "FM27",                         // memory layout used
     "gameVersion": "27.0.1.0",              // game_plugin.dll file version
-    "supportedVersion": "27.0",             // version the offsets were pinned on
+    "supportedVersion": "27.0",             // versions the offsets are verified on ("27.0, 27.1");
+                                            // older scans hold one pinned version ("27.0")
     "versionOk": true,                      // false: the game version differs, data may be wrong
     "gameDate": "2027-08-14",               // the manager's next match date, or null
     "gameDateSource": "schedule",           // or "none"

@@ -34,7 +34,10 @@ export interface ScanMeta {
   game: string;
   /** game_plugin.dll file version, null when unreadable. */
   gameVersion: string | null;
-  /** The version the offsets were pinned on ("27.0"). */
+  /**
+   * The versions the offsets are verified on, for display only: "27.0, 27.1" (or "26.3"). Scans
+   * from older readers hold the single pinned version ("27.0"). Use `versionOk`, not this, to check.
+   */
   supportedVersion: string;
   /** False when the game version differs from the pinned one: the data may be wrong. */
   versionOk: boolean;

@@ -73,7 +73,7 @@ internal static class Program
 
     private static int PrintVersion()
     {
-        var supported = string.Join(", ", Fields.All.Select(f => $"{f.Game} {f.SupportedVersion}.x"));
+        var supported = string.Join("; ", Fields.All.Select(f => $"{f.Game} {f.SupportedVersion}"));
         Emit(w => { w.Prop("type", "version"); w.Prop("version", ReaderVersion); w.Prop("supported", supported); });
         return 0;
     }
@@ -419,7 +419,7 @@ internal static class Program
     private static string RepinHint(ScanResult r)
     {
         var top = string.Join(", ", r.ClassHistogram.Take(8).Select(h => $"0x{h.offset:X}={h.count:N0}"));
-        return $"Game version {r.GameVersion ?? "?"} differs from the pinned {r.SupportedVersion}.x: check the data. " +
+        return $"Game version {r.GameVersion ?? "?"} is not one of the verified versions ({r.SupportedVersion}): check the data. " +
                $"Largest class-offset peaks: {top}. See reader/REPIN.md.";
     }
 
@@ -433,7 +433,7 @@ internal static class Program
         {
             using var w = new StreamWriter(path, false);
             w.WriteLine($"Scout Reporter reader {readerVersion} diagnostics, {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            w.WriteLine($"Game: {r.Game} (game_plugin {r.GameVersion ?? "?"}, offsets pinned on {r.SupportedVersion}.x, {(r.VersionOk ? "ok" : "DIFFERENT VERSION")})");
+            w.WriteLine($"Game: {r.Game} (game_plugin {r.GameVersion ?? "?"}, offsets verified on {r.SupportedVersion}, {(r.VersionOk ? "ok" : "DIFFERENT VERSION")})");
             w.WriteLine($"Players: {Math.Max(r.Players.Count, r.FoundPlayers):N0}  Staff: {Math.Max(r.Staff.Count, r.FoundStaff):N0}  Unreadable: {r.UnreadFraction:P1}  Snapshot: {r.FromSnapshot}  Time: {r.ElapsedMs} ms");
             w.WriteLine($"Manager: {r.Manager ?? "?"}  Club: {r.MyClub ?? "?"}  In-game date: {r.GameDate?.ToString("yyyy-MM-dd") ?? "not found"} (year {r.GameYear})");
             w.WriteLine($"FM search result: {r.SearchPlayers:N0} players, {r.SearchStaff:N0} staff");

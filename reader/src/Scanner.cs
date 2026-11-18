@@ -171,7 +171,7 @@ internal sealed class Scanner
             if (!string.IsNullOrEmpty(version))
             {
                 (F, result.VersionOk) = Fields.Resolve(major, minor);
-                result.Log.Add($"game_plugin.dll {version}: layout {F.Game}, pinned on {F.SupportedVersion}.x ({(result.VersionOk ? "ok" : "DIFFERENT VERSION")})");
+                result.Log.Add($"game_plugin.dll {version}: layout {F.Game}, verified on {F.SupportedVersion} ({(result.VersionOk ? "ok" : "DIFFERENT VERSION")})");
             }
         }
         catch (Exception e) { result.Log.Add("Version detection failed: " + e.Message); }
