@@ -1,3 +1,10 @@
+## [1.24.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.24.1...v1.24.2) (2026-11-18)
+
+
+### Bug Fixes
+
+* **reader:** treat FM27 27.1 as a verified version ([7a1bb47](https://github.com/SebastianFoder/fm-scoutreporter/commit/7a1bb478837602551a7e13968208ab725c4e80d6))
+
 ## [1.24.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.24.0...v1.24.1) (2026-11-16)
 
 
