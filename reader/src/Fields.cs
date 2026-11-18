@@ -4,19 +4,24 @@ namespace ScoutReporter.Reader;
 /// FM's memory layout per game version. Adapted from FMSuperScout (MIT, see LICENSE-FMSuperScout):
 /// FM26 comes from decompiled Cheat Engine tables (tdg6661, pinned on FM 26.3.x, game_plugin.dll
 /// 26.3.0/26.3.2); FM27 is derived from it and was re-verified field by field upstream against a
-/// running FM 27.0. All offsets are relative to an object base; see the comment on each group.
+/// running FM 27.0. The FM27 offsets were pinned on 27.0.1 and confirmed working on 27.1 by a user
+/// scan on 17-11-2026. All offsets are relative to an object base; see the comment on each group.
 ///
 /// A new FM version or a big patch is a new layout with only the fields that moved
-/// (<c>FM26.With(f => ...)</c>) plus a line in <see cref="ForVersion"/>. How: reader/REPIN.md.
+/// (<c>FM26.With(f => ...)</c>) plus a line in <see cref="ForVersion"/>. A patch that moves nothing
+/// only adds its minor to <see cref="VerifiedMinors"/>. How: reader/REPIN.md.
 /// </summary>
 internal sealed class Fields
 {
-    // The game this layout is for, and the game_plugin.dll version (major.minor) its offsets were
-    // pinned on. If the minor differs, the scan still runs but flags versionOk = false.
+    // The game this layout is for, and the game_plugin.dll minor versions (of SupportedMajor) its
+    // offsets are verified on: pinned on one, confirmed on the others by a scan. If the minor is not
+    // in the set, the scan still runs but flags versionOk = false.
     public string Game { get; private set; } = "FM26";
     public int SupportedMajor { get; private set; } = 26;
-    public int SupportedMinor { get; private set; } = 3;
-    public string SupportedVersion => $"{SupportedMajor}.{SupportedMinor}";
+    public IReadOnlyList<int> VerifiedMinors { get; private set; } = new[] { 3 };
+    /// <summary>The verified versions, oldest first: "26.3", or "27.0, 27.1".</summary>
+    public string SupportedVersion => string.Join(", ", VerifiedMinors.Select(m => $"{SupportedMajor}.{m}"));
+    public bool IsVerified(int minor) => VerifiedMinors.Contains(minor);
 
     // --- Object header (every database object) ---
     public uint OBJ_DUNI { get; private set; } = 0x0C;         // uint32 unique ID (UID)
@@ -117,12 +122,13 @@ internal sealed class Fields
     public static readonly Fields FM26 = new();
 
     /// <summary>
-    /// FM27 (Unity 6000.3, game_plugin.dll 27.0). The database layout is almost unchanged from FM26;
-    /// verified upstream on 02-11-2026 against a running FM 27.0 save.
+    /// FM27 (Unity 6000.3, game_plugin.dll 27.x). The database layout is almost unchanged from FM26;
+    /// verified upstream on 02-11-2026 against a running FM 27.0 save. Pinned on 27.0.1; 27.1 (Update
+    /// 27.1.0) moved nothing: confirmed working, SEARCH_LIST included, by a user scan on 17-11-2026.
     /// </summary>
     public static readonly Fields FM27 = FM26.With(f =>
     {
-        f.Game = "FM27"; f.SupportedMajor = 27; f.SupportedMinor = 0;
+        f.Game = "FM27"; f.SupportedMajor = 27; f.VerifiedMinors = new[] { 0, 1 };
         f.HUMAN_MANAGER_OFFSET = 0x440;   // FM26: 0x450 (peak pair 0x440/0x468 in the histogram)
     });
 
@@ -145,14 +151,15 @@ internal sealed class Fields
     public static readonly Fields[] All = { FM27, FM26 };
 
     /// <summary>
-    /// Pick the layout for a game version and say whether its offsets were pinned on that version.
-    /// Unknown major (FM28...): the newest layout as a best guess, flagged as not ok.
+    /// Pick the layout for a game version and say whether its offsets are verified on that version.
+    /// A minor outside the layout's set (27.2) still uses the layout, flagged as not ok. Unknown
+    /// major (FM28...): the newest layout as a best guess, flagged as not ok.
     /// </summary>
     public static (Fields layout, bool versionOk) Resolve(int major, int minor)
     {
         var layout = ForVersion(major);
         if (layout == null) return (All[0], false);
-        return (layout, minor == layout.SupportedMinor);
+        return (layout, layout.IsVerified(minor));
     }
 
     // Player attributes: our key (matches the app's PlayerAttributes) -> offset from PLAO_ATTRS. Stored x5.

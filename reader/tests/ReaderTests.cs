@@ -101,9 +101,10 @@ public class FieldsTests
         Assert.True(ok27);
         Assert.Equal(0x440u, fm27.HUMAN_MANAGER_OFFSET);
 
-        var (patched, okPatched) = Fields.Resolve(27, 1);
-        Assert.Equal("FM27", patched.Game);
-        Assert.False(okPatched);
+        var (fm271, ok271) = Fields.Resolve(27, 1);
+        Assert.Equal("FM27", fm271.Game);
+        Assert.True(ok271);
+        Assert.Same(fm27, fm271);
 
         var (fm26, ok26) = Fields.Resolve(26, 3);
         Assert.Equal("FM26", fm26.Game);
@@ -112,9 +113,31 @@ public class FieldsTests
     }
 
     [Fact]
-    public void Unknown_versions_use_the_newest_layout_and_are_flagged()
+    public void Minors_outside_the_verified_set_keep_their_layout_and_are_flagged()
     {
-        var (layout, ok) = Fields.Resolve(28, 0);
+        var (fm272, ok272) = Fields.Resolve(27, 2);
+        Assert.Equal("FM27", fm272.Game);
+        Assert.False(ok272);
+
+        var (fm262, ok262) = Fields.Resolve(26, 2);
+        Assert.Equal("FM26", fm262.Game);
+        Assert.False(ok262);
+    }
+
+    [Fact]
+    public void Supported_version_lists_the_verified_versions()
+    {
+        Assert.Equal("27.0, 27.1", Fields.FM27.SupportedVersion);
+        Assert.Equal("26.3", Fields.FM26.SupportedVersion);
+    }
+
+    [Theory]
+    [InlineData(28, 0)]
+    [InlineData(28, 1)]
+    public void Unknown_versions_use_the_newest_layout_and_are_flagged(int major, int minor)
+    {
+        var (layout, ok) = Fields.Resolve(major, minor);
+        Assert.Same(Fields.All[0], layout);
         Assert.Equal("FM27", layout.Game);
         Assert.False(ok);
     }
