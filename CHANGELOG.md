@@ -1,3 +1,10 @@
+## [1.26.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.1...v1.26.2) (2026-11-25)
+
+
+### Bug Fixes
+
+* load the Umami tracker from stats.sebastianfoder.com/app.js ([740be40](https://github.com/SebastianFoder/fm-scoutreporter/commit/740be4058d841178758bc147f292f029e8d1a4e1))
+
 ## [1.26.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.0...v1.26.1) (2026-11-25)
 
 
