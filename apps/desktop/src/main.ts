@@ -352,16 +352,18 @@ function registerIpc() {
 
 /** The self-hosted Umami server: its tracker script, and where it sends page views (Settings, App, Usage stats). */
 const STATS_ORIGIN = "https://stats.sebastianfoder.com";
+/** The project hub: the footer breadcrumb's script (/badge.js) and the live status it fetches (/api/status.json). */
+const PROJECT_HUB_ORIGIN = "https://sebastianfoder.com";
 
 /** Content Security Policy for our pages. Next's inline bootstrap scripts need 'unsafe-inline'; dev also needs eval. */
 function contentSecurityPolicy(): string {
   return [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' ${STATS_ORIGIN}${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'unsafe-inline' ${STATS_ORIGIN} ${PROJECT_HUB_ORIGIN}${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
-    `connect-src 'self' ${STATS_ORIGIN}${isDev ? " ws:" : ""}`,
+    `connect-src 'self' ${STATS_ORIGIN} ${PROJECT_HUB_ORIGIN}${isDev ? " ws:" : ""}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
