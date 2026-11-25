@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.25.0...v1.26.0) (2026-11-25)
+
+
+### Features
+
+* self-hosted Umami analytics on the website and desktop app ([12ca4d9](https://github.com/SebastianFoder/fm-scoutreporter/commit/12ca4d92477d33cbe8c9b009d02a7923c107d429))
+
 # [1.25.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.24.2...v1.25.0) (2026-11-25)
 
 
