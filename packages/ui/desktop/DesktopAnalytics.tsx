@@ -30,7 +30,7 @@ export function DesktopAnalytics() {
   if (!enabled) return null;
   return (
     <Script
-      src="https://stats.sebastianfoder.com/assets/app.js"
+      src="https://stats.sebastianfoder.com/app.js"
       data-website-id="465aa84c-1243-4e51-9bc5-b7b3691f71ce"
       data-domains="app"
       data-tag="desktop"

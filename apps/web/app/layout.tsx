@@ -149,7 +149,7 @@ export default function RootLayout({
             skips localhost and Vercel previews; client-side navigations are tracked by the script itself. */}
         {!DESKTOP_BUILD && (
           <Script
-            src="https://stats.sebastianfoder.com/assets/app.js"
+            src="https://stats.sebastianfoder.com/app.js"
             data-website-id="465aa84c-1243-4e51-9bc5-b7b3691f71ce"
             data-domains="fmscouting.sebastianfoder.com"
             strategy="afterInteractive"
