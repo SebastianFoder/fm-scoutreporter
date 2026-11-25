@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import { Sofia_Sans, Sofia_Sans_Semi_Condensed } from "next/font/google";
 import "@scoutreporter/ui/styles/globals.css";
 import { AttributeColorProvider } from "@scoutreporter/ui/components/AttributeColorConfig";
@@ -81,6 +83,11 @@ const FOOTER_LINKS = [
   { href: "/faq", label: "FAQ" },
 ] as const;
 
+/** Sebastian Foder's project hub: serves the footer breadcrumb (`/badge.js`) and its live status. */
+const PROJECT_HUB_ORIGIN = "https://sebastianfoder.com";
+/** Breadcrumb highlight: the footer's ink color, not its muted text. */
+const PROJECT_HUB_STYLE = { "--sf-hub-hi": "var(--color-ink)" } as CSSProperties;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -105,10 +112,9 @@ export default function RootLayout({
                       <SiteHeader />
                       <main className="flex-1">{children}</main>
                       <footer className="border-t border-line">
-                        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4 text-[13px] text-muted">
-                          <p>
-                            Scout Reporter by <span className="font-semibold text-ink">Sebastian Foder</span>
-                          </p>
+                        <div className="mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-x-6 gap-y-2 px-5 py-4 text-[13px] text-muted">
+                          {/* Breadcrumb to Sebastian Foder's other projects, from sebastianfoder.com/badge.js. */}
+                          <sf-hub project="fm-scouting" style={PROJECT_HUB_STYLE} />
                           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
                             {FOOTER_LINKS.map((l) => (
                               <Link key={l.href} href={l.href} className="link">
@@ -124,6 +130,7 @@ export default function RootLayout({
                           </nav>
                         </div>
                       </footer>
+                      <Script src={`${PROJECT_HUB_ORIGIN}/badge.js`} strategy="lazyOnload" />
                     </div>
                     </SettingsProvider>
                     </PlayerPanelProvider>
