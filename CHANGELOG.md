@@ -1,3 +1,10 @@
+## [1.26.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.0...v1.26.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* **desktop:** allow the project hub footer badge in the app's CSP ([db88142](https://github.com/SebastianFoder/fm-scoutreporter/commit/db8814273ab2cc09b9430599615a5301c85bce2f))
+
 # [1.26.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.25.0...v1.26.0) (2026-11-25)
 
 
