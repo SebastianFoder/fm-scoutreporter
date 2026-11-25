@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.24.2...v1.25.0) (2026-11-25)
+
+
+### Features
+
+* **web:** link footer to Sebastian Foder's project hub ([24a91c5](https://github.com/SebastianFoder/fm-scoutreporter/commit/24a91c54c35977de9ec7da8f0a06b2266a2be31d))
+
 ## [1.24.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.24.1...v1.24.2) (2026-11-18)
 
 
