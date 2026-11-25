@@ -153,6 +153,8 @@ export interface DesktopSettings {
   hideHidden: boolean;
   /** Ask GitHub for a newer version when the app starts and every few hours. */
   checkUpdates: boolean;
+  /** Send anonymous page views to the self-hosted Umami (stats.sebastianfoder.com). Nothing from the save. */
+  usageStats: boolean;
 }
 
 export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
@@ -161,6 +163,7 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   database: "men",
   hideHidden: false,
   checkUpdates: true,
+  usageStats: true,
 };
 
 
@@ -273,5 +276,6 @@ export function normaliseSettings(value: unknown): DesktopSettings {
     database: v.database === "women" || v.database === "both" ? v.database : "men",
     hideHidden: v.hideHidden === true,
     checkUpdates: v.checkUpdates !== false,
+    usageStats: v.usageStats !== false,
   };
 }

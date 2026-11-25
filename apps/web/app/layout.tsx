@@ -14,6 +14,8 @@ import { SiteHeader } from "@scoutreporter/ui/components/SiteHeader";
 import { DesktopProvider } from "@scoutreporter/ui/desktop/DesktopProvider";
 import { PlayerPanelProvider } from "@scoutreporter/ui/components/PlayerPanel";
 import { SettingsProvider } from "@scoutreporter/ui/components/Settings";
+import { DESKTOP_BUILD } from "@scoutreporter/ui/desktop/target";
+import { DesktopAnalytics } from "@scoutreporter/ui/desktop/DesktopAnalytics";
 import {
   AUTHOR,
   SITE_DESCRIPTION,
@@ -104,6 +106,8 @@ export default function RootLayout({
                   <HighlightedAttributesProvider>
                     {/* Desktop app only: scanning FM and stored scans. A pass-through on the website. */}
                     <DesktopProvider>
+                    {/* Desktop app only: its own Umami site, behind the usage stats setting. */}
+                    {DESKTOP_BUILD && <DesktopAnalytics />}
                     {/* Clicking a player opens them in a side panel (PlayerLink). */}
                     <PlayerPanelProvider>
                     {/* Settings (the gear in the header): weights, columns, look, and the desktop app's own. */}
@@ -141,6 +145,16 @@ export default function RootLayout({
             </PlayersDataProvider>
           </WeightProvider>
         </AttributeColorProvider>
+        {/* Self-hosted Umami analytics for the website (the desktop app's is DesktopAnalytics). data-domains
+            skips localhost and Vercel previews; client-side navigations are tracked by the script itself. */}
+        {!DESKTOP_BUILD && (
+          <Script
+            src="https://stats.sebastianfoder.com/assets/app.js"
+            data-website-id="465aa84c-1243-4e51-9bc5-b7b3691f71ce"
+            data-domains="fmscouting.sebastianfoder.com"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

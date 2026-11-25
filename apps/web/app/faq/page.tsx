@@ -65,6 +65,10 @@ const GROUPS: { title: string; items: Faq[] }[] = [
         q: "Is my CSV or save file uploaded anywhere?",
         a: "No. The CSV is read and scored in your browser and never sent to a server. The last import is kept in your browser's local storage so it survives a reload, along with your weight, highlight and threshold profiles. Importing a new file replaces it, and clearing site data removes it.",
       },
+      {
+        q: "Do you collect any analytics?",
+        a: "Only anonymous page views, sent to a self-hosted Umami server: which pages are opened, the referring site, and the browser, OS and country. No cookies are set, and nothing from your CSV, scans or players is ever included. In the desktop app you can turn this off in Settings, App, Send anonymous usage stats.",
+      },
     ],
   },
   {

@@ -315,3 +315,9 @@ test("update checks are on unless turned off", () => {
   assert.equal(normaliseSettings({ checkUpdates: false }).checkUpdates, false);
   assert.equal(normaliseSettings({ checkUpdates: "no" }).checkUpdates, true);
 });
+
+test("usage stats are on unless turned off", () => {
+  assert.equal(normaliseSettings({}).usageStats, true);
+  assert.equal(normaliseSettings({ usageStats: false }).usageStats, false);
+  assert.equal(normaliseSettings({ usageStats: "no" }).usageStats, true);
+});

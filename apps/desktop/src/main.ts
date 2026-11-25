@@ -350,15 +350,18 @@ function registerIpc() {
   });
 }
 
+/** The self-hosted Umami server: its tracker script, and where it sends page views (Settings, App, Usage stats). */
+const STATS_ORIGIN = "https://stats.sebastianfoder.com";
+
 /** Content Security Policy for our pages. Next's inline bootstrap scripts need 'unsafe-inline'; dev also needs eval. */
 function contentSecurityPolicy(): string {
   return [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'unsafe-inline' ${STATS_ORIGIN}${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
-    `connect-src 'self'${isDev ? " ws:" : ""}`,
+    `connect-src 'self' ${STATS_ORIGIN}${isDev ? " ws:" : ""}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

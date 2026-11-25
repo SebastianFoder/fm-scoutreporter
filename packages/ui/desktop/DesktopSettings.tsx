@@ -137,6 +137,13 @@ export function DesktopSettingsPanel() {
         </Button>
       </section>
 
+      <section className="space-y-3 border-t border-line pt-4">
+        <h3 className="section-title">Privacy</h3>
+        <Toggle title="Send anonymous usage stats" checked={settings.usageStats} onChange={(usageStats) => void updateSettings({ usageStats })}>
+          Counts which screens are opened, to see what gets used. It goes to the developer&apos;s own stats server, sets no cookies,
+          and never includes your save, scans, players or anything that identifies you.
+        </Toggle>
+      </section>
     </div>
   );
 }
