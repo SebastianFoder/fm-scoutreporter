@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Quale portiere metteresti nella lista degli obiettivi?",
+    "body": "Seleziona «{testData}» e usa il profilo dei pesi {role}. Tra due portieri di 18 anni, {currentLeader} ha un punteggio attuale di {currentScore} e {prospect} di {prospectScore}. Ordinando per potenziale, {prospect} passa in testa con {prospectPotential} contro {leaderPotential}. Valuta {currentLeader} per una maglia da titolare subito e osserva {prospect} per il futuro. Il potenziale è una stima a sviluppo completato.",
+    "guide": "Come si stima il potenziale dei giovani"
+  },
+  "bestXi": {
+    "title": "Il miglior undici con il tuo budget",
+    "body": "Seleziona «{testData}» e mantieni il 4-2-3-1 predefinito con i punteggi attuali e il punto medio delle fasce di valore. L’undici più forte costa circa {unlimitedCost} e ha una media di {unlimitedScore} su 20. Con un tetto di {budget}, lo strumento trova un undici da {cappedCost} con una media di {cappedScore}. Con quel tetto, osserva {leftWinger} per la fascia sinistra e sposta {rightWinger} a destra.",
+    "guide": "Come si calcolano i punteggi per ruolo"
+  },
+  "squad": {
+    "title": "Dove serve un’alternativa in rosa?",
+    "body": "Seleziona «{testData}» e mantieni il 4-2-3-1 predefinito. Il riepilogo segnala poche alternative come centrale di sinistra. Il titolare {starter} ottiene {starterScore} su 20, mentre la riserva {backup} ottiene {backupScore}. Cerca un centrale da inserire nelle rotazioni in quel ruolo.",
+    "guide": "Come esportare la tua rosa"
+  }
+}

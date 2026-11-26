@@ -161,16 +161,16 @@ export async function CompareFaq({ items }: { items: { q: string; a: string }[] 
 /** Links to the pages the facts about other tools come from. */
 export async function CompareSources({ tools }: { tools: ToolKey[] }) {
   const t = await getTranslations("compare");
-  const sourced = tools.filter((k) => TOOLS[k].source);
-  if (sourced.length === 0) return null;
+  const sources = tools.flatMap((k) => TOOLS[k].sources ?? []);
+  if (sources.length === 0) return null;
   return (
     <p className="text-sm text-muted">
-      {t("sources")}:{" "}
-      {sourced.map((k, i) => (
-        <span key={k}>
+      {t("sources")} ·{" "}
+      {sources.map(({ label, url }, i) => (
+        <span key={url}>
           {i > 0 && " · "}
-          <a href={TOOLS[k].source} className="link" rel="noreferrer" target="_blank">
-            {t(`tools.${k}.name`)}
+          <a href={url} className="link" rel="noreferrer" target="_blank">
+            {label}
           </a>
         </span>
       ))}

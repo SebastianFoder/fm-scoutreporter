@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Hvilken keeper vil du sette på ønskelisten?",
+    "body": "Velg «{testData}» og bruk vektprofilen {role}. Av to 18 år gamle keepere får {currentLeader} {currentScore} i dag, mens {prospect} får {prospectScore}. Sorterer du etter potensial, går {prospect} forbi med {prospectPotential} mot {leaderPotential}. Vurder {currentLeader} som starter nå og følg {prospect} på lengre sikt. Potensialet er et anslag ved full utvikling.",
+    "guide": "Slik beregnes potensialet til unge spillere"
+  },
+  "bestXi": {
+    "title": "Sett sammen den beste elleveren innenfor budsjettet",
+    "body": "Velg «{testData}» og behold standardformasjonen 4-2-3-1 med dagens poeng og midtpunktet i hvert verdiintervall. Den sterkeste elleveren koster anslagsvis {unlimitedCost} med et snitt på {unlimitedScore} av 20. Med et tak på {budget} finner verktøyet en ellever til {cappedCost} med et snitt på {cappedScore}. Med det taket kan du speide på {leftWinger} til venstrekanten og flytte {rightWinger} til høyre.",
+    "guide": "Slik beregnes rollepoengene"
+  },
+  "squad": {
+    "title": "Hvor trenger troppen en reserve?",
+    "body": "Velg «{testData}» og behold standardformasjonen 4-2-3-1. Troppsoversikten viser at dekningen på venstre stopperplass er tynn. Førstevalget {starter} får {starterScore} av 20, mens reserven {backup} får {backupScore}. Se etter en midtstopper som kan dekke plassen i rotasjonen.",
+    "guide": "Slik eksporterer du troppen din"
+  }
+}

@@ -1,6 +1,6 @@
 /**
  * The tools on the comparison pages (/compare). Their words are in the compare messages
- * (compare.tools.<key>); the facts about other tools come from their own sites (`source`), checked
+ * (compare.tools.<key>); the facts about other tools come from their own sites (`sources`), checked
  * on LAST_CHECKED. Re-check those pages and bump the date when you change a fact.
  */
 
@@ -11,11 +11,21 @@ export type ToolKey = "srWeb" | "srDesktop" | "genie" | "fmrte" | "inGame" | "da
 
 export const TOOL_FIELDS = ["platform", "price", "data", "edits", "versions", "bestFor"] as const;
 
-export const TOOLS: Record<ToolKey, { url?: string; source?: string }> = {
+const GENIE_26 = "https://www.fmscout.com/a-fm-genie-scout-26.html";
+const GENIE_27 = "https://www.fmscout.com/a-genie-scout-27g-edition.html";
+const FMRTE = "https://www.fmrte.com/";
+
+export const TOOLS: Record<ToolKey, { url?: string; sources?: { label: string; url: string }[] }> = {
   srWeb: { url: "/players" },
   srDesktop: { url: "/download" },
-  genie: { url: "https://www.fmscout.com/a-fm-genie-scout-26.html", source: "https://www.fmscout.com/a-fm-genie-scout-26.html" },
-  fmrte: { url: "https://www.fmrte.com/", source: "https://www.fmrte.com/" },
+  genie: {
+    url: GENIE_27,
+    sources: [
+      { label: "FM Genie Scout 26", url: GENIE_26 },
+      { label: "FM Genie Scout 27g", url: GENIE_27 },
+    ],
+  },
+  fmrte: { url: FMRTE, sources: [{ label: "FMRTE", url: FMRTE }] },
   inGame: {},
   databases: {},
 };

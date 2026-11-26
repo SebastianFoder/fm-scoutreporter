@@ -16,7 +16,7 @@ const TABLE: ToolKey[] = ["srWeb", "srDesktop", "genie", "fmrte", "inGame", "dat
 
 /** The "which one to use" points; `link` is where the point's <link> goes, if it has one. */
 const CHOOSE: { key: string; link?: string }[] = [
-  { key: "noInstall", link: "/how-to-use" },
+  { key: "noInstall", link: "/players" },
   { key: "live", link: "/download" },
   { key: "edit" },
   { key: "mac" },

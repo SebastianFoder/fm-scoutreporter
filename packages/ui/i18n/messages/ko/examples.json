@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "어느 골키퍼를 후보 명단에 올릴까요?",
+    "body": "‘{testData}’를 선택하고 {role} 가중치 프로필을 적용하세요. 두 18세 골키퍼 중 {currentLeader}의 현재 점수는 {currentScore}, {prospect}의 현재 점수는 {prospectScore}입니다. 잠재력으로 정렬하면 {prospect}가 {prospectPotential} 대 {leaderPotential}로 앞섭니다. 당장 주전이 필요하면 {currentLeader}를, 장기 후보를 찾는다면 {prospect}를 관찰하세요. 잠재력 점수는 선수가 최대로 성장했을 때의 추정치입니다.",
+    "guide": "유망주 잠재력 산정 방식"
+  },
+  "bestXi": {
+    "title": "예산 안에서 베스트 11 구성하기",
+    "body": "‘{testData}’를 선택하고 기본 4-2-3-1 포메이션, 현재 점수, 이적 가치 범위의 중간값을 사용하세요. 가장 강한 선발 11명의 추정 비용은 {unlimitedCost}, 평균 점수는 20점 만점에 {unlimitedScore}입니다. 상한을 {budget}로 설정하면 {cappedCost}에 평균 {cappedScore}인 선발 11명을 찾습니다. 이 예산에서는 왼쪽 윙 후보로 {leftWinger}를 관찰하고 {rightWinger}를 오른쪽으로 옮기세요.",
+    "guide": "역할 점수 계산 방식"
+  },
+  "squad": {
+    "title": "어느 포지션에 백업이 필요할까요?",
+    "body": "‘{testData}’를 선택하고 기본 4-2-3-1 포메이션을 유지하세요. 선수단 개요에는 왼쪽 센터백의 백업이 약하다고 표시됩니다. 주전 {starter}는 20점 만점에 {starterScore}, 백업 {backup}은 {backupScore}입니다. 그 자리를 맡을 수 있는 로테이션 센터백을 찾아보세요.",
+    "guide": "선수단 내보내기 방법"
+  }
+}

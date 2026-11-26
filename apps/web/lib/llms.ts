@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { LOCALES, LOCALE_INFO } from "@scoutreporter/ui/i18n/locales";
 import { VIEW_HIDDEN, VIEW_SQUAD, VIEW_SQUAD_HIDDEN, VIEW_STAFF, VIEW_STANDARD } from "@scoutreporter/core/view-files";
 import { FAQ_GROUPS, faqAnswer } from "@/lib/faq";
-import { LAST_CHECKED, TOOL_FIELDS, type ToolKey } from "@/lib/compare";
+import { LAST_CHECKED, TOOLS, TOOL_FIELDS, type ToolKey } from "@/lib/compare";
 import { REPO_URL } from "@/lib/desktop-release";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
@@ -16,9 +16,9 @@ const SUMMARY =
 
 const FACTS = [
   "Price: free, no account, no ads, no paid edition. Source code: " + REPO_URL,
-  "Website: any modern browser (Windows, macOS, Linux). Needs a CSV exported from FM with a Scout Reporter view: FM27 with FM View Exporter (Steam on Windows 10 or 11), FM26 with BepInEx and the FM26 Player CSV Export plugin.",
+  "The website opens an existing Scout Reporter CSV in any modern browser, including on macOS and Linux. The documented FM27 export uses FM View Exporter with Steam on Windows 10 or 11. FM26 uses BepInEx and the FM26 Player CSV Export plugin.",
   "Privacy: the CSV is read in the browser and never uploaded. The site counts anonymous page views (self-hosted Umami, no cookies).",
-  "Windows app: Windows 10 or 11, 64-bit, FM27 (27.0) or FM26 (26.3) from Steam, Epic or Game Pass. Reads the player search or the whole save from the game's memory, read-only. A Mac version is planned.",
+  "The desktop live scanner runs on 64-bit Windows 10 or 11. It reads the player search or the whole save from the game's memory on FM27 (27.0) or FM26 (26.3) from Steam, Epic or Game Pass.",
   "Scoring: weighted attribute averages on FM's 1 to 20 scale, with six FM27 benchmark role profiles measured over 50,000 FM27 matches (FM Match Lab Study 13b), or your own weights. Grades S++ to F; vs Age compares young players with the FM27 benchmark for their age.",
   "Wonderkids: with CA and PA (Hidden Attributes view or the Windows app) it projects every attribute at full potential and ranks prospects on the FM27 roles. It is a ceiling, not a guarantee.",
   "Also: Best XI within a transfer budget for any formation, Squad analysis of your own team, staff scoring on 17 roles and Best backroom.",
@@ -51,7 +51,7 @@ const PAGES: { section: string; links: { path: string; name: string; about: stri
     section: "Comparisons",
     links: [
       { path: "/compare", name: "FM27 and FM26 scouting tools compared", about: "Scout Reporter, Genie Scout, FMRTE, FM's own scouting and online databases." },
-      { path: "/compare/genie-scout", name: "Scout Reporter vs Genie Scout", about: "Free FM scouting tools side by side, and where each is stronger." },
+      { path: "/compare/genie-scout", name: "Scout Reporter vs Genie Scout", about: "FM26 and FM27 edition pricing, platform requirements, and how the tools let you scout and rank players." },
       { path: "/compare/fmrte", name: "Scout Reporter vs FMRTE", about: "A read-only scouting tool next to a real-time editor." },
     ],
   },
@@ -99,6 +99,7 @@ export async function llmsFullTxt(): Promise<string> {
     `### ${compare(`tools.${k}.name`)}`,
     "",
     ...TOOL_FIELDS.map((f) => `- ${compare(`fields.${f}`)}: ${compare(`tools.${k}.${f}`)}`),
+    ...(TOOLS[k].sources ?? []).map(({ label, url }) => `- [${label}](${url})`),
     "",
   ]);
   return [

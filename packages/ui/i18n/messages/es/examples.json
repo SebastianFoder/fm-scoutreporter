@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "¿A qué portero seguirías?",
+    "body": "Selecciona «{testData}» y usa el perfil de pesos {role}. Entre dos porteros de 18 años, {currentLeader} tiene una puntuación actual de {currentScore} y {prospect} de {prospectScore}. Al ordenar por potencial, {prospect} pasa por delante con {prospectPotential} frente a {leaderPotential}. Elige a {currentLeader} si necesitas un titular ya y observa a {prospect} como opción de futuro. El potencial es una estimación si el jugador se desarrolla por completo.",
+    "guide": "Cómo se estima el potencial de los jóvenes"
+  },
+  "bestXi": {
+    "title": "El mejor once dentro del presupuesto",
+    "body": "Selecciona «{testData}» y mantén el 4-2-3-1 predeterminado con puntuaciones actuales y el punto medio de cada rango de valor. El once más fuerte cuesta unos {unlimitedCost} y promedia {unlimitedScore} sobre 20. Con un límite de {budget}, la herramienta encuentra un once de {cappedCost} que promedia {cappedScore}. Con ese límite, ojea a {leftWinger} para la banda izquierda y pasa a {rightWinger} a la derecha.",
+    "guide": "Cómo se calculan las puntuaciones por rol"
+  },
+  "squad": {
+    "title": "¿En qué puesto necesita recambio tu plantilla?",
+    "body": "Selecciona «{testData}» y mantén el 4-2-3-1 predeterminado. El resumen indica que el puesto de central izquierdo tiene poca cobertura. El titular {starter} suma {starterScore} sobre 20 y su suplente {backup} se queda en {backupScore}. Ojea a un central de rotación que pueda cubrir ese puesto.",
+    "guide": "Cómo exportar tu plantilla"
+  }
+}

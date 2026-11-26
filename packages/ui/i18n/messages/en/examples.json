@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Which goalkeeper would you shortlist?",
+    "body": "Select “{testData}” and use the {role} weight profile. Of two 18-year-old keepers, {currentLeader} scores {currentScore} today and {prospect} scores {prospectScore}. Sort by Potential and {prospect} moves ahead, {prospectPotential} to {leaderPotential}. Shortlist {currentLeader} for an immediate start and scout {prospect} as a longer-term option. Potential is an estimate at full development.",
+    "guide": "How wonderkid potential is estimated"
+  },
+  "bestXi": {
+    "title": "Build a Best XI on a budget",
+    "body": "Select “{testData}” and keep the default 4-2-3-1 with current scores and midpoint transfer values. The strongest XI costs an estimated {unlimitedCost} and averages {unlimitedScore} out of 20. With a {budget} cap, the tool finds an XI costing {cappedCost} that averages {cappedScore}. Scout {leftWinger} for the left wing under that cap, and move {rightWinger} to the right.",
+    "guide": "How role scores are calculated"
+  },
+  "squad": {
+    "title": "Where does the squad need cover?",
+    "body": "Select “{testData}” and keep the default 4-2-3-1. The squad overview flags thin cover at left centre-back. Starter {starter} scores {starterScore} out of 20 and backup {backup} scores {backupScore}. Scout a rotation centre-back who can cover that slot.",
+    "guide": "How to export your squad"
+  }
+}

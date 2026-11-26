@@ -57,8 +57,8 @@
       "description": "Football Manager 27 및 26의 Scout Reporter, Genie Scout, FMRTE와 게임 내 스카우트를 비교합니다. 플랫폼, 가격, 데이터 출처, 저장 파일 변경 여부와 선택 기준을 확인하세요."
     },
     "compareGenie": {
-      "title": "Scout Reporter vs Genie Scout: 무료 FM 스카우트",
-      "description": "Football Manager 27 및 26용 Scout Reporter와 FM Genie Scout를 비교합니다. 플랫폼, 가격, 데이터 출처, FM27 역할 점수, 원더키드 잠재력, 베스트 11과 각 도구의 강점을 확인하세요."
+      "title": "FM27과 FM26용 Scout Reporter와 Genie Scout 비교",
+      "description": "FM27과 FM26용 Scout Reporter와 Genie Scout를 비교합니다. 26g 무료판, 27g 유료 활성화, Windows 라이브 스캔, Mac과 Linux에서의 CSV 스카우팅을 다룹니다."
     },
     "compareFmrte": {
       "title": "Scout Reporter vs FMRTE: 저장 파일 수정 없는 스카우트",

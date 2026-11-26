@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Hvilken målmand vil du sætte på din ønskeliste?",
+    "body": "Vælg “{testData}” og vægtprofilen {role}. Blandt to 18-årige målmænd scorer {currentLeader} {currentScore} nu, mens {prospect} scorer {prospectScore}. Sortér efter potentiale, så går {prospect} foran med {prospectPotential} mod {leaderPotential}. Sæt {currentLeader} på listen som mulig starter nu, og scout {prospect} til fremtiden. Potentialet er et skøn ved fuld udvikling.",
+    "guide": "Sådan estimeres unge spilleres potentiale"
+  },
+  "bestXi": {
+    "title": "Sæt den bedste startellever inden for budgettet",
+    "body": "Vælg “{testData}”, og behold standardformationen 4-2-3-1 med aktuelle scorer og midtpunktet af spillernes værdiintervaller. Den stærkeste startellever koster anslået {unlimitedCost} med et snit på {unlimitedScore} ud af 20. Med et loft på {budget} finder værktøjet en startellever til {cappedCost} med et snit på {cappedScore}. Scout {leftWinger} til venstrekanten inden for det loft, og flyt {rightWinger} til højre.",
+    "guide": "Sådan beregnes rollescorer"
+  },
+  "squad": {
+    "title": "Hvor mangler truppen en reserve?",
+    "body": "Vælg “{testData}”, og behold standardformationen 4-2-3-1. Oversigten viser, at der mangler en stærk reserve på den venstre stopperplads. Starteren {starter} scorer {starterScore} ud af 20, og reserven {backup} scorer {backupScore}. Scout en midterforsvarer, der kan dække pladsen i rotationen.",
+    "guide": "Sådan eksporterer du din trup"
+  }
+}
