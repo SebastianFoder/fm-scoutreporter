@@ -1,0 +1,165 @@
+{
+  "nav": {
+    "hub": "All tools",
+    "genie": "vs Genie Scout",
+    "fmrte": "vs FMRTE"
+  },
+  "checked": "Last checked {date}. Prices and supported versions change, so check each tool's own site before you pay for anything.",
+  "disclosure": "This page is written by the maker of Scout Reporter. The facts about other tools come from their own websites, linked below.",
+  "inShort": "In short",
+  "tableTitle": "Side by side",
+  "faqTitle": "Questions",
+  "sources": "Sources",
+  "fields": {
+    "tool": "Tool",
+    "platform": "Runs on",
+    "price": "Price",
+    "data": "Where the data comes from",
+    "edits": "Changes your game or save",
+    "versions": "FM27 and FM26",
+    "bestFor": "Best for"
+  },
+  "tools": {
+    "srWeb": {
+      "name": "Scout Reporter (website)",
+      "platform": "Any modern browser, nothing to install",
+      "price": "Free, no account",
+      "data": "A CSV you export from FM with a Scout Reporter view; it never leaves your browser",
+      "edits": "No",
+      "versions": "Both: FM27 with FM View Exporter, FM26 with BepInEx and a CSV export plugin",
+      "bestFor": "Ranking a shortlist on FM27 role weights, wonderkid potential, a Best XI within a budget, squad gaps and staff, without installing anything"
+    },
+    "srDesktop": {
+      "name": "Scout Reporter (Windows app)",
+      "platform": "Windows 10 or 11, 64-bit",
+      "price": "Free, code public on GitHub",
+      "data": "Reads the running game: your FM player search, or the whole save",
+      "edits": "No, it only reads",
+      "versions": "FM27 (27.0) and FM26 (26.3), Steam, Epic or Game Pass",
+      "bestFor": "The same screens as the website with real CA, PA and hidden attributes, and no export"
+    },
+    "genie": {
+      "name": "FM Genie Scout",
+      "platform": "Windows only",
+      "price": "Free edition with one banner ad; the g edition (no ads, extra features) comes with a donation",
+      "data": "Reads the running game",
+      "edits": "No (editing needs a separate editor)",
+      "versions": "FM26 26.0.0 to 26.3.2; Genie Scout 27g is in beta",
+      "bestFor": "Searching the whole game database live, with a long track record since 2009"
+    },
+    "fmrte": {
+      "name": "FMRTE",
+      "platform": "Windows, macOS and Linux",
+      "price": "Scouting is free; saving edits needs a licence (FMRTE 27: €7.99 once, or a subscription)",
+      "data": "Reads the running game",
+      "edits": "Yes, that is its main job",
+      "versions": "Separate editions: FMRTE 27 for FM27, FMRTE 26 for FM26",
+      "bestFor": "Editing players, clubs and competitions while you play, plus searching the save"
+    },
+    "inGame": {
+      "name": "FM's own scouting",
+      "platform": "Inside Football Manager",
+      "price": "Included with the game",
+      "data": "Your scouts' reports and the attributes your club knows",
+      "edits": "No",
+      "versions": "Both",
+      "bestFor": "Playing the game as intended, with attributes hidden until your scouts find them"
+    },
+    "databases": {
+      "name": "Online player databases",
+      "platform": "Websites",
+      "price": "Usually free",
+      "data": "The game's starting database, not your save",
+      "edits": "No",
+      "versions": "Depends on the site",
+      "bestFor": "Looking players up before you start a save"
+    }
+  },
+  "hub": {
+    "title": "FM27 and FM26 scouting tools compared",
+    "intro": "The main ways to scout players in Football Manager 27 and 26, what each one needs and what it is best at.",
+    "answer": "For a free tool that ranks players on FM27 role weights, estimates wonderkids' attributes at full potential and picks a Best XI within a budget, use Scout Reporter: in the browser with a CSV export, or on Windows reading the game directly. For searching the whole game database live on Windows, Genie Scout is the long-standing choice. If you also want to edit players or clubs, FMRTE scouts for free and edits with a licence. FM's own scouting is the way to play without seeing hidden information.",
+    "chooseTitle": "Which one to use",
+    "choose": {
+      "noInstall": "No install, any computer, including Mac and Linux for the browser part: <link>Scout Reporter website</link> with a CSV export.",
+      "live": "Live from the game on Windows, without exporting: <link>Scout Reporter for Windows</link> or Genie Scout.",
+      "edit": "You want to change the game (attributes, finances, contracts): FMRTE. Scout Reporter and Genie Scout only read.",
+      "mac": "On a Mac, reading the game: FMRTE has a macOS version. Scout Reporter for Mac is planned.",
+      "pure": "No outside help at all: FM's own scouting."
+    },
+    "moreTitle": "Detailed comparisons",
+    "more": {
+      "genie": "Scout Reporter vs Genie Scout",
+      "fmrte": "Scout Reporter vs FMRTE"
+    }
+  },
+  "genie": {
+    "title": "Scout Reporter vs Genie Scout",
+    "intro": "Two free ways to see real player attributes in Football Manager 26 and 27, and how they differ.",
+    "answer": "Both are free and both can read the running game on Windows. Genie Scout is the established all-in-one database search, with role-rating search, similar players and development probability in its g edition. Scout Reporter focuses on what to do with the players: scores on FM27 role weights from a 50,000-match study, S++ to F grades, vs Age, attributes projected at full potential, a Best XI within a budget, squad analysis and staff. It also works in any browser from a CSV export, so it runs on Mac and Linux.",
+    "strongerTitle": "Where Genie Scout is stronger",
+    "stronger": {
+      "history": "A long track record: it has been made for every FM since 2009 and has a large user base.",
+      "search": "Built for searching the whole game database, with many search filters in one window.",
+      "extras": "The g edition adds role-rating search, Find Similar Players and a probability of development.",
+      "shortlist": "Exports shortlists as a file you can import back into FM."
+    },
+    "differentTitle": "What Scout Reporter adds",
+    "different": {
+      "browser": "Works in any browser from a CSV export, no install, so it runs on Mac and Linux too.",
+      "weights": "Scores every player on FM27 benchmark role weights measured over 50,000 FM27 matches, or on your own weights, with S++ to F grades and vs Age for young players.",
+      "potential": "Projects each attribute at full potential from CA and PA, not just one potential number.",
+      "team": "Best XI within a transfer budget, squad analysis of your own team, and Best backroom for staff.",
+      "open": "Free with no ads and no paid edition, the code is public on GitHub, and it is in 9 languages."
+    },
+    "both": "They work well together: find players in Genie Scout or an FM player search, then rank the shortlist in Scout Reporter.",
+    "faq": {
+      "free": {
+        "q": "Is Scout Reporter a free alternative to Genie Scout?",
+        "a": "Yes. Scout Reporter is free with no ads, no account and no paid edition. Its Windows app reads FM27 and FM26 directly like Genie Scout, and its website works with a CSV export in any browser."
+      },
+      "fm27": {
+        "q": "Does Scout Reporter work with FM27?",
+        "a": "Yes. The website reads FM27 and FM26 CSV exports, and the Windows app reads FM27 27.0 and FM26 26.3 directly. Its scoring and growth estimates are calibrated on FM27."
+      },
+      "mac": {
+        "q": "Is there a Genie Scout for Mac?",
+        "a": "Genie Scout's own site says it runs on Windows only. Scout Reporter's website works on a Mac in any browser with a CSV export; a Mac version of its desktop app is planned."
+      }
+    }
+  },
+  "fmrte": {
+    "title": "Scout Reporter vs FMRTE",
+    "intro": "A scouting and team-building tool next to a real-time editor that can also scout.",
+    "answer": "FMRTE is an editor: it changes players, clubs and competitions while you play, and its scouting is free while saving edits needs a licence. Scout Reporter never changes your game. It is a free analysis tool: scores on FM27 role weights, S++ to F grades, attributes projected at full potential, a Best XI within a budget, squad analysis and staff, in the browser from a CSV export or on Windows reading the game.",
+    "strongerTitle": "Where FMRTE is stronger",
+    "stronger": {
+      "edit": "Edits nearly anything in the save: attributes, contracts, finances, facilities, competitions.",
+      "platforms": "Reads the game on Windows, macOS and Linux (and the Steam Deck in desktop mode).",
+      "stats": "FMRTE 27 adds match stats with percentile radars and season grades, and a quick search that turns sentences into filters."
+    },
+    "differentTitle": "What Scout Reporter adds",
+    "different": {
+      "readOnly": "Read-only by design: it cannot change your save, so it fits a save you want to keep honest.",
+      "free": "Everything is free, with no licence or subscription.",
+      "weights": "Scores on FM27 benchmark role weights measured over 50,000 FM27 matches, with grades and vs Age.",
+      "potential": "Projects each attribute at full potential from CA and PA, and gives a development plan.",
+      "team": "Best XI within a budget, squad analysis of your own team and Best backroom for staff."
+    },
+    "both": "If you never edit, Scout Reporter covers scouting and team building for free. If you edit, FMRTE does that and Scout Reporter can still rank what you find.",
+    "faq": {
+      "cheat": {
+        "q": "Does Scout Reporter edit my save like FMRTE?",
+        "a": "No. The website only reads a CSV you export, and the Windows app only reads the game's memory. Neither changes your game or your save."
+      },
+      "price": {
+        "q": "Do I need to pay for FMRTE to scout?",
+        "a": "According to FMRTE's site, scouting is free with no sign-up and a licence is only needed to save edits. Scout Reporter is free for everything."
+      },
+      "mac": {
+        "q": "Which works on a Mac?",
+        "a": "FMRTE has a macOS version that reads the game. Scout Reporter's website works on a Mac in any browser with a CSV export; its desktop app is Windows only for now."
+      }
+    }
+  }
+}

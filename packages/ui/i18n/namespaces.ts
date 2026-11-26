@@ -29,7 +29,7 @@ export const CLIENT_NAMESPACES = [
 ] as const;
 
 /** Only rendered on the server (apps/web pages), so never sent to the browser. */
-export const SERVER_NAMESPACES = ["home", "faq", "download", "howToPages"] as const;
+export const SERVER_NAMESPACES = ["home", "faq", "download", "howToPages", "compare", "meta"] as const;
 
 export const NAMESPACES = [...CLIENT_NAMESPACES, ...SERVER_NAMESPACES] as const;
 export type Namespace = (typeof NAMESPACES)[number];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "../i18n/navigation";
 import { useTranslations } from "next-intl";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { ArrowDown, ArrowUp } from "lucide-react";

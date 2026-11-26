@@ -1,11 +1,8 @@
-import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/site";
 
 /* Shows only the visitor's own import, so there is nothing for search engines here. */
-export const metadata: Metadata = pageMetadata({
-  title: "Compare players",
-  description:
-    "Compare selected Football Manager players across highlighted attributes, with gold, silver and bronze per attribute.",
+export const generateMetadata = pageMetadata({
+  page: "playersCompare",
   path: "/players/compare",
   noindex: true,
 });

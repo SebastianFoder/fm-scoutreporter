@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@scoutreporter/ui/i18n/navigation";
 import type { ReactNode } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { intlTag } from "@scoutreporter/ui/i18n/locales";
@@ -9,12 +8,11 @@ import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { Screenshot } from "@/components/Screenshot";
 import { screenshot } from "@/lib/screenshots";
 import { pageMetadata } from "@/lib/site";
+import { desktopAppLd } from "@/lib/structured-data";
 import { DESKTOP_RELEASES_URL, REPO_URL, latestDesktopRelease } from "@/lib/desktop-release";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Desktop app for Windows",
-  description:
-    "Download Scout Reporter for Windows: it reads the players in your Football Manager 27 or 26 player search straight from the game, with real CA, PA and hidden attributes, and scores them in every Scout Reporter screen. No view files, no CSV export.",
+export const generateMetadata = pageMetadata({
+  page: "download",
   path: "/download",
 });
 
@@ -41,7 +39,7 @@ export default async function DownloadPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-5 py-8 text-ink md:py-10">
-      <JsonLd data={breadcrumbLd([{ name: "Desktop app", path: "/download" }])} />
+      <JsonLd data={[desktopAppLd(release), breadcrumbLd([{ name: "Desktop app", path: "/download" }])]} />
       <PageHeader title={t("title")}>
         {t.rich("intro", { b: (c) => <span className="font-semibold text-ink">{c}</span>, kbd: TAGS.kbd })}
       </PageHeader>

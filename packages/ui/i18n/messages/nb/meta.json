@@ -1,0 +1,68 @@
+{
+  "site": {
+    "title": "Scout Reporter: speiderverktøy for FM27 og FM26",
+    "description": "Gratis speiderverktøy for Football Manager 27 og 26. Importer en spiller-CSV for å poengsette, rangere og sammenligne spillere, finne vidunderbarn med CA og PA og velge Beste 11 innenfor budsjettet. Kjører i nettleseren."
+  },
+  "pages": {
+    "players": {
+      "title": "Spillere: ranger og finn vidunderbarn i FM",
+      "description": "Importer en spiller-CSV fra Football Manager 27 eller 26 og ranger spillere etter vektede ferdigheter. Finn vidunderbarn med Potensial-poeng fra CA og PA. FM27-rolleprofiler med referanser, bokstavkarakterer, vs alder og direkte sammenligning."
+    },
+    "player": {
+      "title": "Spiller",
+      "description": "En Football Manager-spiller fra importen din: poeng, ferdigheter, FM27-roller og utviklingsplan."
+    },
+    "playersCompare": {
+      "title": "Sammenlign spillere",
+      "description": "Sammenlign utvalgte Football Manager-spillere på fremhevede ferdigheter, med gull, sølv og bronse for hver ferdighet."
+    },
+    "bestXi": {
+      "title": "Beste 11 for FM27 og FM26",
+      "description": "Velg de elleve spillerne med høyest poengsum fra en Football Manager-eksport for 4-2-3-1, 4-3-3, 4-4-2, 3-5-2 og flere formasjoner innenfor et samlet minimums- og maksimumsbudsjett for overganger."
+    },
+    "squad": {
+      "title": "Troppsanalyse for FM27 og FM26",
+      "description": "Importer Football Manager-troppen din og velg formasjon for å se første og andre ellever, tynt besatte eller svake posisjoner, aldrende startspillere, unge klare for neste steg og forsterkninger fra speiderlisten."
+    },
+    "staff": {
+      "title": "Speid støtteapparat: ranger trenere og speidere i FM26",
+      "description": "Importer et ansattsøk fra FM26 og ranger trenere, speidere, analytikere og direktører i hver rolle, med FM26s ordvurderinger regnet om til skalaen 1 til 20."
+    },
+    "backroom": {
+      "title": "Beste støtteapparat for FM26",
+      "description": "Velg rollene du trenger, så setter Scout Reporter sammen Beste støtteapparat fra FM26-eksporten din: trenere for hver treningsgruppe, speidere, analytikere og medisinsk personell, uten å bruke noen to ganger."
+    },
+    "howToUse": {
+      "title": "Slik eksporterer du FM27- og FM26-spillere til CSV",
+      "description": "Stegvis guide til å eksportere en spillerliste fra Football Manager 27 eller 26 til CSV med FM View Exporter eller BepInEx, installere Scout Reporter-visningen og importere filen."
+    },
+    "howToPlayers": {
+      "title": "Slik poengsetter Scout Reporter FM-spillere",
+      "description": "Se hvordan Football Manager-spillere får poeng: vektede gjennomsnitt av ferdigheter, FM27-rolleprofiler med referanser, vs alder, Potensial og karakterskalaen fra S++ til F."
+    },
+    "howToWonderkids": {
+      "title": "Slik estimerer Scout Reporter vidunderbarns potensial",
+      "description": "Se hvordan Scout Reporter beregner ferdighetene til en FM27- eller FM26-spiller opp til PA: tilpasning av CA-kostnad, posisjonsbasert vekst fra FM27-treningsdata og hvordan du leser Nå, Potensial og vs toppnivå."
+    },
+    "faq": {
+      "title": "FAQ: speiding, eksport og poeng i FM27 og FM26",
+      "description": "Svar om Scout Reporter: CSV-eksport av spillere fra Football Manager 27 og 26, valg av visning, personvern, poeng, karakterer, vs alder, vidunderbarn fra CA og PA, Beste 11 og speiding av støtteapparat."
+    },
+    "download": {
+      "title": "Skrivebordsapp for Windows",
+      "description": "Last ned Scout Reporter for Windows: Den leser spillerne i spillersøket ditt i Football Manager 27 eller 26 direkte fra spillet, med ekte CA, PA og skjulte ferdigheter, og gir dem poeng på alle skjermer. Ingen visningsfiler eller CSV-eksport."
+    },
+    "compare": {
+      "title": "Speiderverktøy for FM27 og FM26 sammenlignet",
+      "description": "Sammenlign Scout Reporter, Genie Scout, FMRTE og den innebygde speidingen i Football Manager 27 og 26: plattformer, pris, datakilde, endringer i lagringen og hvilket verktøy du bør velge."
+    },
+    "compareGenie": {
+      "title": "Scout Reporter vs Genie Scout: gratis FM-speiding",
+      "description": "Sammenlign Scout Reporter og FM Genie Scout for Football Manager 27 og 26: plattformer, pris, datakilde, FM27-rollepoeng, vidunderbarns potensial, Beste 11 og styrkene til begge."
+    },
+    "compareFmrte": {
+      "title": "Scout Reporter vs FMRTE: speiding uten å endre lagringen",
+      "description": "Sammenlign Scout Reporter og FMRTE for Football Manager 27 og 26: et gratis skrivebeskyttet verktøy for speiding og lagbygging ved siden av en sanntidseditor. Plattformer, pris, datakilde og styrker."
+    }
+  }
+}

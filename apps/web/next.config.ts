@@ -34,7 +34,8 @@ const nextConfig: NextConfig = {
       { source: "/attribute/players", destination: "/players", permanent: true },
       { source: "/attribute/players/:id", destination: "/players/:id", permanent: true },
       { source: "/attribute/compare", destination: "/players/compare", permanent: true },
-      { source: "/compare", destination: "/players/compare", permanent: true },
+      /* Old player-compare links carry ?ids=; plain /compare is now the tool comparison (app/compare). */
+      { source: "/compare", has: [{ type: "query", key: "ids" }], destination: "/players/compare", permanent: true },
       { source: "/wonderkid", destination: "/players", permanent: true },
       { source: "/best-xi", destination: "/players/best-xi", permanent: true },
       { source: "/how-to-use/attribute-mode", destination: "/how-to-use/players", permanent: true },
@@ -43,7 +44,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-/* The language comes from a cookie / Accept-Language, not the URL: see i18n/request.ts. */
+/* The language comes from the URL on the website (proxy.ts) and a cookie in the desktop app: see i18n/request.ts. */
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 export default withNextIntl(nextConfig);

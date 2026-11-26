@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { CSSProperties } from "react";
-import Link from "next/link";
+import { Link } from "@scoutreporter/ui/i18n/navigation";
 import Script from "next/script";
 import { Sofia_Sans, Sofia_Sans_Semi_Condensed } from "next/font/google";
 import "@scoutreporter/ui/styles/globals.css";
@@ -19,7 +19,10 @@ import { DesktopAnalytics } from "@scoutreporter/ui/desktop/DesktopAnalytics";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { clientMessages } from "@scoutreporter/ui/i18n/messages";
-import { UMAMI_BEFORE_SEND, UMAMI_BEFORE_SEND_SCRIPT, UMAMI_SRC, UMAMI_WEBSITE_ID } from "@scoutreporter/core/analytics/umami";
+import { UMAMI_BEFORE_SEND, UMAMI_SRC, UMAMI_WEBSITE_ID, umamiBeforeSendScript } from "@scoutreporter/core/analytics/umami";
+import { DEFAULT_LOCALE, LOCALES } from "@scoutreporter/ui/i18n/locales";
+import { localizePath } from "@scoutreporter/ui/i18n/paths";
+import { LocaleAnalytics } from "@scoutreporter/ui/components/LocaleAnalytics";
 import {
   AUTHOR,
   SITE_DESCRIPTION,
@@ -27,6 +30,9 @@ import {
   SITE_NAME,
   SITE_TITLE,
   SITE_URL,
+  currentLocale,
+  localeAlternates,
+  ogLocale,
 } from "@/lib/site";
 
 /* Sofia Sans: a UI face with sporty proportions and good tabular figures.
@@ -41,7 +47,7 @@ const uiCondensed = Sofia_Sans_Semi_Condensed({
   subsets: ["latin", "latin-ext"],
 });
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_TITLE,
@@ -54,11 +60,9 @@ export const metadata: Metadata = {
   authors: [{ name: AUTHOR.name, url: AUTHOR.url }],
   creator: AUTHOR.name,
   publisher: AUTHOR.name,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    locale: "en_GB",
     url: "/",
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
@@ -77,6 +81,28 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false, email: false, address: false },
 };
 
+/**
+ * The site's title and description (the home page's, and the default for any page without its own),
+ * its canonical and hreflang alternates, and Open Graph locale, in the request's language.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await currentLocale();
+  const t = await getTranslations({ locale, namespace: "meta.site" });
+  const title = t("title");
+  const description = t("description");
+  return {
+    ...baseMetadata,
+    title: { default: title, template: `%s | ${SITE_NAME}` },
+    description,
+    alternates: localeAlternates("/", locale),
+    openGraph: { ...baseMetadata.openGraph, title, description, locale: ogLocale(locale), url: localizePath("/", locale) },
+    twitter: { ...baseMetadata.twitter, title, description },
+  };
+}
+
+/** Languages whose URLs have a prefix (/da/...): Umami counts /da/players as /players. */
+const UMAMI_SCRIPT = umamiBeforeSendScript(LOCALES.filter((l) => l !== DEFAULT_LOCALE));
+
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f3f5f6" },
@@ -87,6 +113,7 @@ export const viewport: Viewport = {
 const FOOTER_LINKS = [
   { href: "/how-to-use", label: "setupGuide" },
   { href: "/faq", label: "faq" },
+  { href: "/compare", label: "compare" },
 ] as const;
 
 /** Sebastian Foder's project hub: serves the footer breadcrumb (`/badge.js`) and its live status. */
@@ -117,6 +144,8 @@ export default async function RootLayout({
                     <DesktopProvider>
                     {/* Desktop app only: its own Umami site, behind the usage stats setting. */}
                     {DESKTOP_BUILD && <DesktopAnalytics />}
+                    {/* The page language as the Umami session's "locale" (page views drop the /da prefix). */}
+                    <LocaleAnalytics />
                     {/* Clicking a player opens them in a side panel (PlayerLink). */}
                     <PlayerPanelProvider>
                     {/* Settings (the gear in the header): weights, columns, look, and the desktop app's own. */}
@@ -157,9 +186,10 @@ export default async function RootLayout({
         </NextIntlClientProvider>
         {/* Self-hosted Umami analytics for the website (the desktop app's is DesktopAnalytics). data-domains
             skips localhost and Vercel previews; client-side navigations are tracked by the script itself. */}
-        {/* Both builds: before every send, player IDs in the URL become [id] (one /players/[id] row). */}
+        {/* Both builds: before every send, player IDs in the URL become [id] (one /players/[id] row) and
+            the language prefix is dropped (/da/players counts as /players). */}
         <Script id="umami-before-send" strategy="beforeInteractive">
-          {UMAMI_BEFORE_SEND_SCRIPT}
+          {UMAMI_SCRIPT}
         </Script>
         {!DESKTOP_BUILD && (
           <Script

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "../../i18n/navigation";
 import { useTranslations } from "next-intl";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";

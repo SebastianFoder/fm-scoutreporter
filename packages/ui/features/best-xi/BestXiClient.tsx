@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
-import Link from "next/link";
+import { Link } from "../../i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useIntlLocale } from "../../i18n/hooks";
 import { ArrowLeft, RotateCcw, X } from "lucide-react";

@@ -1,0 +1,68 @@
+{
+  "site": {
+    "title": "Scout Reporter: FM27 및 FM26 선수 스카우트 도구",
+    "description": "무료 Football Manager 27 및 26 스카우트 도구입니다. 선수 CSV를 가져와 점수와 등급을 매기고 비교하세요. CA와 PA로 원더키드를 찾고 예산에 맞는 베스트 11을 선택합니다. 브라우저에서 실행됩니다."
+  },
+  "pages": {
+    "players": {
+      "title": "선수: FM 선수 순위와 원더키드 찾기",
+      "description": "Football Manager 27 또는 26 선수 CSV를 가져와 가중 능력치로 순위를 매기세요. CA와 PA 기반 잠재력 점수로 원더키드를 찾습니다. FM27 기준 역할 프로필, 문자 등급, 나이 대비 및 선수 간 비교를 제공합니다."
+    },
+    "player": {
+      "title": "선수",
+      "description": "가져온 Football Manager 선수의 점수, 능력치, FM27 역할과 성장 계획을 확인하세요."
+    },
+    "playersCompare": {
+      "title": "선수 비교",
+      "description": "선택한 Football Manager 선수의 주요 능력치를 비교하고 각 능력치의 금, 은, 동 순위를 확인하세요."
+    },
+    "bestXi": {
+      "title": "FM27 및 FM26 베스트 11 선택",
+      "description": "Football Manager 선수 내보내기에서 점수가 가장 높은 11명을 선택합니다. 4-2-3-1, 4-3-3, 4-4-2, 3-5-2 등에서 최소 및 최대 총 이적 예산을 적용합니다."
+    },
+    "squad": {
+      "title": "FM27 및 FM26 선수단 분석",
+      "description": "Football Manager 선수단을 가져와 포메이션을 선택하세요. 주전과 2진, 선수가 부족하거나 약한 포지션, 나이 든 주전, 출전 준비가 된 유망주와 스카우트 명단의 보강 후보를 확인합니다."
+    },
+    "staff": {
+      "title": "스탭 스카우트: FM26 코치와 스카우트 순위",
+      "description": "FM26 스탭 검색 결과를 가져와 코치, 스카우트, 분석가와 단장을 각 스탭 역할별로 평가합니다. FM26의 문자 평가를 1부터 20까지의 척도로 변환합니다."
+    },
+    "backroom": {
+      "title": "베스트 코치진: FM26 스탭 구성",
+      "description": "필요한 스탭 역할을 선택하면 Scout Reporter가 FM26 스탭 내보내기에서 베스트 코치진을 구성합니다. 훈련 그룹별 코치, 스카우트, 분석가와 의료진을 중복 없이 선택합니다."
+    },
+    "howToUse": {
+      "title": "FM27 및 FM26 선수를 CSV로 내보내는 방법",
+      "description": "FM View Exporter 또는 BepInEx로 Football Manager 27 또는 26 선수 명단을 CSV로 내보내고, Scout Reporter 보기를 설치해 파일을 가져오는 단계별 안내입니다."
+    },
+    "howToPlayers": {
+      "title": "Scout Reporter의 FM 선수 점수 계산 방법",
+      "description": "Football Manager 선수 점수 계산법: 가중 능력치 평균, FM27 기준 역할 프로필, 나이 대비, 잠재력 및 S++부터 F까지의 등급을 알아보세요."
+    },
+    "howToWonderkids": {
+      "title": "Scout Reporter의 원더키드 잠재력 추정 방법",
+      "description": "FM27 또는 FM26 선수의 능력치를 PA까지 예측하는 방법을 알아보세요. CA 비용 적합, FM27 훈련 데이터 기반 포지션별 성장과 현재, 잠재력, 전성기 대비 해석을 설명합니다."
+    },
+    "faq": {
+      "title": "FAQ: FM27 및 FM26 스카우트와 내보내기",
+      "description": "Scout Reporter 안내: Football Manager 27 및 26 선수 CSV 내보내기, 보기 선택, 개인정보, 점수와 등급, 나이 대비, CA와 PA 기반 원더키드, 베스트 11 및 스탭 스카우트."
+    },
+    "download": {
+      "title": "Windows 데스크톱 앱",
+      "description": "Windows용 Scout Reporter를 다운로드하세요. Football Manager 27 또는 26 선수 검색 결과를 실제 CA, PA와 숨겨진 능력치를 포함해 게임에서 직접 읽고 모든 화면에서 점수를 매깁니다. 보기 파일이나 CSV 내보내기가 필요 없습니다."
+    },
+    "compare": {
+      "title": "FM27 및 FM26 스카우트 도구 비교",
+      "description": "Football Manager 27 및 26의 Scout Reporter, Genie Scout, FMRTE와 게임 내 스카우트를 비교합니다. 플랫폼, 가격, 데이터 출처, 저장 파일 변경 여부와 선택 기준을 확인하세요."
+    },
+    "compareGenie": {
+      "title": "Scout Reporter vs Genie Scout: 무료 FM 스카우트",
+      "description": "Football Manager 27 및 26용 Scout Reporter와 FM Genie Scout를 비교합니다. 플랫폼, 가격, 데이터 출처, FM27 역할 점수, 원더키드 잠재력, 베스트 11과 각 도구의 강점을 확인하세요."
+    },
+    "compareFmrte": {
+      "title": "Scout Reporter vs FMRTE: 저장 파일 수정 없는 스카우트",
+      "description": "Football Manager 27 및 26용 Scout Reporter와 FMRTE를 비교합니다. 무료 읽기 전용 스카우트 및 팀 구성 도구와 실시간 편집기의 플랫폼, 가격, 데이터 출처와 각 강점을 살펴보세요."
+    }
+  }
+}

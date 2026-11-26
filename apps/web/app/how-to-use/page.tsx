@@ -1,18 +1,16 @@
-import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { HowToShell } from "@scoutreporter/ui/features/how-to-use/HowToShell";
 import { SetupGuide } from "@scoutreporter/ui/features/how-to-use/guides";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { VIEW_HIDDEN } from "@scoutreporter/core/view-files";
 import { absoluteUrl, pageMetadata } from "@/lib/site";
+import enMeta from "@scoutreporter/ui/i18n/messages/en/meta.json";
 
-const TITLE = "How to export FM27 and FM26 players to CSV";
-const DESCRIPTION =
-  "Step-by-step guide to export a Football Manager 27 or 26 player list to CSV with FM View Exporter or BepInEx, install the Scout Reporter view, and import the file.";
+/** English, like all structured data. */
+const DESCRIPTION = enMeta.pages.howToUse.description;
 
-export const metadata: Metadata = pageMetadata({
-  title: TITLE,
-  description: DESCRIPTION,
+export const generateMetadata = pageMetadata({
+  page: "howToUse",
   path: "/how-to-use",
 });
 
