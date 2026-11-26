@@ -1,7 +1,8 @@
 /**
- * The languages the site and the desktop app are translated into. The language is not in the URL:
- * it comes from the LOCALE_COOKIE (set by the language picker in the header), else the browser's
- * Accept-Language (the OS language in the desktop app), else English.
+ * The languages the site and the desktop app are translated into. On the website the language is in
+ * the URL (/da/players, see paths.ts and apps/web/proxy.ts); the LOCALE_COOKIE and Accept-Language
+ * pick which URL an unprefixed visit is sent to. In the desktop app it is the cookie the app sends,
+ * else the OS language, else English.
  */
 export const LOCALES = ["en", "fr", "de", "es", "it", "da", "sv", "nb", "ko"] as const;
 export type Locale = (typeof LOCALES)[number];

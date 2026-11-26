@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@scoutreporter/ui/i18n/navigation";
 import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";

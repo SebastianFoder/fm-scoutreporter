@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Check, ChevronDown } from "lucide-react";
 import { Flag } from "./Flag";
 import { LOCALES, LOCALE_COOKIE, LOCALE_INFO, isLocale, type Locale } from "../i18n/locales";
+import { localizePath, stripLocale } from "../i18n/paths";
 import { useDesktop } from "../desktop/DesktopProvider";
+import { DESKTOP_BUILD } from "../desktop/target";
+import { trackEvent } from "./LocaleAnalytics";
+
+/**
+ * The menu's id, for aria-controls. One picker per page (the header), so a fixed id: unlike
+ * useId(), it can't differ between the server render and hydration.
+ */
+const MENU_ID = "language-menu";
 
 /** A year: the choice should outlast the session. */
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
@@ -17,10 +26,11 @@ function saveLocale(locale: Locale) {
 
 /**
  * The language menu in the site header: the current language's flag, opening a list of the
- * languages by their own names. The choice is a cookie the server reads (apps/web/i18n/request.ts),
- * so switching re-renders the page from the server in the new language without a reload. The
- * desktop app's scoutreporter:// pages can't hold cookies, so there the choice is saved in the
- * app's settings and the app sends the cookie (apps/desktop/src/app-origin.ts).
+ * languages by their own names. On the website the language is in the URL (/da/players), so
+ * choosing one loads the same page's URL in that language; the cookie remembers it for
+ * unprefixed links (apps/web/proxy.ts). The desktop app's URLs carry no language and its
+ * scoutreporter:// pages can't hold cookies, so there the choice is saved in the app's settings,
+ * the app sends the cookie (apps/desktop/src/app-origin.ts) and the page re-renders in place.
  */
 export function LanguagePicker() {
   const t = useTranslations("chrome.language");
@@ -31,7 +41,6 @@ export function LanguagePicker() {
   const [pending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
-  const menuId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -53,10 +62,16 @@ export function LanguagePicker() {
     setOpen(false);
     if (locale === active) return;
     saveLocale(locale);
+    trackEvent("language", { from: active, to: locale });
     if (desktop) {
       void desktop.updateSettings({ language: locale }).then(() => startTransition(() => router.refresh()));
-    } else {
+    } else if (DESKTOP_BUILD) {
       startTransition(() => router.refresh());
+    } else {
+      // A full load, not router.push: every page's layout (html lang, messages) is shared between
+      // /players and /da/players, so a client navigation would keep the old language's layout.
+      const { pathname, search, hash } = window.location;
+      window.location.assign(`${localizePath(stripLocale(pathname), locale)}${search}${hash}`);
     }
   };
 
@@ -67,7 +82,7 @@ export function LanguagePicker() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-controls={menuId}
+        aria-controls={MENU_ID}
         aria-label={t("label", { language: LOCALE_INFO[active].name })}
         title={t("title")}
         className={[
@@ -80,7 +95,7 @@ export function LanguagePicker() {
       </button>
       {open && (
         <ul
-          id={menuId}
+          id={MENU_ID}
           role="menu"
           aria-label={t("title")}
           className="absolute right-0 top-full z-50 mt-1 min-w-44 overflow-hidden rounded-md border border-line bg-surface py-1 text-sm text-ink shadow-lg"

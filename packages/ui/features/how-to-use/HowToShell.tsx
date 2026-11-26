@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "../../i18n/navigation";
 import type { ReactNode } from "react";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { HowToTabs } from "./HowToTabs";

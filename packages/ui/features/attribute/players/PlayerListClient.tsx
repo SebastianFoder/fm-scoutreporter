@@ -27,9 +27,9 @@ import {
 } from "@scoutreporter/ui/components/AttributeColorConfig";
 import { useActiveWeightProfile } from "@scoutreporter/ui/components/WeightConfig";
 import { useHighlightedAttributes } from "@scoutreporter/ui/components/HighlightedAttributesConfig";
-import Link from "next/link";
 import { ArrowDown, ArrowUp, ExternalLink, Search, X } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Link, usePathname, useRouter } from "../../../i18n/navigation";
 import {
   PaginationControls,
   parsePageParam,

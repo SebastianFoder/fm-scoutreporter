@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { HowToShell } from "@scoutreporter/ui/features/how-to-use/HowToShell";
 import { WonderkidGuide } from "@scoutreporter/ui/features/how-to-use/guides";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = pageMetadata({
-  title: "How Scout Reporter estimates wonderkids' potential",
-  description:
-    "How Scout Reporter projects an FM27 or FM26 player's attributes to their PA: the CA cost fit, position-based growth from FM27 training data, and how to read Now, Potential and vs Prime.",
+export const generateMetadata = pageMetadata({
+  page: "howToWonderkids",
   path: "/how-to-use/wonderkids",
 });
 

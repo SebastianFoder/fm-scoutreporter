@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
+import { Link } from "../i18n/navigation";
 import { usePathname } from "next/navigation";
 import { Maximize2, X } from "lucide-react";
 import { useTranslations } from "next-intl";

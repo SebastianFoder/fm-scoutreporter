@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "../../i18n/navigation";
 import { ArrowLeft, Lock, LockOpen, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";

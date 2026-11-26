@@ -1,0 +1,68 @@
+{
+  "site": {
+    "title": "Scout Reporter: herramienta de ojeo para FM27 y FM26",
+    "description": "Herramienta gratuita de ojeo para Football Manager 27 y 26. Importa un CSV de jugadores para puntuarlos, clasificarlos y compararlos, encontrar chicos maravilla con CA y PA y elegir el Mejor once dentro del presupuesto. Funciona en tu navegador."
+  },
+  "pages": {
+    "players": {
+      "title": "Jugadores: clasifica y encuentra chicos maravilla de FM",
+      "description": "Importa un CSV de jugadores de Football Manager 27 o 26 y clasifícalos por atributos ponderados. Encuentra chicos maravilla con la puntuación de Potencial basada en CA y PA. Perfiles de rol FM27 de referencia, notas, vs. edad y comparación directa."
+    },
+    "player": {
+      "title": "Jugador",
+      "description": "Un jugador de Football Manager de tu importación: puntuaciones, atributos, roles FM27 y plan de desarrollo."
+    },
+    "playersCompare": {
+      "title": "Comparar jugadores",
+      "description": "Compara los jugadores de Football Manager seleccionados por sus atributos destacados, con oro, plata y bronce en cada atributo."
+    },
+    "bestXi": {
+      "title": "Mejor once para FM27 y FM26",
+      "description": "Elige los once jugadores con mayor puntuación de una exportación de Football Manager para 4-2-3-1, 4-3-3, 4-4-2, 3-5-2 y más, dentro de un presupuesto total de traspasos mínimo y máximo."
+    },
+    "squad": {
+      "title": "Análisis de plantilla para FM27 y FM26",
+      "description": "Importa tu plantilla de Football Manager y elige la formación para ver tu primer y segundo once, posiciones débiles o escasas, titulares veteranos, jóvenes preparados y refuerzos de tu lista de ojeo."
+    },
+    "staff": {
+      "title": "Ojeo de cuerpo técnico: clasifica personal de FM26",
+      "description": "Importa una búsqueda de cuerpo técnico de FM26 y clasifica a preparadores, ojeadores, analistas y directores en cada rol, con las valoraciones en palabras de FM26 convertidas a la escala de 1 a 20."
+    },
+    "backroom": {
+      "title": "Mejor equipo técnico para FM26",
+      "description": "Elige los roles que necesitas y Scout Reporter selecciona el Mejor equipo técnico de tu exportación de FM26: preparadores para cada grupo de entrenamiento, ojeadores, analistas y personal médico, sin repetir a nadie."
+    },
+    "howToUse": {
+      "title": "Cómo exportar jugadores de FM27 y FM26 a CSV",
+      "description": "Guía paso a paso para exportar una lista de jugadores de Football Manager 27 o 26 a CSV con FM View Exporter o BepInEx, instalar la vista de Scout Reporter e importar el archivo."
+    },
+    "howToPlayers": {
+      "title": "Cómo puntúa Scout Reporter a los jugadores de FM",
+      "description": "Descubre cómo se puntúa a los jugadores: medias ponderadas de atributos, perfiles de rol FM27 de referencia, vs. edad, Potencial y escala de notas de S++ a F."
+    },
+    "howToWonderkids": {
+      "title": "Cómo estima Scout Reporter el potencial de los chicos maravilla",
+      "description": "Así proyecta Scout Reporter los atributos de un jugador de FM27 o FM26 hasta su PA: ajuste del coste en CA, crecimiento por posición según datos de entrenamiento de FM27 y cómo interpretar Ahora, Potencial y vs. plenitud."
+    },
+    "faq": {
+      "title": "FAQ: ojeo, exportaciones y puntuaciones de FM27 y FM26",
+      "description": "Respuestas sobre Scout Reporter: exportar jugadores de Football Manager 27 y 26 a CSV, vista, privacidad, puntuaciones, notas, vs. edad, chicos maravilla con CA y PA, Mejor once y ojeo de cuerpo técnico."
+    },
+    "download": {
+      "title": "Aplicación de escritorio para Windows",
+      "description": "Descarga Scout Reporter para Windows: lee directamente del juego los jugadores de tu búsqueda en Football Manager 27 o 26, con CA, PA y atributos ocultos reales, y los puntúa en todas las pantallas. Sin archivos de vista ni exportación CSV."
+    },
+    "compare": {
+      "title": "Comparativa de herramientas de ojeo FM27 y FM26",
+      "description": "Compara Scout Reporter, Genie Scout, FMRTE y el ojeo propio de Football Manager 27 y 26: plataformas, precio, origen de datos, cambios en la partida y cuál elegir."
+    },
+    "compareGenie": {
+      "title": "Scout Reporter vs Genie Scout: ojeo gratuito para FM",
+      "description": "Compara Scout Reporter y FM Genie Scout para Football Manager 27 y 26: plataformas, precio, origen de datos, puntuaciones de roles FM27, potencial de chicos maravilla, Mejor once y puntos fuertes de cada uno."
+    },
+    "compareFmrte": {
+      "title": "Scout Reporter vs FMRTE: ojeo sin editar tu partida",
+      "description": "Compara Scout Reporter y FMRTE para Football Manager 27 y 26: herramienta gratuita de ojeo y creación de equipos de solo lectura frente a un editor en tiempo real. Plataformas, precio, origen de datos y puntos fuertes."
+    }
+  }
+}

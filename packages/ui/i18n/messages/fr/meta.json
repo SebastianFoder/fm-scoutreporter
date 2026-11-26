@@ -1,0 +1,68 @@
+{
+  "site": {
+    "title": "Scout Reporter : outil de recrutement FM27 et FM26",
+    "description": "Outil gratuit de recrutement Football Manager 27 et 26. Importez un CSV de joueurs pour les noter, les classer et les comparer, trouver les jeunes prodiges grâce à CA et PA et choisir un Meilleur 11 selon votre budget. Fonctionne dans votre navigateur."
+  },
+  "pages": {
+    "players": {
+      "title": "Joueurs : classez et trouvez les jeunes prodiges FM",
+      "description": "Importez un CSV de joueurs Football Manager 27 ou 26 et classez-les selon leurs attributs pondérés. Trouvez les jeunes prodiges grâce au score Potentiel basé sur CA et PA. Profils de rôles FM27 étalonnés, notes en lettres, vs âge et comparaison côte à côte."
+    },
+    "player": {
+      "title": "Joueur",
+      "description": "Un joueur Football Manager de votre import : scores, attributs, rôles FM27 et plan de développement."
+    },
+    "playersCompare": {
+      "title": "Comparer les joueurs",
+      "description": "Comparez les joueurs Football Manager sélectionnés selon leurs attributs mis en avant, avec une médaille d’or, d’argent ou de bronze pour chaque attribut."
+    },
+    "bestXi": {
+      "title": "Meilleur 11 pour FM27 et FM26",
+      "description": "Choisissez les onze joueurs les mieux notés d’un export Football Manager en 4-2-3-1, 4-3-3, 4-4-2, 3-5-2 et plus, dans les limites minimale et maximale du budget transferts total."
+    },
+    "squad": {
+      "title": "Analyse de l’effectif pour FM27 et FM26",
+      "description": "Importez votre effectif Football Manager et choisissez votre formation : voyez vos premier et deuxième onze, les postes faibles ou trop justes, les titulaires vieillissants, les jeunes prêts et les renforts de votre liste de recrutement."
+    },
+    "staff": {
+      "title": "Staff FM26 : classez préparateurs et recruteurs",
+      "description": "Importez une recherche de staff FM26 et classez chaque préparateur, recruteur, analyste et directeur selon chaque rôle, avec les appréciations de FM26 reconverties sur une échelle de 1 à 20."
+    },
+    "backroom": {
+      "title": "Meilleur staff : choisissez votre équipe FM26",
+      "description": "Choisissez les rôles nécessaires et Scout Reporter compose le Meilleur staff depuis votre export FM26 : préparateurs pour chaque groupe d’entraînement, recruteurs, analystes et personnel médical, sans doublon."
+    },
+    "howToUse": {
+      "title": "Exporter les joueurs FM27 et FM26 en CSV",
+      "description": "Guide pas à pas pour exporter une liste de joueurs Football Manager 27 ou 26 en CSV avec FM View Exporter ou BepInEx, installer la vue Scout Reporter et importer le fichier."
+    },
+    "howToPlayers": {
+      "title": "Comment Scout Reporter note les joueurs FM",
+      "description": "Découvrez les scores des joueurs Football Manager : moyennes pondérées des attributs, profils de rôles FM27 étalonnés, vs âge, Potentiel et échelle de notes de S++ à F."
+    },
+    "howToWonderkids": {
+      "title": "Comment estimer le potentiel des jeunes prodiges",
+      "description": "Découvrez comment Scout Reporter projette les attributs d’un joueur FM27 ou FM26 jusqu’à sa PA : ajustement du coût en CA, progression par poste issue des données d’entraînement FM27 et lecture de Actuel, Potentiel et vs apogée."
+    },
+    "faq": {
+      "title": "FAQ : recrutement, exports et scores FM27 et FM26",
+      "description": "Tout sur Scout Reporter : export CSV des joueurs Football Manager 27 et 26, choix de la vue, confidentialité, scores, notes, vs âge, jeunes prodiges grâce à CA et PA, Meilleur 11 et recrutement du staff."
+    },
+    "download": {
+      "title": "Application pour Windows",
+      "description": "Téléchargez Scout Reporter pour Windows : il lit directement les joueurs de votre recherche Football Manager 27 ou 26, avec leurs véritables CA, PA et attributs cachés, et les note sur tous les écrans. Sans fichier de vue ni export CSV."
+    },
+    "compare": {
+      "title": "Comparatif des outils de recrutement FM27 et FM26",
+      "description": "Comparez Scout Reporter, Genie Scout, FMRTE et le recrutement intégré de Football Manager 27 et 26 : plateformes, prix, source des données, modification de la sauvegarde et outil à choisir."
+    },
+    "compareGenie": {
+      "title": "Scout Reporter vs Genie Scout : recrutement gratuit FM",
+      "description": "Comparez Scout Reporter et FM Genie Scout pour Football Manager 27 et 26 : plateformes, prix, source des données, scores de rôles FM27, potentiel des jeunes prodiges, Meilleur 11 et points forts de chacun."
+    },
+    "compareFmrte": {
+      "title": "Scout Reporter vs FMRTE : recruter sans modifier sa partie",
+      "description": "Comparez Scout Reporter et FMRTE pour Football Manager 27 et 26 : outil gratuit de recrutement et de composition en lecture seule face à un éditeur en temps réel. Plateformes, prix, source des données et points forts."
+    }
+  }
+}

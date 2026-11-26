@@ -3,13 +3,28 @@
 The website and the desktop app are translated into English (the source), French, German, Spanish,
 Italian, Danish, Swedish, Norwegian (Bokmål) and Korean, with [next-intl](https://next-intl.dev).
 
-The language is not in the URL. `apps/web/i18n/request.ts` picks it per request: the `NEXT_LOCALE`
-cookie (set by the language picker in the header), else the browser's `Accept-Language` (the OS
-language in the desktop app), else English. Search engines get English.
+On the website the language is in the URL: English has no prefix (`/players`), every other language
+does (`/da/players`, `/ko/faq`). `apps/web/proxy.ts` rewrites a prefixed URL to the one page that
+exists and passes the language to `apps/web/i18n/request.ts`; `/en/...` redirects to the unprefixed
+URL. On an unprefixed URL, a visitor who chose another language (the `NEXT_LOCALE` cookie) or whose
+browser asks for one (`Accept-Language`, when there is no cookie) is redirected to that language's
+URL; crawlers send neither, so they get English. Every page lists its other languages as hreflang
+alternates, and the sitemap lists every language.
+
+The desktop app's URLs carry no language: there it is the `NEXT_LOCALE` cookie the app sends (the
+language picker's choice), else Windows' languages, else English.
+
+- Links between pages: `Link`, `usePathname` and `useRouter` from `i18n/navigation.tsx`, not from
+  `next/link` / `next/navigation`. Write hrefs without the language (`/players`); the current one
+  is added (and left off in the desktop app). `usePathname()` returns the path without it.
+- Analytics: Umami counts `/da/players` as `/players` (the prefix is dropped before sending, in
+  `packages/core/analytics/umami.ts`); the language is the session's `locale` property, and
+  switching language sends a `language` event (`components/LocaleAnalytics.tsx`).
 
 ## Files
 
-- `locales.ts`: the languages, their flags and Intl tags, and how a request's language is chosen.
+- `locales.ts`: the languages, their flags and Intl tags, and how a visitor's language is negotiated.
+- `paths.ts`: the language in URLs (`/da/players`). `navigation.tsx`: language-aware `Link` and hooks.
 - `namespaces.ts`: the message namespaces. Client namespaces are sent to the browser; server ones
   (page copy) are only rendered on the server.
 - `messages/<locale>/<namespace>.json`: the messages. `en` is the source; every other locale has
@@ -55,7 +70,9 @@ schedules, coaching groups and common terms (`fm.terms.wage`, `fm.terms.bestXi`,
 - FM view and file names the user imports into FM (`SCOUT REPORTER Standard`), position codes
   (GK, DC, AMR, ST), grades (S++ to F): they match what FM and the files show.
 - Names the user typed (their own weight profiles, saved formations). Built-in names are translated.
-- Page metadata and structured data (`export const metadata`, JSON-LD): search engines get English.
+- Structured data (JSON-LD) and `llms.txt`: English in every language. Page titles and descriptions
+  are translated (`meta` namespace, read by `pageMetadata` in apps/web/lib/site.ts), and canonical
+  URLs, hreflang and `og:locale` follow the page's language.
 - Data in `packages/core`: it stays English; components translate at display time, by ID.
 - Analytics event names, storage keys, console messages.
 

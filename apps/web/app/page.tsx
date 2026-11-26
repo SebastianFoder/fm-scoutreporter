@@ -1,11 +1,11 @@
-import Link from "next/link";
+import { Link } from "@scoutreporter/ui/i18n/navigation";
 import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { VIEW_HIDDEN, VIEW_SQUAD, VIEW_SQUAD_HIDDEN, VIEW_STAFF, VIEW_STANDARD } from "@scoutreporter/core/view-files";
-import { AUTHOR_LD, JsonLd } from "@/components/JsonLd";
+import { JsonLd } from "@/components/JsonLd";
+import { AUTHOR_LD, WEBSITE_LD, desktopAppLd, webAppLd } from "@/lib/structured-data";
 import { Screenshot } from "@/components/Screenshot";
 import { SCREENSHOTS, type ScreenshotInfo } from "@/lib/screenshots";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 /** The sections of the main menu, with the screens inside each one. Copy is in home.modes.<key>. */
 const MODES = [
@@ -37,38 +37,11 @@ const VIEWS = [
   { view: VIEW_STAFF, key: "staff" },
 ] as const;
 
-/** Structured data, in English (search engines get English): `featureList` comes from the English copy. */
-const siteLd = (featureList: string[]) => [
-  {
-    "@type": "WebSite",
-    "@id": `${SITE_URL}/#website`,
-    name: SITE_NAME,
-    url: absoluteUrl("/"),
-    description: SITE_DESCRIPTION,
-    inLanguage: "en-GB",
-    author: AUTHOR_LD,
-  },
-  {
-    "@type": "WebApplication",
-    "@id": `${SITE_URL}/#app`,
-    name: SITE_NAME,
-    url: absoluteUrl("/"),
-    description: SITE_DESCRIPTION,
-    applicationCategory: "GameApplication",
-    applicationSubCategory: "Football Manager scouting tool",
-    operatingSystem: "Any (web browser)",
-    browserRequirements: "Requires JavaScript",
-    isAccessibleForFree: true,
-    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    featureList,
-    about: [
-      { "@type": "VideoGame", name: "Football Manager 27" },
-      { "@type": "VideoGame", name: "Football Manager 26" },
-    ],
-    author: AUTHOR_LD,
-    isPartOf: { "@id": `${SITE_URL}/#website` },
-  },
-];
+/**
+ * Structured data, in English (search engines get English): the site, the website as an app (its
+ * `featureList` from the English copy), the Windows app and the author.
+ */
+const siteLd = (featureList: string[]) => [WEBSITE_LD, webAppLd(featureList), desktopAppLd(), AUTHOR_LD];
 
 /** A screenshot linking to its screen, with its title and caption. */
 async function ScreenshotFigure({

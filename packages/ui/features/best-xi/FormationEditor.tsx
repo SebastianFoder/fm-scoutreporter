@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "../../i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Save, Trash2 } from "lucide-react";
 import { Button } from "@scoutreporter/ui/components/Button";

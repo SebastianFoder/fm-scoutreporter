@@ -1,4 +1,4 @@
-import { AUTHOR, SITE_NAME, absoluteUrl } from "@/lib/site";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 type Thing = Record<string, unknown>;
 
@@ -11,12 +11,6 @@ export function JsonLd({ data }: { data: Thing | Thing[] }) {
   ).replace(/</g, "\\u003c");
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }
-
-export const AUTHOR_LD: Thing = {
-  "@type": "Person",
-  name: AUTHOR.name,
-  url: AUTHOR.url,
-};
 
 /** Breadcrumb trail from the home page. Pass the crumbs after "Home". */
 export function breadcrumbLd(crumbs: { name: string; path: string }[]): Thing {

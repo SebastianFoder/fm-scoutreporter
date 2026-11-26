@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "../i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowRight, Columns3, GitCompareArrows, SlidersHorizontal } from "lucide-react";
 import PlayersListClient from "@scoutreporter/ui/features/attribute/players/PlayerListClient";
