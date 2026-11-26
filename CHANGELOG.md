@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.27.0...v1.28.0) (2026-11-26)
+
+
+### Features
+
+* language URLs, AI search pages, llms.txt and SoftwareApplication data ([#18](https://github.com/SebastianFoder/fm-scoutreporter/issues/18)) ([1d5c248](https://github.com/SebastianFoder/fm-scoutreporter/commit/1d5c248dbabbf85c008fe8e1581e552ac0291101))
+
 # [1.27.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.3...v1.27.0) (2026-11-26)
 
 
