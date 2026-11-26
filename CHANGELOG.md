@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.3...v1.27.0) (2026-11-26)
+
+
+### Features
+
+* translate the website and desktop app into 8 languages ([#17](https://github.com/SebastianFoder/fm-scoutreporter/issues/17)) ([bc6b44e](https://github.com/SebastianFoder/fm-scoutreporter/commit/bc6b44e4ef2e31b85fba36dbdc8f80f4cacd55aa))
+
 ## [1.26.3](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.2...v1.26.3) (2026-11-26)
 
 
