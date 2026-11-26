@@ -9,8 +9,7 @@ import { absoluteUrl } from "@/lib/site";
  * languages as hreflang alternates, with x-default on English.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
-  return INDEXABLE_ROUTES.flatMap(({ path, priority, changeFrequency }) => {
+  return INDEXABLE_ROUTES.flatMap(({ path, priority, changeFrequency, lastModified }) => {
     const paths = localizedPaths(path);
     const languages = {
       ...Object.fromEntries(LOCALES.map((l) => [l, absoluteUrl(paths[l])])),
@@ -18,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
     return LOCALES.map((l) => ({
       url: absoluteUrl(paths[l]),
-      lastModified,
+      ...(lastModified && { lastModified }),
       changeFrequency,
       priority: l === "en" ? priority : Math.round(priority * 0.9 * 10) / 10,
       alternates: { languages },

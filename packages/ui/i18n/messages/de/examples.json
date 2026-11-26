@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Welchen Torhüter würdest du auf die Vorauswahlliste setzen?",
+    "body": "Wähle „{testData}“ und das Gewichtungsprofil {role}. Von zwei 18-jährigen Torhütern kommt {currentLeader} aktuell auf {currentScore} und {prospect} auf {prospectScore}. Sortierst du nach Potenzial, liegt {prospect} mit {prospectPotential} vor {leaderPotential}. Zieh {currentLeader} für die Startelf in Betracht und beobachte {prospect} als langfristige Option. Das Potenzial ist ein Schätzwert bei voller Entwicklung.",
+    "guide": "Wie das Potenzial junger Spieler geschätzt wird"
+  },
+  "bestXi": {
+    "title": "Die beste Elf für dein Budget",
+    "body": "Wähle „{testData}“ und behalte das standardmäßige 4-2-3-1 mit aktuellen Bewertungen und den Mittelwerten der Transferwertspannen bei. Die stärkste Elf kostet rund {unlimitedCost} und erreicht im Schnitt {unlimitedScore} von 20. Bei einem Limit von {budget} findet das Tool eine Elf für {cappedCost} mit einem Schnitt von {cappedScore}. Halte mit diesem Budget {leftWinger} für den linken Flügel im Blick und ziehe {rightWinger} nach rechts.",
+    "guide": "Wie Rollenbewertungen berechnet werden"
+  },
+  "squad": {
+    "title": "Wo braucht der Kader mehr Tiefe?",
+    "body": "Wähle „{testData}“ und behalte das standardmäßige 4-2-3-1 bei. Die Kaderübersicht meldet wenig Tiefe auf der linken Innenverteidigerposition. Stammspieler {starter} kommt auf {starterScore} von 20 und sein Ersatz {backup} auf {backupScore}. Suche einen Innenverteidiger, der dort in der Rotation einspringen kann.",
+    "guide": "So exportierst du deinen Kader"
+  }
+}

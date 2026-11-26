@@ -22,12 +22,12 @@
   "tools": {
     "srWeb": {
       "name": "Scout Reporter (hjemmeside)",
-      "platform": "Enhver moderne browser, intet at installere",
+      "platform": "En moderne browser, også på macOS og Linux, med en eksisterende CSV-fil",
       "price": "Gratis, ingen konto",
       "data": "En CSV, du eksporterer fra FM med en Scout Reporter-visning. Filen forlader aldrig din browser.",
       "edits": "Nej",
-      "versions": "Begge: FM27 med FM View Exporter, FM26 med BepInEx og et CSV eksport plugin",
-      "bestFor": "Rangering af en shortlist på FM27 rollevægte, vidunderbørns potentiale, en Bedste 11 inden for et budget, holdhuller og personale uden at installere noget"
+      "versions": "FM27 bruger FM View Exporter (Steam på Windows 10 eller 11). FM26 bruger BepInEx og et CSV-eksportplugin.",
+      "bestFor": "Rangering af importerede spillere efter FM27-rollevægte, estimering af unges potentiale, valg af en startellever inden for budgettet og analyse af trup og stab"
     },
     "srDesktop": {
       "name": "Scout Reporter (Windows-app)",
@@ -41,10 +41,10 @@
     "genie": {
       "name": "FM Genie Scout",
       "platform": "Kun Windows",
-      "price": "Gratis udgave med én bannerannonce; g-udgaven (uden reklamer og med ekstra funktioner) fås mod en donation.",
-      "data": "Læser spillet, mens det kører",
+      "price": "Den offentlige FM26-udgave er gratis, og 26g blev gratis den 16. oktober 2026. Til FM27 kræver 27g betalt aktivering for at vise brugbare data fra dit save. En gratis FM27-udgave er planlagt.",
+      "data": "Søger i spillerdatabasen i dit FM-save",
       "edits": "Nej (redigering kræver en separat editor)",
-      "versions": "FM26 26.0.0 til 26.3.2; Genie Scout 27g er i beta",
+      "versions": "FM26 26.0.0 til 26.3.2. Genie Scout 27g er i beta til FM27.",
       "bestFor": "Livesøgning i hele spildatabasen med en lang historik siden 2009"
     },
     "fmrte": {
@@ -78,11 +78,11 @@
   "hub": {
     "title": "FM27 og FM26 spejderværktøjer sammenlignet",
     "intro": "De vigtigste måder at scoute spillere på i Football Manager 27 og 26, hvad hver enkelt har brug for, og hvad den er bedst til.",
-    "answer": "For et gratis værktøj, der rangerer spillere på FM27 rollevægte, estimerer vidunderbørns egenskaber til det fulde potentiale og vælger en Bedste 11 inden for et budget, skal du bruge Scout Reporter: i browseren med en CSV eksport eller på Windows, der læser spillet direkte. For at søge i hele spildatabasen live på Windows, er Genie Scout det langvarige valg. Hvis du også vil redigere spillere eller klubber, spejder FMRTE gratis og redigerer med en licens. FM's egen scouting er måden at spille uden at se skjult information.",
+    "answer": "Scout Reporter rangerer spillere, estimerer unges potentiale og sætter en startellever inden for budgettet gratis i FM27 og FM26. Genie Scout søger i dit save på Windows. Genie Scout 26g blev gratis den 16. oktober 2026. Genie Scout 27g kræver betalt aktivering for at vise brugbare data fra dit save. En gratis FM27-udgave er planlagt. FMRTE er gratis til scouting og kræver licens for at gemme ændringer. FM’s egen scouting bruger din klubs rapporter.",
     "chooseTitle": "Hvilken man skal bruge",
     "choose": {
-      "noInstall": "Ingen installation, enhver computer, inklusive Mac og Linux til browserdelen: <link>Scout Reporter website</link> med en CSV eksport.",
-      "live": "Live fra spillet på Windows, uden at eksportere: <link>Scout Reporter til Windows</link> eller Genie Scout.",
+      "noInstall": "Har du allerede en CSV-fil? Åbn den på <link>Scout Reporters hjemmeside</link> i en moderne browser på Mac, Linux eller Windows. Den beskrevne FM27-eksport bruger Steam på Windows 10 eller 11.",
+      "live": "Brug <link>Scout Reporter til Windows</link> til at scanne spillet direkte. Genie Scout kan også søge i dit FM-save på Windows.",
       "edit": "Vil du ændre spillet (egenskaber, økonomi, kontrakter): FMRTE. Scout Reporter og Genie Scout læser kun data.",
       "mac": "På en Mac, læser spillet: FMRTE har en macOS-version. Scout Reporter til Mac er planlagt.",
       "pure": "Ingen hjælp udefra: FM’s egen scouting."
@@ -95,8 +95,8 @@
   },
   "genie": {
     "title": "Scout Reporter vs Genie Scout",
-    "intro": "To gratis måder at se rigtige spilleregenskaber i Football Manager 26 og 27, og hvordan de adskiller sig.",
-    "answer": "Begge er gratis og kan læse spillet, mens det kører på Windows. Genie Scout er en veletableret alt-i-en-databasesøgning med søgning efter rollevurdering, lignende spillere og udviklingssandsynlighed i g-udgaven. Scout Reporter fokuserer på at vurdere spillerne: score efter FM27-rollevægte fra en undersøgelse af 50.000 kampe, karakterer fra S++ til F, vs. alder, egenskaber ved fuldt potentiale, Bedste 11 inden for et budget, trupanalyse og personale. Det virker også i enhver browser med en CSV-eksport og dermed på Mac og Linux.",
+    "intro": "Sammenlign udgavernes priser, platformkrav og scoutingfunktioner til Football Manager 26 og 27.",
+    "answer": "Scout Reporter er gratis til FM26 og FM27. FM Scout gjorde Genie Scout 26g gratis den 16. oktober 2026. Genie Scout 27g kræver betalt aktivering for at vise brugbare data fra dit save, og FM Scout planlægger en gratis FM27-udgave. Genie Scout søger i spillerdatabasen i dit save. Scout Reporter rangerer spillere efter rolle, estimerer unges potentiale og hjælper med at sætte en startellever inden for budgettet.",
     "strongerTitle": "Hvor Genie Scout er stærkere",
     "stronger": {
       "history": "En lang track record: den er blevet lavet til hver FM siden 2009 og har en stor brugerbase.",
@@ -106,7 +106,7 @@
     },
     "differentTitle": "Hvad Scout Reporter tilføjer",
     "different": {
-      "browser": "Fungerer i enhver browser fra en CSV-eksport, ingen installation, så den kører også på Mac og Linux.",
+      "browser": "Webappen åbner en eksisterende CSV-fil på macOS, Linux eller Windows. Den beskrevne FM27-eksport bruger FM View Exporter med Steam på Windows 10 eller 11. Desktopappen til direkte scanning kører kun på Windows.",
       "weights": "Vurderer hver spiller efter FM27’s benchmarkede rollevægte målt over 50.000 FM27-kampe eller efter dine egne vægte, med karakterer fra S++ til F og vs. alder for unge spillere.",
       "potential": "Beregner hver egenskab ved fuldt potentiale ud fra CA og PA, frem for kun ét potentialetal.",
       "team": "Bedste 11 inden for et transferbudget, trupanalyse af dit eget hold og Bedste stab.",
@@ -116,7 +116,7 @@
     "faq": {
       "free": {
         "q": "Er Scout Reporter et gratis alternativ til Genie Scout?",
-        "a": "Ja. Scout Reporter er gratis uden annoncer, ingen konto og ingen betalt udgave. Dens Windows-app læser FM27 og FM26 direkte som Genie Scout, og dens hjemmeside fungerer med en CSV-eksport i enhver browser."
+        "a": "Ja. Webappen og Windows-appen er gratis uden reklamer eller konto. Webappen åbner en eksisterende CSV-fil. Windows-appen kan scanne FM26 eller FM27, mens spillet kører."
       },
       "fm27": {
         "q": "Virker Scout Reporter med FM27?",
@@ -124,7 +124,7 @@
       },
       "mac": {
         "q": "Er der en Genie Scout til Mac?",
-        "a": "Genie Scout's eget websted siger, at det kun kører på Windows. Scout Reporter's hjemmeside fungerer på en Mac i enhver browser med en CSV eksport; en Mac-version af dens desktop-app er planlagt."
+        "a": "Genie Scout er til Windows. På Mac eller Linux kan Scout Reporter åbne en eksisterende CSV-fil i browseren. Desktopappen til direkte scanning er kun til Windows."
       }
     }
   },
@@ -158,7 +158,7 @@
       },
       "mac": {
         "q": "Hvilket virker på en Mac?",
-        "a": "FMRTE har en macOS-version, der læser spillet. Scout Reporter's hjemmeside fungerer på en Mac i enhver browser med en CSV eksport; dens desktop-app er kun Windows indtil videre."
+        "a": "FMRTE har en macOS-udgave, der læser spillet. Scout Reporter åbner en eksisterende CSV-fil i en Mac-browser. Desktopappen til direkte scanning er kun til Windows."
       }
     }
   }

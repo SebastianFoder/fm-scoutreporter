@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Quel gardien mettre sur ta liste ?",
+    "body": "Sélectionne « {testData} » et le profil de pondération {role}. Parmi deux gardiens de 18 ans, {currentLeader} obtient {currentScore} aujourd’hui et {prospect} obtient {prospectScore}. Trie par potentiel et {prospect} passe devant avec {prospectPotential} contre {leaderPotential}. Envisage {currentLeader} comme titulaire immédiat et observe {prospect} pour l’avenir. Le potentiel est une estimation en cas de développement complet.",
+    "guide": "Comment le potentiel des jeunes est estimé"
+  },
+  "bestXi": {
+    "title": "Composer le meilleur onze dans ton budget",
+    "body": "Sélectionne « {testData} » et garde le 4-2-3-1 par défaut, les notes actuelles et le milieu des fourchettes de valeur. Le meilleur onze coûte environ {unlimitedCost} pour une moyenne de {unlimitedScore} sur 20. Avec un plafond de {budget}, l’outil trouve un onze à {cappedCost} qui affiche {cappedScore} de moyenne. Dans ce budget, observe {leftWinger} pour l’aile gauche et passe {rightWinger} à droite.",
+    "guide": "Comment les notes par rôle sont calculées"
+  },
+  "squad": {
+    "title": "À quel poste manque-t-il une doublure ?",
+    "body": "Sélectionne « {testData} » et garde le 4-2-3-1 par défaut. La vue d’ensemble indique un manque de profondeur en défense centrale à gauche. Le titulaire {starter} obtient {starterScore} sur 20 et sa doublure {backup} obtient {backupScore}. Observe un défenseur central capable d’occuper ce poste dans la rotation.",
+    "guide": "Comment exporter ton effectif"
+  }
+}

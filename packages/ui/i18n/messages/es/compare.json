@@ -22,12 +22,12 @@
   "tools": {
     "srWeb": {
       "name": "Scout Reporter (sitio web)",
-      "platform": "Cualquier navegador moderno, nada que instalar",
+      "platform": "Cualquier navegador moderno, incluso en macOS y Linux, con un CSV existente",
       "price": "Gratis, sin cuenta",
       "data": "Un CSV que exportas desde FM con una vista Scout Reporter; nunca sale de tu navegador",
       "edits": "No",
-      "versions": "Ambos: FM27 con FM View Exporter, FM26 con BepInEx y un complemento de exportación CSV",
-      "bestFor": "Clasificar una lista corta según el peso de los roles de FM27, el potencial de los chicos maravilla, un Mejor once dentro de un presupuesto, las brechas en el equipo y el personal, sin instalar nada."
+      "versions": "FM27 usa FM View Exporter (Steam en Windows 10 u 11). FM26 usa BepInEx y un complemento de exportación a CSV.",
+      "bestFor": "Ordenar una lista importada por pesos de rol de FM27, estimar el potencial de jóvenes, elegir un once dentro del presupuesto y analizar plantilla y cuerpo técnico"
     },
     "srDesktop": {
       "name": "Scout Reporter (aplicación de Windows)",
@@ -41,10 +41,10 @@
     "genie": {
       "name": "FM Genie Scout",
       "platform": "Sólo Windows",
-      "price": "Edición gratuita con un banner publicitario; la edición g (sin anuncios y con funciones adicionales) se obtiene mediante una donación.",
-      "data": "Lee el juego mientras está en ejecución",
+      "price": "La edición pública de FM26 es gratis y 26g pasó a ser gratuita el 16 de octubre de 2026. En FM27, 27g exige activación de pago para mostrar datos útiles de la partida. Está prevista una edición gratuita de FM27.",
+      "data": "Busca en la base de datos de jugadores de tu partida de FM",
       "edits": "No (la edición necesita un editor independiente)",
-      "versions": "FM26 26.0.0 a 26.3.2; Genie Scout 27g está en versión beta",
+      "versions": "FM26 26.0.0 a 26.3.2. Genie Scout 27g está en beta para FM27.",
       "bestFor": "Buscando en toda la base de datos del juego en vivo, con una larga trayectoria desde 2009."
     },
     "fmrte": {
@@ -78,11 +78,11 @@
   "hub": {
     "title": "Comparación de las herramientas de exploración FM27 y FM26",
     "intro": "Las principales formas de hacer scouting de jugadores en Football Manager 27 y 26, qué necesita cada uno y en qué es mejor.",
-    "answer": "Para obtener una herramienta gratuita que clasifica a los jugadores según el peso de los roles FM27, estima los atributos de los chicos maravilla en su máximo potencial y elige un Mejor once dentro de un presupuesto, use Scout Reporter: en el navegador con una exportación CSV, o en Windows leyendo el juego directamente. Para buscar en toda la base de datos de juegos en vivo en Windows, Genie Scout es la opción de siempre. Si también quieres editar jugadores o clubes, FMRTE busca gratis y edita con licencia. La propia exploración de FM es la forma de jugar sin ver información oculta.",
+    "answer": "Scout Reporter ordena jugadores, estima el potencial de los jóvenes y arma un once dentro del presupuesto gratis para FM27 y FM26. Genie Scout busca en tu partida en Windows. Genie Scout 26g pasó a ser gratuito el 16 de octubre de 2026. Genie Scout 27g exige activación de pago para mostrar datos útiles de la partida y está prevista una edición gratuita de FM27. FMRTE permite ojear gratis y requiere licencia para guardar cambios. El ojeo de FM usa los informes de tu club.",
     "chooseTitle": "Cuál usar",
     "choose": {
-      "noInstall": "Sin instalación, en cualquier computadora, incluidos Mac y Linux para la parte del navegador: sitio web <link>Scout Reporter</link> con una exportación CSV.",
-      "live": "En vivo desde el juego en Windows, sin exportar: <link>Scout Reporter para Windows</link> o Genie Scout.",
+      "noInstall": "¿Ya tienes un CSV? Ábrelo en la <link>web de Scout Reporter</link> desde un navegador moderno en Mac, Linux o Windows. La exportación de FM27 que documentamos usa Steam en Windows 10 u 11.",
+      "live": "Para escanear el juego en directo, usa <link>Scout Reporter para Windows</link>. Genie Scout también busca en tu partida de FM en Windows.",
       "edit": "Si quieres modificar el juego (atributos, finanzas, contratos): FMRTE. Scout Reporter y Genie Scout solo leen datos.",
       "mac": "En una Mac, leyendo el juego: FMRTE tiene una versión para macOS. Está previsto Scout Reporter para Mac.",
       "pure": "Ninguna ayuda externa: la propia exploración de FM."
@@ -95,8 +95,8 @@
   },
   "genie": {
     "title": "Scout Reporter y Genie Scout",
-    "intro": "Dos formas gratuitas de ver los atributos reales de los jugadores en Football Manager 26 y 27, y en qué se diferencian.",
-    "answer": "Ambos son gratuitos y ambos pueden leer el juego en ejecución en Windows. Genie Scout es la búsqueda de base de datos todo en uno establecida, con búsqueda de clasificación de roles, jugadores similares y probabilidad de desarrollo en su edición g. Scout Reporter se centra en qué hacer con los jugadores: puntuaciones en ponderaciones de roles de FM27 de un estudio de 50.000 partidos, calificaciones de S++ a F, vs edad, atributos proyectados en pleno potencial, un Mejor once dentro de un presupuesto, análisis de plantilla y personal. También funciona en cualquier navegador desde una exportación CSV, por lo que se ejecuta en Mac y Linux.",
+    "intro": "Compara precios, requisitos de plataforma y funciones de ojeo para Football Manager 26 y 27.",
+    "answer": "Scout Reporter es gratis para FM26 y FM27. FM Scout hizo gratuito Genie Scout 26g el 16 de octubre de 2026. Genie Scout 27g exige activación de pago para mostrar datos útiles de la partida y FM Scout planea una edición gratuita de FM27. Genie Scout busca en la base de datos de tu partida. Scout Reporter puntúa por rol, estima el potencial de jóvenes y ayuda a montar un once dentro del presupuesto.",
     "strongerTitle": "Donde Genie Scout es más fuerte",
     "stronger": {
       "history": "Una larga trayectoria: se ha creado para todas las FM desde 2009 y tiene una gran base de usuarios.",
@@ -106,7 +106,7 @@
     },
     "differentTitle": "Lo que añade Scout Reporter",
     "different": {
-      "browser": "Funciona en cualquier navegador desde una exportación CSV, sin instalación, por lo que también se ejecuta en Mac y Linux.",
+      "browser": "La app web abre un CSV existente en macOS, Linux o Windows. La exportación de FM27 que documentamos usa FM View Exporter con Steam en Windows 10 u 11. La app de escritorio para escanear en directo solo funciona en Windows.",
       "weights": "Puntúa a cada jugador según las ponderaciones de referencia de los roles de FM27 medidas en 50.000 partidos de FM27, o según tus propias ponderaciones, con notas de S++ a F y vs. edad para los jóvenes.",
       "potential": "Proyecta cada atributo a su máximo potencial a partir de CA y PA, en lugar de dar una sola cifra de potencial.",
       "team": "El Mejor once dentro de un presupuesto de transferencia, análisis de plantilla de tu propio equipo y Mejor equipo técnico.",
@@ -116,7 +116,7 @@
     "faq": {
       "free": {
         "q": "¿Es Scout Reporter una alternativa gratuita a Genie Scout?",
-        "a": "Sí. Scout Reporter es gratuito, sin anuncios, sin cuenta y sin edición de pago. Su aplicación para Windows lee FM27 y FM26 directamente, como Genie Scout, y su sitio web funciona con una exportación CSV en cualquier navegador."
+        "a": "Sí. Las apps web y de Windows son gratis, sin anuncios ni cuenta. La app web abre un CSV existente. La app de Windows puede escanear FM26 o FM27 mientras juegas."
       },
       "fm27": {
         "q": "¿Scout Reporter funciona con FM27?",
@@ -124,7 +124,7 @@
       },
       "mac": {
         "q": "¿Existe un Genie Scout para Mac?",
-        "a": "El propio sitio de Genie Scout dice que se ejecuta sólo en Windows. El sitio web de Scout Reporter funciona en una Mac en cualquier navegador con una exportación CSV; Está prevista una versión para Mac de su aplicación de escritorio."
+        "a": "Genie Scout es para Windows. En Mac o Linux, Scout Reporter abre un CSV existente en el navegador. La app de escritorio para escanear en directo es solo para Windows."
       }
     }
   },
@@ -158,7 +158,7 @@
       },
       "mac": {
         "q": "¿Cuál funciona en una Mac?",
-        "a": "FMRTE tiene una versión para macOS que lee el juego. El sitio web de Scout Reporter funciona en una Mac en cualquier navegador con una exportación CSV; su aplicación de escritorio es sólo para Windows por ahora."
+        "a": "FMRTE tiene una versión para macOS que lee el juego. Scout Reporter abre un CSV existente en un navegador de Mac. La app de escritorio para escanear en directo es solo para Windows."
       }
     }
   }

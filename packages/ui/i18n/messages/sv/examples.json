@@ -1,0 +1,17 @@
+{
+  "players": {
+    "title": "Vilken målvakt skulle du sätta på din bevakningslista?",
+    "body": "Välj ”{testData}” och använd viktprofilen {role}. Av två 18-åriga målvakter har {currentLeader} {currentScore} i dag och {prospect} har {prospectScore}. Sortera efter potential så går {prospect} om, med {prospectPotential} mot {leaderPotential}. Överväg {currentLeader} för en startplats nu och scouta {prospect} för framtiden. Potentialen är en uppskattning vid full utveckling.",
+    "guide": "Så uppskattas unga spelares potential"
+  },
+  "bestXi": {
+    "title": "Bygg den bästa elvan inom budgeten",
+    "body": "Välj ”{testData}” och behåll standardformationen 4-2-3-1, aktuella poäng och mittpunkten i varje värdeintervall. Den starkaste elvan kostar ungefär {unlimitedCost} med ett snitt på {unlimitedScore} av 20. Med ett tak på {budget} hittar verktyget en elva för {cappedCost} med ett snitt på {cappedScore}. Med det taket kan du scouta {leftWinger} för vänsterkanten och flytta {rightWinger} till höger.",
+    "guide": "Så beräknas rollpoängen"
+  },
+  "squad": {
+    "title": "Var behöver truppen en reserv?",
+    "body": "Välj ”{testData}” och behåll standardformationen 4-2-3-1. Truppöversikten visar att det saknas stark täckning på vänster mittbacksplats. Startspelaren {starter} får {starterScore} av 20 och reserven {backup} får {backupScore}. Scouta en mittback som kan täcka platsen i rotationen.",
+    "guide": "Så exporterar du din trupp"
+  }
+}

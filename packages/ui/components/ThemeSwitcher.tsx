@@ -2,10 +2,11 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
-import { applyTheme, DEFAULT_THEME_KEY, type ThemeKey } from "@scoutreporter/core/themes";
+import { applyTheme, type ThemeKey } from "@scoutreporter/core/themes";
 import { SegmentedControl } from "./SegmentedControl";
 
-const STORAGE_KEY = "theme";
+export const THEME_STORAGE_KEY = "theme";
+export const DARK_THEME_QUERY = "(prefers-color-scheme: dark)";
 const listeners = new Set<() => void>();
 
 /** The theme choice: light, dark, or "system" (follow the OS, which is what an unset choice does). */
@@ -15,11 +16,11 @@ function subscribe(callback: () => void) {
   listeners.add(callback);
 
   const onStorage = (e: StorageEvent) => {
-    if (e.key === STORAGE_KEY) callback();
+    if (e.key === THEME_STORAGE_KEY) callback();
   };
   window.addEventListener("storage", onStorage);
 
-  const mql = window.matchMedia("(prefers-color-scheme: dark)");
+  const mql = window.matchMedia(DARK_THEME_QUERY);
   mql.addEventListener("change", callback);
 
   return () => {
@@ -31,7 +32,7 @@ function subscribe(callback: () => void) {
 
 function storedChoice(): ThemeChoice {
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
     return stored === "light" || stored === "dark" ? stored : "system";
   } catch {
     return "system";
@@ -41,17 +42,17 @@ function storedChoice(): ThemeChoice {
 function getSnapshot(): ThemeKey {
   const choice = storedChoice();
   if (choice !== "system") return choice;
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia(DARK_THEME_QUERY).matches ? "dark" : "light";
 }
 
-function getServerSnapshot(): ThemeKey {
-  return DEFAULT_THEME_KEY;
+function getServerSnapshot(): null {
+  return null;
 }
 
 function setThemeChoice(choice: ThemeChoice) {
   try {
-    if (choice === "system") window.localStorage.removeItem(STORAGE_KEY);
-    else window.localStorage.setItem(STORAGE_KEY, choice);
+    if (choice === "system") window.localStorage.removeItem(THEME_STORAGE_KEY);
+    else window.localStorage.setItem(THEME_STORAGE_KEY, choice);
   } catch {
     // storage blocked: the choice lasts until the page closes
   }
@@ -59,7 +60,7 @@ function setThemeChoice(choice: ThemeChoice) {
 }
 
 /** The theme in use (light or dark). */
-export function useTheme(): ThemeKey {
+export function useTheme(): ThemeKey | null {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
@@ -67,6 +68,7 @@ export function useTheme(): ThemeKey {
 export function ThemeSync() {
   const theme = useTheme();
   useEffect(() => {
+    if (theme === null) return;
     applyTheme(theme);
     document.body.style.backgroundColor = `oklch(var(--background))`;
   }, [theme]);

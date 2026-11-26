@@ -24,12 +24,16 @@ const nextConfig: NextConfig = {
     "/api/fixtures/[name]": ["../../packages/core/fixtures/*.csv"],
   },
   turbopack: { root: repoRoot },
-  /*
-   * Old URLs: Attribute, Wonderkid and Best XI were separate menu items before they became the
-   * Players section. Permanent (308) so search engines move any ranking to the new paths.
-   */
   async redirects() {
+    const legacyHostRedirect = {
+      source: "/:path*",
+      has: [{ type: "host" as const, value: "fm26-scoutreporter\\.vercel\\.app" }],
+      destination: "https://fmscouting.sebastianfoder.com/:path*",
+      permanent: true,
+    };
     return [
+      ...(!desktop ? [legacyHostRedirect] : []),
+      // Attribute, Wonderkid and Best XI used to be separate menu items.
       { source: "/attribute", destination: "/players", permanent: true },
       { source: "/attribute/players", destination: "/players", permanent: true },
       { source: "/attribute/players/:id", destination: "/players/:id", permanent: true },
