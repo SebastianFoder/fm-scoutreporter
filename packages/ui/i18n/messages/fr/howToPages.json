@@ -1,0 +1,17 @@
+{
+  "setup": {
+    "title": "Guide d’installation",
+    "description": "Suivez ces étapes pour exporter une liste de joueurs de Football Manager 27 ou 26 et l’importer dans cette appli.",
+    "link": "Aller à l’import"
+  },
+  "players": {
+    "title": "Joueurs",
+    "description": "Notez et classez les joueurs selon une moyenne pondérée de leurs attributs. Aucune référence à fournir : importez et c’est parti.",
+    "link": "Aller à Joueurs"
+  },
+  "wonderkids": {
+    "title": "Jeunes prodiges",
+    "description": "Estimez les attributs au potentiel maximum à partir d’un export de la vue Hidden Attributes (NA, Pot., Professionnalisme) et classez les espoirs sur des rôles FM27 étalonnés.",
+    "link": "Aller à Joueurs"
+  }
+}

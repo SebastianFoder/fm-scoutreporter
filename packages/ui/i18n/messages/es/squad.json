@@ -1,0 +1,232 @@
+{
+  "title": "Análisis de plantilla",
+  "intro": "Importa tu plantilla, elige la formación con la que juegas y mira tu primer y segundo once, dónde la plantilla tiene poco fondo o es floja, quién se está haciendo mayor y qué juveniles pueden dar el salto.",
+  "import": {
+    "title": "Importa tu plantilla",
+    "titleCount": "{count, plural, one {# jugador en tu plantilla} other {# jugadores en tu plantilla}}",
+    "description": "Exporta tu pantalla de plantilla con la vista <squad>Squad</squad> o <hidden>Squad Hidden Attributes</hidden> (añade el potencial). Se guarda aparte de tu importación de ojeo.",
+    "noColumns": "Esta importación no tiene columnas de plantilla, así que no se comprueban cesiones, lesiones, situación en plantilla ni alineación."
+  },
+  "noImport": {
+    "desktop": "Aún no hay plantilla. Cada escaneo lee también los jugadores de tu club.",
+    "web": "Aún no has importado ninguna plantilla. Elige arriba el CSV de tu plantilla o carga los datos de prueba para echar un vistazo.",
+    "usePlayerImportPrompt": "¿Ya exportaste tu plantilla como importación de jugadores?",
+    "usePlayerImport": "Usar la importación de jugadores ({count, plural, one {# jugador} other {# jugadores}}) como plantilla"
+  },
+  "setup": {
+    "title": "Ajustes",
+    "reset": "Restablecer",
+    "availability": "Disponibilidad",
+    "includeLoans": "Contar a los jugadores cedidos",
+    "loanHint": "{count} cedidos en otros clubes.",
+    "excludeInjured": "Dejar fuera a los lesionados",
+    "injuredHint": "{count} lesionados ahora. Activado: los onces que puedes alinear hoy."
+  },
+  "cannotFill": {
+    "title": "Tu plantilla no puede completar esta formación.",
+    "body": "Nadie juega de {positions} como posición natural, así que al once le faltan jugadores. Solo cuentan las posiciones naturales de la exportación."
+  },
+  "footnote": "Cada posición se puntúa con su rol (1–20, con la nota de S++ a F) y solo cuenta a los jugadores que la tienen como posición natural. El primer once tiene la mayor puntuación total; el segundo once es el mejor once con todos los que quedan, así que cada jugador cubre una sola posición.",
+  "unknownPlayer": "Desconocido",
+  "ageShort": "{age} a",
+  "nobody": "Nadie",
+  "injured": "Lesionado",
+  "ability": "Calidad",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: {value} de 5 estrellas} other {{value} de 5 estrellas}}",
+    "title": "{hasLabel, select, yes {{label}: {value} estrellas} other {{value} estrellas}}"
+  },
+  "days": {
+    "weeks": "{count} sem",
+    "days": "{count} d"
+  },
+  "overview": {
+    "title": "Resumen de la plantilla",
+    "firstXi": "Primer once",
+    "firstXiAtPotential": "Primer once a su potencial",
+    "firstXiAverage": "Media del primer once",
+    "secondXi": "Segundo once",
+    "secondXiAverage": "Media del segundo once",
+    "averageAge": "edad {age}",
+    "unfilled": "{count} sin cubrir",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {jugador} other {jugadores}}, edad {age}{unavailable, plural, =0 {} other {, # no disponibles}}</text>",
+    "teamSheet": "Alineación de FM",
+    "teamSheetMatch": "<num>{matching}</num><text>de {count} coinciden con este once</text>",
+    "pitchChoice": "Once en el campo",
+    "legend": {
+      "high": "Hay que arreglarlo",
+      "medium": "A vigilar",
+      "click": "Haz clic en una posición para ver sus notas."
+    },
+    "notesAtPosition": "{count, plural, =0 {Nada que destacar en esta posición.} one {# nota en esta posición} other {# notas en esta posición}}",
+    "showAll": "Ver todo",
+    "nothingToFix": "Nada que arreglar: todos los titulares están cerca de la media del once y tienen un recambio a menos de 1,5 por detrás.",
+    "groups": {
+      "fix": {
+        "title": "Arreglar",
+        "blurb": "Posiciones que te cuestan puntos ya: huecos, puntos débiles y recambios flojos."
+      },
+      "manage": {
+        "title": "Gestionar",
+        "blurb": "Situaciones en plantilla que no cuadran con el once. Resuélvelo en la próxima negociación de contrato."
+      },
+      "develop": {
+        "title": "Desarrollar",
+        "blurb": "Jóvenes que superarán a un titular y relevos listos para entrar."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {nadie}}{replacing, select, none {} other {, entra por {replacing}}}{issue, select, high {, hay que arreglarlo} medium {, a vigilar} other {}}",
+    "stampLabel": "{name} en {spot}",
+    "injuredBadge": "LES",
+    "inBadge": "ENTRA"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Nadie juega aquí",
+      "weak": "Punto débil",
+      "no-cover": "Sin recambio",
+      "drop-off": "Recambio flojo",
+      "ageing": "Titular veterano",
+      "successor": "Relevo listo",
+      "prospect": "Promesa",
+      "status-benched": "Titularidad prometida",
+      "status-starting": "Titular con estatus bajo"
+    },
+    "severity": {
+      "high": "Alta",
+      "medium": "Media"
+    },
+    "empty": {
+      "evidence": "No hay ningún {position} natural en la plantilla{count, plural, one {} other {, # puestos por cubrir}}.",
+      "advice": "Ficha uno o reconvierte a un jugador a esa posición."
+    },
+    "weak": {
+      "evidence": "<delta></delta> respecto a la media del once",
+      "advice": "El primer sitio que reforzar."
+    },
+    "noCover": {
+      "evidence": "sin recambio natural",
+      "advice": "Una lesión o sanción obliga a jugar con alguien fuera de su posición."
+    },
+    "dropOff": {
+      "advice": "El recambio está un nivel por debajo. Merece la pena un fichaje para dar fondo."
+    },
+    "ageing": {
+      "atPotential": "{score} a su potencial",
+      "adviceSuccessor": "{name} tiene {age} años; el relevo ya está cerca.",
+      "adviceNone": "{name} tiene {age} años y nadie de 23 o menos está cerca. Planifica un relevo."
+    },
+    "prospect": {
+      "vs": "vs.",
+      "starsAdvice": "El preparador valora su potencial por encima de la calidad ({ability}★) y el potencial ({potential}★) de {starter}. Dale minutos.",
+      "projectedLabel": "Proyección a pleno potencial",
+      "atPotentialVs": "a su potencial, vs.",
+      "starterAtPotential": "Titular a su potencial",
+      "starterToday": "Titular hoy",
+      "projectedAdvice": "Proyectado {gap} por encima de {starter}{own, select, yes { a su propio potencial} other {}}. Dale minutos."
+    },
+    "statusBenched": {
+      "secondOnly": "solo en el segundo once",
+      "neither": "en ninguno de los dos onces",
+      "advice": "Su situación en plantilla, {status}, le promete la titularidad. Dale más minutos o rebaja su situación."
+    },
+    "statusStarting": {
+      "advice": "Es titular aquí con una situación en plantilla baja. Súbela en la próxima negociación de contrato."
+    }
+  },
+  "teamSheet": {
+    "title": "Cambios en tu alineación de FM",
+    "summary": "{matching} de tus titulares en FM mantienen su puesto{moves, plural, =0 {} other {, # en otra posición}}.",
+    "columns": {
+      "out": "Sale: titular en FM ahora",
+      "in": "Entra: este once",
+      "gain": "Mejora en esta posición"
+    },
+    "out": "Sale",
+    "in": "Entra",
+    "outDetail": "{picked, select, yes {{pickedAt} en FM} other {Titular en FM}}{natural, select, no {, no es {position} natural} other {}}",
+    "extraStarter": "Nadie: un titular de más",
+    "replacedBy": "sustituido por",
+    "nobodyPlaysThere": "Nadie de este once juega ahí",
+    "newPosition": "nueva posición",
+    "alsoMoves": "También cambia:",
+    "to": "a"
+  },
+  "depth": {
+    "title": "Fondo de armario",
+    "intro": "Titular y recambio en cada posición{potential, select, yes {, a pleno potencial} other {}}. Los recambios salen del segundo once, así que nadie cubre dos puestos.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Titular",
+      "cover": "Recambio",
+      "drop": "Caída",
+      "dropTitle": "Puntuación del recambio menos la del titular",
+      "alsoPlays": "También juegan aquí",
+      "alsoPlaysTitle": "Otros jugadores naturales, primero el mejor. XI: titular en otro puesto. 2.º: recambio en otro puesto."
+    },
+    "starterAt": "Titular en {spot}",
+    "coverAt": "Recambio en {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, titular en otro puesto} second {, recambio en otro puesto} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2.º",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Resto de la plantilla",
+    "intro": "{count, plural, one {# jugador} other {# jugadores}} en ninguno de los dos onces, en la posición donde más se acercan al titular.",
+    "columns": {
+      "bestFit": "Mejor encaje",
+      "score": "Puntuación",
+      "vsStarter": "vs. titular",
+      "vsStarterTitle": "Puntuación menos la del titular en esa posición",
+      "potentialTitle": "Puntuación en esa posición a pleno potencial",
+      "coachRating": "Valoración del preparador",
+      "coachRatingTitle": "Informe de preparador: calidad actual y potencial, en relación con tu plantilla",
+      "happiness": "Felicidad",
+      "missed": "De baja",
+      "missedTitle": "Tiempo de baja por lesión"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Promesas",
+        "blurb": "Superarán a un titular. Dales minutos."
+      },
+      "young": {
+        "title": "En desarrollo",
+        "blurb": "21 años o menos. Cédelos o quédatelos para entrenar."
+      },
+      "surplus": {
+        "title": "Sobrantes",
+        "blurb": "Pasada la edad de desarrollo y en ninguno de los dos onces. Véndelos o quédatelos como fondo de armario."
+      },
+      "no-fit": {
+        "title": "Sin posición aquí",
+        "blurb": "Ninguna posición natural en esta formación."
+      },
+      "away": {
+        "title": "No disponibles",
+        "blurb": "Lesionados o cedidos."
+      }
+    },
+    "showAll": "Ver los {count}",
+    "showFewer": "Ver menos",
+    "onLoan": "Cedido",
+    "scoreAt": "Puntuación en {spot}",
+    "score": "Puntuación",
+    "atFullPotential": "A pleno potencial"
+  },
+  "upgrades": {
+    "title": "Refuerzos de tu importación de ojeo",
+    "intro": "Jugadores ojeados al menos 0,5 mejores que tu titular más flojo en cada posición, con el mismo rol.",
+    "allInSquad": "Todos los de tu importación de jugadores ya están en la plantilla.",
+    "teaser": "Quién de tu lista de ojeo mejoraría el once.",
+    "importHint": "Importa una exportación de ojeo (una búsqueda de jugador) en <link>Jugadores</link> para ver quién mejoraría cada posición.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Tu titular",
+      "best": "Mejores refuerzos ojeados"
+    },
+    "times": "×{count}",
+    "none": "Ningún refuerzo en tu importación para {positions}."
+  }
+}

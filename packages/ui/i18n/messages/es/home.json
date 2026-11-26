@@ -1,0 +1,102 @@
+{
+  "intro": "Puntúa, ordena y compara jugadores a partir de una exportación de jugadores de Football Manager 27 o 26. Todo se ejecuta en tu navegador; el CSV nunca sale de tu ordenador.",
+  "desktop": {
+    "title": "App de escritorio para Windows",
+    "body": "Sáltate la exportación: lee los jugadores de tu búsqueda de jugador de FM directamente del juego, con la CA y la CP reales.",
+    "cta": "Descargar"
+  },
+  "sections": {
+    "title": "Secciones",
+    "section": "Sección",
+    "whatItDoes": "Qué hace",
+    "needs": "Necesita",
+    "open": "Abrir"
+  },
+  "modes": {
+    "players": {
+      "name": "Jugadores",
+      "blurb": "Puntúa y ordena jugadores con tus propios pesos de atributos o con los roles de FM27, compáralos y encuentra chicos maravilla: con CA y CP, cada jugador recibe una puntuación de Potencial a pleno potencial. Mejor once elige el once más fuerte para una formación dentro de un presupuesto.",
+      "needs": "Vista Standard o Hidden Attributes",
+      "cta": "Abrir Jugadores"
+    },
+    "squad": {
+      "name": "Análisis de plantilla",
+      "blurb": "Importa tu plantilla y elige tu formación para ver tu primer y segundo once, las posiciones con poco fondo o flojas, los titulares veteranos, los juveniles listos para dar el salto, los problemas de situación en plantilla y los refuerzos de tu importación de ojeo.",
+      "needs": "Vista Squad o Squad Hidden Attributes",
+      "cta": "Abrir Análisis de plantilla"
+    },
+    "staff": {
+      "name": "Cuerpo técnico",
+      "blurb": "Ordena preparadores, ojeadores, analistas y directores en cada rol del cuerpo técnico, con las valoraciones en palabras de FM26 convertidas de nuevo a 1–20. Mejor equipo técnico elige el conjunto de empleados más fuerte para los roles que necesitas, sin repetir a nadie.",
+      "needs": "Vista Staff",
+      "cta": "Abrir Cuerpo técnico"
+    }
+  },
+  "screens": {
+    "players": "Jugadores",
+    "bestXi": "Mejor once",
+    "staff": "Cuerpo técnico",
+    "backroom": "Mejor equipo técnico"
+  },
+  "moreScreens": "Más pantallas",
+  "screenshots": {
+    "open": "Abrir {title}",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Análisis de plantilla",
+      "caption": "Tu primer y segundo once, recambios flojos, puntos débiles y quién debería ser titular."
+    },
+    "players": {
+      "title": "Lista de jugadores",
+      "caption": "Cada jugador puntuado con tus pesos o con un rol de FM27, con notas, vs. edad y valor."
+    },
+    "bestXi": {
+      "title": "Mejor once",
+      "caption": "El mejor once para cualquier formación, dentro de un presupuesto para fichajes."
+    },
+    "player": {
+      "title": "Panel del jugador",
+      "caption": "Haz clic en cualquier jugador para ver su perfil, CA, CP y atributos en un panel lateral."
+    },
+    "staff": {
+      "title": "Cuerpo técnico",
+      "caption": "Preparadores, ojeadores y directores puntuados en 17 roles del cuerpo técnico."
+    },
+    "backroom": {
+      "title": "Mejor equipo técnico",
+      "caption": "Los empleados que fichar para cada rol, sin repetir a nadie."
+    }
+  },
+  "start": {
+    "title": "Cómo sacar los jugadores de FM",
+    "exporter": "Instala un exportador: FM View Exporter para FM27, o BepInEx con el plugin FM26 Player CSV Export.",
+    "view": "Importa la vista Scout Reporter en la Base de datos de jugadores de FM (clic derecho en la cabecera de una columna y luego Importar vista).",
+    "export": "Selecciona jugadores y pulsa <kbd>F9</kbd> para exportar un CSV.",
+    "import": "Importa ese CSV en Jugadores.",
+    "guide": "Guía de configuración completa",
+    "faq": "Preguntas frecuentes"
+  },
+  "views": {
+    "title": "Archivos de vista (.fmf)",
+    "hidden": {
+      "name": "Vista Hidden Attributes",
+      "summary": "La vista Standard más los atributos ocultos Profesionalidad, CA y CP. Recomendada."
+    },
+    "standard": {
+      "name": "Vista Standard",
+      "summary": "Todos los atributos visibles del jugador."
+    },
+    "squadHidden": {
+      "name": "Vista Squad Hidden Attributes",
+      "summary": "La vista Squad más los atributos ocultos Profesionalidad, CA y CP."
+    },
+    "squad": {
+      "name": "Vista Squad",
+      "summary": "Tu pantalla de plantilla: todos los atributos más la alineación, la situación en plantilla, las lesiones y las estrellas del preparador. Para Análisis de plantilla."
+    },
+    "staff": {
+      "name": "Vista Staff",
+      "summary": "Todos los atributos de empleados, trabajo preferido, club y personalidad. Para el modo Cuerpo técnico."
+    }
+  }
+}

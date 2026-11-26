@@ -1,0 +1,89 @@
+{
+  "selectedCount": "{count, plural, one {# seleccionado} other {# seleccionados}}",
+  "home": {
+    "intro": "Puntúa, ordena y compara jugadores. Con CA y CP (un escaneo o una exportación con la vista Hidden Attributes), Potencial y vs. edad encuentran a los chicos maravilla: ordena por Potencial para ver quién puede llegar a ser el mejor. Los perfiles de rol de FM27 (con referencias del estudio de posiciones de FM Match Lab) están en Pesos.",
+    "scoredWith": "Puntuado con <link>{profile}</link>",
+    "myPlayersTitle": "Tus jugadores son los de tu importación de plantilla",
+    "showMyPlayers": "Ver mis jugadores ({count})",
+    "weights": "Pesos",
+    "columns": "Columnas",
+    "compareSelected": "Comparar selección ({count})",
+    "emptyDesktop": "Aún no hay jugadores. En FM, abre una Búsqueda de jugador y pulsa <kbd>F9</kbd> o Escanear búsqueda.",
+    "empty": "Aún no has importado ningún CSV. Elige un archivo CSV arriba o carga los datos de prueba para echar un vistazo."
+  },
+  "list": {
+    "searchLabel": "Buscar jugadores por nombre",
+    "searchPlaceholder": "Buscar nombre o apellidos",
+    "clearSearch": "Borrar búsqueda",
+    "noMatch": "Ningún jugador coincide con «{query}»",
+    "select": "Seleccionar",
+    "selectPlayer": "Seleccionar a {name}",
+    "openInNewTab": "Abrir en otra pestaña",
+    "openPlayerInNewTab": "Abrir a {name} en otra pestaña",
+    "loading": "Cargando tabla…",
+    "columns": {
+      "position": "Pos",
+      "score": "Puntuación",
+      "vsAge": "vs. edad",
+      "vsAgeTitle": "Media ponderada frente a la referencia de FM27 para la edad del jugador",
+      "potentialTitle": "Puntuación con los atributos proyectados a su CP (exportación Hidden Attributes)",
+      "valueTitle": "Rango de valor de traspaso de FM (ordenado por su punto medio)"
+    }
+  },
+  "profile": {
+    "subtitle": "{position} · {age, plural, one {# año} other {# años}} · {eu, select, yes {Comunitario} other {Extracomunitario}}",
+    "grades": "Notas",
+    "now": "Ahora",
+    "noValuation": "Sin valoración",
+    "noWage": "Sin datos de salario",
+    "contractExpires": "Fin de contrato",
+    "id": "ID",
+    "attributeView": "Vista de atributos",
+    "current": "Actual",
+    "fullPotential": "Pleno potencial",
+    "estimated": "Atributos estimados con CP {pa} (desde CA {ca}), usando los costes de CA de FM27.",
+    "capped": "Todos los atributos entrenables llegan al máximo antes de alcanzar la CP."
+  },
+  "attributes": {
+    "deltaTitle": "+{delta} respecto al actual"
+  },
+  "positionMap": {
+    "label": "Posiciones: {position}"
+  },
+  "panel": {
+    "fullPage": "Página completa",
+    "close": "Cerrar panel del jugador",
+    "closeTitle": "Cerrar (Esc)"
+  },
+  "notFound": {
+    "title": "Jugador no encontrado",
+    "body": "Este jugador no está en los datos importados. Importa un CSV en <link>la página Jugadores</link> y vuelve a intentarlo."
+  },
+  "compare": {
+    "title": "Comparar jugadores",
+    "intro": "Elige jugadores para compararlos. El oro, la plata y el bronce se reparten en cada fila entre los jugadores seleccionados.",
+    "clearSelection": "Borrar selección",
+    "selectFirst": "Seleccionar los {count} primeros",
+    "choosePlayers": "Elegir jugadores",
+    "searchLabel": "Buscar jugadores",
+    "searchPlaceholder": "Buscar por nombre, posición o ID…",
+    "noMatch": "Ningún jugador coincide con esa búsqueda.",
+    "range": "{from}–{to} de {total}",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "removePlayer": "Quitar a {name}",
+    "comparison": "Comparación",
+    "comparisonTitle": "Comparación <muted>({count})</muted>",
+    "summary": "Puntuación + {count, plural, one {# atributo} other {# atributos}}",
+    "metric": "Métrica",
+    "weightedScore": "Puntuación ponderada",
+    "legend": "Leyenda",
+    "best": "Mejor",
+    "medals": {
+      "gold": "1.º",
+      "silver": "2.º",
+      "bronze": "3.º"
+    },
+    "empty": "Selecciona al menos 2 jugadores para empezar a comparar."
+  }
+}

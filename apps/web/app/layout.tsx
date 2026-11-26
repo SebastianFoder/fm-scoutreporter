@@ -16,6 +16,9 @@ import { PlayerPanelProvider } from "@scoutreporter/ui/components/PlayerPanel";
 import { SettingsProvider } from "@scoutreporter/ui/components/Settings";
 import { DESKTOP_BUILD } from "@scoutreporter/ui/desktop/target";
 import { DesktopAnalytics } from "@scoutreporter/ui/desktop/DesktopAnalytics";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { clientMessages } from "@scoutreporter/ui/i18n/messages";
 import {
   AUTHOR,
   SITE_DESCRIPTION,
@@ -81,8 +84,8 @@ export const viewport: Viewport = {
 };
 
 const FOOTER_LINKS = [
-  { href: "/how-to-use", label: "Setup guide" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/how-to-use", label: "setupGuide" },
+  { href: "/faq", label: "faq" },
 ] as const;
 
 /** Sebastian Foder's project hub: serves the footer breadcrumb (`/badge.js`) and its live status. */
@@ -90,14 +93,19 @@ const PROJECT_HUB_ORIGIN = "https://sebastianfoder.com";
 /** Breadcrumb highlight: the footer's ink color, not its muted text. */
 const PROJECT_HUB_STYLE = { "--sf-hub-hi": "var(--color-ink)" } as CSSProperties;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const t = await getTranslations("chrome.footer");
   return (
-    <html lang="en-GB">
+    <html lang={locale === "en" ? "en-GB" : locale}>
       <body className={`${ui.variable} ${uiCondensed.variable} antialiased`}>
+        {/* Only the client namespaces go to the browser; page copy is rendered on the server. */}
+        <NextIntlClientProvider locale={locale} messages={clientMessages(messages)}>
         <AttributeColorProvider>
           <WeightProvider>
             <PlayersDataProvider>
@@ -122,7 +130,7 @@ export default function RootLayout({
                           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
                             {FOOTER_LINKS.map((l) => (
                               <Link key={l.href} href={l.href} className="link">
-                                {l.label}
+                                {t(l.label)}
                               </Link>
                             ))}
                             <a href={AUTHOR.url} target="_blank" rel="noreferrer" className="link">
@@ -145,6 +153,7 @@ export default function RootLayout({
             </PlayersDataProvider>
           </WeightProvider>
         </AttributeColorProvider>
+        </NextIntlClientProvider>
         {/* Self-hosted Umami analytics for the website (the desktop app's is DesktopAnalytics). data-domains
             skips localhost and Vercel previews; client-side navigations are tracked by the script itself. */}
         {!DESKTOP_BUILD && (

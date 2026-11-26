@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Coach: attacking tactical",
+      "coach-attacking-technical": "Coach: attacking technical",
+      "coach-defending-tactical": "Coach: defending tactical",
+      "coach-defending-technical": "Coach: defending technical",
+      "coach-possession-tactical": "Coach: possession tactical",
+      "coach-possession-technical": "Coach: possession technical"
+    },
+    "summaries": {
+      "manager": "Judging ability, motivating, people management and tactical knowledge, then the coaching attributes.",
+      "assistant-manager": "Judging ability, motivating and people management for reports, team talks and match advice.",
+      "director-of-football": "Judging ability and potential. Business (also used) is hidden, so it is not scored.",
+      "head-of-youth": "Judging ability and potential and working with youngsters. Their hidden Professionalism shifts the intake's: check it by hand.",
+      "coach-attacking-tactical": "Trains Composure, Flair and Off The Ball.",
+      "coach-attacking-technical": "Trains Crossing, Finishing and Long Shots.",
+      "coach-defending-tactical": "Trains Aggression, Concentration and Positioning.",
+      "coach-defending-technical": "Trains Marking and Tackling.",
+      "coach-possession-tactical": "Trains Anticipation, Decisions, Teamwork and Vision.",
+      "coach-possession-technical": "Trains Dribbling, First Touch, Heading, Passing and Technique.",
+      "coach-goalkeeping": "Trains every goalkeeping attribute, including the outfield-named ones keepers use.",
+      "coach-fitness": "Trains the physicals and Work Rate, the biggest share of every position's weight.",
+      "coach-set-pieces": "Trains Corners, Free Kick Taking, Long Throws and Penalty Taking.",
+      "scout": "Judging current and potential ability, then tactical knowledge.",
+      "performance-analyst": "Analysing data, then judging ability and tactical knowledge.",
+      "physio": "Physiotherapy, backed by sports science and the mentals.",
+      "sports-scientist": "Sports science, backed by fitness, physiotherapy and the mentals."
+    },
+    "groups": {
+      "management": "Management",
+      "recruitmentAndAnalysis": "Recruitment and analysis"
+    }
+  },
+  "freeAgent": "Free agent",
+  "preferredJob": "Preferred job",
+  "bestRole": "Best role",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role}: {score} ({word})",
+    "partial": "{role}: {score} ({word}). {percent, number, percent} of this role's weight was in the export"
+  },
+  "noImport": {
+    "desktop": "No staff yet. In FM, open a Staff Search and press <kbd>F9</kbd> or Scan search."
+  },
+  "list": {
+    "title": "Staff",
+    "bestBackroom": "Best backroom",
+    "intro": "Rank coaches, scouts, analysts and directors from an FM26 staff search export. FM26's word ratings are mapped back to the 1–20 scale and every staff member is scored on each staff role.",
+    "noImport": "No staff imported yet. In FM, open a staff search, import the Staff view, select the staff and export a CSV, then import it above.",
+    "filters": "Filters",
+    "rankBy": "Rank by",
+    "allJobs": "All jobs",
+    "search": "Search",
+    "searchPlaceholder": "Name or club",
+    "freeAgentsOnly": "Free agents only",
+    "myClubTitle": "Staff at {club}",
+    "showMine": "Show my staff ({count, number})",
+    "ratingsAs": "Ratings as",
+    "words": "Words",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> of {total, number} staff",
+    "jobScoredAsOne": "<b>{job}:</b> scored as {role}.",
+    "jobScoredAsBest": "<b>{job}:</b> scored as their best of {roles}.",
+    "jobShowingWeighted": "Showing the {count, plural, one {# attribute} other {# attributes}} fm-scoring weights for this job.",
+    "jobBoldWeighted": "Bold columns are the {count, plural, one {# attribute} other {# attributes}} fm-scoring weights for this job.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring has no weights for this job, so every attribute is shown and Preferred job has no score.",
+    "showAllAttributes": "Show all attributes",
+    "rankRole": "<b>{role}:</b> {summary} Weighted attributes are in bold.",
+    "name": "Name",
+    "job": "Job",
+    "scoreTitle": "Weighted role score on the 1–20 scale. * = some of the role's attributes were missing.",
+    "attributeWeight": "{label} (weight {weight, number})",
+    "method": {
+      "title": "How staff are scored",
+      "words": "FM26 shows staff attributes as words. Each word covers a fixed range of the old 1–20 scale, and is scored at the middle of it (exact numbers are used when an export has them):",
+      "roles": "A role score is the weighted average of the attributes that role uses, with the 17 staff roles and weights from <link>fm-scoring</link>: a community staff rating grid, relabelled for FM27 and checked against the key attributes FM27 highlights on staff profiles. Coaches are split into FM's nine coaching groups, each scored on its two coaching attributes plus authority, determination, motivating, people management and working with youngsters. A generic Coach is scored on their best outfield group. Adaptability, Judging Staff Ability and Negotiating carry no weight in any role. Filtering by preferred job shows only the attributes that job is weighted on. Best role only counts roles where most of the weighted attributes were in the export. Role scores get the same S++ to F grade stamps as player scores, on the same 1–20 steps."
+    }
+  },
+  "detail": {
+    "preferredJob": "Preferred job: {job}",
+    "age": "Age {age, number}",
+    "preferredScore": "Preferred job: {role} {score}",
+    "preferred": "(preferred)",
+    "barsNote": "Bars run from 0 to 20. * means some of the role's attributes were missing from the export.",
+    "notInExport": "Not in export"
+  },
+  "backroom": {
+    "title": "Best backroom",
+    "staffList": "Staff list",
+    "intro": "Choose the roles you need and how many of each. Scout Reporter hires the combination of staff with the highest total role score, never using one person twice. Lock in staff you've signed, and remove anyone who turns you down to get the next best pick for that slot.",
+    "noImport": "No staff imported yet. Choose a staff CSV above, or load the test data to look around.",
+    "reset": "Reset",
+    "preset": "Preset",
+    "custom": "Custom",
+    "oneFewer": "One fewer {role}",
+    "oneMore": "One more {role}",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "Only staff whose preferred job is the role",
+    "preferredJobOnlyHint": "Staff can turn down other jobs in FM.",
+    "empty": {
+      "title": "No roles chosen.",
+      "body": "Add at least one role on the left, or pick a preset."
+    },
+    "short": {
+      "title": "Not enough staff for every role.",
+      "role": "{role}: {wanted, number} wanted, {eligible, plural, one {# qualifies} other {# qualify}}.",
+      "explain": "{filtered, select, yes {Staff qualify when most of the role's attributes are in the export, they pass the filters and they are not excluded, and one person can only fill one role.} other {Staff qualify when most of the role's attributes are in the export, and one person can only fill one role.}}"
+    },
+    "excluded": "Excluded:",
+    "allowAgainTitle": "Allow this person again",
+    "allowAgain": "(allow again)",
+    "clearAll": "Clear all",
+    "footer": "Each role is scored with fm-scoring's staff weights (see <link>Staff</link>). The backroom shown has the highest total score of every way to fill the roles with different people, so a strong all-rounder goes where they add the most rather than to the first role that wants them. Staff missing most of a role's attributes are not considered for it.",
+    "result": {
+      "title": "Your backroom",
+      "summary": "{count, plural, one {# staff} other {# staff}} · Average score",
+      "averageLabel": "Average backroom score",
+      "offJob": "· {count, plural, one {# in a role that isn't their preferred job} other {# in a role that isn't their preferred job}} (job in grey)",
+      "locked": "· {count, plural, one {# locked in} other {# locked in}}",
+      "unlockAll": "Unlock all",
+      "score": "Score",
+      "scoreTitle": "Role score on FM's 1–20 scale",
+      "lockOrRemove": "Lock or remove",
+      "offJobTitle": "Not their preferred job: they may turn this role down",
+      "unlock": "Unlock {name}",
+      "lockIn": "Lock in {name}",
+      "lockedTitle": "Locked in: kept in this slot when the rest is re-picked. Click to unlock.",
+      "lockTitle": "Lock in: keep in this slot (e.g. once signed) when the rest is re-picked",
+      "exclude": "Exclude {name} and pick again",
+      "excludeTitle": "Remove and pick again (e.g. contract talks failed)"
+    }
+  }
+}

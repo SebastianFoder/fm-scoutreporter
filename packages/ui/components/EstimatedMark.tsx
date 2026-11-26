@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
 
 /**
@@ -5,15 +6,17 @@ import type { PlayerAttributes } from "@scoutreporter/core/types/player-attribut
  * ranges count as their midpoint, unknown cells as 0. Renders nothing for exact players.
  */
 export function EstimatedMark({ player }: { player: PlayerAttributes }) {
+  const t = useTranslations("common.estimated");
   const keys = player.estimatedAttributes;
   if (!keys || keys.length === 0) return null;
   const unknown = keys.filter((k) => player[k] === 0).length;
   const ranged = keys.length - unknown;
-  const parts = [
-    ranged > 0 && `${ranged} from a scouting range (midpoint used)`,
-    unknown > 0 && `${unknown} unknown (counted as 0)`,
-  ].filter(Boolean);
-  const title = `Estimated score: ${parts.join(", ")}`;
+  const title =
+    ranged > 0 && unknown > 0
+      ? t("both", { ranged, unknown })
+      : ranged > 0
+        ? t("ranged", { ranged })
+        : t("unknown", { unknown });
   return (
     <abbr title={title} aria-label={title} className="cursor-help font-normal text-muted no-underline">
       ~

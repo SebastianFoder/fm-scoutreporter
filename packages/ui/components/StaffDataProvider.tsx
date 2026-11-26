@@ -9,6 +9,7 @@ import {
   type StoredStaffRecords,
 } from "@scoutreporter/core/storage/stored-records";
 import { useStoredImport } from "./useStoredImport";
+import type { ImportMessage } from "./ImportPanel";
 
 type StaffDataState = {
   csvText: string | null;
@@ -21,7 +22,7 @@ type StaffDataState = {
 
 export type StaffImportResult =
   | { ok: true; persisted: boolean; duplicates: number }
-  | { ok: false; error: string };
+  | { ok: false; error: ImportMessage };
 
 type StaffDataContextValue = {
   state: StaffDataState;
@@ -68,11 +69,7 @@ export function StaffDataProvider({ children }: { children: React.ReactNode }) {
     async (csvText: string): Promise<StaffImportResult> => {
       const parsed = parseStaffCsv(csvText);
       if (!parsed.isStaffExport) {
-        return {
-          ok: false,
-          error:
-            "No staff attributes found in this file. Export it from a staff search with the Scout Reporter Staff view (player exports go in Players).",
-        };
+        return { ok: false, error: "noStaffColumns" };
       }
       setState({ csvText, source: null, staff: parsed.staff, columns: parsed.columns });
       return { ok: true, persisted: await save(csvText), duplicates: parsed.duplicates };

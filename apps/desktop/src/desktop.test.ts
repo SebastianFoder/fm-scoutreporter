@@ -321,3 +321,10 @@ test("usage stats are on unless turned off", () => {
   assert.equal(normaliseSettings({ usageStats: false }).usageStats, false);
   assert.equal(normaliseSettings({ usageStats: "no" }).usageStats, true);
 });
+
+test("the language setting is a short language code or null (follow Windows)", () => {
+  assert.equal(normaliseSettings({}).language, null);
+  assert.equal(normaliseSettings({ language: "fr" }).language, "fr");
+  assert.equal(normaliseSettings({ language: "fr; path=/" }).language, null);
+  assert.equal(normaliseSettings({ language: 5 }).language, null);
+});

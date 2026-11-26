@@ -8,6 +8,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { useTranslations } from "next-intl";
 import type {
   AttributeKey,
   AttributeWeights,
@@ -29,6 +30,7 @@ import {
   type StoredWeightConfig,
 } from "@scoutreporter/core/fm27/profile-migration";
 import { LEGACY_EMPHASIS } from "@scoutreporter/core/scoring";
+import { useAttributeLabel, useIntlLocale, useProfileName } from "../i18n/hooks";
 
 const STORAGE_KEY = "weightProfiles";
 
@@ -43,6 +45,9 @@ const DEFAULT_PROFILE: WeightProfile = {
 };
 
 const FIRST_RUN_ACTIVE_ID = "fm27-10";
+
+const STUDY_13B_URL =
+  "https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md";
 
 type StoredConfig = StoredWeightConfig;
 
@@ -140,14 +145,6 @@ export function useActiveWeights(): AttributeWeights {
   return useActiveWeightProfile().weights;
 }
 
-function titleCaseFromCamel(key: string) {
-  const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
-  return withSpaces
-    .split(" ")
-    .map((w) => (w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ""))
-    .join(" ");
-}
-
 function safeNumber(v: string) {
   const n = Number(v);
   if (!Number.isFinite(n)) return 0;
@@ -159,6 +156,15 @@ function safeNumber(v: string) {
 export function WeightSettings() {
   const { state, setState } = useWeightContext();
   const { activeId, profiles } = state;
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
+  const tGroups = useTranslations("fm.attributeGroups");
+  const attributeLabel = useAttributeLabel();
+  const intlLocale = useIntlLocale();
+  const profileName = useProfileName();
+  /** The built-in default's name in the current language; any other name as stored. */
+  const displayName = (p: WeightProfile) =>
+    p.id === DEFAULT_PROFILE.id && p.name === DEFAULT_PROFILE.name ? t("profiles.default") : profileName(p);
 
   const active =
     profiles.find((p) => p.id === activeId) ?? profiles[0] ?? DEFAULT_PROFILE;
@@ -177,7 +183,7 @@ export function WeightSettings() {
     const id = `profile-${Date.now()}`;
     const next: WeightProfile = {
       id,
-      name: "New Profile",
+      name: t("profiles.newName"),
       weights: defaultWeights(),
       emphasis: 1,
     };
@@ -193,7 +199,7 @@ export function WeightSettings() {
     const next: WeightProfile = {
       ...active,
       id,
-      name: `${active.name} Copy`,
+      name: t("profiles.copyName", { name: displayName(active) }),
       weights: { ...active.weights },
       builtIn: undefined,
     };
@@ -225,7 +231,7 @@ export function WeightSettings() {
         return { ...prev, activeId: parsed.id, profiles: nextProfiles };
       });
     } catch {
-      alert("Invalid profile JSON");
+      alert(t("weights.json.invalid"));
     }
   };
 
@@ -250,13 +256,13 @@ export function WeightSettings() {
   };
 
   const renderGroup = (title: string, keys: AttributeKey[]) => {
-    const sorted = [...keys].sort((a, b) => a.localeCompare(b));
+    const sorted = [...keys].sort((a, b) => attributeLabel(a).localeCompare(attributeLabel(b), intlLocale));
     const used = sorted.filter((k) => pWeight(active.weights, k) > 0).length;
     return (
       <section>
         <h3 className="section-title sticky top-0 z-[1] -mx-5 flex items-baseline justify-between border-y border-line bg-paper px-5 py-1.5">
           {title}
-          <span className="text-[12px] font-normal text-muted">{used} weighted</span>
+          <span className="text-[12px] font-normal text-muted">{t("weights.weighted", { count: used })}</span>
         </h3>
         <div className="py-1">
           {sorted.map((k) => {
@@ -267,7 +273,7 @@ export function WeightSettings() {
                 className="flex items-center justify-between gap-3 py-[3px]"
               >
                 <span className={`text-sm ${w > 0 ? "font-semibold" : "text-muted"}`}>
-                  {titleCaseFromCamel(k)}
+                  {attributeLabel(k)}
                 </span>
                 <span className="flex items-center gap-2">
                   <span
@@ -299,11 +305,11 @@ export function WeightSettings() {
 
   return (
       <div className="space-y-4">
-      <p className="text-[13px] text-muted">How much each attribute counts towards a player&apos;s score. The scores update as you type. The FM27 role profiles are benchmarked on FM Match Lab&apos;s position study (13b).</p>
+      <p className="text-[13px] text-muted">{t("weights.intro")}</p>
 
         <div className="space-y-2">
           <label className="flex flex-col gap-1 text-[13px] text-muted">
-            Profile
+            {t("profiles.profile")}
             <select
               className="field h-9 w-full pl-2.5 text-sm font-semibold text-ink"
               value={active.id}
@@ -313,13 +319,13 @@ export function WeightSettings() {
             >
               {profiles.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name}
+                  {displayName(p)}
                 </option>
               ))}
             </select>
           </label>
           <label className="flex flex-col gap-1 text-[13px] text-muted">
-            Name
+            {t("profiles.name")}
             <input
               type="text"
               className="field h-9 w-full px-2.5 text-sm text-ink"
@@ -327,15 +333,15 @@ export function WeightSettings() {
               onChange={(e) =>
                 updateActive((p) => ({ ...p, name: e.target.value }))
               }
-              placeholder="Profile name"
+              placeholder={t("profiles.namePlaceholder")}
             />
           </label>
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <Button color="alt" variant="outline" size="sm" onClick={createNew}>
-              Create New
+              {t("profiles.createNew")}
             </Button>
             <Button color="alt" variant="outline" size="sm" onClick={duplicate}>
-              Duplicate
+              {tCommon("duplicate")}
             </Button>
             <Button
               color="red"
@@ -344,74 +350,76 @@ export function WeightSettings() {
               onClick={remove}
               disabled={profiles.length <= 1}
             >
-              Delete
+              {tCommon("delete")}
             </Button>
           </div>
         </div>
 
         <div className="space-y-2 rounded-md bg-paper px-3 py-2.5 text-[13px]">
           <label className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-muted">Weighting</span>
+            <span className="text-muted">{t("weights.weighting")}</span>
             <select
               className="field h-8 pl-2.5 text-sm"
               value={active.emphasis ?? LEGACY_EMPHASIS}
               onChange={(e) => setEmphasis(Number(e.target.value) as WeightEmphasis)}
             >
-              <option value={1}>Linear (FM27 benchmark)</option>
-              <option value={2}>Emphasized (weights squared)</option>
+              <option value={1}>{t("weights.linear")}</option>
+              <option value={2}>{t("weights.emphasized")}</option>
             </select>
           </label>
           {active.builtIn === "fm27" ? (
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-muted">
-                Benchmarked FM27 role weights (FM Match Lab{" "}
-                <a
-                  href="https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md"
-                  className="link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Study 13b
-                </a>
-                ).
+                {t.rich(
+                  t.has(`weights.profileDescriptions.${active.id}`)
+                    ? `weights.profileDescriptions.${active.id}`
+                    : "weights.benchmark",
+                  {
+                    link: (chunks) => (
+                      <a href={STUDY_13B_URL} className="link" target="_blank" rel="noreferrer">
+                        {chunks}
+                      </a>
+                    ),
+                  },
+                )}
               </span>
               <Button color="alt" variant="outline" size="sm" onClick={resetBenchmark}>
-                Reset to benchmark
+                {t("weights.resetToBenchmark")}
               </Button>
             </div>
           ) : (
             <p className="text-muted">
-              Linear matches how the FM27 benchmarks and &ldquo;vs Age&rdquo; are calibrated.
+              {t("weights.linearNote")}
             </p>
           )}
         </div>
 
         <div>
-          {renderGroup("Technical", TECHNICAL_KEYS)}
-          {renderGroup("Mental", MENTAL_KEYS)}
-          {renderGroup("Physical", PHYSICAL_KEYS)}
-          {renderGroup("Goalkeeping", GOALKEEPING_KEYS)}
+          {renderGroup(tGroups("technical"), TECHNICAL_KEYS)}
+          {renderGroup(tGroups("mental"), MENTAL_KEYS)}
+          {renderGroup(tGroups("physical"), PHYSICAL_KEYS)}
+          {renderGroup(tGroups("goalkeeping"), GOALKEEPING_KEYS)}
         </div>
 
         <details className="group rounded-md border border-line">
           <summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">
-            Import / export JSON
+            {t("weights.json.title")}
           </summary>
           <div className="space-y-2 border-t border-line px-3 py-3">
             <div className="flex gap-1.5">
               <Button color="alt" variant="outline" size="sm" onClick={exportProfile}>
-                Export
+                {tCommon("export")}
               </Button>
               <Button color="alt" variant="outline" size="sm" onClick={importProfile}>
-                Import
+                {tCommon("import")}
               </Button>
             </div>
             <textarea
-              aria-label="Profile JSON"
+              aria-label={t("weights.json.label")}
               className="field h-32 w-full p-2.5 font-[ui-monospace,Consolas,monospace] text-xs"
               value={json}
               onChange={(e) => setJson(e.target.value)}
-              placeholder="Exported profile JSON will appear here. Paste JSON here to import."
+              placeholder={t("weights.json.placeholder")}
             />
           </div>
         </details>

@@ -1,0 +1,35 @@
+{
+  "close": "Close",
+  "cancel": "Cancel",
+  "save": "Save",
+  "reset": "Reset",
+  "delete": "Delete",
+  "duplicate": "Duplicate",
+  "import": "Import",
+  "export": "Export",
+  "loading": "Loading…",
+  "modal": {
+    "close": "Close modal"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> of {total, number}",
+    "rows": "Rows",
+    "all": "All",
+    "goTo": "Go to",
+    "go": "Go",
+    "first": "First",
+    "prev": "Prev",
+    "next": "Next",
+    "last": "Last"
+  },
+  "grade": {
+    "label": "Grade {grade}",
+    "title": "Grade {grade} ({score} on the 1–20 scale)",
+    "titleWithLabel": "{label}: grade {grade} ({score} on the 1–20 scale)"
+  },
+  "estimated": {
+    "ranged": "Estimated score: {ranged, number} from a scouting range (midpoint used)",
+    "unknown": "Estimated score: {unknown, number} unknown (counted as 0)",
+    "both": "Estimated score: {ranged, number} from a scouting range (midpoint used), {unknown, number} unknown (counted as 0)"
+  }
+}

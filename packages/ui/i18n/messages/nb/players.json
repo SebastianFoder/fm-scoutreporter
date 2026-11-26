@@ -1,0 +1,89 @@
+{
+  "selectedCount": "{count, plural, one {# valgt} other {# valgt}}",
+  "home": {
+    "intro": "Gi spillere poeng, ranger og sammenlign dem. Med NF og PF (en skanning, eller en eksport med Hidden Attributes) finner Potensial og vs alder vidunderbarna: sorter etter Potensial for å se hvem som kan bli best. FM27-rolleprofiler (kalibrert mot posisjonsstudien til FM Match Lab) ligger under Vekter.",
+    "scoredWith": "Poeng gitt med <link>{profile}</link>",
+    "myPlayersTitle": "Spillerne dine er de i troppsimporten din",
+    "showMyPlayers": "Vis mine spillere ({count})",
+    "weights": "Vekter",
+    "columns": "Kolonner",
+    "compareSelected": "Sammenlign valgte ({count})",
+    "emptyDesktop": "Ingen spillere ennå. Åpne et Spillersøk i FM og trykk <kbd>F9</kbd> eller Skann søk.",
+    "empty": "Ingen CSV importert ennå. Velg en CSV-fil over, eller last inn testdataene for å se deg rundt."
+  },
+  "list": {
+    "searchLabel": "Søk etter spillere på navn",
+    "searchPlaceholder": "Søk på fornavn, mellomnavn eller etternavn",
+    "clearSearch": "Tøm søk",
+    "noMatch": "Ingen spillere samsvarer med «{query}»",
+    "select": "Velg",
+    "selectPlayer": "Velg {name}",
+    "openInNewTab": "Åpne i ny fane",
+    "openPlayerInNewTab": "Åpne {name} i ny fane",
+    "loading": "Laster tabell…",
+    "columns": {
+      "position": "Pos",
+      "score": "Poeng",
+      "vsAge": "vs alder",
+      "vsAgeTitle": "Vektet snitt mot FM27-referansen for spillerens alder",
+      "potentialTitle": "Poeng med ferdigheter framskrevet til PF (eksport med Hidden Attributes)",
+      "valueTitle": "FMs intervall for overgangsverdi (sortert etter midtpunktet)"
+    }
+  },
+  "profile": {
+    "subtitle": "{position} · {age, plural, one {# år} other {# år}} · {eu, select, yes {EU-medlem} other {Ikke EU}}",
+    "grades": "Karakterer",
+    "now": "Nå",
+    "noValuation": "Ingen verdivurdering",
+    "noWage": "Ingen lønnsdata",
+    "contractExpires": "Kontrakt utløper",
+    "id": "ID",
+    "attributeView": "Ferdighetsvisning",
+    "current": "Nåværende",
+    "fullPotential": "Fullt potensial",
+    "estimated": "Estimerte ferdigheter ved PF {pa} (fra NF {ca}), med FM27-kostnader for NF.",
+    "capped": "Alle ferdigheter som kan trenes, når taket før spilleren når PF."
+  },
+  "attributes": {
+    "deltaTitle": "+{delta} fra nåværende"
+  },
+  "positionMap": {
+    "label": "Posisjoner: {position}"
+  },
+  "panel": {
+    "fullPage": "Hel side",
+    "close": "Lukk spillerpanelet",
+    "closeTitle": "Lukk (Esc)"
+  },
+  "notFound": {
+    "title": "Fant ikke spilleren",
+    "body": "Denne spilleren er ikke i dataene som er importert nå. Importer en CSV på <link>Spillere-siden</link> og prøv igjen."
+  },
+  "compare": {
+    "title": "Sammenlign spillere",
+    "intro": "Velg spillere å sammenligne. Gull, sølv og bronse deles ut per rad, ut fra de valgte spillerne.",
+    "clearSelection": "Fjern utvalg",
+    "selectFirst": "Velg de første {count}",
+    "choosePlayers": "Velg spillere",
+    "searchLabel": "Søk etter spillere",
+    "searchPlaceholder": "Søk på navn, posisjon eller ID…",
+    "noMatch": "Ingen spillere samsvarer med søket.",
+    "range": "{from}–{to} av {total}",
+    "prev": "Forrige",
+    "next": "Neste",
+    "removePlayer": "Fjern {name}",
+    "comparison": "Sammenligning",
+    "comparisonTitle": "Sammenligning <muted>({count})</muted>",
+    "summary": "Poeng + {count, plural, one {# ferdighet} other {# ferdigheter}}",
+    "metric": "Mål",
+    "weightedScore": "Vektet poengsum",
+    "legend": "Forklaring",
+    "best": "Best",
+    "medals": {
+      "gold": "1.",
+      "silver": "2.",
+      "bronze": "3."
+    },
+    "empty": "Velg minst 2 spillere for å begynne å sammenligne."
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ImportPanel, STORAGE_FULL_MESSAGE } from "./ImportPanel";
 import { usePlayersData } from "./PlayersDataProvider";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@scoutreporter/core/view-files";
@@ -15,24 +16,26 @@ export function CsvImportPanel({
 }) {
   const { state, setCsvText, clear } = usePlayersData();
   const count = state.players.length;
+  const t = useTranslations("importer.players");
+  const tAttributes = useTranslations("fm.attributes");
 
   return (
     <ImportPanel
-      title={count > 0 ? `${count} players imported` : "Import player CSV"}
-      description={
-        <>
-          FM26 (<code>;</code>) or FM27 (<code>,</code>) export of the Scout Reporter view.
-          Columns are matched by name. View file:{" "}
+      title={count > 0 ? t("imported", { count }) : t("title")}
+      description={t.rich("description", {
+        professionalism: tAttributes("professionalism"),
+        code: (chunks) => <code>{chunks}</code>,
+        standard: (chunks) => (
           <a href={VIEW_STANDARD.href} className="link">
-            Standard
-          </a>{" "}
-          or{" "}
+            {chunks}
+          </a>
+        ),
+        hidden: (chunks) => (
           <a href={VIEW_HIDDEN.href} className="link">
-            Hidden Attributes
-          </a>{" "}
-          (adds Professionalism, CA, PA).
-        </>
-      }
+            {chunks}
+          </a>
+        ),
+      })}
       testFixture={testFixture}
       onLoad={async (text) => ((await setCsvText(text)) ? null : STORAGE_FULL_MESSAGE)}
       onClear={clear}

@@ -1,4 +1,5 @@
 import { csvLines, detectDelimiter, splitCsvLine } from "@scoutreporter/core/parser/csv-utils";
+import { englishExport } from "@scoutreporter/core/parser/export-locale";
 
 /**
  * Columns only the Squad views export (see the FM View Exporter column reference,
@@ -63,7 +64,8 @@ export function parseTimeMissed(v: string | null | undefined): number | null {
 }
 
 export function parseSquadFields(csv: string): ParsedSquadFields {
-  const lines = csvLines(csv);
+  // An export from FM in another language reads as the English one.
+  const lines = csvLines(englishExport(csv));
   const byId = new Map<string, SquadFields>();
   const none: SquadColumns = {
     picked: false,
@@ -131,7 +133,8 @@ export function isInjured(f: SquadFields | undefined): boolean {
 
 /** In FM's starting eleven: picked at a position rather than on the bench (S1, S2…). */
 export function isPickedToStart(f: SquadFields | undefined): boolean {
-  return Boolean(f?.picked) && !/^S\d+$/i.test(f!.picked!);
+  // Bench spots are "S1", "S2"... ("S" alone from an export whose bench spots have no number).
+  return Boolean(f?.picked) && !/^S\d*$/i.test(f!.picked!);
 }
 
 /** Squad statuses that promise a regular starting place. */

@@ -1,0 +1,203 @@
+{
+  "tabs": {
+    "label": "Guider",
+    "setup": "Oppsettguide",
+    "players": "Spillere",
+    "wonderkids": "Vidunderbarn"
+  },
+  "step": {
+    "expand": "Vis",
+    "collapse": "Skjul"
+  },
+  "views": {
+    "hidden": {
+      "name": "Visningen Hidden Attributes",
+      "label": "Anbefalt",
+      "detail": "Alle ferdigheter pluss de skjulte Profesjonalitet, NF og PF. Låser opp Potensial-poeng for å finne vidunderbarn."
+    },
+    "standard": {
+      "name": "Visningen Standard",
+      "label": "Bare ferdigheter",
+      "detail": "Alle synlige ferdigheter. Nok for spillerlisten og Beste 11."
+    },
+    "download": "Last ned {name}",
+    "both": "Begge visningene eksporterer de samme ferdighetene, så importer fra begge fungerer overalt. Du kan installere begge og bytte mellom dem i FM."
+  },
+  "setup": {
+    "gameVersion": "Spillversjon",
+    "installView": {
+      "title": "Installer visningen",
+      "download": "Last ned én eller begge visningsfilene:",
+      "moveTo": "Flytt dem til:"
+    },
+    "export": {
+      "title": "Eksporter spillere fra {game}",
+      "importView": "Høyreklikk en kolonneoverskrift og velg <b>Importer visning</b>",
+      "importDownloaded": "Importer visningen du lastet ned i steg {step} (Hidden Attributes eller Standard)",
+      "selectView": "Velg den visningen i nedtrekksmenyen <b>Tilpassede visninger</b> (øverst til høyre i spillerlisten)"
+    },
+    "importCsv": {
+      "title": "Importer CSV-filen",
+      "goTo": "Gå til <link>importen på denne siden</link> og klikk <b>Velg CSV-fil</b>.",
+      "navigateTo": "Naviger til:",
+      "done": "Ferdig. Kos deg med speidingsdataene!"
+    },
+    "fm27": {
+      "install": {
+        "title": "Installer FM View Exporter",
+        "intro": "Vi anbefaler <link>FM View Exporter</link>. Den eksporterer en hvilken som helst spillerliste i FM27 (tropp, spillerdatabase eller ønskeliste) til CSV med ett tastetrykk, og den kommer med BepInEx, så du trenger ikke installere noe annet. Den krever FM27 på Steam og Windows 10 eller 11.",
+        "setupTitle": "1.1 Alternativ A: Installasjonsprogram (anbefalt)",
+        "setupDownload": "Last ned <code>{file}</code> fra <link>Releases-siden</link> og kjør den.",
+        "setupFind": "Den finner FM27 i Steam-bibliotekene dine. Hvis ikke, velger du mappen som inneholder <code>{file}</code>.",
+        "setupInstall": "Behold utdataformatet CSV og CSV-stilen med standard kommaskilletegn, og klikk så <b>Install</b>.",
+        "setupUpdate": "For å oppdatere senere kjører du det nye installasjonsprogrammet og klikker Update. Innstillingene dine beholdes.",
+        "manualTitle": "1.2 Alternativ B: Manuell installasjon",
+        "manualDownload": "Last ned <code>{file}</code> fra <link>Releases-siden</link> og åpne installasjonsmappen til FM27:",
+        "manualSteam": "Steam: Høyreklikk FM27 → Administrer → Bla gjennom lokale filer",
+        "manualExtract": "Pakk ut innholdet i ZIP-filen (ikke selve ZIP-filen) i den mappen. Det skal se slik ut:",
+        "firstLaunchTitle": "1.3 Første oppstart",
+        "firstLaunch": "Start FM27. Første oppstart tar noen minutter mens BepInEx setter seg opp; senere oppstarter går i vanlig fart. For å sjekke at utvidelsen ble lastet, åpner du denne filen i spillmappen og ser etter en linje som nevner <sb>FM View Exporter</sb>:"
+      },
+      "export": {
+        "open": "Åpne spillet ditt i FM27 og gå til <b>Rekruttering → Spiller database</b> (en tropp eller ønskeliste fungerer også)",
+        "filter": "Filtrer listen ned til spillerne du vil ha. Eksportøren tar med alle radene i listen, ikke bare de som vises på skjermen.",
+        "press": "Trykk <sb>F9</sb> og ikke klikk på noe før den er ferdig. Utvidelsen blar gjennom listen selv; store søk kan ta noen minutter."
+      },
+      "pickFile": "Velg den nyeste filen, f.eks. <code>{file}</code>, og importer.",
+      "help": {
+        "title": "Feilsøking",
+        "f9Title": "F9 gjør ingenting",
+        "f9": "Sjekk <code>{file}</code> i spillmappen. «No player list found» betyr at ingen spillertabell var åpen da du trykket F9.",
+        "startTitle": "Spillet starter ikke",
+        "start": "Gi nytt navn til eller slett <code>{file}</code> i spillmappen for å starte uten modder, eller avinstaller med installasjonsprogrammet. De lagrede spillene dine påvirkes ikke.",
+        "antivirusTitle": "Advarsel fra antivirus",
+        "antivirus": "Noen antivirusprogrammer flagger installasjonsprogrammet fordi det ikke er kodesignert ennå og installerer BepInEx. Bruk den manuelle ZIP-installasjonen hvis du foretrekker det."
+      }
+    },
+    "fm26": {
+      "bepinex": {
+        "title": "Installer BepInEx",
+        "downloadTitle": "1.1 Last ned BepInEx",
+        "download": "Gå til <link>BepInExPack_FootballManager26</link>, klikk Download og pakk ut filen.",
+        "copyTitle": "1.2 Kopier filene til FM26-mappen din",
+        "openFolder": "Åpne installasjonsmappen til FM26.",
+        "steam": "Steam: Høyreklikk FM26 → Egenskaper → Installerte filer → Bla gjennom",
+        "paste": "Lim inn de utpakkede filene der. Mappen din skal se slik ut:",
+        "linuxTitle": "1.3 Bare Linux: angi startvalg",
+        "linux": "Høyreklikk FM26 i Steam → Egenskaper → Startvalg, og lim inn:",
+        "firstLaunchTitle": "1.4 Første oppstart",
+        "firstLaunch": "Start FM26 én gang så BepInEx kan initialiseres. Bekreft at mappen <code>{folder}</code> nå finnes før du fortsetter."
+      },
+      "plugin": {
+        "title": "Installer utvidelsen",
+        "download": "Last ned utvidelsen fra <link>FM26 Player CSV Export</link>.",
+        "copy": "Kopier <code>{file}</code> fra ZIP-filen til:"
+      },
+      "export": {
+        "open": "Åpne spillet ditt i FM26 og gå til <b>Rekruttering → Spiller database</b>",
+        "select": "Velg spillerne du vil eksportere",
+        "press": "Trykk <sb>F9</sb> for å eksportere"
+      },
+      "selectFile": "Velg den eksporterte filen og importer."
+    }
+  },
+  "players": {
+    "use": {
+      "title": "Slik bruker du spillerlisten",
+      "intro": "Med Spillere kan du importere en spillereksport og straks rangere spillerne etter et vektet snitt av FM26-ferdighetene deres. Ingen referanse trengs: bare importer og få poeng.",
+      "download": {
+        "title": "1. Last ned en visning",
+        "intro": "Last ned en visning og legg den i visningsmappen til FM26 eller FM27:",
+        "more": "Se <link>oppsettguiden</link> for fullstendige installasjonsinstruksjoner for eksportøren til hver spillversjon."
+      },
+      "export": {
+        "title": "2. Eksporter spillere fra FM",
+        "open": "Åpne spillet ditt og gå til <b>Rekruttering → Spiller database</b>",
+        "importView": "Høyreklikk en kolonneoverskrift → <b>Importer visning</b> og last inn visningen",
+        "selectView": "Velg visningen i nedtrekksmenyen Tilpassede visninger",
+        "press": "Velg spillerne du vil ha, og trykk så <sb>F9</sb>"
+      },
+      "import": {
+        "title": "3. Importer CSV-filen",
+        "goTo": "Gå til <link>Spillere</link>, klikk <b>Velg CSV-fil</b> og naviger til utdatamappen til eksportøren:",
+        "after": "Spillerne får poeng og sorteres rett etter importen."
+      },
+      "tune": {
+        "title": "4. Juster vekter og kolonner",
+        "body": "Klikk <b>Vekter</b> for å åpne Innstillinger ved vektene og angi hvor mye hver ferdighet teller. Spillerlisten rangeres på nytt fortløpende ved siden av. Klikk <b>Kolonner</b> for å velge hvilke ferdigheter som framheves i tabellen. Begge, og ferdighetsfargene, finner du også under <b>Innstillinger</b>-knappen øverst."
+      },
+      "compare": {
+        "title": "5. Sammenlign spillere",
+        "body": "Kryss av for to eller flere spillere i listen og klikk <b>Sammenlign valgte</b> for å åpne en visning med ferdighetene side om side."
+      }
+    },
+    "math": {
+      "title": "Slik får spillerne poeng",
+      "intro": "Scout Reporter gir spillerne poeng med et vektet snitt av de rå FM26-ferdighetsverdiene deres (skala 1–20), og normaliserer så snittet til en 100-poengsskala.",
+      "weighted": {
+        "title": "Vektet ferdighetssnitt",
+        "body": "For hver ferdighet angir du en vekt (0 = ignorer, høyere = viktigere). Poengsummen er det vektede gjennomsnittet av alle ferdighetsverdiene for hver ferdighet med en vekt som ikke er null. Hver profil velger en vekting:",
+        "modes": "<b>Lineær</b> er slik FM27-referansene ble kalibrert, og er standard for nye profiler. <b>Forsterket</b> kvadrerer vektene, så en dobbelt så stor vekt gir mer enn dobbelt så stor innflytelse; profiler laget før dette valget fantes, beholder det."
+      },
+      "benchmarks": {
+        "title": "FM27-referanseprofiler",
+        "body": "Vektene kommer med seks rolleprofiler (Midtstopper, Back / Wingback, Defensiv midtbane / Sentral midtbane, Angriper / Ving (10), Spiss (9) og Keeper) bygd på <study>Study 13b fra FM Match Lab</study>, som målte hva ett nivå i hver ferdighet er verdt i hver posisjon over 50 000 FM27-kamper. Hver rolle beholder ferdighetene studien bekrefter, skalert slik at den mest verdifulle veier 10: fart og akselerasjon overalt, spenst mest for midtstoppere og spisser, avslutninger og styrke for angripere, smidighet og reflekser for keepere. De fleste tekniske og mentale ferdighetene gir knapt utslag i studien, så rollene utelater dem. <arena>Posisjonstesten på FM-Arena</arena> fra Purity med en annen taktikk finner det samme mønsteret. Før v1.24 brukte rollene FM27-vektene fra <scoring>fm-scoring</scoring>, som fortsatt leverer tabellen for vs alder. Rediger dem fritt; «Tilbakestill til referanse» henter tilbake originalene."
+      },
+      "vsAge": {
+        "title": "vs alder og Potensial",
+        "vsAge": "<b>vs alder</b> deler det vektede snittet på FM27-referansen for spillerens alder (10,3 ved 15 opp til 13,8 ved 24+). 100 % betyr på vei til å bli en spiller fra toppen av Championship / bunnen av Premier League i sin beste alder.",
+        "potential": "Med en eksport fra Hidden Attributes dukker en <b>Potensial</b>-kolonne opp: samme poengsum, men med ferdigheter framskrevet til PF. <link>Slik fungerer potensialestimatet</link> forklarer framskrivingen."
+      },
+      "grades": {
+        "title": "Karakterer",
+        "body": "Hver poengsum får et bokstavstempel, i FM-stil fra A+ ned til F, pluss S, S+ og S++ over A+ for de virkelig ypperste. Karakterene leser det vektede snittet på skalaen 1–20 og øker for hver 0,5. Toppnivåreferansen (13,8, en spiller fra toppen av Championship / bunnen av Premier League i sin beste alder) gir {grade}. Unge spillere får lav karakter på Nå og høy på Potensial, så sammenlign dem med Potensial-stempelet eller vs alder.",
+        "scale": "Karakterskala",
+        "under": "under {value}"
+      },
+      "normalisation": {
+        "title": "Normalisering til 100 poeng",
+        "body": "Det vektede snittet ligger på FMs ferdighetsskala fra 1 til 20. Det normaliseres slik at et vektet snitt på <sb>13</sb> (regnet som en solid profesjonell spiller) blir nøyaktig <sb>100</sb>. Poeng over 100 betyr spillere over snittet for vektprofilen din; under 100 betyr under snittet."
+      },
+      "categories": {
+        "title": "Ferdighetskategorier",
+        "body": "Ferdighetene er delt i fire kategorier (Teknisk, Mentalt, Fysisk og Keeperspill), i tråd med FM26s egen inndeling. Du kan vekte ferdigheter fra alle kategorier i samme profil, så et vektsett for keepere kan ta med fysiske og mentale ferdigheter ved siden av de keeperspesifikke."
+      },
+      "detail": {
+        "title": "Spillerdetaljer og sammenligning",
+        "body": "Når du klikker på en spiller, åpnes hele ferdighetsarket med fargekodede verdier (utmerket / god / gjennomsnittlig / lav) ut fra temainnstillingene dine. Sammenligningsvisningen setter to eller flere spillere side om side med forskjellene framhevet, så det er lett å se hvor én spiller er bedre enn en annen for de konkrete rollebehovene dine."
+      }
+    }
+  },
+  "wonderkids": {
+    "use": {
+      "title": "Slik finner du vidunderbarn",
+      "export": {
+        "title": "1. Eksporter med visningen Hidden Attributes",
+        "body": "Importer visningen Hidden Attributes i FM og eksporter som vanlig. Den legger til de skjulte <b>Profesjonalitet</b>, <b>NF</b> og <b>PF</b>. Eksporter fra Standard-visningen, eller spillere uten NF/PF, får fortsatt poeng ut fra de nåværende ferdighetene."
+      },
+      "import": {
+        "title": "2. Importer og sorter",
+        "body": "Importer den under <link>Spillere</link> og sorter etter <b>Potensial</b> (poengsummen ved fullt potensial på vektprofilen du valgte) eller <b>vs alder</b> (hvor langt foran alderen sin spilleren er nå)."
+      },
+      "inspect": {
+        "title": "3. Se nærmere på et talent",
+        "body": "Klikk på en spiller og bytt til <b>Fullt potensial</b> for å se de estimerte ferdighetene ved PF, med økningen per ferdighet. <b>Utviklingsplan</b> under foreslår individuelt fokus, treningsrolle, utviklingsøkter og trenere som får mest ut av spilleren."
+      }
+    },
+    "math": {
+      "title": "Slik fungerer estimatet for fullt potensial",
+      "ca": {
+        "title": "NF er en kostnadsvektet sum av ferdigheter",
+        "body": "Hvert ferdighetspoeng koster en posisjonsavhengig mengde NF (FM27-kostnadstabellen for NF fra fm-scoring, f.eks. Avgjørelser 10 og Smidighet 8 for en keeper). På en eksport fra Hidden Attributes med 109 keepere passer NF nesten helt med den kostnadsvektede summen (r = 0,99, avvik ≈ 2,5 NF). Tilpasningen kalibreres på nytt ved hver import som har NF."
+      },
+      "growth": {
+        "title": "Fordeling av veksten",
+        "body": "De ekstra poengene fordeles på ferdigheter som fortsatt kan vokse, hver i forhold til hvor mye rom den har under 20 og hvor raskt den vokste i FM27-treningstesten til harvestgreen22 (en 18-åring som trente i en sesong, samlet i fm-scoring). Forsvarsspillere, wingbacker og DM-er vokser som treningsoppleggene med defensivt spill med ball, sentrale midtbanespillere som en blanding, og kantspillere, AM-er og spisser som treningsoppleggene med angrepsspill med ball. Keepere ble ikke testet: ferdighetene de trenes i av keepertreneren, vokser i samme tempo som trente ferdigheter hos utespillere. Fysiske ferdigheter bremser etter 21 (¾ tempo til 24, deretter 0,4), tre år senere for keepere. Målbevissthet, Aggressivitet, Mot og keepertendensene står stille, og utespillere får aldri vekst i keeperferdigheter. Spillere med flere posisjoner bruker snittet av kostnaden og veksten for posisjonene sine."
+      },
+      "reading": {
+        "title": "Slik leser du tallene",
+        "body": "<b>Nå</b> og <b>Potensial</b> er den beste rollepoengsummen blant FM27-referanserollene (1–20). <b>vs toppnivå</b> sammenligner potensialpoengene med 13,8, den ferdigutviklede referansen. Det er et estimat av taket: profesjonalitet, spilletid og trening avgjør hvor mye av PF en spiller når."
+      }
+    }
+  }
+}

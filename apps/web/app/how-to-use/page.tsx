@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { HowToShell } from "@scoutreporter/ui/features/how-to-use/HowToShell";
 import { SetupGuide } from "@scoutreporter/ui/features/how-to-use/guides";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
@@ -33,7 +34,7 @@ const HOW_TO_LD = {
     },
     {
       name: "Install the view",
-      text: "Download the Scout Reporter Hidden Attributes or Standard view (.fmf) and move it to Documents\Sports Interactive\Football Manager 27\views.",
+      text: "Download the Scout Reporter Hidden Attributes or Standard view (.fmf) and move it to Documents\\Sports Interactive\\Football Manager 27\\views.",
     },
     {
       name: "Export players from FM27",
@@ -41,20 +42,21 @@ const HOW_TO_LD = {
     },
     {
       name: "Import the CSV",
-      text: "Open Players on Scout Reporter, click Choose CSV file and pick the newest file in Documents\Sports Interactive\FM View Exporter.",
+      text: "Open Players on Scout Reporter, click Choose CSV file and pick the newest file in Documents\\Sports Interactive\\FM View Exporter.",
       url: absoluteUrl("/players"),
     },
   ].map((s, i) => ({ "@type": "HowToStep", position: i + 1, ...s })),
 };
 
-export default function HowToUsePage() {
+export default async function HowToUsePage() {
+  const t = await getTranslations("howToPages.setup");
   return (
     <>
       <JsonLd data={[HOW_TO_LD, breadcrumbLd([{ name: "Setup guide", path: "/how-to-use" }])]} />
       <HowToShell
-        title="Setup guide"
-        description="Follow these steps to export a player list from Football Manager 27 or 26 and import it into this app."
-        link={{ href: "/players", label: "Go to the importer" }}
+        title={t("title")}
+        description={t("description")}
+        link={{ href: "/players", label: t("link") }}
       >
         <SetupGuide />
       </HowToShell>

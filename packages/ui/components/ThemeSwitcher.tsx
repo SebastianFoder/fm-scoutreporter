@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import { useTranslations } from "next-intl";
 import { applyTheme, DEFAULT_THEME_KEY, type ThemeKey } from "@scoutreporter/core/themes";
 import { SegmentedControl } from "./SegmentedControl";
 
@@ -76,15 +77,16 @@ export function ThemeSync() {
 export function ThemeSetting() {
   // The choice, not the theme it resolves to: Dark and System can both mean dark.
   const choice = useSyncExternalStore(subscribe, storedChoice, (): ThemeChoice => "system");
+  const t = useTranslations("settings.theme");
   return (
     <SegmentedControl<ThemeChoice>
       value={choice}
       onChange={setThemeChoice}
-      label="Theme"
+      label={t("label")}
       options={[
-        { value: "light", label: "Light" },
-        { value: "dark", label: "Dark" },
-        { value: "system", label: "System" },
+        { value: "light", label: t("light") },
+        { value: "dark", label: t("dark") },
+        { value: "system", label: t("system") },
       ]}
     />
   );

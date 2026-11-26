@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "Import",
+    "clear": "Ryd import",
+    "loadTestData": "Indlæs testdata",
+    "chooseFile": "Vælg CSV-fil"
+  },
+  "messages": {
+    "storageFull": "Importen er kun indlæst i denne fane: browserens lager er fuldt eller blokeret. Frigør plads eller tillad lagring for at beholde data på tværs af faner og besøg.",
+    "testDataFailed": "Kunne ikke indlæse testdata.",
+    "parseFailed": "Kunne ikke læse CSV-filen. Tjek filformatet.",
+    "noStaffColumns": "Ingen personaleegenskaber fundet i denne fil. Eksportér den fra en personalesøgning med visningen Scout Reporter Staff (spillereksporter hører til under Spillere).",
+    "noSquadPlayers": "Ingen spillere med positioner fundet i denne fil. Eksportér din trup med visningen Scout Reporter Standard eller Hidden Attributes.",
+    "noScanSquad": "Ingen spillere fra din klub blev fundet i denne scanning."
+  },
+  "players": {
+    "title": "Importér spiller-CSV",
+    "imported": "{count, plural, one {# spiller} other {# spillere}} importeret",
+    "description": "FM26- (<code>;</code>) eller FM27-eksport (<code>,</code>) af Scout Reporter-visningen. Kolonner matches på navn. Visningsfil: <standard>Standard</standard> eller <hidden>Hidden Attributes</hidden> (tilføjer {professionalism}, NE, PE)."
+  },
+  "staff": {
+    "title": "Importér personale-CSV",
+    "imported": "{count, plural, one {# medarbejder} other {# medarbejdere}} importeret",
+    "description": "Eksportér en personalesøgning med <link>visningen Scout Reporter Staff</link>. Kolonner matches på navn; både FM26-ord og tal fra 1–20 virker. Holdes adskilt fra din spillerimport."
+  }
+}

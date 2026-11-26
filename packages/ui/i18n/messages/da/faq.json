@@ -1,0 +1,101 @@
+{
+  "title": "Ofte stillede spørgsmål",
+  "intro": "Eksport fra FM27 og FM26, privatliv, og hvordan scorerne virker. Sidder du stadig fast? <link>Opsætningsguiden</link> gennemgår hvert trin.",
+  "groups": {
+    "start": "Kom i gang",
+    "privacy": "Privatliv",
+    "scores": "Scorer og karakterer",
+    "wonderkids": "Vidunderbørn, Bedste 11 og trupper",
+    "staff": "Personale"
+  },
+  "items": {
+    "what": {
+      "q": "Hvad er Scout Reporter?",
+      "a": "Scout Reporter er et gratis spejderværktøj til Football Manager. Du importerer en CSV-eksport af en spillerliste fra FM27 eller FM26, og så giver den hver spiller en score ud fra vægtede egenskaber, giver dem karakterer fra S++ til F, sammenligner dem side om side, anslår vidunderbørns egenskaber ved fuldt potentiale og vælger Bedste 11 inden for et budget."
+    },
+    "versions": {
+      "q": "Virker den med FM27 og FM26?",
+      "a": "Ja. Begge spil eksporterer de samme egenskaber via Scout Reporter-visningerne, så importer fra begge virker i alle tilstande. FM27 eksporterer med FM View Exporter; FM26 eksporterer med BepInEx og pluginet FM26 Player CSV Export. Scoreprofilerne og vækstestimaterne er kalibreret på FM27-data.",
+      "more": "Opsætningsguide til begge versioner"
+    },
+    "export": {
+      "q": "Hvordan eksporterer jeg spillere fra Football Manager til CSV?",
+      "a": "Installer et eksportplugin (FM View Exporter til FM27, eller BepInEx med pluginet FM26 Player CSV Export), download en Scout Reporter-visningsfil, og læg den i din FM-mappe til visninger. Højreklik på en kolonneoverskrift i Spiller database, vælg Importér visning, vælg visningen, filtrér de spillere, du vil have, og tryk på F9. Importér derefter CSV-filen her.",
+      "more": "Eksportguide trin for trin"
+    },
+    "view": {
+      "q": "Hvilken visningsfil skal jeg bruge?",
+      "a": "Visningen Hidden Attributes anbefales: den eksporterer alle egenskaber plus de skjulte Professionalisme, Nuværende evne (NE) og Potentiel evne (PE), som giver adgang til Potentiale-scorer til at finde vidunderbørn. Visningen Standard eksporterer kun de synlige egenskaber, hvilket er nok til spillerlisten og Bedste 11."
+    },
+    "platforms": {
+      "q": "Virker den på Mac eller Linux?",
+      "a": "Hjemmesiden kører i enhver moderne browser. Eksporten sker inde i Football Manager: FM View Exporter til FM27 kræver Steam-versionen på Windows 10 eller 11, og FM26-guiden indeholder den Steam-startindstilling, der skal til for at køre BepInEx under Linux."
+    },
+    "free": {
+      "q": "Er Scout Reporter gratis?",
+      "a": "Ja. Den er gratis at bruge, kræver ingen konto eller tilmelding, og kildekoden er offentlig på GitHub."
+    },
+    "upload": {
+      "q": "Bliver min CSV eller mit gemte spil uploadet nogen steder?",
+      "a": "Nej. CSV-filen læses og får score i din browser og sendes aldrig til en server. Den seneste import gemmes i browserens lokale lager, så den overlever en genindlæsning, sammen med dine profiler for vægte, fremhævninger og grænseværdier. En ny import erstatter den, og rydder du webstedsdata, fjernes den."
+    },
+    "analytics": {
+      "q": "Indsamler I nogen statistik?",
+      "a": "Kun anonyme sidevisninger, sendt til en selvhostet Umami-server: hvilke sider der åbnes, den henvisende side samt browser, styresystem og land. Der sættes ingen cookies, og intet fra din CSV, dine scanninger eller spillere bliver nogensinde sendt med. I desktop-appen kan du slå det fra under Indstillinger, App, Send anonym brugsstatistik."
+    },
+    "scoring": {
+      "q": "Hvordan får spillerne score?",
+      "a": "Hver egenskab får en vægt. En spillers score er det vægtede gennemsnit af deres egenskaber på FM's skala fra 1 til 20, og 100-pointsscoren dividerer gennemsnittet med 13 (en solid professionel) og ganger med 100. Ændrer du vægtene, rangeres listen straks igen.",
+      "more": "Sådan får spillere score"
+    },
+    "benchmarks": {
+      "q": "Hvad er FM27's benchmark-rolleprofiler?",
+      "a": "Seks vægtprofiler, Centerforsvarer, Back / Wingback, Defensiv midtbanespiller / Central midtbane, Offensiv midtbanespiller / Wing (10), Angriber (9) og Målmand, bygget på FM Match Labs Study 13b, som målte, hvad hver egenskab er værd på hver position over 50.000 FM27-kampe. Hurtighed og acceleration fører overalt, springrækkevidde tæller mest for centerforsvarere og angribere, adræthed og reflekser for målmænd, og de fleste tekniske og mentale egenskaber betyder næsten ingenting. Du kan redigere dem og nulstille dem til benchmarken når som helst. Tabellen for vs. alder kommer stadig fra fm-scoring, hvis rollevægte appen brugte før."
+    },
+    "grades": {
+      "q": "Hvad betyder karaktererne fra S++ til F?",
+      "a": "Karaktererne aflæser det vægtede gennemsnit på skalaen fra 1 til 20 og går i trin på 0,5: S++ starter ved {top}, {lowestGrade} ved {lowest}, og alt lavere er F. Topbenchmarken på {prime}, en spiller fra toppen af Championship eller bunden af Premier League på sit højeste, får {primeGrade}."
+    },
+    "vsAge": {
+      "q": "Hvad betyder vs. alder?",
+      "a": "vs. alder dividerer en spillers score med FM27-benchmarken for spillerens alder, fra {youngestBenchmark} som {youngestAge}-årig op til {prime} som 24-årig og ældre. 100 % betyder, at spilleren er på vej til at blive en spiller fra toppen af Championship eller bunden af Premier League på sit højeste, så det er den mest retfærdige måde at sammenligne unge spillere med hinanden på."
+    },
+    "wonderkids": {
+      "q": "Hvordan finder Scout Reporter vidunderbørn?",
+      "a": "Med en eksport fra Hidden Attributes tilpasser den NE som en positionsvægtet sum af egenskaber, regner ud, hvor mange egenskabspoint forskellen mellem NE og PE giver, og fordeler dem på de egenskaber, der stadig kan vokse, efter hvor hurtigt hver af dem voksede i en FM27-træningstest. Derefter rangerer den talenterne på FM27-rollerne ved fuldt potentiale. Filtrér efter alder, professionalisme og bedste rolle.",
+      "more": "Sådan virker potentialeestimatet"
+    },
+    "potential": {
+      "q": "Når en spiller faktisk det viste potentiale?",
+      "a": "Ikke nødvendigvis. Estimatet er loftet, hvis spilleren når sit PE. Professionalisme, spilletid, træning og trænere afgør, hvor meget af det spilleren når, og derfor har hver spillerside en udviklingsplan med individuelt fokus, træningsrolle og de træningspas, der betyder mest."
+    },
+    "bestXi": {
+      "q": "Hvordan virker Bedste 11?",
+      "a": "Vælg en af {formationCount} FM-formationer, eller byg din egen på en taktikbane i FM-stil og gem den, og Scout Reporter vælger de elleve spillere fra din import med den højeste samlede score, hvor hver position får score efter en vægtprofil, du vælger (som standard FM27-benchmarkrollerne). Du kan sætte en minimal og maksimal samlet transferværdi og udelukke spillere for at se den næstbedste mulighed.",
+      "more": "Åbn Bedste 11"
+    },
+    "squad": {
+      "q": "Hvordan virker Trupanalyse?",
+      "a": "Importér visningen Scout Reporter Squad (eller Squad Hidden Attributes) på din trupskærm, eksportér den, og importér CSV-filen i Trupanalyse. Den gemmes adskilt fra din spillerimport, så din spejderliste forbliver indlæst. Vælg din formation, så bygger den din stærkeste ellever og derefter den stærkeste ellever af resten som afløsere, og markerer positioner, som ingen i truppen spiller, startspillere et godt stykke under holdets gennemsnit, positioner uden afløser eller med et stort fald til afløseren, og startspillere på 31 år eller derover (34 for målmænd). Squad-visningen eksporterer også din holdopstilling, holdstatus, skader og trænerens stjernevurderinger: udlejede spillere udelades (skadede også, hvis du vælger det), spillere, der er lovet en startplads, men ikke er med i elleveren, og spillere med lav status, der starter, markeres, din startellever i FM sammenlignes med den foreslåede, og unge spillere, som træneren vurderer et godt stykke over en startspiller, bliver fremhævet. Med den skjulte visning kommer de talenter i stedet fra fremskrevne egenskaber. Indeholder din spillerimport spejdermål, viser den dem, der ville slå din svageste startspiller på hver position.",
+      "more": "Åbn Trupanalyse"
+    },
+    "staffScouting": {
+      "q": "Hvordan spejder jeg personale?",
+      "a": "Importér visningen Scout Reporter Staff i en personalesøgning i FM (højreklik på en kolonneoverskrift, og vælg Importér visning), vælg personalet, og eksportér en CSV på samme måde som med spillere. Importér CSV-filen under Personale. Den gemmes adskilt fra din spillerimport, så begge kan være indlæst på én gang.",
+      "more": "Åbn Personale"
+    },
+    "staffWords": {
+      "q": "FM26 viser personaleegenskaber som ord. Hvordan får de score?",
+      "a": "Hvert ord dækker et fast interval af den gamle skala fra 1 til 20: Uegnet 1 til 3, Rimelig 4 til 6, Kompetent 7 til 9, Gennemsnitlig 10 til 11, God 12 til 14, Meget god 15 til 17, Fremragende 18 til 19 og Elite 20. Scout Reporter giver hvert ord scoren i midten af intervallet og bruger præcise tal, når en eksport har dem."
+    },
+    "staffRoles": {
+      "q": "Hvordan beregnes rollescorer for personale?",
+      "a": "Hver rolle er et vægtet gennemsnit af dens egenskaber med de 17 personaleroller og vægte fra fm-scoring, tjekket mod de nøgleegenskaber, FM27 fremhæver på personaleprofiler. Trænere deles op i FM's ni træningsgrupper (hver med score på deres to træneregenskaber plus disciplin, beslutsomhed, motivering, personaleledelse og arbejde med ungdomsspillere) ved siden af manager, assistenttræner, sportsdirektør, leder af ungdomsudvikling, talentspejder, præstationsanalytiker, fysioterapeut og sportsforsker. Alle rollescorer får det samme karakterstempel fra S++ til F som spillerscorer. Filtrér efter foretrukket job for kun at se de egenskaber, jobbet vægtes på, eller åbn en medarbejder for at se alle roller rangeret."
+    },
+    "backroom": {
+      "q": "Hvordan vælger Bedste stab mit personale?",
+      "a": "Vælg, hvor mange af hver personalerolle du har brug for, eller start fra en skabelon (fuld stab, stabstræning, rekrutteringsstab, lægestab). Bedste stab besætter alle roller fra din personaleimport med den kombination, der har den højeste samlede rollescore, og bruger aldrig den samme person to gange, så en alrounder havner der, hvor vedkommende bidrager mest. Du kan begrænse den til fritstillede, til personale, hvis foretrukne job er rollen, og udelukke hvem som helst for at se det næstbedste valg.",
+      "more": "Åbn Bedste stab"
+    }
+  }
+}

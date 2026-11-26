@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Scout Reporter 홈",
+  "mainNav": "주 메뉴",
+  "nav": {
+    "players": "선수",
+    "squad": "선수단",
+    "staff": "스탭",
+    "howToUse": "사용 방법",
+    "desktopApp": "데스크톱 앱",
+    "scans": "스캔",
+    "growth": "성장"
+  },
+  "playerCount": {
+    "title": "가져온 선수(두 모드 공통)",
+    "imported": "{count, plural, one {선수} other {선수}} {hasTotal, select, yes {{total}명 중 {shown}명} other {{shown}명}} 가져옴",
+    "scanned": "{count, plural, one {선수} other {선수}} {hasTotal, select, yes {{total}명 중 {shown}명} other {{shown}명}} 스캔됨"
+  },
+  "language": {
+    "title": "언어",
+    "label": "언어: {language}"
+  },
+  "footer": {
+    "setupGuide": "설정 가이드",
+    "faq": "자주 묻는 질문"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "FM27 roles",
+    "scale": "score 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: now {current}, potential {potential}} other {{role}: now {current}}}",
+    "legend": "Legend",
+    "now": "Now",
+    "ageBenchmark": "Age {age} benchmark {value}",
+    "prime": "Prime {value}",
+    "vsAge": "vs Age",
+    "potentialVsPrime": "Potential vs prime"
+  },
+  "plan": {
+    "title": "Development plan",
+    "builtFor": "{atPa, select, yes {Built for the best role at PA: {role} ({score})} other {Built for the best role: {role} ({score})}}",
+    "focusLabel": "Individual training focus",
+    "focus": {
+      "quickness": "Quickness",
+      "goalkeeperReason": "Agility and Reflexes carry the most weight for keepers. An FM27 training-code tester found this combined focus the best for keepers prioritising them.",
+      "quicknessReason": "Pace and Acceleration are among the heaviest weights in every outfield role. In harvestgreen22's test the focus took them from about +1.6 to +2.7 a season. Current Pace {pace}, Acceleration {acceleration}.",
+      "attributeReason": "Pace and Acceleration are already {pace} and {acceleration}, so Quickness has little left to add. {attribute} is where the {role} score has the most to gain.",
+      "quicknessFallbackReason": "Pace and Acceleration are among the heaviest weights in every outfield role."
+    },
+    "trainingRoleLabel": "Training role",
+    "trainingRole": {
+      "goalkeeper": "Leave both training roles unassigned",
+      "goalkeeperReason": "An FM27 training-code tester got the most growth for keepers with no role and the combined focus above.",
+      "outfield": "{role, select, defensive {Defensive Midfielder out of possession, nothing in possession} other {Attacking Midfielder out of possession, nothing in possession}}",
+      "outfieldReason": "An FM27 training-code tester got the strongest CA growth for young outfielders from an out-of-possession role alone, with Quickness: Defensive Midfielder for defenders, wing-backs and DMs, Attacking Midfielder for everyone else. Anticipation grew most. This comes from one tester's controlled runs."
+    },
+    "sessions": {
+      "title": "Development sessions for the {role} score",
+      "more": "more {attributes}",
+      "nothingExtra": "nothing extra",
+      "barLabel": "{session}: {percent} of the best session",
+      "note": "Role-score growth from each session in harvestgreen22's FM27 test, applied to this player's attributes, as a share of the best one. \"More\" lists what a session builds beyond the average development session.",
+      "goalkeeper": "Keepers weren't in the session test. The goalkeeping coach trains most of what a keeper needs, so assign your best one."
+    },
+    "coaching": {
+      "title": "Coaching that matters most",
+      "subtitle": "Share of the remaining {role} growth each coaching group trains",
+      "coach": "coach: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Notes",
+    "items": {
+      "role": {
+        "title": "Develop as a {role}",
+        "detail": "Best role today is {bestRole} ({bestScore}), but the attributes at PA fit a {potentialRole} better ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Close to the ceiling",
+        "detail": "Only {gap} CA between CA {ca} and PA {pa}. Training now mostly decides where the CA goes, not how much there is, so point it at the attributes the role needs."
+      },
+      "gapUnlikely": {
+        "title": "Unlikely to reach PA",
+        "detail": "{gap} CA still to come at age {age}, and attributes grow little after {endAge}. Value the player closer to current ability."
+      },
+      "gapLeft": {
+        "title": "{gap} CA left to grow into",
+        "detail": "{goalkeeper, select, yes {CA {ca} toward PA {pa}, with about {seasons, plural, one {# season} other {# seasons}} of real development left (growth slows sharply after {endAge} for keepers).} other {CA {ca} toward PA {pa}, with about {seasons, plural, one {# season} other {# seasons}} of real development left (growth slows sharply after {endAge}).}}"
+      },
+      "minutesPeak": {
+        "title": "Peak development years",
+        "detail": "16 to 18 is when attributes grow fastest. Minutes and the quality of the opponents both feed CA growth, so senior or loan minutes beat youth football once the player can hold a place. For the U18s, fm-scoring's author uses the minimal schedule (no tactical sessions)."
+      },
+      "minutesSenior": {
+        "title": "Needs senior minutes",
+        "detail": "Minutes played and the quality of the opponents drive how much CA a player gains. If there's no starting place for them at your club, loan them to the strongest club that will start them."
+      },
+      "minutesPast": {
+        "title": "Past the development window",
+        "detail": "Attributes grow little after {endAge}. Training from here mostly reshapes what is already there."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "fm-scoring's notes point to Professionalism as the hidden attribute that matters most for growth. This level helps a player get the most out of their PA."
+      },
+      "profLow": {
+        "title": "{level, select, low {Low {attribute} ({value})} other {Average {attribute} ({value})}}",
+        "detail": "fm-scoring's notes point to Professionalism as the hidden attribute that matters most for growth. Mentoring is how FM changes personality: put the player in a mentoring group with senior players high in Professionalism (fm-scoring includes a mentors player search filter)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "Training never moves Determination. Mentoring is the way to change personality. Export with the Hidden Attributes view to see Professionalism."
+      },
+      "schedule": {
+        "title": "Put the development sessions on one day",
+        "detail": "Only Possession, Attacking and Defensive Ball Work, Conditioning, Heavy Conditioning and Individual Development grow attributes. Every other session grew CA no more than resting, and repeating a session adds little. One tester packed the development sessions into one day to keep full Rest days, which have no training-injury checks. That cut training-injury risk from 13.8% to 4.0% with almost the same growth."
+      }
+    },
+    "source": "From the FM27 training research collected in <link>fm-scoring</link>: harvestgreen22's training test, the fm-scoring author's own schedule tests, and a tester who went through FM27's training code.",
+    "younger": "Most of it applies to younger players.",
+    "odds": "Growth is random month to month, so treat this as the odds, not a promise."
+  }
+}

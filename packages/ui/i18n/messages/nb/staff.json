@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Trener: offensiv taktisk",
+      "coach-attacking-technical": "Trener: offensiv teknisk",
+      "coach-defending-tactical": "Trener: defensiv taktisk",
+      "coach-defending-technical": "Trener: defensiv teknisk",
+      "coach-possession-tactical": "Trener: ballbesittelse taktisk",
+      "coach-possession-technical": "Trener: ballbesittelse teknisk"
+    },
+    "summaries": {
+      "manager": "Bedømme spillerferdigheter og spillerpotensial, Motiverende, Personalbehandling og Taktisk kunnskap, deretter treningsferdighetene.",
+      "assistant-manager": "Bedømme spillerferdigheter og spillerpotensial, Motiverende og Personalbehandling, for rapporter, teamtalks og råd under kamp.",
+      "director-of-football": "Bedømme spillerferdigheter og spillerpotensial. Business (brukes også) er skjult, så den gir ikke poeng.",
+      "head-of-youth": "Bedømme spillerferdigheter og spillerpotensial og Arbeide med juniorspillere. Den skjulte Profesjonaliteten deres påvirker Profesjonaliteten i ungdomsinntaket: sjekk den selv.",
+      "coach-attacking-tactical": "Trener Ro, Uforutsigbarhet og Uten ball.",
+      "coach-attacking-technical": "Trener Innlegg, Avslutninger og Langskudd.",
+      "coach-defending-tactical": "Trener Aggressivitet, Konsentrasjon og Plasseringsevne.",
+      "coach-defending-technical": "Trener Markering og Taklinger.",
+      "coach-possession-tactical": "Trener Spilleforståelse, Avgjørelser, Lagarbeid og Overblikk.",
+      "coach-possession-technical": "Trener Dribling, Førsteberøring, Headinger, Pasninger og Teknikk.",
+      "coach-goalkeeping": "Trener alle keeperferdighetene, også de med utespillernavn som keepere bruker.",
+      "coach-fitness": "Trener de fysiske ferdighetene og Arbeidskapasitet, den største delen av vekten i alle posisjoner.",
+      "coach-set-pieces": "Trener Cornere, Frispark, Lange innkast og Straffespark.",
+      "scout": "Bedømme spillerferdigheter og spillerpotensial, deretter Taktisk kunnskap.",
+      "performance-analyst": "Analysere data, deretter Bedømme spillerferdigheter og Taktisk kunnskap.",
+      "physio": "Fysioterapi, støttet av Idrettsvitenskap og de mentale ferdighetene.",
+      "sports-scientist": "Idrettsvitenskap, støttet av Fysisk form, Fysioterapi og de mentale ferdighetene."
+    },
+    "groups": {
+      "management": "Ledelse",
+      "recruitmentAndAnalysis": "Rekruttering og analyse"
+    }
+  },
+  "freeAgent": "Uten kontrakt",
+  "preferredJob": "Foretrukket stilling",
+  "bestRole": "Beste rolle",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role}: {score} ({word})",
+    "partial": "{role}: {score} ({word}). {percent, number, percent} av vekten til denne rollen var med i eksporten"
+  },
+  "noImport": {
+    "desktop": "Ingen ansatte ennå. Åpne et Ansattsøk i FM og trykk <kbd>F9</kbd> eller Skann søk."
+  },
+  "list": {
+    "title": "Støtteapparat",
+    "bestBackroom": "Beste støtteapparat",
+    "intro": "Ranger trenere, speidere, analytikere og direktører fra en eksport av et ansattsøk i FM26. Ordvurderingene i FM26 regnes om til skalaen 1–20, og hver ansatt får poeng på hver rolle i støtteapparatet.",
+    "noImport": "Ingen ansatte importert ennå. Åpne et ansattsøk i FM, importer visningen Staff, velg de ansatte og eksporter en CSV, og importer den så over.",
+    "filters": "Filtre",
+    "rankBy": "Ranger etter",
+    "allJobs": "Alle stillinger",
+    "search": "Søk",
+    "searchPlaceholder": "Navn eller klubb",
+    "freeAgentsOnly": "Bare uten kontrakt",
+    "myClubTitle": "Ansatte i {club}",
+    "showMine": "Vis mine ansatte ({count, number})",
+    "ratingsAs": "Vurderinger som",
+    "words": "Ord",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> av {total, number} ansatte",
+    "jobScoredAsOne": "<b>{job}:</b> får poeng som {role}.",
+    "jobScoredAsBest": "<b>{job}:</b> får poeng etter den beste av {roles}.",
+    "jobShowingWeighted": "Viser {count, plural, one {den # ferdigheten} other {de # ferdighetene}} fm-scoring vekter for denne stillingen.",
+    "jobBoldWeighted": "Uthevede kolonner er {count, plural, one {den # ferdigheten} other {de # ferdighetene}} fm-scoring vekter for denne stillingen.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring har ingen vekter for denne stillingen, så alle ferdigheter vises og Foretrukket stilling gir ingen poeng.",
+    "showAllAttributes": "Vis alle ferdigheter",
+    "rankRole": "<b>{role}:</b> {summary} Vektede ferdigheter er uthevet.",
+    "name": "Navn",
+    "job": "Stilling",
+    "scoreTitle": "Vektet rollepoengsum på skalaen 1–20. * = noen av rollens ferdigheter manglet.",
+    "attributeWeight": "{label} (vekt {weight, number})",
+    "method": {
+      "title": "Slik får støtteapparatet poeng",
+      "words": "FM26 viser ferdighetene til støtteapparatet som ord. Hvert ord dekker et fast intervall på den gamle skalaen 1–20, og får poeng midt i intervallet (eksakte tall brukes når en eksport har dem):",
+      "roles": "En rollepoengsum er det vektede snittet av ferdighetene rollen bruker, med de 17 rollene og vektene for støtteapparatet fra <link>fm-scoring</link>: et vurderingsskjema for støtteapparat laget av fellesskapet, tilpasset FM27 og kontrollert mot nøkkelferdighetene FM27 framhever på profilene til støtteapparatet. Trenerne er delt inn i FMs ni treningsgrupper, hver med poeng etter sine to treningsferdigheter pluss Disiplin, Målbevissthet, Motiverende, Personalbehandling og Arbeide med juniorspillere. En generell Trener får poeng etter sin beste utespillergruppe. Tilpasningsevne, Bedømme evner hos støtteapparat og Forhandling har ingen vekt i noen rolle. Filtrering på foretrukket stilling viser bare ferdighetene den stillingen er vektet på. Beste rolle teller bare roller der de fleste vektede ferdighetene var med i eksporten. Rollepoeng får det samme karakterstempelet fra S++ til F som spillerpoeng, med de samme trinnene på skalaen 1–20."
+    }
+  },
+  "detail": {
+    "preferredJob": "Foretrukket stilling: {job}",
+    "age": "Alder {age, number}",
+    "preferredScore": "Foretrukket stilling: {role} {score}",
+    "preferred": "(foretrukket)",
+    "barsNote": "Stolpene går fra 0 til 20. * betyr at noen av rollens ferdigheter manglet i eksporten.",
+    "notInExport": "Ikke i eksporten"
+  },
+  "backroom": {
+    "title": "Beste støtteapparat",
+    "staffList": "Liste over ansatte",
+    "intro": "Velg rollene du trenger og hvor mange av hver. Scout Reporter ansetter kombinasjonen av ansatte med høyest samlet rollepoengsum, uten å bruke én person to ganger. Lås ansatte du har signert, og fjern alle som sier nei til deg for å få det nest beste valget til den plassen.",
+    "noImport": "Ingen ansatte importert ennå. Velg en støtteapparat-CSV over, eller last inn testdataene for å se deg rundt.",
+    "reset": "Tilbakestill",
+    "preset": "Mal",
+    "custom": "Tilpasset",
+    "oneFewer": "Én {role} færre",
+    "oneMore": "Én {role} til",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "Bare ansatte som har rollen som foretrukket stilling",
+    "preferredJobOnlyHint": "Ansatte kan takke nei til andre stillinger i FM.",
+    "empty": {
+      "title": "Ingen roller valgt.",
+      "body": "Legg til minst én rolle til venstre, eller velg en mal."
+    },
+    "short": {
+      "title": "Ikke nok ansatte til alle rollene.",
+      "role": "{role}: {wanted, number} ønsket, {eligible, plural, one {# kvalifiserer} other {# kvalifiserer}}.",
+      "explain": "{filtered, select, yes {Ansatte kvalifiserer når de fleste av rollens ferdigheter er med i eksporten, de passerer filtrene og ikke er utelukket, og én person kan bare fylle én rolle.} other {Ansatte kvalifiserer når de fleste av rollens ferdigheter er med i eksporten, og én person kan bare fylle én rolle.}}"
+    },
+    "excluded": "Utelukket:",
+    "allowAgainTitle": "Tillat denne personen igjen",
+    "allowAgain": "(tillat igjen)",
+    "clearAll": "Fjern alle",
+    "footer": "Hver rolle får poeng med vektene for støtteapparatet fra fm-scoring (se <link>Støtteapparat</link>). Støtteapparatet som vises, har høyest samlet poengsum av alle måter å fylle rollene med forskjellige personer på, så en sterk allrounder havner der han eller hun gir mest, ikke i den første rollen som vil ha ham eller henne. Ansatte som mangler de fleste av en rolles ferdigheter, vurderes ikke for den.",
+    "result": {
+      "title": "Ditt støtteapparat",
+      "summary": "{count, plural, one {# ansatt} other {# ansatte}} · Snittpoeng",
+      "averageLabel": "Snittpoeng for støtteapparatet",
+      "offJob": "· {count, plural, one {# i en rolle som ikke er foretrukket stilling} other {# i en rolle som ikke er foretrukket stilling}} (stilling i grått)",
+      "locked": "· {count, plural, one {# låst} other {# låst}}",
+      "unlockAll": "Lås opp alle",
+      "score": "Poeng",
+      "scoreTitle": "Rollepoeng på FMs skala 1–20",
+      "lockOrRemove": "Lås eller fjern",
+      "offJobTitle": "Ikke foretrukket stilling: kan takke nei til denne rollen",
+      "unlock": "Lås opp {name}",
+      "lockIn": "Lås {name}",
+      "lockedTitle": "Låst: beholdes på denne plassen når resten velges på nytt. Klikk for å låse opp.",
+      "lockTitle": "Lås: behold på denne plassen (f.eks. etter signering) når resten velges på nytt",
+      "exclude": "Utelukk {name} og velg på nytt",
+      "excludeTitle": "Fjern og velg på nytt (f.eks. når kontraktsforhandlingene mislyktes)"
+    }
+  }
+}

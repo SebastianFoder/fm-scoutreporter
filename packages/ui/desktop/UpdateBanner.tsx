@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Download, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "../components/Button";
 import { useDesktop } from "./DesktopProvider";
 
@@ -23,6 +24,7 @@ function readDismissed(): string | null {
  */
 export function UpdateBanner() {
   const desktop = useDesktop();
+  const t = useTranslations("desktop.update");
   const [dismissed, setDismissed] = useState<string | null>(() => (typeof window === "undefined" ? null : readDismissed()));
   const update = desktop?.update;
   if (!desktop || !update?.available || !update.latest) return null;
@@ -38,25 +40,21 @@ export function UpdateBanner() {
     }
   };
 
-  const percent = install ? Math.round(install.progress * 100) : 0;
+  const share = install ? Math.round(install.progress * 100) / 100 : 0;
   return (
     <div role="status" className="border-b border-line bg-accent/8 text-ink">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-3 py-2 text-sm sm:px-5">
         <p className="min-w-0 flex-1">
           {install ? (
             install.phase === "starting" ? (
-              <>Installing Scout Reporter {latest.version}. The app closes and opens again in a moment.</>
+              t("installing", { version: latest.version })
             ) : (
-              <>
-                Downloading Scout Reporter {latest.version}… {percent}%
-              </>
+              t("downloading", { version: latest.version, progress: share })
             )
           ) : (
             <>
-              <span className="font-semibold">Scout Reporter {latest.version} is out</span>{" "}
-              <span className="text-muted">
-                (you have {update.current}). Updating keeps your settings, scans, weights and formations.
-              </span>
+              <span className="font-semibold">{t("available", { version: latest.version })}</span>{" "}
+              <span className="text-muted">{t("availableDetail", { current: update.current })}</span>
               {error && <span className="block text-red">{error}</span>}
             </>
           )}
@@ -64,21 +62,21 @@ export function UpdateBanner() {
         {!install && (
           <div className="flex items-center gap-2">
             <Button size="sm" icon={<Download className="h-4 w-4" aria-hidden />} onClick={() => void desktop.installUpdate()}>
-              Update now
+              {t("updateNow")}
             </Button>
             <a href={latest.pageUrl} target="_blank" rel="noreferrer" className="link text-[13px]">
-              What&apos;s new
+              {t("whatsNew")}
             </a>
             {error && (
               <a href={latest.downloadUrl} target="_blank" rel="noreferrer" className="link text-[13px]">
-                Download it yourself
+                {t("downloadYourself")}
               </a>
             )}
             <Button
               size="sm"
               color="alt"
               variant="ghost"
-              aria-label={`Hide until a version newer than ${latest.version}`}
+              aria-label={t("hide", { version: latest.version })}
               icon={<X className="h-4 w-4" aria-hidden />}
               onClick={dismiss}
             />

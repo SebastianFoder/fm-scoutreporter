@@ -1,0 +1,171 @@
+{
+  "scanLabel": {
+    "sample": "Eksempelscanning",
+    "dated": "Scanning fra {date}"
+  },
+  "scanButton": {
+    "group": "Scan Football Manager",
+    "scanning": "Scanner {progress, number, percent}",
+    "search": "Scan søgning",
+    "searchTitle": "Behold personerne i FM's Spillersøgning eller Personalesøgning plus din klub (F9)",
+    "save": "Scan spil",
+    "saveTitle": "Behold alle spillere og alt personale i det gemte spil"
+  },
+  "counts": {
+    "players": "{count, plural, one {# spiller} other {# spillere}}",
+    "staff": "{count, plural, one {# medarbejder} other {# medarbejdere}}",
+    "playersAndStaff": "{players, plural, one {# spiller} other {# spillere}} og {staff, plural, one {# medarbejder} other {# medarbejdere}}"
+  },
+  "home": {
+    "notDesktop": {
+      "title": "Desktop-app",
+      "body": "Denne side hører til Scout Reporters desktop-app, som læser dit Football Manager-spil direkte. På hjemmesiden importerer du i stedet en CSV-eksport: se <link>opsætningsguiden</link>."
+    },
+    "title": "Scan Football Manager",
+    "intro": "<b>Scan søgning</b> {hotkey, select, on {(eller F9, også inde i FM)} other {(eller F9, når genvejstasten er slået til, også inde i FM)}}: åbn Spillersøgning eller Personalesøgning i Football Manager, indstil dine filtre, og appen tager de personer, FM fandt, plus din egen klub. <b>Scan spil</b>: alle spillere og alt personale i det gemte spil, uden søgning. Alle skærme (Spillere, Bedste 11, Trup, Personale) virker på scanningen. Intet i dit spil bliver ændret. F9-tasten, skjulte egenskaber og opdateringer finder du under <settings>Indstillinger</settings>.",
+    "phase": "{phase, select, importing {Gemmer scanningen…} writing {Skriver scanningen…} clubs {Læser klubber…} people {Læser personer…} other {Læser hukommelsen…}}",
+    "errors": {
+      "notRunning": "Football Manager kører ikke",
+      "noAccess": "Football Manager kører som administrator",
+      "notLoaded": "Intet spil indlæst endnu",
+      "nothingFound": "Ingen spillere fundet",
+      "tooMuchUnread": "Scanningen er ufuldstændig",
+      "noSearch": "Ingen søgning fundet i Football Manager",
+      "busy": "En scanning kører allerede",
+      "missingReader": "Læseren mangler",
+      "failed": "Scanningen mislykkedes"
+    },
+    "scanWholeSave": "Eller <link>scan hele det gemte spil</link> i stedet.",
+    "doneSearch": "<b>{players, plural, one {# spiller} other {# spillere}}</b> og {staff, plural, one {# medarbejder} other {# medarbejdere}} beholdt: din FM-søgning ({search}) plus din klub{hasClub, select, yes {, {club}} other {}}. Åbn <playersLink>Spillere</playersLink>, <squadLink>Trup</squadLink> eller <growthLink>Udvikling</growthLink>.",
+    "doneFull": "<b>{players, plural, one {# spiller} other {# spillere}}</b> og {staff, plural, one {# medarbejder} other {# medarbejdere}} scannet{hasClub, select, yes {, din klub: {club}} other {}}. Åbn <playersLink>Spillere</playersLink>, <squadLink>Trup</squadLink> eller <growthLink>Udvikling</growthLink>.",
+    "loading": "Indlæser scanningen på skærmene…",
+    "partial": "Skærmene indeholder {players, number} af {totalPlayers, plural, one {# spiller} other {# spillere}} og {staff, number} af {totalStaff, plural, one {# medarbejder} other {# medarbejdere}} fra denne scanning: din klub plus {loadedFrom}, højeste NE først, så skærmene forbliver hurtige. Udvikling sammenligner altid alle spillere i begge scanninger.",
+    "loadedFrom": {
+      "playersSearch": "spillere fra FM's spillersøgning ({count, number} fundet)",
+      "playersBest": "de spillere, der er værd at spejde",
+      "staffSearch": "personale fra FM's personalesøgning ({count, number} fundet)",
+      "staffBest": "det personale, der er værd at ansætte"
+    },
+    "version": {
+      "title": "Ukendt Football Manager-version",
+      "body": "Denne scanning kom fra FM {version}, men læseren blev lavet til {game}. Tjek et par spillere mod spillet, før du stoler på tallene, og se efter en opdatering af Scout Reporter.",
+      "unknown": "(ukendt version)"
+    },
+    "loadError": "Kunne ikke indlæse scanningen",
+    "stored": {
+      "title": "Gemte scanninger",
+      "kept": "De {retention} nyeste gemmes, plus dem med stjerne, så <link>Udvikling</link> kan sammenligne dem.",
+      "disk": "De fylder {size} på disken.",
+      "openFolder": "Åbn mappe",
+      "loadSample": "Indlæs eksempelscanning",
+      "empty": "Ingen scanninger endnu. Tryk på Scan søgning eller Scan spil, eller indlæs eksempelscanningen for at se dig omkring."
+    },
+    "details": {
+      "noClub": "ingen klub",
+      "scanned": "scannet {time}",
+      "search": "din FM-søgning ({search}) og din klub",
+      "wholeSave": "hele det gemte spil",
+      "fmSearch": "FM-søgning: {search}"
+    },
+    "about": {
+      "title": "Om",
+      "version": "Scout Reporter desktop {version}. Understøtter Football Manager 27 (27.0) og 26 (26.3) på Windows fra Steam, Epic eller Game Pass.",
+      "reader": "Læseren læser kun Football Managers hukommelse; den ændrer aldrig dit spil eller dit gemte spil. Den er tilpasset fra <link>FMSuperScout</link> af mavarobli (MIT-licens). Tak!",
+      "credits": "FM27-rollevægte fra <matchLab>FM Match Lab</matchLab>; aldersbenchmarks, NE-omkostninger og personalevægte fra <scoring>jamiebolden/fm-scoring</scoring>; træningsforskning af harvestgreen22."
+    }
+  },
+  "scanRow": {
+    "star": "Giv {label} stjerne",
+    "unstar": "Fjern stjerne fra {label}",
+    "starredTitle": "Med stjerne: slettes aldrig for at gøre plads til nye scanninger",
+    "starTitle": "Stjerne: slet aldrig denne scanning for at gøre plads til nye",
+    "rename": "Omdøb {label}",
+    "renameTitle": "Omdøb",
+    "inUse": "I brug",
+    "versionDiffers": "anden version",
+    "nameFor": "Navn til {label}",
+    "use": "Brug",
+    "delete": "Slet {label}"
+  },
+  "settings": {
+    "loading": "Indlæser indstillingerne…",
+    "scanning": "Scanning",
+    "hidden": {
+      "title": "Brug NE, PE og skjulte egenskaber",
+      "body": "Til: skærmene får alle spilleres nuværende og potentielle evne og Professionalisme, som Potentiale-scorerne kræver. Fra: de udelades som i en normal FM-eksport, og Udvikling viser kun ændringer i egenskaber."
+    },
+    "hotkey": {
+      "title": "F9 scanner din søgning hvor som helst fra",
+      "body": "Mens appen kører, udfører F9 Scan søgning, også inde i FM. Andre apps får ikke F9 imens."
+    },
+    "database": "Database",
+    "databases": {
+      "men": "Herrer",
+      "women": "Kvinder",
+      "both": "Begge"
+    },
+    "keep": "Behold",
+    "keepSuffix": "scanninger",
+    "retentionNote": "Scanninger med stjerne gemmes oven i disse og slettes aldrig for at gøre plads. En søgescanning fylder et par MB, et helt gemt spil cirka 140 MB.",
+    "updates": "Opdateringer",
+    "checkUpdates": {
+      "title": "Søg efter opdateringer",
+      "body": "Spørger GitHub efter den nyeste version, når appen starter, og med nogle timers mellemrum. Intet om dig eller dit spil sendes. Opdatering beholder dine indstillinger, scanninger, vægte og formationer."
+    },
+    "checking": "Søger…",
+    "checkNow": "Søg nu",
+    "updateAvailable": "Version {latest} er ude (du har {current}): se bjælken øverst.",
+    "upToDate": "Du har den nyeste version ({current}).",
+    "version": "Version {current}.",
+    "privacy": "Privatliv",
+    "usageStats": {
+      "title": "Send anonym brugsstatistik",
+      "body": "Tæller, hvilke skærme der åbnes, for at se, hvad der bliver brugt. Det sendes til udviklerens egen statistikserver, sætter ingen cookies og indeholder aldrig dit spil, dine scanninger, spillere eller noget, der kan identificere dig."
+    }
+  },
+  "update": {
+    "installing": "Installerer Scout Reporter {version}. Appen lukker og åbner igen om et øjeblik.",
+    "downloading": "Downloader Scout Reporter {version}… {progress, number, percent}",
+    "available": "Scout Reporter {version} er ude",
+    "availableDetail": "(du har {current}). Opdatering beholder dine indstillinger, scanninger, vægte og formationer.",
+    "updateNow": "Opdater nu",
+    "whatsNew": "Nyheder",
+    "downloadYourself": "Download den selv",
+    "hide": "Skjul indtil en version nyere end {version}"
+  },
+  "growth": {
+    "title": "Udvikling",
+    "notDesktop": "Udvikling sammenligner gemte scanninger og er en del af Scout Reporters desktop-app.",
+    "intro": "Hvor meget hver spiller er blevet bedre mellem to scanninger af dit spil. Scan jævnligt (med få måneders mellemrum i spillet) for at følge dine unge spillere og finde gennembrudsspillere i hele verden.",
+    "twoNeeded": {
+      "title": "To scanninger kræves",
+      "body": "Udvikling sammenligner to scanninger. Du har {count, number}. <link>Scan</link> igen senere i dit spil."
+    },
+    "from": "Fra",
+    "to": "Til",
+    "option": "{label} ({count, plural, one {# spiller} other {# spillere}})",
+    "gainedAtLeast": "Steget mindst",
+    "ca": "NE",
+    "any": "alle",
+    "maxAge": "Maks. alder",
+    "search": "Søg",
+    "searchPlaceholder": "Spiller eller klub",
+    "searchScans": "En scanning af din FM-søgning indeholder spillerne fra søgningen og din egen klub, så Udvikling dækker de spillere, der er med i begge scanninger. Din egen klub er med i alle scanninger. Vil du følge alle spillere i spillet, så brug Scan spil på <link>siden Scanninger</link>.",
+    "sameScan": {
+      "title": "Samme scanning to gange",
+      "body": "Vælg to forskellige scanninger."
+    },
+    "compareError": "Kunne ikke sammenligne scanningerne",
+    "comparing": "Sammenligner scanninger…",
+    "summary": "{total, plural, one {# spiller} other {# spillere}}{hasDays, select, yes { over {days, plural, one {# dag i spillet} other {# dage i spillet}}} other {}}{newPlayers, select, search {, plus {newCount, plural, one {# spiller, der kun er med i den seneste scanning} other {# spillere, der kun er med i den seneste scanning}}} full {, plus {newCount, plural, one {# ny spiller (ungdomsårgang eller nyindlæst liga)} other {# nye spillere (ungdomsårgange eller nyindlæste ligaer)}} uden tidligere scanning} other {}}.",
+    "updating": "Opdaterer…",
+    "columns": {
+      "ca": "NE",
+      "caChange": "NE-ændring",
+      "paChange": "PE-ændring",
+      "biggestChanges": "Største ændringer"
+    },
+    "firstOnly": "Viser de første {max, number}: indsnævr filtrene for at se andre",
+    "showMore": "Vis {count, number} til"
+  }
+}

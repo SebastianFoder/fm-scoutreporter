@@ -52,6 +52,8 @@ test("reads typed budgets and formats amounts", () => {
   assert.equal(formatMoney(12_400_000, "£"), "£12.4M");
   assert.equal(formatMoney(750_000), "€750K");
   assert.equal(formatMoney(330), "€330");
+  assert.equal(formatMoney(2_500_000, "€", "fr-FR"), "€2,5M");
+  assert.equal(formatMoney(2_500_000, "€", "en-GB"), "€2.5M");
 });
 
 test("every preset is a valid, distinct FM formation with a pitch point per spot", () => {

@@ -1,0 +1,109 @@
+{
+  "intro": "Väljer elvan med högst poäng ur din import för en uppställning, med ett valfritt minimum och maximum för vad elvan får kosta totalt.",
+  "noImport": {
+    "desktop": "Inga spelare än. Öppna en Spelarsökning i FM och tryck <kbd>F9</kbd> eller Skanna sökning.",
+    "web": "Ingen CSV importerad än. Välj en CSV-fil ovan, eller ladda testdatan för att titta runt."
+  },
+  "setup": {
+    "title": "Inställningar",
+    "reset": "Återställ",
+    "minBudget": "Minsta budget ({currency})",
+    "maxBudget": "Högsta budget ({currency})",
+    "noMinimum": "Inget minimum",
+    "noLimit": "Ingen gräns",
+    "budgetInvalid": "Ange ett belopp som 15M, 750K eller 2500000. Budgetar som inte går att läsa ignoreras.",
+    "budgetHint": "Totalt för elvan. Skriv belopp som 15M eller 750K.",
+    "valuation": "En spelare kostar",
+    "valuations": {
+      "low": "Intervallets nedre del",
+      "mid": "Intervallets mittvärde",
+      "high": "Intervallets övre del"
+    },
+    "includeFree": "Ta med spelare utan övergångsvärde",
+    "includeFreeHint": "Mest kontraktslösa spelare. De räknas som {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "Minsta budget är högre än högsta budget.",
+      "body": "Ingen elva kan kosta minst {min} och högst {max}."
+    },
+    "slots": {
+      "title": "Inte tillräckligt med spelare för att fylla uppställningen.",
+      "body": "Ingen tillgänglig spelare kvar för: {positions}. Bara naturliga positioner från exporten räknas.",
+      "leftOut": "Exkluderade spelare och spelare utan övergångsvärde är bortlämnade."
+    },
+    "budget": {
+      "title": "Ingen elva ryms inom budgeten.",
+      "range": "Med de här inställningarna kostar den billigaste möjliga elvan {min} och den dyraste {max}.",
+      "wider": "Prova en större budget."
+    }
+  },
+  "excluded": {
+    "label": "Exkluderade:",
+    "allowAgain": "Tillåt spelaren igen",
+    "allowAgainHidden": "(tillåt igen)",
+    "clearAll": "Rensa alla"
+  },
+  "footnote": "Varje position tar en spelare som har den som naturlig position, poängsatt efter positionens roll (1–20). Elvan som visas har högst total poäng av alla kombinationer som ryms inom budgeten.",
+  "unpriced": "{count, plural, one {# spelare är bortlämnad} other {# spelare är bortlämnade}} eftersom exporten inte anger något pris (till exempel ”Ej till salu”).",
+  "result": {
+    "title": "Bästa elvan",
+    "summary": "Medelpoäng <b>{average}</b>{basis, select, potential { vid full potential} other {}} · Kostnad <b>{cost}</b>{budget, select, range { (budget {min} till {max})} max { av {max}} min { (minst {min})} other {}} · Löner <b>{wages} p/v</b>{unknownWages, plural, =0 {} one { (# utan kontrakt)} other { (# utan kontrakt)}}",
+    "notOptimal": "Sökningen fick slut på tid innan den kunde bevisa att det här är den allra bästa elvan. En bättre elva skulle kunna lägga till högst {gap} till den totala poängen {total}.",
+    "pitchLabel": "Elvan på planen",
+    "columns": {
+      "pos": "Pos",
+      "score": "Poäng",
+      "scoreTitle": "Rollpoäng på FM:s skala 1–20",
+      "valueTitle": "Övergångsvärde i exporten",
+      "counted": "Räknat",
+      "countedTitle": "Räknas mot budgeten: {valuation, select, low {intervallets nedre del} high {intervallets övre del} other {intervallets mittvärde}}",
+      "exclude": "Exkludera"
+    },
+    "excludeLabel": "Exkludera {name} och välj igen",
+    "excludeTitle": "Exkludera och välj igen",
+    "total": "Totalt",
+    "perWeek": "{amount} p/v"
+  },
+  "formation": {
+    "custom": "Anpassad",
+    "yours": "Dina uppställningar",
+    "presets": "FM:s förinställningar",
+    "moveTo": "Flytta {from} till {spot} ({position})",
+    "emptySpot": "Tom plats {spot} ({position})",
+    "moveHere": "Flytta {from} hit",
+    "goalkeeperFixed": "Målvakt (fast)",
+    "selected": "{spot} ({position}) vald: välj en plats att flytta till, eller tryck igen för att avbryta",
+    "dragOrSelect": "{spot} ({position}): dra, eller välj för att flytta",
+    "keeperStays": "Målvakten stannar i mål",
+    "dragTitle": "{position}: dra till en annan plats, eller till en position för att byta",
+    "hint": {
+      "dropSwap": "Släpp för att byta {from} och {to}.",
+      "dropMove": "Släpp för att flytta {from} till {to}.",
+      "dropCancel": "Släpp på en plats, eller någon annanstans för att avbryta.",
+      "moving": "Flyttar {spot}: klicka på en plats (eller en annan position för att byta), eller på {spot} igen för att avbryta.",
+      "idle": "Dra en position till en annan plats, eller till en position för att byta dem."
+    },
+    "delete": "Ta bort ”{name}”",
+    "namePlaceholder": "Namnge uppställningen",
+    "myPlaceholder": "Min {formation}",
+    "nameLabel": "Namn på uppställningen",
+    "save": "Spara",
+    "scoredAs": "Poängsätts som",
+    "roleFor": "Roll för {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "Rollerna är dina viktprofiler från <link>Spelare</link>."
+  },
+  "basis": {
+    "label": "Poängsätt spelare efter",
+    "potential": "Full potential",
+    "potentialTitle": "Egenskaper framräknade vid PF",
+    "needsTitle": "Kräver NF och PF: exportera med vyn {view}",
+    "needs": "Full potential kräver vyn {view}."
+  },
+  "pitch": {
+    "nobody": "Ingen",
+    "nobodyTitle": "{spot}: ingen i truppen spelar {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

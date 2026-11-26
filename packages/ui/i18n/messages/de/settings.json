@@ -1,0 +1,70 @@
+{
+  "title": "Einstellungen",
+  "tabs": {
+    "weights": "Gewichtung",
+    "columns": "Spalten",
+    "look": "Aussehen",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Design",
+    "attributeColours": "Attributfarben"
+  },
+  "theme": {
+    "label": "Design",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
+  "profiles": {
+    "profile": "Profil",
+    "name": "Name",
+    "namePlaceholder": "Profilname",
+    "createNew": "Neu erstellen",
+    "default": "Standard",
+    "newName": "Neues Profil",
+    "copyName": "{name} Kopie"
+  },
+  "weights": {
+    "intro": "Wie stark jedes Attribut in die Wertung eines Spielers einfließt. Die Wertungen ändern sich, während Sie tippen. Die FM27-Rollenprofile sind an der Positionsstudie von FM Match Lab (13b) gemessen.",
+    "weighted": "{count, number} gewichtet",
+    "weighting": "Gewichtung",
+    "linear": "Linear (FM27-Benchmark)",
+    "emphasized": "Betont (Gewichte quadriert)",
+    "benchmark": "Gemessene FM27-Rollengewichte (FM Match Lab <link>Studie 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "FM27-Benchmark von FM Match Lab (<link>Studie 13b</link>): Innenverteidiger.",
+      "fm27-wb": "FM27-Benchmark von FM Match Lab (<link>Studie 13b</link>): Außen- und Flügelverteidiger.",
+      "fm27-dm": "FM27-Benchmark von FM Match Lab (<link>Studie 13b</link>): defensive Mittelfeldspieler, auch für zentrale Mittelfeldspieler verwendet.",
+      "fm27-10": "FM27-Benchmark von FM Match Lab (<link>Studie 13b</link>): offensive Mittelfeldspieler und Flügelspieler.",
+      "fm27-9": "FM27-Benchmark von FM Match Lab (<link>Studie 13b</link>): Stürmer.",
+      "fm27-gk": "FM27-Benchmark von FM Match Lab (<link>Studie 13b</link>): Torhüter."
+    },
+    "resetToBenchmark": "Auf Benchmark zurücksetzen",
+    "linearNote": "Linear entspricht der Kalibrierung der FM27-Benchmarks und von „vs. Alter“.",
+    "json": {
+      "title": "JSON importieren / exportieren",
+      "label": "Profil-JSON",
+      "placeholder": "Hier erscheint das exportierte Profil-JSON. Fügen Sie hier JSON ein, um es zu importieren.",
+      "invalid": "Ungültiges Profil-JSON"
+    }
+  },
+  "columns": {
+    "intro": "Die Attribute, die Spielerliste und Vergleich als Spalten zeigen. Speichern Sie verschiedene Sätze als Profile.",
+    "shown": "{count, number} angezeigt"
+  },
+  "colours": {
+    "intro": "Welchen Wert (1 bis 20) ein Attribut für jede Farbe braucht. Die Farben folgen dem hellen oder dunklen Design.",
+    "band": "Stufe",
+    "minValue": "Mindestwert",
+    "preview": "Vorschau, 1 bis 20",
+    "bands": {
+      "excellent": "Hervorragendes Attribut",
+      "good": "Gutes Attribut",
+      "average": "Durchschnittliches Attribut",
+      "low": "Schwaches Attribut"
+    },
+    "minValueLabel": "Mindestwert für {band}",
+    "below": "Unter <b>{value, number}</b>"
+  }
+}

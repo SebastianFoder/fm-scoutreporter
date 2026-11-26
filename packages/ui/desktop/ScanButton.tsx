@@ -1,6 +1,7 @@
 "use client";
 
 import { Radar } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useDesktop } from "./DesktopProvider";
 
 const STYLES = {
@@ -25,33 +26,34 @@ const STYLES = {
  */
 export function ScanButton({ variant = "bar" }: { variant?: keyof typeof STYLES }) {
   const desktop = useDesktop();
+  const t = useTranslations("desktop.scanButton");
   if (!desktop) return null;
   const { scanning, progress, scan } = desktop;
-  const pct = progress ? Math.round(progress.progress * 100) : 0;
+  const share = progress ? Math.round(progress.progress * 100) / 100 : 0;
   const s = STYLES[variant];
   const button = `btn h-full border-l font-semibold disabled:opacity-70 ${s.button}`;
 
   return (
-    <div role="group" aria-label="Scan Football Manager" className={`flex shrink-0 overflow-hidden rounded-md border ${s.group}`}>
+    <div role="group" aria-label={t("group")} className={`flex shrink-0 overflow-hidden rounded-md border ${s.group}`}>
       <span className={`flex items-center ${s.icon}`} aria-hidden>
         <Radar className={`h-4 w-4 ${scanning ? "animate-spin motion-reduce:animate-none" : ""}`} />
       </span>
       {scanning ? (
         <span role="status" className={`${button} hover:bg-transparent`}>
-          Scanning {pct}%
+          {t("scanning", { progress: share })}
         </span>
       ) : (
         <>
           <button
             type="button"
             onClick={() => void scan("search")}
-            title="Keep the people in FM's Player Search or Staff Search, plus your club (F9)"
+            title={t("searchTitle")}
             className={button}
           >
-            Scan search
+            {t("search")}
           </button>
-          <button type="button" onClick={() => void scan("full")} title="Keep every player and staff member in the save" className={button}>
-            Scan save
+          <button type="button" onClick={() => void scan("full")} title={t("saveTitle")} className={button}>
+            {t("save")}
           </button>
         </>
       )}

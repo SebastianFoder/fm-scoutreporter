@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "2xl";
@@ -46,6 +47,7 @@ export function Modal({
   closeOnOverlayClick = true,
   closeOnEsc = true,
 }: ModalProps) {
+  const t = useTranslations("common.modal");
   const titleId = useId();
   const descId = useId();
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -137,7 +139,7 @@ export function Modal({
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Close modal"
+                aria-label={t("close")}
                 className="btn h-8 w-8 shrink-0 text-muted hover:bg-ink/6 hover:text-ink"
               >
                 <X className="h-4 w-4" aria-hidden />

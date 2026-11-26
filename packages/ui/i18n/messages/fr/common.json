@@ -1,0 +1,35 @@
+{
+  "close": "Fermer",
+  "cancel": "Annuler",
+  "save": "Enregistrer",
+  "reset": "Réinitialiser",
+  "delete": "Supprimer",
+  "duplicate": "Dupliquer",
+  "import": "Importer",
+  "export": "Exporter",
+  "loading": "Chargement…",
+  "modal": {
+    "close": "Fermer la fenêtre"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> sur {total, number}",
+    "rows": "Lignes",
+    "all": "Toutes",
+    "goTo": "Aller à",
+    "go": "OK",
+    "first": "Début",
+    "prev": "Préc.",
+    "next": "Suiv.",
+    "last": "Fin"
+  },
+  "grade": {
+    "label": "Note {grade}",
+    "title": "Note {grade} ({score} sur l’échelle 1–20)",
+    "titleWithLabel": "{label} : note {grade} ({score} sur l’échelle 1–20)"
+  },
+  "estimated": {
+    "ranged": "Score estimé : fourchette de recrutement pour {ranged, number} attribut(s) (valeur médiane utilisée)",
+    "unknown": "Score estimé : {unknown, number} attribut(s) inconnu(s) (compté 0)",
+    "both": "Score estimé : fourchette de recrutement pour {ranged, number} attribut(s) (valeur médiane utilisée), {unknown, number} inconnu(s) (compté 0)"
+  }
+}

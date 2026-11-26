@@ -25,6 +25,8 @@ export type AdviceTone = "positive" | "info" | "warning";
 
 export interface AdviceItem {
   id: string;
+  /** Which wording of the note this is (e.g. gap: gapClose / gapUnlikely / gapLeft), for translating it. */
+  variant: string;
   title: string;
   detail: string;
   tone: AdviceTone;
@@ -53,8 +55,17 @@ export interface DevelopmentPlan {
   endAge: number;
   seasonsLeft: number;
   caGap: number | null;
-  focus: { name: string; reason: string };
-  trainingRole: { name: string; reason: string };
+  /**
+   * The individual focus. `kind` and `attribute` say which advice it is, so the UI can word it in
+   * another language; `name` and `reason` are the English.
+   */
+  focus: {
+    kind: "goalkeeper" | "quickness" | "attribute" | "quicknessFallback";
+    attribute?: AttributeKey;
+    name: string;
+    reason: string;
+  };
+  trainingRole: { kind: "none" | "defensive" | "attacking"; name: string; reason: string };
   /** Development sessions ranked for this player's role (outfield only; keepers weren't tested). */
   sessions: SessionPick[] | null;
   coaching: CoachingShare[];
@@ -172,12 +183,14 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   let focus: DevelopmentPlan["focus"];
   if (isGoalkeeper) {
     focus = {
+      kind: "goalkeeper",
       name: "Reflexes / Anticipation / Positioning / Agility",
       reason:
         "Agility and Reflexes carry the most weight for keepers. An FM27 training-code tester found this combined focus the best for keepers prioritising them.",
     };
   } else if (QUICKNESS_KEYS.some((k) => raw[k] < QUICKNESS_DONE)) {
     focus = {
+      kind: "quickness",
       name: "Quickness",
       reason: `Pace and Acceleration are among the heaviest weights in every outfield role. In harvestgreen22's test the focus took them from about +1.6 to +2.7 a season. Current Pace ${raw.pace}, Acceleration ${raw.acceleration}.`,
     };
@@ -187,20 +200,28 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
       .sort((a, b) => b.v - a.v)[0];
     focus = next
       ? {
+          kind: "attribute",
+          attribute: next.k,
           name: attributeLabel(next.k),
           reason: `Pace and Acceleration are already ${raw.pace} and ${raw.acceleration}, so Quickness has little left to add. ${attributeLabel(next.k)} is where the ${role.role} score has the most to gain.`,
         }
-      : { name: "Quickness", reason: "Pace and Acceleration are among the heaviest weights in every outfield role." };
+      : {
+          kind: "quicknessFallback",
+          name: "Quickness",
+          reason: "Pace and Acceleration are among the heaviest weights in every outfield role.",
+        };
   }
 
   // Training role.
   const defensive = groups.some((g) => g !== "GK" && GROUP_PROFILE[g] === "defensive");
   const trainingRole: DevelopmentPlan["trainingRole"] = isGoalkeeper
     ? {
+        kind: "none",
         name: "Leave both training roles unassigned",
         reason: "An FM27 training-code tester got the most growth for keepers with no role and the combined focus above.",
       }
     : {
+        kind: defensive ? "defensive" : "attacking",
         name: `${defensive ? "Defensive Midfielder" : "Attacking Midfielder"} out of possession, nothing in possession`,
         reason: `An FM27 training-code tester got the strongest CA growth for young outfielders from an out-of-possession role alone, with Quickness: Defensive Midfielder for defenders, wing-backs and DMs, Attacking Midfielder for everyone else. Anticipation grew most. This comes from one tester's controlled runs.`,
       };
@@ -213,6 +234,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   if (scores.bestPotential && scores.bestPotential.role !== scores.best.role) {
     items.push({
       id: "role",
+      variant: "role",
       tone: "info",
       title: `Develop as a ${scores.bestPotential.role}`,
       detail: `Best role today is ${scores.best.role} (${scores.best.score.toFixed(1)}), but the attributes at PA fit a ${scores.bestPotential.role} better (${scores.bestPotential.score.toFixed(1)}).`,
@@ -223,6 +245,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
     if (caGap <= 5) {
       items.push({
         id: "gap",
+        variant: "gapClose",
         tone: "info",
         title: "Close to the ceiling",
         detail: `Only ${caGap} CA between CA ${raw.currentAbility} and PA ${raw.potentialAbility}. Training now mostly decides where the CA goes, not how much there is, so point it at the attributes the role needs.`,
@@ -230,6 +253,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
     } else if (seasonsLeft <= 1 && caGap >= 15) {
       items.push({
         id: "gap",
+        variant: "gapUnlikely",
         tone: "warning",
         title: "Unlikely to reach PA",
         detail: `${caGap} CA still to come at age ${raw.age}, and attributes grow little after ${endAge}. Value the player closer to current ability.`,
@@ -237,6 +261,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
     } else {
       items.push({
         id: "gap",
+        variant: "gapLeft",
         tone: "positive",
         title: `${caGap} CA left to grow into`,
         detail: `CA ${raw.currentAbility} toward PA ${raw.potentialAbility}, with about ${seasonsLeft} season${seasonsLeft === 1 ? "" : "s"} of real development left (growth slows sharply after ${endAge}${isGoalkeeper ? " for keepers" : ""}).`,
@@ -247,6 +272,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   if (raw.age <= 18) {
     items.push({
       id: "minutes",
+      variant: "minutesPeak",
       tone: "info",
       title: "Peak development years",
       detail:
@@ -255,6 +281,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   } else if (raw.age < endAge) {
     items.push({
       id: "minutes",
+      variant: "minutesSenior",
       tone: "info",
       title: "Needs senior minutes",
       detail:
@@ -263,6 +290,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   } else {
     items.push({
       id: "minutes",
+      variant: "minutesPast",
       tone: "info",
       title: "Past the development window",
       detail: `Attributes grow little after ${endAge}. Training from here mostly reshapes what is already there.`,
@@ -274,6 +302,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
     if (prof >= 15) {
       items.push({
         id: "prof",
+        variant: "profHigh",
         tone: "positive",
         title: `Professionalism ${prof}`,
         detail: "fm-scoring's notes point to Professionalism as the hidden attribute that matters most for growth. This level helps a player get the most out of their PA.",
@@ -281,6 +310,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
     } else {
       items.push({
         id: "prof",
+        variant: "profLow",
         tone: prof < 10 ? "warning" : "info",
         title: `${prof < 10 ? "Low" : "Average"} Professionalism (${prof})`,
         detail:
@@ -290,6 +320,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
   } else if (raw.determination < 10) {
     items.push({
       id: "det",
+      variant: "det",
       tone: "warning",
       title: `Determination ${raw.determination}`,
       detail:
@@ -299,6 +330,7 @@ export function developmentPlan(player: PlayerWithGroups): DevelopmentPlan {
 
   items.push({
     id: "schedule",
+    variant: "schedule",
     tone: "info",
     title: "Put the development sessions on one day",
     detail:

@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "Rôles FM27",
+    "scale": "score 0–20",
+    "barTitle": "{hasPotential, select, yes {{role} : actuel {current}, potentiel {potential}} other {{role} : actuel {current}}}",
+    "legend": "Légende",
+    "now": "Actuel",
+    "ageBenchmark": "Référence à {age} ans : {value}",
+    "prime": "Apogée {value}",
+    "vsAge": "vs âge",
+    "potentialVsPrime": "Potentiel vs apogée"
+  },
+  "plan": {
+    "title": "Plan de progression",
+    "builtFor": "{atPa, select, yes {Conçu pour le meilleur rôle au potentiel : {role} ({score})} other {Conçu pour le meilleur rôle : {role} ({score})}}",
+    "focusLabel": "Priorité de l’entraînement individuel",
+    "focus": {
+      "quickness": "Vivacité",
+      "goalkeeperReason": "Agilité et Réflexes pèsent le plus chez les gardiens. Un testeur qui a épluché le code d’entraînement de FM27 a trouvé cette priorité combinée la meilleure pour les gardiens qui les privilégient.",
+      "quicknessReason": "Vitesse et Accélération font partie des plus gros poids de chaque rôle de joueur de champ. Dans le test de harvestgreen22, cette priorité les a fait passer d’environ +1,6 à +2,7 par saison. Actuellement : Vitesse {pace}, Accélération {acceleration}.",
+      "attributeReason": "Vitesse et Accélération sont déjà à {pace} et {acceleration} : Vivacité n’a plus grand-chose à apporter. C’est sur {attribute} que le score de {role} a le plus à gagner.",
+      "quicknessFallbackReason": "Vitesse et Accélération font partie des plus gros poids de chaque rôle de joueur de champ."
+    },
+    "trainingRoleLabel": "Rôle à l’entraînement",
+    "trainingRole": {
+      "goalkeeper": "Laissez les deux rôles d’entraînement vides",
+      "goalkeeperReason": "Un testeur du code d’entraînement de FM27 a obtenu la meilleure progression chez les gardiens sans aucun rôle et avec la priorité combinée ci-dessus.",
+      "outfield": "{role, select, defensive {Milieu défensif sans le ballon, rien avec le ballon} other {Milieu offensif sans le ballon, rien avec le ballon}}",
+      "outfieldReason": "Un testeur du code d’entraînement de FM27 a obtenu la plus forte progression de NA chez les jeunes joueurs de champ avec un seul rôle sans le ballon, plus Vivacité : Milieu défensif pour les défenseurs, les latéraux offensifs et les milieux défensifs, Milieu offensif pour tous les autres. C’est l’Anticipation qui a le plus progressé. Ce résultat vient des essais contrôlés d’un seul testeur."
+    },
+    "sessions": {
+      "title": "Séances de progression pour le score de {role}",
+      "more": "plus de {attributes}",
+      "nothingExtra": "rien de plus",
+      "barLabel": "{session} : {percent} de la meilleure séance",
+      "note": "Progression du score de rôle apportée par chaque séance dans le test FM27 de harvestgreen22, appliquée aux attributs de ce joueur, en proportion de la meilleure. « Plus de » indique ce qu’une séance développe au-delà de la séance de progression moyenne.",
+      "goalkeeper": "Les gardiens ne figuraient pas dans le test des séances. L’entraînement des gardiens couvre l’essentiel de ce dont un gardien a besoin : confiez-le à votre meilleur entraîneur des gardiens."
+    },
+    "coaching": {
+      "title": "L’entraînement qui compte le plus",
+      "subtitle": "Part de la progression restante du score de {role} travaillée par chaque groupe d’entraînement",
+      "coach": "préparateur : {attributes}",
+      "barLabel": "{group} : {percent}"
+    },
+    "notes": "Remarques",
+    "items": {
+      "role": {
+        "title": "Faire progresser comme {role}",
+        "detail": "Son meilleur rôle aujourd’hui est {bestRole} ({bestScore}), mais ses attributs au potentiel correspondent mieux à {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Proche du plafond",
+        "detail": "Seulement {gap} points de NA entre son NA ({ca}) et son potentiel ({pa}). L’entraînement décide désormais surtout où va le NA, pas sa quantité : orientez-le vers les attributs dont le rôle a besoin."
+      },
+      "gapUnlikely": {
+        "title": "Peu de chances d’atteindre son potentiel",
+        "detail": "Encore {gap} points de NA à gagner à {age} ans, et les attributs progressent peu après {endAge} ans. Estimez plutôt le joueur d’après son niveau actuel."
+      },
+      "gapLeft": {
+        "title": "Encore {gap} points de NA à gagner",
+        "detail": "{goalkeeper, select, yes {NA {ca} vers un potentiel de {pa}, avec environ {seasons, plural, one {# saison} other {# saisons}} de vraie progression devant lui (la progression ralentit nettement après {endAge} ans chez les gardiens).} other {NA {ca} vers un potentiel de {pa}, avec environ {seasons, plural, one {# saison} other {# saisons}} de vraie progression devant lui (la progression ralentit nettement après {endAge} ans).}}"
+      },
+      "minutesPeak": {
+        "title": "Années clés de progression",
+        "detail": "C’est entre 16 et 18 ans que les attributs progressent le plus vite. Le temps de jeu et le niveau des adversaires nourrissent tous deux la progression du NA : du temps de jeu en équipe première ou en prêt vaut mieux que le football de jeunes dès que le joueur peut tenir une place. Pour les U18, l’auteur de fm-scoring utilise le programme minimal (sans séances tactiques)."
+      },
+      "minutesSenior": {
+        "title": "Besoin de temps de jeu en équipe première",
+        "detail": "Le temps de jeu et le niveau des adversaires déterminent combien de NA un joueur gagne. S’il n’a pas de place de titulaire dans votre club, prêtez-le au club le plus fort qui le fera jouer."
+      },
+      "minutesPast": {
+        "title": "Passé l’âge de progresser",
+        "detail": "Les attributs progressent peu après {endAge} ans. À partir de maintenant, l’entraînement remodèle surtout l’existant."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "D’après les notes de fm-scoring, le Professionnalisme est l’attribut caché qui compte le plus pour la progression. À ce niveau, il aide le joueur à tirer le maximum de son potentiel."
+      },
+      "profLow": {
+        "title": "{level, select, low {{attribute} faible ({value})} other {{attribute} moyen ({value})}}",
+        "detail": "D’après les notes de fm-scoring, le Professionnalisme est l’attribut caché qui compte le plus pour la progression. Dans FM, l’encadrement est le moyen de changer la personnalité : placez le joueur dans un groupe d’encadrement avec des joueurs expérimentés au Professionnalisme élevé (fm-scoring propose un filtre de recherche de joueur pour trouver des mentors)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "L’entraînement ne modifie jamais la Détermination. L’encadrement est le moyen de changer la personnalité. Exportez avec la vue Hidden Attributes pour voir le Professionnalisme."
+      },
+      "schedule": {
+        "title": "Regroupez les séances de progression sur une journée",
+        "detail": "Seuls Travail de possession, Travail offensif avec ballon, Travail défensif avec ballon, Condition physique, Condition physique intensive et Développement individuel font progresser les attributs. Aucune autre séance n’a fait progresser le NA plus que le repos, et répéter une séance apporte peu. Un testeur a regroupé les séances de progression sur une seule journée pour garder des journées complètes de Repos, sans aucun risque de blessure à l’entraînement. Le risque de blessure à l’entraînement est ainsi passé de 13,8 % à 4,0 %, pour une progression presque identique."
+      }
+    },
+    "source": "D’après les recherches sur l’entraînement FM27 réunies dans <link>fm-scoring</link> : le test d’entraînement de harvestgreen22, les tests de programmes de l’auteur de fm-scoring et un testeur qui a épluché le code d’entraînement de FM27.",
+    "younger": "La plupart de ces conseils valent pour les jeunes joueurs.",
+    "odds": "La progression varie au hasard d’un mois à l’autre : voyez ceci comme des probabilités, pas comme une promesse."
+  }
+}

@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { intlTag } from "@scoutreporter/ui/i18n/locales";
 import { Download, ExternalLink } from "lucide-react";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
@@ -21,27 +24,32 @@ export const revalidate = 600;
 
 const kbd = "rounded border border-line bg-surface px-1.5 text-[13px] font-semibold";
 
+/** Inline markup in the download messages. */
+const TAGS = {
+  b: (c: ReactNode) => <span className="font-semibold">{c}</span>,
+  kbd: (c: ReactNode) => <kbd className={kbd}>{c}</kbd>,
+};
+
 export default async function DownloadPage() {
   const release = await latestDesktopRelease();
+  const locale = await getLocale();
+  const t = await getTranslations("download");
   const sizeMb = release && release.bytes > 0 ? Math.round(release.bytes / 1e6) : null;
   const date = release?.publishedAt
-    ? new Date(release.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+    ? new Date(release.publishedAt).toLocaleDateString(intlTag(locale), { day: "numeric", month: "long", year: "numeric" })
     : null;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-5 py-8 text-ink md:py-10">
       <JsonLd data={breadcrumbLd([{ name: "Desktop app", path: "/download" }])} />
-      <PageHeader title="Scout Reporter for Windows">
-        Every screen of this website, plus <span className="font-semibold text-ink">Scan search</span>: set up a Player
-        Search in Football Manager, press <kbd className={kbd}>F9</kbd>, and the players FM found, with your own
-        squad, are in Players, Best XI, Squad and Staff a few seconds later. No view files and no CSV
-        export.
+      <PageHeader title={t("title")}>
+        {t.rich("intro", { b: (c) => <span className="font-semibold text-ink">{c}</span>, kbd: TAGS.kbd })}
       </PageHeader>
 
       <figure className="panel overflow-hidden">
         <Screenshot
           shot={screenshot("players")}
-          alt="The player list: every player scored on your weights or an FM27 role"
+          alt={t("screenshotAlt")}
           sizes="(min-width: 768px) 720px, 100vw"
           priority
         />
@@ -49,7 +57,7 @@ export default async function DownloadPage() {
 
       <section className="panel space-y-3 px-5 py-4" aria-labelledby="get-title">
         <h2 id="get-title" className="section-title">
-          Download
+          {t("get.title")}
         </h2>
         {release ? (
           <>
@@ -58,108 +66,91 @@ export default async function DownloadPage() {
               className="btn h-11 gap-2 rounded-md bg-accent px-4 text-[15px] font-semibold text-on-accent hover:opacity-90"
             >
               <Download className="h-4 w-4" aria-hidden />
-              Download for Windows
+              {t("get.button")}
             </a>
             <p className="text-[13px] text-muted">
-              Version {release.version}
-              {date && `, ${date}`}
-              {sizeMb !== null && ` · ${release.fileName}, ${sizeMb} MB`} ·{" "}
+              {date ? t("get.versionDate", { version: release.version, date }) : t("get.version", { version: release.version })}
+              {sizeMb !== null && ` · ${t("get.file", { file: release.fileName, size: sizeMb })}`} ·{" "}
               <a href={release.pageUrl} className="link">
-                Release notes and checksum
+                {t("get.releaseNotes")}
               </a>{" "}
               ·{" "}
               <a href={DESKTOP_RELEASES_URL} className="link">
-                All versions
+                {t("get.allVersions")}
               </a>
             </p>
           </>
         ) : (
           <p className="text-sm">
-            The installer is published on GitHub:{" "}
-            <a href={DESKTOP_RELEASES_URL} className="link inline-flex items-center gap-1">
-              Scout Reporter desktop releases <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-            </a>
-            . Download <span className="font-semibold">Scout-Reporter-Setup-&lt;version&gt;.exe</span> from the newest
-            one.
+            {t.rich("get.fallback", {
+              ...TAGS,
+              file: "Scout-Reporter-Setup-<version>.exe",
+              link: (c) => (
+                <a href={DESKTOP_RELEASES_URL} className="link inline-flex items-center gap-1">
+                  {c} <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                </a>
+              ),
+            })}
           </p>
         )}
-        <p className="text-[13px] text-muted">
-          Windows 10 or 11, 64-bit. Football Manager 27 (27.0) or 26 (26.3), from Steam, Epic or Game Pass. A Mac
-          version is planned.
-        </p>
+        <p className="text-[13px] text-muted">{t("get.requirements")}</p>
       </section>
 
       <section className="space-y-2" aria-labelledby="install-title">
         <h2 id="install-title" className="section-title">
-          Install
+          {t("install.title")}
         </h2>
         <ol className="list-decimal space-y-1.5 pl-5 text-[15px] marker:text-muted">
-          <li>Run the installer you downloaded.</li>
-          <li>
-            The installer is not code-signed yet, so Windows SmartScreen says it is from an unknown publisher. Click{" "}
-            <span className="font-semibold">More info</span>, then <span className="font-semibold">Run anyway</span>.
-          </li>
-          <li>Choose where to install it. It adds a Start menu entry and a desktop shortcut.</li>
+          <li>{t("install.run")}</li>
+          <li>{t.rich("install.smartScreen", TAGS)}</li>
+          <li>{t("install.location")}</li>
         </ol>
       </section>
 
       <section className="space-y-2" aria-labelledby="use-title">
         <h2 id="use-title" className="section-title">
-          Use
+          {t("use.title")}
         </h2>
         <ol className="list-decimal space-y-1.5 pl-5 text-[15px] marker:text-muted">
-          <li>Start Football Manager and load your save. Keep Scout Reporter open next to it.</li>
-          <li>
-            In FM, open <span className="font-semibold">Player Search</span> (or Staff Search) and set your filters,
-            for example Player&apos;s interest: Interested, to see only players who would join you.
-          </li>
-          <li>
-            Press <kbd className={kbd}>F9</kbd> (it works inside FM) or <span className="font-semibold">Scan search</span>{" "}
-            in the app. The players from the search and your own club appear in every screen.{" "}
-            <span className="font-semibold">Scan save</span> reads the whole save instead, no search needed.
-          </li>
-          <li>
-            Switch <span className="font-semibold">Use CA, PA and hidden attributes</span> off if you would rather not
-            see them. Scan again every few in-game months to follow growth on the Growth page.
-          </li>
+          <li>{t("use.start")}</li>
+          <li>{t.rich("use.search", TAGS)}</li>
+          <li>{t.rich("use.scan", TAGS)}</li>
+          <li>{t.rich("use.hidden", TAGS)}</li>
         </ol>
-        <p className="text-sm text-muted">
-          If Football Manager runs as administrator, run Scout Reporter as administrator too.
-        </p>
+        <p className="text-sm text-muted">{t("use.admin")}</p>
       </section>
 
       <section className="space-y-2" aria-labelledby="safe-title">
         <h2 id="safe-title" className="section-title">
-          Is it safe?
+          {t("safe.title")}
         </h2>
         <p className="text-[15px]">
-          The app only reads Football Manager&apos;s memory; it never changes your game or your save. The only thing
-          it asks the internet is whether GitHub has a newer version (you can turn that off); nothing about you or your
-          save is sent. Scans stay on your PC, under <code className="text-[13px]">%APPDATA%\Scout Reporter</code>.
-          The code is open on{" "}
-          <a href={REPO_URL} className="link">
-            GitHub
-          </a>
-          , and every release is built there by GitHub Actions. The memory reader is adapted from{" "}
-          <a href="https://github.com/mavarobli/FMSuperScout" className="link">
-            FMSuperScout
-          </a>{" "}
-          (MIT licence).
+          {t.rich("safe.reader", {
+            path: String.raw`%APPDATA%\Scout Reporter`,
+            code: (c) => <code className="text-[13px]">{c}</code>,
+            github: (c) => (
+              <a href={REPO_URL} className="link">
+                {c}
+              </a>
+            ),
+            fmss: (c) => (
+              <a href="https://github.com/mavarobli/FMSuperScout" className="link">
+                {c}
+              </a>
+            ),
+          })}
         </p>
-        <p className="text-[15px]">
-          After a big Football Manager patch the reader may need an update. The app warns when your game version
-          differs from the one it was made for, and tells you when a new version is out:{" "}
-          <span className="font-semibold">Update now</span> installs it and keeps your settings, scans, weights and
-          formations.
-        </p>
+        <p className="text-[15px]">{t.rich("safe.updates", TAGS)}</p>
       </section>
 
       <p className="text-sm text-muted">
-        Rather not install anything?{" "}
-        <Link href="/how-to-use" className="link">
-          Use the website with a CSV export
-        </Link>
-        .
+        {t.rich("website", {
+          link: (c) => (
+            <Link href="/how-to-use" className="link">
+              {c}
+            </Link>
+          ),
+        })}
       </p>
     </div>
   );

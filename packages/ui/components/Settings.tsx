@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { Settings as SettingsIcon } from "lucide-react";
 import { Modal } from "./Modal";
 import { WeightSettings } from "./WeightConfig";
@@ -17,11 +18,12 @@ import { DesktopSettingsPanel } from "../desktop/DesktopSettings";
  */
 export type SettingsTab = "weights" | "columns" | "look" | "app";
 
-const TABS: { id: SettingsTab; label: string; desktopOnly?: boolean }[] = [
-  { id: "weights", label: "Weights" },
-  { id: "columns", label: "Columns" },
-  { id: "look", label: "Look" },
-  { id: "app", label: "App", desktopOnly: true },
+/** Labels are settings.tabs.<id>. */
+const TABS: { id: SettingsTab; desktopOnly?: boolean }[] = [
+  { id: "weights" },
+  { id: "columns" },
+  { id: "look" },
+  { id: "app", desktopOnly: true },
 ];
 
 type SettingsContextValue = {
@@ -66,35 +68,36 @@ function SettingsDialog({
   onTab: (tab: SettingsTab) => void;
   onClose: () => void;
 }) {
+  const t = useTranslations("settings");
   const desktop = useDesktopBridge() !== null;
-  const tabs = TABS.filter((t) => desktop || !t.desktopOnly);
-  const current = tabs.some((t) => t.id === tab) ? tab : "weights";
+  const tabs = TABS.filter((item) => desktop || !item.desktopOnly);
+  const current = tabs.some((item) => item.id === tab) ? tab : "weights";
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title="Settings"
+      title={t("title")}
       placement="side"
       toolbar={
-        <div role="tablist" aria-label="Settings" className="flex overflow-x-auto overflow-y-hidden px-3">
-          {tabs.map((t) => {
-            const active = t.id === current;
+        <div role="tablist" aria-label={t("title")} className="flex overflow-x-auto overflow-y-hidden px-3">
+          {tabs.map((item) => {
+            const active = item.id === current;
             return (
               <button
-                key={t.id}
+                key={item.id}
                 type="button"
                 role="tab"
-                id={`settings-tab-${t.id}`}
+                id={`settings-tab-${item.id}`}
                 aria-selected={active}
                 aria-controls="settings-panel"
-                onClick={() => onTab(t.id)}
+                onClick={() => onTab(item.id)}
                 className={[
                   "-mb-px shrink-0 border-b-2 px-3 py-2 text-sm",
                   active ? "border-accent font-semibold text-ink" : "border-transparent text-muted hover:text-ink",
                 ].join(" ")}
               >
-                {t.label}
+                {t(`tabs.${item.id}`)}
               </button>
             );
           })}
@@ -107,11 +110,11 @@ function SettingsDialog({
         {current === "look" && (
           <div className="space-y-6">
             <section className="space-y-2">
-              <h3 className="section-title">Theme</h3>
+              <h3 className="section-title">{t("look.theme")}</h3>
               <ThemeSetting />
             </section>
             <section className="space-y-2 border-t border-line pt-4">
-              <h3 className="section-title">Attribute colours</h3>
+              <h3 className="section-title">{t("look.attributeColours")}</h3>
               <AttributeColourSettings />
             </section>
           </div>
@@ -125,15 +128,16 @@ function SettingsDialog({
 /** The gear in the site header. */
 export function SettingsButton() {
   const { openSettings } = useSettings();
+  const t = useTranslations("settings");
   return (
     <button
       type="button"
       onClick={() => openSettings()}
-      title="Settings"
+      title={t("title")}
       className="btn h-8 gap-1.5 px-2 text-[13px] font-medium text-on-chrome/80 hover:bg-on-chrome/10 hover:text-on-chrome"
     >
       <SettingsIcon className="h-4 w-4" aria-hidden />
-      <span className="hidden sm:inline">Settings</span>
+      <span className="hidden sm:inline">{t("title")}</span>
     </button>
   );
 }

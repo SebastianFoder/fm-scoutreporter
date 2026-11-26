@@ -1,0 +1,35 @@
+{
+  "close": "Stäng",
+  "cancel": "Avbryt",
+  "save": "Spara",
+  "reset": "Återställ",
+  "delete": "Ta bort",
+  "duplicate": "Duplicera",
+  "import": "Importera",
+  "export": "Exportera",
+  "loading": "Laddar…",
+  "modal": {
+    "close": "Stäng dialogrutan"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> av {total, number}",
+    "rows": "Rader",
+    "all": "Alla",
+    "goTo": "Gå till",
+    "go": "Gå",
+    "first": "Första",
+    "prev": "Föreg.",
+    "next": "Nästa",
+    "last": "Sista"
+  },
+  "grade": {
+    "label": "Betyg {grade}",
+    "title": "Betyg {grade} ({score} på skalan 1–20)",
+    "titleWithLabel": "{label}: betyg {grade} ({score} på skalan 1–20)"
+  },
+  "estimated": {
+    "ranged": "Uppskattad poäng: {ranged, number} från ett scoutintervall (mittvärdet används)",
+    "unknown": "Uppskattad poäng: {unknown, number} okända (räknas som 0)",
+    "both": "Uppskattad poäng: {ranged, number} från ett scoutintervall (mittvärdet används), {unknown, number} okända (räknas som 0)"
+  }
+}

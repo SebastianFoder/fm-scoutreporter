@@ -1,0 +1,102 @@
+{
+  "intro": "Valuta, classifica e confronta i giocatori da un’esportazione di Football Manager 27 o 26. Tutto gira nel tuo browser; il CSV non lascia mai il tuo computer.",
+  "desktop": {
+    "title": "App desktop per Windows",
+    "body": "Salta l’esportazione: legge i giocatori della tua ricerca giocatori direttamente dal gioco, con CA e PA reali.",
+    "cta": "Scarica"
+  },
+  "sections": {
+    "title": "Sezioni",
+    "section": "Sezione",
+    "whatItDoes": "Cosa fa",
+    "needs": "Richiede",
+    "open": "Apri"
+  },
+  "modes": {
+    "players": {
+      "name": "Giocatori",
+      "blurb": "Valuta e classifica i giocatori con i tuoi pesi delle qualità o con i ruoli FM27, confrontali e scova le giovani promesse: con CA e PA ogni giocatore riceve un punteggio Potenziale al pieno potenziale. Migliori 11 sceglie gli undici più forti per una formazione entro un budget.",
+      "needs": "Vista Standard o Hidden Attributes",
+      "cta": "Apri Giocatori"
+    },
+    "squad": {
+      "name": "Analisi rosa",
+      "blurb": "Importa la tua rosa e scegli la formazione per vedere il tuo primo e secondo undici, i ruoli scoperti o deboli, i titolari che invecchiano, i giovani pronti al salto, i problemi di stato rosa e i rinforzi dalla tua importazione di osservati.",
+      "needs": "Vista Squad o Squad Hidden Attributes",
+      "cta": "Apri Analisi rosa"
+    },
+    "staff": {
+      "name": "Staff",
+      "blurb": "Classifica preparatori, osservatori, analisti e direttori su ogni ruolo dello staff, con le valutazioni a parole di FM26 riportate sulla scala 1–20. Miglior staff sceglie la combinazione più forte per i ruoli che ti servono, senza usare nessuno due volte.",
+      "needs": "Vista Staff",
+      "cta": "Apri Staff"
+    }
+  },
+  "screens": {
+    "players": "Giocatori",
+    "bestXi": "Migliori 11",
+    "staff": "Staff",
+    "backroom": "Miglior staff"
+  },
+  "moreScreens": "Altre schermate",
+  "screenshots": {
+    "open": "Apri {title}",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Analisi rosa",
+      "caption": "Il tuo primo e secondo undici, ruoli scoperti, anelli deboli e chi dovrebbe giocare titolare."
+    },
+    "players": {
+      "title": "Elenco giocatori",
+      "caption": "Ogni giocatore valutato sui tuoi pesi o su un ruolo FM27, con voti, vs Età e valore."
+    },
+    "bestXi": {
+      "title": "Migliori 11",
+      "caption": "I migliori undici per qualsiasi formazione, entro un budget per gli acquisti."
+    },
+    "player": {
+      "title": "Pannello giocatore",
+      "caption": "Clicca un giocatore per vedere profilo, CA, PA e qualità in un pannello laterale."
+    },
+    "staff": {
+      "title": "Staff",
+      "caption": "Preparatori, osservatori e direttori valutati su 17 ruoli dello staff."
+    },
+    "backroom": {
+      "title": "Miglior staff",
+      "caption": "Lo staff da ingaggiare per ogni ruolo, senza usare nessuno due volte."
+    }
+  },
+  "start": {
+    "title": "Come portare i giocatori fuori da FM",
+    "exporter": "Installa un esportatore: FM View Exporter per FM27, oppure BepInEx con il plugin FM26 Player CSV Export.",
+    "view": "Importa la vista Scout Reporter nel Database giocatori di FM (clic destro sull’intestazione di una colonna, poi Importa vista).",
+    "export": "Seleziona i giocatori e premi <kbd>F9</kbd> per esportare un CSV.",
+    "import": "Importa quel CSV in Giocatori.",
+    "guide": "Guida completa all’installazione",
+    "faq": "Domande frequenti"
+  },
+  "views": {
+    "title": "File delle viste (.fmf)",
+    "hidden": {
+      "name": "Vista Hidden Attributes",
+      "summary": "La vista Standard più Professionalità, CA e PA nascosti. Consigliata."
+    },
+    "standard": {
+      "name": "Vista Standard",
+      "summary": "Tutte le qualità visibili del giocatore."
+    },
+    "squadHidden": {
+      "name": "Vista Squad Hidden Attributes",
+      "summary": "La vista Squad più Professionalità, CA e PA nascosti."
+    },
+    "squad": {
+      "name": "Vista Squad",
+      "summary": "La schermata della tua rosa: tutte le qualità più formazione titolare, stato rosa, infortuni e stelle del preparatore. Per Analisi rosa."
+    },
+    "staff": {
+      "name": "Vista Staff",
+      "summary": "Tutti gli attributi dello staff, occupazione preferita, società e personalità. Per la modalità Staff."
+    }
+  }
+}

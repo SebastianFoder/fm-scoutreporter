@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "Importar",
+    "clear": "Borrar importación",
+    "loadTestData": "Cargar datos de prueba",
+    "chooseFile": "Elegir archivo CSV"
+  },
+  "messages": {
+    "storageFull": "Importación cargada solo en esta pestaña: el almacenamiento del navegador está lleno o bloqueado. Libera espacio o permite el almacenamiento para conservar los datos entre pestañas y visitas.",
+    "testDataFailed": "No se han podido cargar los datos de prueba.",
+    "parseFailed": "No se ha podido leer el CSV. Revisa el formato del archivo.",
+    "noStaffColumns": "Este archivo no tiene atributos de empleados. Expórtalo desde una búsqueda de empleados con la vista Scout Reporter Staff (las exportaciones de jugadores van en Jugadores).",
+    "noSquadPlayers": "Este archivo no tiene jugadores con posiciones. Exporta tu plantilla con la vista Scout Reporter Standard o Hidden Attributes.",
+    "noScanSquad": "En este escaneo no hay jugadores de tu club."
+  },
+  "players": {
+    "title": "Importar CSV de jugadores",
+    "imported": "{count, plural, one {# jugador importado} other {# jugadores importados}}",
+    "description": "Exportación de FM26 (<code>;</code>) o FM27 (<code>,</code>) con la vista Scout Reporter. Las columnas se reconocen por su nombre. Archivo de vista: <standard>Standard</standard> o <hidden>Hidden Attributes</hidden> (añade {professionalism}, CA y CP)."
+  },
+  "staff": {
+    "title": "Importar CSV de cuerpo técnico",
+    "imported": "{count, plural, one {# empleado importado} other {# empleados importados}}",
+    "description": "Exporta una búsqueda de empleados con la <link>vista Scout Reporter Staff</link>. Las columnas se reconocen por su nombre; valen tanto las palabras de FM26 como los números 1–20. Se guarda aparte de tu importación de jugadores."
+  }
+}

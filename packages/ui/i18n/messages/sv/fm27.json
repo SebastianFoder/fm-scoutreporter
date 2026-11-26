@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "FM27-roller",
+    "scale": "poäng 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: nu {current}, potential {potential}} other {{role}: nu {current}}}",
+    "legend": "Förklaring",
+    "now": "Nu",
+    "ageBenchmark": "Riktmärke för ålder {age}: {value}",
+    "prime": "Toppnivå {value}",
+    "vsAge": "mot ålder",
+    "potentialVsPrime": "Potential mot toppnivå"
+  },
+  "plan": {
+    "title": "Utvecklingsplan",
+    "builtFor": "{atPa, select, yes {Byggd för bästa rollen vid PF: {role} ({score})} other {Byggd för bästa rollen: {role} ({score})}}",
+    "focusLabel": "Individuellt träningsfokus",
+    "focus": {
+      "quickness": "Snabbhet",
+      "goalkeeperReason": "Smidighet och Reflexer väger tyngst för målvakter. En testare som gick igenom FM27:s träningskod fann att det här kombinerade fokuset är bäst för målvakter som prioriterar dem.",
+      "quicknessReason": "Fart och Acceleration hör till de tyngsta vikterna i alla roller för utespelare. I harvestgreen22s test tog fokuset dem från cirka +1,6 till +2,7 per säsong. Nuvarande Fart {pace}, Acceleration {acceleration}.",
+      "attributeReason": "Fart och Acceleration är redan {pace} och {acceleration}, så Snabbhet har lite kvar att ge. {attribute} är där {role}-poängen har mest att vinna.",
+      "quicknessFallbackReason": "Fart och Acceleration hör till de tyngsta vikterna i alla roller för utespelare."
+    },
+    "trainingRoleLabel": "Träningsroll",
+    "trainingRole": {
+      "goalkeeper": "Lämna båda träningsrollerna otilldelade",
+      "goalkeeperReason": "En testare som gick igenom FM27:s träningskod fick mest utveckling för målvakter utan roll och med det kombinerade fokuset ovan.",
+      "outfield": "{role, select, defensive {Defensiv mittfältare utan boll, inget med boll} other {Offensiv mittfältare utan boll, inget med boll}}",
+      "outfieldReason": "En testare som gick igenom FM27:s träningskod fick starkast NF-utveckling för unga utespelare med enbart en roll utan boll, tillsammans med Snabbhet: Defensiv mittfältare för försvarare, offensiva ytterbackar och DM, Offensiv mittfältare för alla andra. Förutseende ökade mest. Det här kommer från en testares kontrollerade körningar."
+    },
+    "sessions": {
+      "title": "Utvecklingspass för {role}-poängen",
+      "more": "mer {attributes}",
+      "nothingExtra": "inget extra",
+      "barLabel": "{session}: {percent} av det bästa passet",
+      "note": "Utveckling av rollpoängen från varje pass i harvestgreen22s FM27-test, tillämpad på spelarens egenskaper, som andel av det bästa. ”Mer” listar vad ett pass bygger utöver det genomsnittliga utvecklingspasset.",
+      "goalkeeper": "Målvakter var inte med i passtestet. Målvaktstränaren tränar det mesta en målvakt behöver, så tilldela din bästa."
+    },
+    "coaching": {
+      "title": "Träningen som betyder mest",
+      "subtitle": "Andel av den återstående {role}-utvecklingen som varje träningsgrupp tränar",
+      "coach": "tränare: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Anteckningar",
+    "items": {
+      "role": {
+        "title": "Utveckla som {role}",
+        "detail": "Bästa rollen i dag är {bestRole} ({bestScore}), men egenskaperna vid PF passar bättre som {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Nära taket",
+        "detail": "Bara {gap} NF mellan NF {ca} och PF {pa}. Träningen avgör nu mest vart NF:en tar vägen, inte hur mycket det blir, så rikta den mot egenskaperna rollen behöver."
+      },
+      "gapUnlikely": {
+        "title": "Når troligen inte PF",
+        "detail": "{gap} NF kvar att få vid {age} års ålder, och egenskaperna ökar lite efter {endAge}. Värdera spelaren närmare nuvarande förmåga."
+      },
+      "gapLeft": {
+        "title": "{gap} NF kvar att växa in i",
+        "detail": "{goalkeeper, select, yes {NF {ca} mot PF {pa}, med cirka {seasons, plural, one {# säsong} other {# säsonger}} av verklig utveckling kvar (utvecklingen saktar in kraftigt efter {endAge} för målvakter).} other {NF {ca} mot PF {pa}, med cirka {seasons, plural, one {# säsong} other {# säsonger}} av verklig utveckling kvar (utvecklingen saktar in kraftigt efter {endAge}).}}"
+      },
+      "minutesPeak": {
+        "title": "De viktigaste utvecklingsåren",
+        "detail": "16 till 18 är åldern då egenskaperna ökar snabbast. Speltid och motståndets kvalitet driver båda NF-utvecklingen, så speltid i A-laget eller på lån slår ungdomsfotboll så snart spelaren kan ta en plats. För U18 använder fm-scorings upphovsperson det minimala schemat (inga taktikpass)."
+      },
+      "minutesSenior": {
+        "title": "Behöver speltid i A-laget",
+        "detail": "Speltid och motståndets kvalitet avgör hur mycket NF en spelare får. Finns det ingen startplats för spelaren i din klubb, låna ut till den starkaste klubb som ger en startplats."
+      },
+      "minutesPast": {
+        "title": "Förbi utvecklingsfönstret",
+        "detail": "Egenskaperna ökar lite efter {endAge}. Träning härifrån formar mest om det som redan finns."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "fm-scorings anteckningar pekar ut Professionalism som den dolda egenskap som betyder mest för utvecklingen. Den här nivån hjälper en spelare att få ut det mesta av sin PF."
+      },
+      "profLow": {
+        "title": "{level, select, low {Låg {attribute} ({value})} other {Medel {attribute} ({value})}}",
+        "detail": "fm-scorings anteckningar pekar ut Professionalism som den dolda egenskap som betyder mest för utvecklingen. Mentorskap är hur FM ändrar personlighet: sätt spelaren i en mentorskapsgrupp med äldre spelare som har hög Professionalism (fm-scoring har ett spelarsökningsfilter för mentorer)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "Träning påverkar aldrig Beslutsamhet. Mentorskap är sättet att ändra personlighet. Exportera med vyn Hidden Attributes för att se Professionalism."
+      },
+      "schedule": {
+        "title": "Lägg utvecklingspassen på en dag",
+        "detail": "Bara Bollinnehavsarbete, Anfallsspel bollprogression, Defensivt arbete med boll, Kondition, Tungt fyspass och Individuell utveckling ökar egenskaperna. Alla andra pass gav inte mer NF än vila, och att upprepa ett pass tillför lite. En testare packade utvecklingspassen på en dag för att behålla hela vilodagar, som inte har några kontroller för träningsskador. Det sänkte risken för träningsskador från 13,8 % till 4,0 % med nästan samma utveckling."
+      }
+    },
+    "source": "Från FM27-träningsforskningen som samlats i <link>fm-scoring</link>: harvestgreen22s träningstest, fm-scorings upphovspersons egna schematester och en testare som gick igenom FM27:s träningskod.",
+    "younger": "Det mesta gäller yngre spelare.",
+    "odds": "Utvecklingen är slumpmässig från månad till månad, så se det här som oddsen, inte ett löfte."
+  }
+}

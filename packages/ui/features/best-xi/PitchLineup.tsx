@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
+import { useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
 import { SLOT_LABEL, SPOT_SLOT, SPOT_XY, type FormationSpot } from "@scoutreporter/core/best-xi/formations";
 
 /** The grass and lines of a vertical 68 × 100 pitch, with whatever sits on it positioned in percent. */
@@ -33,8 +35,19 @@ export type PitchEntry = {
   score: number | null;
 };
 
+/** A score or average with a fixed number of decimals, in the current language ("14.3" / "14,3"). */
+export function useFixed(): (value: number, digits?: number) => string {
+  const formatNumber = useFormatNumber();
+  return useCallback(
+    (value, digits = 1) => formatNumber(value, { minimumFractionDigits: digits, maximumFractionDigits: digits }),
+    [formatNumber],
+  );
+}
+
 /** A line-up drawn on a vertical pitch, one chip per position. */
 export function PitchLineup({ entries, label }: { entries: PitchEntry[]; label: string }) {
+  const t = useTranslations("bestXi.pitch");
+  const fixed = useFixed();
   return (
     <figure aria-label={label}>
       <Pitch>
@@ -47,8 +60,8 @@ export function PitchLineup({ entries, label }: { entries: PitchEntry[]; label: 
                 key={e.spot}
                 title={
                   empty
-                    ? `${e.spot}: nobody in the squad plays ${position}`
-                    : `${e.name}, ${e.spot} (${position}), ${e.score?.toFixed(1)}`
+                    ? t("nobodyTitle", { spot: e.spot, position })
+                    : t("entryTitle", { name: e.name!, spot: e.spot, position, score: e.score === null ? "" : fixed(e.score) })
                 }
                 className={[
                   "absolute w-[19%] -translate-x-1/2 -translate-y-1/2 rounded-[3px] border px-1 py-0.5 text-center leading-tight",
@@ -57,11 +70,11 @@ export function PitchLineup({ entries, label }: { entries: PitchEntry[]; label: 
                 style={spotStyle(e.spot)}
               >
                 <span className="block truncate text-[12px] font-semibold">
-                  {empty ? "Nobody" : e.name!.trim().split(/\s+/).pop()}
+                  {empty ? t("nobody") : e.name!.trim().split(/\s+/).pop()}
                 </span>
                 <span className={`block text-[11px] ${empty ? "" : "text-muted"}`}>
                   {e.spot}
-                  {e.score !== null && ` ${e.score.toFixed(1)}`}
+                  {e.score !== null && ` ${fixed(e.score)}`}
                 </span>
               </li>
             );

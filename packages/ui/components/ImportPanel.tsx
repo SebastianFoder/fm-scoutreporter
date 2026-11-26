@@ -1,9 +1,22 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { AlertTriangle, Upload } from "lucide-react";
 import { Button, LINK_BUTTON_CLASS } from "./Button";
 import { DESKTOP_BUILD } from "../desktop/target";
+
+/**
+ * A message the import panel shows after a load: a key in importer.messages, translated where it is
+ * shown. Providers return these instead of English text.
+ */
+export type ImportMessage =
+  | "storageFull"
+  | "testDataFailed"
+  | "parseFailed"
+  | "noStaffColumns"
+  | "noSquadPlayers"
+  | "noScanSquad";
 
 /**
  * CSV import row: title, one-line help, and Clear / Load test data / Choose file. The data side
@@ -23,11 +36,13 @@ export function ImportPanel({
   /** Fixture name served by /api/fixtures/[name]. */
   testFixture: string;
   /** Resolves (or returns) a message to show, or null when the import went well. */
-  onLoad: (csvText: string) => string | null | Promise<string | null>;
+  onLoad: (csvText: string) => ImportMessage | null | Promise<ImportMessage | null>;
   onClear: () => void;
   onImported?: () => void;
 }) {
-  const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("importer");
+  const tCommon = useTranslations("common");
+  const [error, setError] = useState<ImportMessage | null>(null);
   const [testDataLoading, setTestDataLoading] = useState(false);
 
   const load = async (text: string) => {
@@ -42,7 +57,7 @@ export function ImportPanel({
       if (!res.ok) throw new Error("Failed to fetch fixture");
       await load(await res.text());
     } catch {
-      setError("Could not load test data.");
+      setError("testDataFailed");
     } finally {
       setTestDataLoading(false);
     }
@@ -55,7 +70,7 @@ export function ImportPanel({
       await load(await file.text());
     } catch (e) {
       console.error(e);
-      setError("Could not parse CSV. Please check the file format.");
+      setError("parseFailed");
       onClear();
     } finally {
       event.target.value = "";
@@ -65,7 +80,7 @@ export function ImportPanel({
   if (DESKTOP_BUILD) return null;
 
   return (
-    <section aria-label="Import" className="panel">
+    <section aria-label={t("panel.label")} className="panel">
       <div className="flex flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
           <h2 className="section-title">{title}</h2>
@@ -82,7 +97,7 @@ export function ImportPanel({
               setError(null);
             }}
           >
-            Clear import
+            {t("panel.clear")}
           </Button>
           <Button
             color="alt"
@@ -91,14 +106,14 @@ export function ImportPanel({
             onClick={() => void loadTestData()}
             disabled={testDataLoading}
           >
-            {testDataLoading ? "Loading…" : "Load test data"}
+            {testDataLoading ? tCommon("loading") : t("panel.loadTestData")}
           </Button>
           <label
             className={`${LINK_BUTTON_CLASS} cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-series-1`}
           >
             <input type="file" accept=".csv,text/csv" className="sr-only" onChange={handleFileChange} />
             <Upload className="h-4 w-4" aria-hidden />
-            <span>Choose CSV file</span>
+            <span>{t("panel.chooseFile")}</span>
           </label>
         </div>
       </div>
@@ -109,15 +124,15 @@ export function ImportPanel({
           className="flex items-start gap-2 border-t border-line bg-red/8 px-4 py-2.5 text-sm text-ink"
         >
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red" aria-hidden />
-          {error}
+          {t(`messages.${error}`)}
         </div>
       )}
     </section>
   );
 }
 
-export const STORAGE_FULL_MESSAGE =
-  "Import loaded in this tab only: browser storage is full or blocked. Free space or allow storage to keep data across tabs and visits.";
+/** Shown when an import could not be stored beyond this tab (storage full or blocked). */
+export const STORAGE_FULL_MESSAGE: ImportMessage = "storageFull";
 
 /**
  * What a screen shows before there is any data: how to import a CSV on the website, or how to scan

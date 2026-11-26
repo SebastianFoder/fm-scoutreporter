@@ -8,8 +8,10 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { useTranslations } from "next-intl";
 import type { AttributeKey } from "@scoutreporter/core/types/weights";
 import { Button } from "./Button";
+import { useAttributeLabel, useIntlLocale } from "../i18n/hooks";
 
 export interface HighlightProfile {
   id: string;
@@ -166,18 +168,18 @@ const PHYSICAL_KEYS: AttributeKey[] = [
   "strength",
 ];
 
-function titleCaseFromCamel(key: string) {
-  const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
-  return withSpaces
-    .split(" ")
-    .map((w) => (w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ""))
-    .join(" ");
-}
-
 /** The Columns tab in Settings: which attributes the player list and compare show as columns. */
 export function HighlightSettings() {
   const { state, setState } = useHighlightContext();
   const { activeId, profiles } = state;
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
+  const tGroups = useTranslations("fm.attributeGroups");
+  const attributeLabel = useAttributeLabel();
+  const intlLocale = useIntlLocale();
+  /** The built-in default's name in the current language; any other name as stored. */
+  const displayName = (p: HighlightProfile) =>
+    p.id === DEFAULT_PROFILE.id && p.name === DEFAULT_PROFILE.name ? t("profiles.default") : p.name;
 
   const active =
     profiles.find((p) => p.id === activeId) ?? profiles[0] ?? DEFAULT_PROFILE;
@@ -193,7 +195,7 @@ export function HighlightSettings() {
     const id = `profile-${Date.now()}`;
     const next: HighlightProfile = {
       id,
-      name: "New Profile",
+      name: t("profiles.newName"),
       highlighted: [],
     };
     setState((prev) => ({
@@ -207,7 +209,7 @@ export function HighlightSettings() {
     const next: HighlightProfile = {
       ...active,
       id,
-      name: `${active.name} Copy`,
+      name: t("profiles.copyName", { name: displayName(active) }),
       highlighted: [...active.highlighted],
     };
     setState((prev) => ({ activeId: id, profiles: [...prev.profiles, next] }));
@@ -230,13 +232,13 @@ export function HighlightSettings() {
   };
 
   const renderGroup = (title: string, keys: AttributeKey[]) => {
-    const sorted = [...keys].sort((a, b) => a.localeCompare(b));
+    const sorted = [...keys].sort((a, b) => attributeLabel(a).localeCompare(attributeLabel(b), intlLocale));
     const used = sorted.filter((k) => active.highlighted.includes(k)).length;
     return (
       <section>
         <h3 className="section-title sticky top-0 z-[1] -mx-5 flex items-baseline justify-between border-y border-line bg-paper px-5 py-1.5">
           {title}
-          <span className="text-[12px] font-normal text-muted">{used} shown</span>
+          <span className="text-[12px] font-normal text-muted">{t("columns.shown", { count: used })}</span>
         </h3>
         <div className="grid grid-cols-2 gap-x-3 py-1.5">
           {sorted.map((k) => {
@@ -253,7 +255,7 @@ export function HighlightSettings() {
                   onChange={() => toggleKey(k)}
                 />
                 <span className={`truncate text-sm ${checked ? "font-semibold" : "text-muted"}`}>
-                  {titleCaseFromCamel(k)}
+                  {attributeLabel(k)}
                 </span>
               </label>
             );
@@ -265,11 +267,11 @@ export function HighlightSettings() {
 
   return (
       <div className="space-y-4">
-      <p className="text-[13px] text-muted">The attributes the player list and compare show as columns. Save different sets as profiles.</p>
+      <p className="text-[13px] text-muted">{t("columns.intro")}</p>
 
         <div className="space-y-2">
           <label className="flex flex-col gap-1 text-[13px] text-muted">
-            Profile
+            {t("profiles.profile")}
             <select
               className="field h-9 w-full pl-2.5 text-sm font-semibold text-ink"
               value={active.id}
@@ -279,13 +281,13 @@ export function HighlightSettings() {
             >
               {profiles.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name}
+                  {displayName(p)}
                 </option>
               ))}
             </select>
           </label>
           <label className="flex flex-col gap-1 text-[13px] text-muted">
-            Name
+            {t("profiles.name")}
             <input
               type="text"
               className="field h-9 w-full px-2.5 text-sm text-ink"
@@ -293,15 +295,15 @@ export function HighlightSettings() {
               onChange={(e) =>
                 updateActive((p) => ({ ...p, name: e.target.value }))
               }
-              placeholder="Profile name"
+              placeholder={t("profiles.namePlaceholder")}
             />
           </label>
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <Button color="alt" variant="outline" size="sm" onClick={createNew}>
-              Create New
+              {t("profiles.createNew")}
             </Button>
             <Button color="alt" variant="outline" size="sm" onClick={duplicate}>
-              Duplicate
+              {tCommon("duplicate")}
             </Button>
             <Button
               color="red"
@@ -310,16 +312,16 @@ export function HighlightSettings() {
               onClick={remove}
               disabled={profiles.length <= 1}
             >
-              Delete
+              {tCommon("delete")}
             </Button>
           </div>
         </div>
 
         <div>
-          {renderGroup("Technical", TECHNICAL_KEYS)}
-          {renderGroup("Mental", MENTAL_KEYS)}
-          {renderGroup("Physical", PHYSICAL_KEYS)}
-          {renderGroup("Goalkeeping", GOALKEEPING_KEYS)}
+          {renderGroup(tGroups("technical"), TECHNICAL_KEYS)}
+          {renderGroup(tGroups("mental"), MENTAL_KEYS)}
+          {renderGroup(tGroups("physical"), PHYSICAL_KEYS)}
+          {renderGroup(tGroups("goalkeeping"), GOALKEEPING_KEYS)}
         </div>
       </div>
   );

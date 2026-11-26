@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "FM27-roller",
+    "scale": "poeng 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: nå {current}, potensial {potential}} other {{role}: nå {current}}}",
+    "legend": "Forklaring",
+    "now": "Nå",
+    "ageBenchmark": "Referanse for alder {age}: {value}",
+    "prime": "Toppnivå {value}",
+    "vsAge": "vs alder",
+    "potentialVsPrime": "Potensial vs toppnivå"
+  },
+  "plan": {
+    "title": "Utviklingsplan",
+    "builtFor": "{atPa, select, yes {Laget for beste rolle ved PF: {role} ({score})} other {Laget for beste rolle: {role} ({score})}}",
+    "focusLabel": "Individuelt treningsfokus",
+    "focus": {
+      "quickness": "Hastighet",
+      "goalkeeperReason": "Smidighet og Reflekser veier tyngst for keepere. En som testet treningskoden i FM27, fant at dette kombinerte fokuset var best for keepere som prioriterer dem.",
+      "quicknessReason": "Fart og Akselerasjon er blant de tyngste vektene i alle utespillerroller. I testen til harvestgreen22 løftet fokuset dem fra rundt +1,6 til +2,7 per sesong. Nåværende Fart {pace}, Akselerasjon {acceleration}.",
+      "attributeReason": "Fart og Akselerasjon er allerede {pace} og {acceleration}, så Hastighet har lite igjen å gi. {attribute} er der {role}-poengene har mest å hente.",
+      "quicknessFallbackReason": "Fart og Akselerasjon er blant de tyngste vektene i alle utespillerroller."
+    },
+    "trainingRoleLabel": "Treningsrolle",
+    "trainingRole": {
+      "goalkeeper": "La begge treningsrollene stå tomme",
+      "goalkeeperReason": "En som testet treningskoden i FM27, fikk mest utvikling for keepere uten rolle og med det kombinerte fokuset over.",
+      "outfield": "{role, select, defensive {Defensiv midtbane uten ball, ingenting med ball} other {Offensiv midtbane uten ball, ingenting med ball}}",
+      "outfieldReason": "En som testet treningskoden i FM27, fikk sterkest NF-vekst for unge utespillere med bare en rolle uten ball, sammen med Hastighet: Defensiv midtbane for forsvarsspillere, wingbacker og DM-er, Offensiv midtbane for alle andre. Spilleforståelse økte mest. Dette bygger på kontrollerte kjøringer fra én tester."
+    },
+    "sessions": {
+      "title": "Utviklingsøkter for {role}-poengene",
+      "more": "mer {attributes}",
+      "nothingExtra": "ingenting ekstra",
+      "barLabel": "{session}: {percent} av den beste økten",
+      "note": "Vekst i rollepoeng fra hver økt i FM27-testen til harvestgreen22, brukt på denne spillerens ferdigheter, som andel av den beste. «Mer» viser hva en økt bygger utover en gjennomsnittlig utviklingsøkt.",
+      "goalkeeper": "Keepere var ikke med i økttesten. Keepertreneren trener det meste en keeper trenger, så sett inn den beste du har."
+    },
+    "coaching": {
+      "title": "Treningen som betyr mest",
+      "subtitle": "Andel av den gjenværende {role}-veksten hver treningsgruppe trener",
+      "coach": "trener: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Merknader",
+    "items": {
+      "role": {
+        "title": "Utvikle som {role}",
+        "detail": "Beste rolle i dag er {bestRole} ({bestScore}), men ferdighetene ved PF passer bedre til {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Nær taket",
+        "detail": "Bare {gap} NF mellom NF {ca} og PF {pa}. Treningen avgjør nå mest hvor NF havner, ikke hvor mye det blir, så rett den mot ferdighetene rollen trenger."
+      },
+      "gapUnlikely": {
+        "title": "Når neppe PF",
+        "detail": "{gap} NF gjenstår ved {age} års alder, og ferdighetene vokser lite etter {endAge}. Verdsett spilleren nærmere nåværende nivå."
+      },
+      "gapLeft": {
+        "title": "{gap} NF igjen å vokse",
+        "detail": "{goalkeeper, select, yes {NF {ca} mot PF {pa}, med rundt {seasons, plural, one {# sesong} other {# sesonger}} med reell utvikling igjen (veksten bremser kraftig etter {endAge} for keepere).} other {NF {ca} mot PF {pa}, med rundt {seasons, plural, one {# sesong} other {# sesonger}} med reell utvikling igjen (veksten bremser kraftig etter {endAge}).}}"
+      },
+      "minutesPeak": {
+        "title": "De viktigste utviklingsårene",
+        "detail": "Fra 16 til 18 år vokser ferdighetene raskest. Både spilletid og motstandernes kvalitet gir NF-vekst, så minutter på seniornivå eller på lån slår ungdomsfotball så snart spilleren kan holde på en plass. For U18 bruker forfatteren av fm-scoring et minimalt treningsopplegg (ingen taktiske økter)."
+      },
+      "minutesSenior": {
+        "title": "Trenger spilletid på seniornivå",
+        "detail": "Spilletid og motstandernes kvalitet styrer hvor mye NF en spiller får. Hvis det ikke er noen plass i startelleveren i klubben din, lån spilleren ut til den sterkeste klubben som vil bruke spilleren fra start."
+      },
+      "minutesPast": {
+        "title": "Forbi utviklingsvinduet",
+        "detail": "Ferdighetene vokser lite etter {endAge}. Trening herfra omformer stort sett det som allerede finnes."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "Notatene fra fm-scoring peker på Profesjonalitet som den skjulte ferdigheten som betyr mest for utviklingen. Dette nivået hjelper en spiller med å få mest mulig ut av PF."
+      },
+      "profLow": {
+        "title": "{level, select, low {Lav {attribute} ({value})} other {Middels {attribute} ({value})}}",
+        "detail": "Notatene fra fm-scoring peker på Profesjonalitet som den skjulte ferdigheten som betyr mest for utviklingen. Veiledning er måten FM endrer personlighet på: sett spilleren i en veiledningsgruppe med seniorspillere med høy Profesjonalitet (fm-scoring har med et spillersøkfilter for veiledere)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "Trening flytter aldri Målbevissthet. Veiledning er måten å endre personlighet på. Eksporter med visningen Hidden Attributes for å se Profesjonalitet."
+      },
+      "schedule": {
+        "title": "Legg utviklingsøktene på én dag",
+        "detail": "Bare Ballarbeid med ballbesittelse, Angrepsspill med ball og Defensivt spill med ball, Kondisjon, Hard kondisjon og Individuell utvikling øker ferdighetene. Alle andre økter ga ikke mer NF-vekst enn hvile, og å gjenta en økt gir lite. En tester samlet utviklingsøktene på én dag for å beholde hele hviledager, som ikke har noen sjekk for treningsskader. Det kuttet risikoen for treningsskader fra 13,8 % til 4,0 % med nesten samme vekst."
+      }
+    },
+    "source": "Fra FM27-treningsforskningen samlet i <link>fm-scoring</link>: treningstesten til harvestgreen22, egne tester av treningsopplegg fra forfatteren av fm-scoring, og en tester som gikk gjennom treningskoden i FM27.",
+    "younger": "Det meste gjelder yngre spillere.",
+    "odds": "Veksten er tilfeldig fra måned til måned, så se på dette som sannsynligheter, ikke et løfte."
+  }
+}

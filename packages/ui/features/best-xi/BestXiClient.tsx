@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useIntlLocale } from "../../i18n/hooks";
 import { ArrowLeft, RotateCcw, X } from "lucide-react";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { CsvImportPanel } from "@scoutreporter/ui/components/CsvImportPanel";
@@ -15,7 +17,7 @@ import type { PlayerWithGroups } from "@scoutreporter/core/players";
 import { weightedAverage } from "@scoutreporter/core/fm27/benchmarks";
 import { parsePositionSlots, type PositionSlot } from "@scoutreporter/core/position-slots";
 import { DEFAULT_FORMATION, SLOT_LABEL } from "@scoutreporter/core/best-xi/formations";
-import { parseSlotSettings, resolveRole, settingsFor, shortRole, type Role, type SlotSetting } from "@scoutreporter/core/best-xi/roles";
+import { parseSlotSettings, resolveRole, settingsFor, type Role, type SlotSetting } from "@scoutreporter/core/best-xi/roles";
 import {
   currencyPrefix,
   formatMoney,
@@ -27,9 +29,9 @@ import {
 } from "@scoutreporter/core/best-xi/money";
 import { solveBestXi, xiCostRange, type XiCandidate, type XiSlot } from "@scoutreporter/core/best-xi/solver";
 import type { AttributeKey } from "@scoutreporter/core/types/weights";
-import { FormationEditor } from "./FormationEditor";
+import { FormationEditor, useRoleName } from "./FormationEditor";
 import { ScoreBasisToggle } from "./ScoreBasisToggle";
-import { PitchLineup } from "./PitchLineup";
+import { PitchLineup, useFixed } from "./PitchLineup";
 
 const STORAGE_KEY = "bestXiSettings";
 
@@ -86,16 +88,14 @@ type Outcome =
   | { kind: "slots"; unfilled: SlotSetting[] }
   | { kind: "budget"; range: { min: number; max: number } | null };
 
-const VALUATION_LABEL: Record<Valuation, string> = {
-  low: "Low end of range",
-  mid: "Midpoint of range",
-  high: "High end of range",
-};
+const VALUATIONS: Valuation[] = ["low", "mid", "high"];
 
 export default function BestXiClient() {
   const { state } = usePlayersData();
   const { players, caModels } = state;
   const profiles = useWeightProfiles();
+  const t = useTranslations("bestXi");
+  const tTerms = useTranslations("fm.terms");
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
@@ -130,7 +130,8 @@ export default function BestXiClient() {
     }
     return "€";
   }, [players]);
-  const money = (n: number) => formatMoney(n, currency);
+  const intlLocale = useIntlLocale();
+  const money = (n: number) => formatMoney(n, currency, intlLocale);
 
   // Per player: where they can play and what they count for against the budget.
   const pool = useMemo(() => {
@@ -223,22 +224,27 @@ export default function BestXiClient() {
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
         <PageHeader
-          title="Best XI"
+          title={tTerms("bestXi")}
           aside={
             <Link href="/players" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
-              <ArrowLeft className="h-4 w-4" aria-hidden /> Players
+              <ArrowLeft className="h-4 w-4" aria-hidden /> {tTerms("players")}
             </Link>
           }
         >
-          Picks the highest-scoring eleven from your import for a formation, with an optional
-          minimum and maximum on what the eleven costs in total.
+          {t("intro")}
         </PageHeader>
 
         <CsvImportPanel testFixture="attribute" onImported={() => update({ excluded: [] })} />
 
         {players.length === 0 && (
-          <NoImport desktop={<>No players yet. In FM, open a Player Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
-            No CSV imported yet. Choose a CSV file above, or load the test data to look around.
+          <NoImport
+            desktop={t.rich("noImport.desktop", {
+              kbd: (chunks) => (
+                <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">{chunks}</kbd>
+              ),
+            })}
+          >
+            {t("noImport.web")}
           </NoImport>
         )}
 
@@ -247,7 +253,7 @@ export default function BestXiClient() {
             <section aria-labelledby="xi-setup" className="panel">
               <div className="flex items-center justify-between border-b border-line px-4 py-3">
                 <h2 id="xi-setup" className="section-title">
-                  Setup
+                  {t("setup.title")}
                 </h2>
                 <Button
                   color="alt"
@@ -256,57 +262,55 @@ export default function BestXiClient() {
                   icon={<RotateCcw className="h-3.5 w-3.5" aria-hidden />}
                   onClick={() => setSettings(DEFAULTS)}
                 >
-                  Reset
+                  {t("setup.reset")}
                 </Button>
               </div>
 
               <div className="flex flex-col gap-3.5 px-4 py-3.5">
                 <div className="grid grid-cols-2 gap-3">
                   <label className={labelClass}>
-                    Min budget ({currency})
+                    {t("setup.minBudget", { currency })}
                     <input
                       type="text"
                       inputMode="decimal"
                       value={settings.minBudget}
                       onChange={(e) => update({ minBudget: e.target.value })}
-                      placeholder="No minimum"
+                      placeholder={t("setup.noMinimum")}
                       aria-invalid={!minBudget.valid}
                       className={`${fieldClass} w-full`}
                     />
                   </label>
                   <label className={labelClass}>
-                    Max budget ({currency})
+                    {t("setup.maxBudget", { currency })}
                     <input
                       type="text"
                       inputMode="decimal"
                       value={settings.maxBudget}
                       onChange={(e) => update({ maxBudget: e.target.value })}
-                      placeholder="No limit"
+                      placeholder={t("setup.noLimit")}
                       aria-invalid={!maxBudget.valid}
                       className={`${fieldClass} w-full`}
                     />
                   </label>
                   <p className="col-span-2 -mt-1.5 text-[12px] text-muted">
                     {!minBudget.valid || !maxBudget.valid ? (
-                      <span className="text-red">
-                        Enter an amount like 15M, 750K or 2500000. Unreadable budgets are ignored.
-                      </span>
+                      <span className="text-red">{t("setup.budgetInvalid")}</span>
                     ) : (
-                      "Total for the eleven. Type amounts like 15M or 750K."
+                      t("setup.budgetHint")
                     )}
                   </p>
                 </div>
 
                 <label className={labelClass}>
-                  A player costs
+                  {t("setup.valuation")}
                   <select
                     value={settings.valuation}
                     onChange={(e) => update({ valuation: e.target.value as Valuation })}
                     className={`${fieldClass} w-full pl-2.5`}
                   >
-                    {(Object.keys(VALUATION_LABEL) as Valuation[]).map((v) => (
+                    {VALUATIONS.map((v) => (
                       <option key={v} value={v}>
-                        {VALUATION_LABEL[v]}
+                        {t(`setup.valuations.${v}`)}
                       </option>
                     ))}
                   </select>
@@ -326,9 +330,9 @@ export default function BestXiClient() {
                     className="mt-0.5 h-4 w-4 accent-[oklch(var(--primary))]"
                   />
                   <span>
-                    Include players with no transfer value
+                    {t("setup.includeFree")}
                     <span className="block text-[12px] text-muted">
-                      Mostly free agents. They count as {money(0)}.
+                      {t("setup.includeFreeHint", { amount: money(0) })}
                     </span>
                   </span>
                 </label>
@@ -345,27 +349,25 @@ export default function BestXiClient() {
 
             <div className="flex min-w-0 flex-col gap-4">
               {budgetsCross && (
-                <Notice title="The minimum budget is above the maximum.">
-                  No eleven can cost at least {money(minBudget.value!)} and at most{" "}
-                  {money(maxBudget.value!)}.
+                <Notice title={t("notices.budgetsCross.title")}>
+                  {t("notices.budgetsCross.body", { min: money(minBudget.value!), max: money(maxBudget.value!) })}
                 </Notice>
               )}
 
               {outcome?.kind === "slots" && (
-                <Notice title="Not enough players to fill this formation.">
-                  No eligible player left for:{" "}
-                  {[...new Set(outcome.unfilled.map((s) => SLOT_LABEL[s.slot]))].join(", ")}. Only natural
-                  positions from the export count.
-                  {(settings.excluded.length > 0 || !settings.includeFree) &&
-                    " Excluded players and players with no transfer value are left out."}
+                <Notice title={t("notices.slots.title")}>
+                  {t("notices.slots.body", {
+                    positions: [...new Set(outcome.unfilled.map((s) => SLOT_LABEL[s.slot]))].join(", "),
+                  })}
+                  {(settings.excluded.length > 0 || !settings.includeFree) && ` ${t("notices.slots.leftOut")}`}
                 </Notice>
               )}
 
               {outcome?.kind === "budget" && !budgetsCross && (
-                <Notice title="No eleven fits this budget.">
+                <Notice title={t("notices.budget.title")}>
                   {outcome.range
-                    ? `With these settings the cheapest possible eleven costs ${money(outcome.range.min)} and the most expensive ${money(outcome.range.max)}.`
-                    : "Try a wider budget."}
+                    ? t("notices.budget.range", { min: money(outcome.range.min), max: money(outcome.range.max) })
+                    : t("notices.budget.wider")}
                 </Notice>
               )}
 
@@ -383,7 +385,7 @@ export default function BestXiClient() {
 
               {excludedPlayers.length > 0 && (
                 <div className="flex flex-wrap items-center gap-1.5 text-sm">
-                  <span className="text-muted">Excluded:</span>
+                  <span className="text-muted">{t("excluded.label")}</span>
                   {excludedPlayers.map((p) => (
                     <button
                       key={p.raw.uniqueId}
@@ -392,25 +394,22 @@ export default function BestXiClient() {
                         update({ excluded: settings.excluded.filter((id) => id !== p.raw.uniqueId) })
                       }
                       className="btn h-7 gap-1 border border-line bg-surface px-2 text-[13px] font-normal hover:bg-paper"
-                      title="Allow this player again"
+                      title={t("excluded.allowAgain")}
                     >
                       {p.raw.player}
                       <X className="h-3.5 w-3.5 text-muted" aria-hidden />
-                      <span className="sr-only">(allow again)</span>
+                      <span className="sr-only">{t("excluded.allowAgainHidden")}</span>
                     </button>
                   ))}
                   <button type="button" className="link ml-1 text-[13px]" onClick={() => update({ excluded: [] })}>
-                    Clear all
+                    {t("excluded.clearAll")}
                   </button>
                 </div>
               )}
 
               <p className="max-w-3xl text-[13px] leading-relaxed text-muted">
-                Each position takes one player who lists it as a natural position, scored on that
-                position&apos;s role (1–20). The eleven shown has the highest total score of every
-                combination that fits the budget.
-                {pool.unavailable > 0 &&
-                  ` ${pool.unavailable} player${pool.unavailable === 1 ? " is" : "s are"} left out because the export gives no price (for example "Not for Sale").`}
+                {t("footnote")}
+                {pool.unavailable > 0 && ` ${t("unpriced", { count: pool.unavailable })}`}
               </p>
             </div>
           </div>
@@ -437,37 +436,39 @@ function XiResultPanel({
   maxBudget: number | null;
   onExclude: (id: string) => void;
 }) {
+  const t = useTranslations("bestXi.result");
+  const tTerms = useTranslations("fm.terms");
+  const fixed = useFixed();
+  const roleName = useRoleName();
   const { picks, totalScore, totalCost } = outcome;
   const wages = picks.reduce((sum, p) => sum + (p.wage ?? 0), 0);
   const unknownWages = picks.filter((p) => p.wage === null).length;
-  const budgetText =
-    maxBudget !== null && minBudget !== null
-      ? ` (budget ${money(minBudget)} to ${money(maxBudget)})`
-      : maxBudget !== null
-        ? ` of ${money(maxBudget)}`
-        : minBudget !== null
-          ? ` (at least ${money(minBudget)})`
-          : "";
+  const budget =
+    maxBudget !== null && minBudget !== null ? "range" : maxBudget !== null ? "max" : minBudget !== null ? "min" : "none";
+  const bold = (chunks: ReactNode) => <span className="font-semibold text-ink">{chunks}</span>;
 
   return (
     <section aria-labelledby="xi-result" className="panel">
       <div className="border-b border-line px-4 py-3">
         <h2 id="xi-result" className="section-title">
-          Best eleven
+          {t("title")}
         </h2>
         <p className="mt-0.5 text-sm text-muted">
-          Average score{" "}
-          <span className="font-semibold text-ink">{(totalScore / picks.length).toFixed(2)}</span>
-          {basis === "potential" && " at full potential"} · Cost{" "}
-          <span className="font-semibold text-ink">{money(totalCost)}</span>
-          {budgetText} · Wages{" "}
-          <span className="font-semibold text-ink">{money(wages)} p/w</span>
-          {unknownWages > 0 && ` (${unknownWages} without a contract)`}
+          {t.rich("summary", {
+            b: bold,
+            average: fixed(totalScore / picks.length, 2),
+            basis,
+            cost: money(totalCost),
+            budget,
+            min: minBudget === null ? "" : money(minBudget),
+            max: maxBudget === null ? "" : money(maxBudget),
+            wages: money(wages),
+            unknownWages,
+          })}
         </p>
         {!outcome.optimal && (
           <p className="mt-1 text-[13px] text-muted">
-            The search ran out of time before proving this is the very best eleven. A better one
-            could add at most {outcome.gap.toFixed(2)} to the total score of {totalScore.toFixed(1)}.
+            {t("notOptimal", { gap: fixed(outcome.gap, 2), total: fixed(totalScore) })}
           </p>
         )}
       </div>
@@ -475,7 +476,7 @@ function XiResultPanel({
       <div className="flex flex-col xl:flex-row">
         <div className="shrink-0 border-b border-line p-4 xl:w-[23.5rem] xl:border-b-0 xl:border-r">
           <PitchLineup
-            label="The eleven on the pitch"
+            label={t("pitchLabel")}
             entries={picks.map((p) => ({ spot: p.setting.spot, name: p.player.raw.player, score: p.score }))}
           />
         </div>
@@ -484,22 +485,22 @@ function XiResultPanel({
           <table className="data-table">
             <thead>
               <tr>
-                <th className="px-2.5 py-2 text-left">Pos</th>
-                <th className="px-2.5 py-2 text-left">Player</th>
-                <th className="px-2.5 py-2 text-right">Age</th>
-                <th className="px-2.5 py-2 text-left">Role</th>
-                <th className="px-2.5 py-2 text-right" title="Role score on FM's 1–20 scale">
-                  Score
+                <th className="px-2.5 py-2 text-left">{t("columns.pos")}</th>
+                <th className="px-2.5 py-2 text-left">{tTerms("player")}</th>
+                <th className="px-2.5 py-2 text-right">{tTerms("age")}</th>
+                <th className="px-2.5 py-2 text-left">{tTerms("role")}</th>
+                <th className="px-2.5 py-2 text-right" title={t("columns.scoreTitle")}>
+                  {t("columns.score")}
                 </th>
-                <th className="px-2.5 py-2 text-right" title="Transfer value in the export">
-                  Value
+                <th className="px-2.5 py-2 text-right" title={t("columns.valueTitle")}>
+                  {tTerms("value")}
                 </th>
-                <th className="px-2.5 py-2 text-right" title={`Counted against the budget: ${VALUATION_LABEL[valuation].toLowerCase()}`}>
-                  Counted
+                <th className="px-2.5 py-2 text-right" title={t("columns.countedTitle", { valuation })}>
+                  {t("columns.counted")}
                 </th>
-                <th className="px-2.5 py-2 text-right">Wage</th>
+                <th className="px-2.5 py-2 text-right">{tTerms("wage")}</th>
                 <th className="px-2.5 py-2">
-                  <span className="sr-only">Exclude</span>
+                  <span className="sr-only">{t("columns.exclude")}</span>
                 </th>
               </tr>
             </thead>
@@ -518,8 +519,8 @@ function XiResultPanel({
                       <span className="block text-[12px] text-muted">{raw.position}</span>
                     </td>
                     <td className="px-2.5 py-1.5 text-right">{raw.age}</td>
-                    <td className="px-2.5 py-1.5 text-[13px] text-muted">{shortRole(pick.role.name)}</td>
-                    <td className="px-2.5 py-1.5 text-right font-bold">{pick.score.toFixed(1)}</td>
+                    <td className="px-2.5 py-1.5 text-[13px] text-muted">{roleName(pick.role)}</td>
+                    <td className="px-2.5 py-1.5 text-right font-bold">{fixed(pick.score)}</td>
                     <td className="whitespace-nowrap px-2.5 py-1.5 text-right text-[13px] text-muted">
                       {raw.transferValueRange ?? "–"}
                     </td>
@@ -532,8 +533,8 @@ function XiResultPanel({
                         color="alt"
                         variant="ghost"
                         size="sm"
-                        aria-label={`Exclude ${raw.player} and pick again`}
-                        title="Exclude and pick again"
+                        aria-label={t("excludeLabel", { name: raw.player })}
+                        title={t("excludeTitle")}
                         onClick={() => onExclude(raw.uniqueId)}
                         icon={<X className="h-4 w-4" aria-hidden />}
                       />
@@ -545,13 +546,13 @@ function XiResultPanel({
             <tfoot>
               <tr className="font-semibold">
                 <td className="border-t border-line px-2.5 py-2" colSpan={4}>
-                  Total
+                  {t("total")}
                 </td>
-                <td className="border-t border-line px-2.5 py-2 text-right">{totalScore.toFixed(1)}</td>
+                <td className="border-t border-line px-2.5 py-2 text-right">{fixed(totalScore)}</td>
                 <td className="border-t border-line" />
                 <td className="border-t border-line px-2.5 py-2 text-right">{money(totalCost)}</td>
                 <td className="whitespace-nowrap border-t border-line px-2.5 py-2 text-right">
-                  {money(wages)} p/w
+                  {t("perWeek", { amount: money(wages) })}
                 </td>
                 <td className="border-t border-line" />
               </tr>

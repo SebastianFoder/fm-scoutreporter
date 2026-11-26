@@ -1,0 +1,102 @@
+{
+  "intro": "Bewerten, sortieren und vergleichen Sie Spieler aus einem Spielerexport von Football Manager 27 oder 26. Alles läuft in Ihrem Browser; die CSV verlässt Ihren Rechner nie.",
+  "desktop": {
+    "title": "Desktop-App für Windows",
+    "body": "Ohne Export: Die App liest die Spieler Ihrer FM-Spielersuche direkt aus dem Spiel, mit echter CA und PA.",
+    "cta": "Herunterladen"
+  },
+  "sections": {
+    "title": "Bereiche",
+    "section": "Bereich",
+    "whatItDoes": "Was er kann",
+    "needs": "Benötigt",
+    "open": "Öffnen"
+  },
+  "modes": {
+    "players": {
+      "name": "Spieler",
+      "blurb": "Bewerten und sortieren Sie Spieler nach Ihren eigenen Attributgewichten oder den FM27-Rollen, vergleichen Sie sie und finden Sie Wunderknaben: Mit CA und PA bekommt jeder Spieler eine Potenzial-Wertung bei vollem Potenzial. Beste Elf stellt die stärkste Elf für eine Formation innerhalb eines Budgets auf.",
+      "needs": "Ansicht Standard oder Hidden Attributes",
+      "cta": "Spieler öffnen"
+    },
+    "squad": {
+      "name": "Kaderanalyse",
+      "blurb": "Importieren Sie Ihren eigenen Kader und wählen Sie Ihre Formation: Sie sehen Ihre erste und zweite Elf, dünn oder schwach besetzte Positionen, alternde Stammspieler, Nachwuchsspieler, die bereit für mehr sind, Probleme beim Teamstatus und Verstärkungen aus Ihrem Scouting-Import.",
+      "needs": "Ansicht Squad oder Squad Hidden Attributes",
+      "cta": "Kaderanalyse öffnen"
+    },
+    "staff": {
+      "name": "Mitarbeiter",
+      "blurb": "Ordnen Sie Trainer, Scouts, Analysten und Direktoren nach jeder Mitarbeiterrolle, wobei die Wort-Bewertungen aus FM26 auf 1–20 zurückgerechnet werden. Bester Mitarbeiterstab stellt die stärkste Besetzung für die benötigten Rollen zusammen, niemand doppelt.",
+      "needs": "Ansicht Staff",
+      "cta": "Mitarbeiter öffnen"
+    }
+  },
+  "screens": {
+    "players": "Spieler",
+    "bestXi": "Beste Elf",
+    "staff": "Mitarbeiter",
+    "backroom": "Bester Mitarbeiterstab"
+  },
+  "moreScreens": "Weitere Ansichten",
+  "screenshots": {
+    "open": "{title} öffnen",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Kaderanalyse",
+      "caption": "Ihre erste und zweite Elf, dünne Besetzung, Schwachstellen und wer spielen sollte."
+    },
+    "players": {
+      "title": "Spielerliste",
+      "caption": "Jeder Spieler bewertet nach Ihren Gewichten oder einer FM27-Rolle, mit Noten, vs. Alter und Wert."
+    },
+    "bestXi": {
+      "title": "Beste Elf",
+      "caption": "Die beste Elf für jede Formation, innerhalb eines Transferbudgets."
+    },
+    "player": {
+      "title": "Spielerfenster",
+      "caption": "Klicken Sie auf einen Spieler, um Profil, CA, PA und Attribute in einem Seitenfenster zu sehen."
+    },
+    "staff": {
+      "title": "Mitarbeiter",
+      "caption": "Trainer, Scouts und Direktoren, bewertet nach 17 Mitarbeiterrollen."
+    },
+    "backroom": {
+      "title": "Bester Mitarbeiterstab",
+      "caption": "Die Mitarbeiter für jede Rolle, niemand doppelt eingesetzt."
+    }
+  },
+  "start": {
+    "title": "Spieler aus FM holen",
+    "exporter": "Installieren Sie einen Exporter: FM View Exporter für FM27 oder BepInEx mit dem Plugin FM26 Player CSV Export.",
+    "view": "Importieren Sie die Scout-Reporter-Ansicht in der Spielerdatenbank von FM (Rechtsklick auf eine Spaltenüberschrift, dann Ansicht importieren).",
+    "export": "Wählen Sie Spieler aus und drücken Sie <kbd>F9</kbd>, um eine CSV zu exportieren.",
+    "import": "Importieren Sie diese CSV unter Spieler.",
+    "guide": "Vollständige Einrichtungsanleitung",
+    "faq": "Häufige Fragen"
+  },
+  "views": {
+    "title": "Ansichtsdateien (.fmf)",
+    "hidden": {
+      "name": "Ansicht Hidden Attributes",
+      "summary": "Ansicht Standard plus die verborgenen Werte Professionalität, CA und PA. Empfohlen."
+    },
+    "standard": {
+      "name": "Ansicht Standard",
+      "summary": "Alle sichtbaren Spielerattribute."
+    },
+    "squadHidden": {
+      "name": "Ansicht Squad Hidden Attributes",
+      "summary": "Ansicht Squad plus die verborgenen Werte Professionalität, CA und PA."
+    },
+    "squad": {
+      "name": "Ansicht Squad",
+      "summary": "Ihr Kaderbildschirm: alle Attribute plus Aufstellung, Teamstatus, Verletzungen und Trainersterne. Für die Kaderanalyse."
+    },
+    "staff": {
+      "name": "Ansicht Staff",
+      "summary": "Alle Mitarbeiterattribute, bevorzugter Job, Verein und Persönlichkeit. Für den Mitarbeiter-Modus."
+    }
+  }
+}

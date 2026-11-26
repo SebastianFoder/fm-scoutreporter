@@ -1,0 +1,70 @@
+{
+  "title": "Configuración",
+  "tabs": {
+    "weights": "Pesos",
+    "columns": "Columnas",
+    "look": "Aspecto",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Tema",
+    "attributeColours": "Colores de atributos"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "profiles": {
+    "profile": "Perfil",
+    "name": "Nombre",
+    "namePlaceholder": "Nombre del perfil",
+    "createNew": "Crear nuevo",
+    "default": "Predeterminado",
+    "newName": "Nuevo perfil",
+    "copyName": "{name} (copia)"
+  },
+  "weights": {
+    "intro": "Cuánto cuenta cada atributo en la puntuación de un jugador. Las puntuaciones se actualizan mientras escribes. Los perfiles de rol de FM27 tienen como referencia el estudio de posiciones de FM Match Lab (13b).",
+    "weighted": "{count, number} ponderados",
+    "weighting": "Ponderación",
+    "linear": "Lineal (referencia de FM27)",
+    "emphasized": "Acentuada (pesos al cuadrado)",
+    "benchmark": "Pesos de rol de referencia de FM27 (FM Match Lab, <link>Estudio 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "Referencia de FM27 de FM Match Lab (<link>Estudio 13b</link>): centrales.",
+      "fm27-wb": "Referencia de FM27 de FM Match Lab (<link>Estudio 13b</link>): laterales y carrileros.",
+      "fm27-dm": "Referencia de FM27 de FM Match Lab (<link>Estudio 13b</link>): mediocentros defensivos, también para centrocampistas.",
+      "fm27-10": "Referencia de FM27 de FM Match Lab (<link>Estudio 13b</link>): mediapuntas y extremos.",
+      "fm27-9": "Referencia de FM27 de FM Match Lab (<link>Estudio 13b</link>): delanteros.",
+      "fm27-gk": "Referencia de FM27 de FM Match Lab (<link>Estudio 13b</link>): porteros."
+    },
+    "resetToBenchmark": "Volver a la referencia",
+    "linearNote": "Lineal coincide con la forma en que se calibran las referencias de FM27 y «vs. edad».",
+    "json": {
+      "title": "Importar / exportar JSON",
+      "label": "JSON del perfil",
+      "placeholder": "Aquí aparecerá el JSON del perfil exportado. Pega aquí un JSON para importarlo.",
+      "invalid": "JSON de perfil no válido"
+    }
+  },
+  "columns": {
+    "intro": "Los atributos que la lista de jugadores y la comparación muestran como columnas. Guarda distintos conjuntos como perfiles.",
+    "shown": "{count, number} visibles"
+  },
+  "colours": {
+    "intro": "El valor (de 1 a 20) que necesita un atributo para cada color. Los colores siguen el tema claro u oscuro.",
+    "band": "Franja",
+    "minValue": "Valor mín.",
+    "preview": "Vista previa, de 1 a 20",
+    "bands": {
+      "excellent": "Atributo excelente",
+      "good": "Atributo bueno",
+      "average": "Atributo normal",
+      "low": "Atributo bajo"
+    },
+    "minValueLabel": "{band}: valor mínimo",
+    "below": "Por debajo de <b>{value, number}</b>"
+  }
+}

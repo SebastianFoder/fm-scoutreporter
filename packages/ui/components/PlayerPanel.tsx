@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Maximize2, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { PlayerWithGroups } from "@scoutreporter/core/players";
 import { usePlayersData } from "./PlayersDataProvider";
 import { useSquadData } from "./SquadDataProvider";
@@ -81,6 +82,8 @@ function PlayerSidePanel({ player, onClose }: { player: PlayerWithGroups; onClos
   const ref = useRef<HTMLElement | null>(null);
   const headingId = useId();
   const id = player.raw.uniqueId;
+  const t = useTranslations("players.panel");
+  const tFm = useTranslations("fm");
 
   // Move focus into the panel whenever it shows a new player, and scroll it back to the top.
   useEffect(() => {
@@ -109,21 +112,21 @@ function PlayerSidePanel({ player, onClose }: { player: PlayerWithGroups; onClos
       className="fixed inset-y-0 right-0 z-40 flex w-full max-w-[40rem] flex-col border-l border-line bg-paper text-ink shadow-[-8px_0_24px_oklch(0.15_0.01_255/0.16)] outline-none"
     >
       <div className="flex items-center justify-between gap-2 border-b border-line bg-surface px-4 py-2">
-        <p className="text-[13px] font-semibold text-muted">Player</p>
+        <p className="text-[13px] font-semibold text-muted">{tFm("terms.player")}</p>
         <div className="flex items-center gap-1">
           <Link
             href={`/players/${id}`}
             className="btn h-8 gap-1.5 rounded-md px-2.5 text-[13px] text-muted hover:bg-ink/6 hover:text-ink"
           >
             <Maximize2 className="h-3.5 w-3.5" aria-hidden />
-            Full page
+            {t("fullPage")}
           </Link>
           <button
             type="button"
             onClick={onClose}
             className="btn h-8 w-8 justify-center rounded-md text-muted hover:bg-ink/6 hover:text-ink"
-            aria-label="Close player panel"
-            title="Close (Esc)"
+            aria-label={t("close")}
+            title={t("closeTitle")}
           >
             <X className="h-4 w-4" aria-hidden />
           </button>

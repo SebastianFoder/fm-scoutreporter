@@ -1,0 +1,102 @@
+{
+  "intro": "Giv spillere score, rangér og sammenlign dem ud fra en spillereksport fra Football Manager 27 eller 26. Alt kører i din browser; CSV-filen forlader aldrig din computer.",
+  "desktop": {
+    "title": "Desktop-app til Windows",
+    "body": "Spring eksporten over: appen læser spillerne i din FM-spillersøgning direkte fra spillet, med ægte NE og PE.",
+    "cta": "Download"
+  },
+  "sections": {
+    "title": "Sektioner",
+    "section": "Sektion",
+    "whatItDoes": "Hvad den gør",
+    "needs": "Kræver",
+    "open": "Åbn"
+  },
+  "modes": {
+    "players": {
+      "name": "Spillere",
+      "blurb": "Giv spillere score og rangér dem efter dine egne egenskabsvægte eller FM27-rollerne, sammenlign dem og find vidunderbørn: med NE og PE får hver spiller en Potentiale-score ved fuldt potentiale. Bedste 11 vælger de stærkeste elleve til en formation inden for et budget.",
+      "needs": "Visningen Standard eller Hidden Attributes",
+      "cta": "Åbn Spillere"
+    },
+    "squad": {
+      "name": "Trupanalyse",
+      "blurb": "Importér din egen trup, vælg din formation, og se din første og anden ellever, tynde eller svage positioner, aldrende startspillere, unge spillere klar til at tage næste skridt, problemer med holdstatus og forstærkninger fra din spejderimport.",
+      "needs": "Visningen Squad eller Squad Hidden Attributes",
+      "cta": "Åbn Trupanalyse"
+    },
+    "staff": {
+      "name": "Personale",
+      "blurb": "Rangér trænere, talentspejdere, analytikere og direktører på alle personaleroller, med FM26's vurderinger i ord omregnet til 1–20. Bedste stab vælger det stærkeste sæt personale til de roller, du har brug for, uden at bruge nogen to gange.",
+      "needs": "Visningen Staff",
+      "cta": "Åbn Personale"
+    }
+  },
+  "screens": {
+    "players": "Spillere",
+    "bestXi": "Bedste 11",
+    "staff": "Personale",
+    "backroom": "Bedste stab"
+  },
+  "moreScreens": "Flere skærme",
+  "screenshots": {
+    "open": "Åbn {title}",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Trupanalyse",
+      "caption": "Din første og anden ellever, tynd dækning, svage led og hvem der bør starte."
+    },
+    "players": {
+      "title": "Spillerliste",
+      "caption": "Alle spillere med score efter dine vægte eller en FM27-rolle, med karakterer, vs. alder og værdi."
+    },
+    "bestXi": {
+      "title": "Bedste 11",
+      "caption": "De bedste elleve til enhver formation, inden for et transferbudget."
+    },
+    "player": {
+      "title": "Spillerpanel",
+      "caption": "Klik på en spiller for at se profil, NE, PE og egenskaber i et sidepanel."
+    },
+    "staff": {
+      "title": "Personale",
+      "caption": "Trænere, talentspejdere og direktører med score på 17 personaleroller."
+    },
+    "backroom": {
+      "title": "Bedste stab",
+      "caption": "Det personale, du skal ansætte til hver rolle, uden at bruge nogen to gange."
+    }
+  },
+  "start": {
+    "title": "Sådan får du spillere ud af FM",
+    "exporter": "Installer et eksportværktøj: FM View Exporter til FM27, eller BepInEx med pluginet FM26 Player CSV Export.",
+    "view": "Importér Scout Reporter-visningen i FM's Spiller database (højreklik på en kolonneoverskrift, og vælg Importér visning).",
+    "export": "Vælg spillere, og tryk på <kbd>F9</kbd> for at eksportere en CSV.",
+    "import": "Importér CSV-filen under Spillere.",
+    "guide": "Fuld opsætningsguide",
+    "faq": "Ofte stillede spørgsmål"
+  },
+  "views": {
+    "title": "Visningsfiler (.fmf)",
+    "hidden": {
+      "name": "Visningen Hidden Attributes",
+      "summary": "Standard-visningen plus de skjulte egenskaber Professionalisme, NE og PE. Anbefales."
+    },
+    "standard": {
+      "name": "Visningen Standard",
+      "summary": "Alle synlige spilleregenskaber."
+    },
+    "squadHidden": {
+      "name": "Visningen Squad Hidden Attributes",
+      "summary": "Squad-visningen plus de skjulte egenskaber Professionalisme, NE og PE."
+    },
+    "squad": {
+      "name": "Visningen Squad",
+      "summary": "Din trupskærm: alle egenskaber plus holdopstilling, holdstatus, skader og trænerstjerner. Til Trupanalyse."
+    },
+    "staff": {
+      "name": "Visningen Staff",
+      "summary": "Alle personaleegenskaber, foretrukket job, klub og personlighed. Til Personale."
+    }
+  }
+}

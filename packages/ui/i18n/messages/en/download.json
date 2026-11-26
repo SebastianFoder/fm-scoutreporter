@@ -1,0 +1,36 @@
+{
+  "title": "Scout Reporter for Windows",
+  "intro": "Every screen of this website, plus <b>Scan search</b>: set up a Player Search in Football Manager, press <kbd>F9</kbd>, and the players FM found, with your own squad, are in Players, Best XI, Squad and Staff a few seconds later. No view files and no CSV export.",
+  "screenshotAlt": "The player list: every player scored on your weights or an FM27 role",
+  "get": {
+    "title": "Download",
+    "button": "Download for Windows",
+    "version": "Version {version}",
+    "versionDate": "Version {version}, {date}",
+    "file": "{file}, {size} MB",
+    "releaseNotes": "Release notes and checksum",
+    "allVersions": "All versions",
+    "fallback": "The installer is published on GitHub: <link>Scout Reporter desktop releases</link>. Download <b>{file}</b> from the newest one.",
+    "requirements": "Windows 10 or 11, 64-bit. Football Manager 27 (27.0) or 26 (26.3), from Steam, Epic or Game Pass. A Mac version is planned."
+  },
+  "install": {
+    "title": "Install",
+    "run": "Run the installer you downloaded.",
+    "smartScreen": "The installer is not code-signed yet, so Windows SmartScreen says it is from an unknown publisher. Click <b>More info</b>, then <b>Run anyway</b>.",
+    "location": "Choose where to install it. It adds a Start menu entry and a desktop shortcut."
+  },
+  "use": {
+    "title": "Use",
+    "start": "Start Football Manager and load your save. Keep Scout Reporter open next to it.",
+    "search": "In FM, open <b>Player Search</b> (or Staff Search) and set your filters, for example Player's interest: Interested, to see only players who would join you.",
+    "scan": "Press <kbd>F9</kbd> (it works inside FM) or <b>Scan search</b> in the app. The players from the search and your own club appear in every screen. <b>Scan save</b> reads the whole save instead, no search needed.",
+    "hidden": "Switch <b>Use CA, PA and hidden attributes</b> off if you would rather not see them. Scan again every few in-game months to follow growth on the Growth page.",
+    "admin": "If Football Manager runs as administrator, run Scout Reporter as administrator too."
+  },
+  "safe": {
+    "title": "Is it safe?",
+    "reader": "The app only reads Football Manager's memory; it never changes your game or your save. The only thing it asks the internet is whether GitHub has a newer version (you can turn that off); nothing about you or your save is sent. Scans stay on your PC, under <code>{path}</code>. The code is open on <github>GitHub</github>, and every release is built there by GitHub Actions. The memory reader is adapted from <fmss>FMSuperScout</fmss> (MIT licence).",
+    "updates": "After a big Football Manager patch the reader may need an update. The app warns when your game version differs from the one it was made for, and tells you when a new version is out: <b>Update now</b> installs it and keeps your settings, scans, weights and formations."
+  },
+  "website": "Rather not install anything? <link>Use the website with a CSV export</link>."
+}

@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Scout Reporter home",
+  "mainNav": "Main",
+  "nav": {
+    "players": "Players",
+    "squad": "Squad",
+    "staff": "Staff",
+    "howToUse": "How to use",
+    "desktopApp": "Desktop app",
+    "scans": "Scans",
+    "growth": "Growth"
+  },
+  "playerCount": {
+    "title": "Imported players, shared by both modes",
+    "imported": "{hasTotal, select, yes {{shown} of {total}} other {{shown}}} {count, plural, one {player} other {players}} imported",
+    "scanned": "{hasTotal, select, yes {{shown} of {total}} other {{shown}}} {count, plural, one {player} other {players}} scanned"
+  },
+  "language": {
+    "title": "Language",
+    "label": "Language: {language}"
+  },
+  "footer": {
+    "setupGuide": "Setup guide",
+    "faq": "FAQ"
+  }
+}

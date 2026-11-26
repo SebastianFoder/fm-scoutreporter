@@ -1,0 +1,109 @@
+{
+  "intro": "Stellt die Elf mit der höchsten Wertung aus Ihrem Import für eine Formation auf, optional mit Mindest- und Höchstkosten für die gesamte Elf.",
+  "noImport": {
+    "desktop": "Noch keine Spieler. Öffnen Sie in FM eine Spielersuche und drücken Sie <kbd>F9</kbd> oder „Suche scannen“.",
+    "web": "Noch keine CSV importiert. Wählen Sie oben eine CSV-Datei oder laden Sie die Testdaten, um sich umzusehen."
+  },
+  "setup": {
+    "title": "Einstellungen",
+    "reset": "Zurücksetzen",
+    "minBudget": "Mindestbudget ({currency})",
+    "maxBudget": "Höchstbudget ({currency})",
+    "noMinimum": "Kein Minimum",
+    "noLimit": "Kein Limit",
+    "budgetInvalid": "Geben Sie einen Betrag wie 15M, 750K oder 2500000 ein. Unlesbare Budgets werden ignoriert.",
+    "budgetHint": "Summe für die Elf. Beträge wie 15M oder 750K eingeben.",
+    "valuation": "Ein Spieler kostet",
+    "valuations": {
+      "low": "Unteres Ende der Spanne",
+      "mid": "Mitte der Spanne",
+      "high": "Oberes Ende der Spanne"
+    },
+    "includeFree": "Spieler ohne Transferwert einbeziehen",
+    "includeFreeHint": "Meist vertragslose Spieler. Sie zählen mit {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "Das Mindestbudget liegt über dem Höchstbudget.",
+      "body": "Keine Elf kann mindestens {min} und höchstens {max} kosten."
+    },
+    "slots": {
+      "title": "Nicht genug Spieler für diese Formation.",
+      "body": "Kein passender Spieler mehr für: {positions}. Es zählen nur Idealpositionen aus dem Export.",
+      "leftOut": "Ausgeschlossene Spieler und Spieler ohne Transferwert werden nicht berücksichtigt."
+    },
+    "budget": {
+      "title": "Keine Elf passt in dieses Budget.",
+      "range": "Mit diesen Einstellungen kostet die günstigste mögliche Elf {min} und die teuerste {max}.",
+      "wider": "Versuchen Sie ein größeres Budget."
+    }
+  },
+  "excluded": {
+    "label": "Ausgeschlossen:",
+    "allowAgain": "Diesen Spieler wieder zulassen",
+    "allowAgainHidden": "(wieder zulassen)",
+    "clearAll": "Alle entfernen"
+  },
+  "footnote": "Jede Position bekommt einen Spieler, für den sie eine Idealposition ist, bewertet nach der Rolle dieser Position (1–20). Die gezeigte Elf hat die höchste Gesamtwertung aller Kombinationen, die ins Budget passen.",
+  "unpriced": "{count, plural, one {# Spieler wird} other {# Spieler werden}} nicht berücksichtigt, weil der Export keinen Preis angibt (zum Beispiel „Steht nicht zum Verkauf“).",
+  "result": {
+    "title": "Beste Elf",
+    "summary": "Durchschnittliche Wertung <b>{average}</b>{basis, select, potential { bei vollem Potenzial} other {}} · Kosten <b>{cost}</b>{budget, select, range { (Budget {min} bis {max})} max { von {max}} min { (mindestens {min})} other {}} · Gehälter <b>{wages} p/W</b>{unknownWages, plural, =0 {} one { (# ohne Vertrag)} other { (# ohne Vertrag)}}",
+    "notOptimal": "Die Suche hatte keine Zeit mehr, zu beweisen, dass dies die allerbeste Elf ist. Eine bessere könnte der Gesamtwertung von {total} höchstens {gap} hinzufügen.",
+    "pitchLabel": "Die Elf auf dem Platz",
+    "columns": {
+      "pos": "Pos",
+      "score": "Wertung",
+      "scoreTitle": "Rollenwertung auf der FM-Skala 1–20",
+      "valueTitle": "Transferwert im Export",
+      "counted": "Angerechnet",
+      "countedTitle": "Auf das Budget angerechnet: {valuation, select, low {unteres Ende der Spanne} high {oberes Ende der Spanne} other {Mitte der Spanne}}",
+      "exclude": "Ausschließen"
+    },
+    "excludeLabel": "{name} ausschließen und neu aufstellen",
+    "excludeTitle": "Ausschließen und neu aufstellen",
+    "total": "Gesamt",
+    "perWeek": "{amount} p/W"
+  },
+  "formation": {
+    "custom": "Eigene",
+    "yours": "Ihre Formationen",
+    "presets": "FM-Vorlagen",
+    "moveTo": "{from} auf {spot} ({position}) verschieben",
+    "emptySpot": "Freier Platz {spot} ({position})",
+    "moveHere": "{from} hierher verschieben",
+    "goalkeeperFixed": "Torwart (fest)",
+    "selected": "{spot} ({position}) ausgewählt: Wählen Sie einen Platz zum Verschieben oder drücken Sie erneut zum Abbrechen",
+    "dragOrSelect": "{spot} ({position}): ziehen oder zum Verschieben auswählen",
+    "keeperStays": "Der Torwart bleibt im Tor",
+    "dragTitle": "{position}: auf einen anderen Platz ziehen oder zum Tauschen auf eine Position",
+    "hint": {
+      "dropSwap": "Loslassen, um {from} und {to} zu tauschen.",
+      "dropMove": "Loslassen, um {from} auf {to} zu verschieben.",
+      "dropCancel": "Auf einem Platz loslassen oder irgendwo sonst, um abzubrechen.",
+      "moving": "{spot} wird verschoben: Klicken Sie auf einen Platz (oder eine andere Position zum Tauschen) oder erneut auf {spot}, um abzubrechen.",
+      "idle": "Ziehen Sie eine Position auf einen anderen Platz oder auf eine Position, um beide zu tauschen."
+    },
+    "delete": "„{name}“ löschen",
+    "namePlaceholder": "Name dieser Formation",
+    "myPlaceholder": "Mein {formation}",
+    "nameLabel": "Name für diese Formation",
+    "save": "Speichern",
+    "scoredAs": "Bewertet als",
+    "roleFor": "Rolle für {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "Die Rollen sind Ihre Gewichtungsprofile unter <link>Spieler</link>."
+  },
+  "basis": {
+    "label": "Spieler bewerten nach",
+    "potential": "Volles Potenzial",
+    "potentialTitle": "Auf PA hochgerechnete Attribute",
+    "needsTitle": "Benötigt CA und PA: Exportieren Sie mit der Ansicht {view}",
+    "needs": "Volles Potenzial benötigt die Ansicht {view}."
+  },
+  "pitch": {
+    "nobody": "Niemand",
+    "nobodyTitle": "{spot}: Niemand im Kader spielt {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

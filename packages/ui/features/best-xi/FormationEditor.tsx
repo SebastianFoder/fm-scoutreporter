@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Save, Trash2 } from "lucide-react";
 import { Button } from "@scoutreporter/ui/components/Button";
 import {
@@ -13,10 +14,21 @@ import {
   findFormation,
   type FormationSpot,
 } from "@scoutreporter/core/best-xi/formations";
-import { AUTO, resolveRole, settingsFor, shortRole, sortSettings, type SlotSetting } from "@scoutreporter/core/best-xi/roles";
+import { AUTO, resolveRole, settingsFor, shortRole, sortSettings, type Role, type SlotSetting } from "@scoutreporter/core/best-xi/roles";
 import type { WeightProfile } from "@scoutreporter/core/types/weights";
+import { useProfileName } from "@scoutreporter/ui/i18n/hooks";
 import { Pitch, spotStyle } from "./PitchLineup";
 import { useSavedFormations } from "./useSavedFormations";
+
+/**
+ * A resolved role's name for display, without the "FM27 · " prefix: built-in FM27 roles in the current
+ * language, names the user typed as typed. resolveRole() drops `builtIn`, but useProfileName only
+ * translates a profile whose ID and name are still an FM27 default's, so marking it is safe.
+ */
+export function useRoleName(): (role: Pick<Role, "id" | "name">) => string {
+  const profileName = useProfileName();
+  return useCallback((role) => shortRole(profileName({ ...role, builtIn: "fm27" })), [profileName]);
+}
 
 const ALL_SPOTS = PITCH_ROWS.flat().filter((s): s is FormationSpot => s !== null);
 /** Pointer travel (px) before a press counts as a drag rather than a click. */
@@ -56,6 +68,10 @@ export function FormationEditor({
   const [drag, setDrag] = useState<Drag | null>(null);
   const [name, setName] = useState("");
   const pitchRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("bestXi.formation");
+  const tTerms = useTranslations("fm.terms");
+  const profileName = useProfileName();
+  const roleName = useRoleName();
 
   const spots = slots.map((s) => s.spot);
   const used = new Set(spots);
@@ -144,15 +160,15 @@ export function FormationEditor({
   return (
     <>
       <label className="flex flex-col gap-1 text-[13px] text-muted">
-        Formation
+        {tTerms("formation")}
         <select
           value={current?.id ?? "custom"}
           onChange={(e) => choose(e.target.value)}
           className="field h-9 w-full pl-2.5 text-sm text-ink"
         >
-          {!current && <option value="custom">Custom</option>}
+          {!current && <option value="custom">{t("custom")}</option>}
           {saved.length > 0 && (
-            <optgroup label="Your formations">
+            <optgroup label={t("yours")}>
               {saved.map((f) => (
                 <option key={f.id} value={f.id}>
                   {f.name}
@@ -160,7 +176,7 @@ export function FormationEditor({
               ))}
             </optgroup>
           )}
-          <optgroup label="FM presets">
+          <optgroup label={t("presets")}>
             {FORMATIONS.map((f) => (
               <option key={f.id} value={f.id}>
                 {f.name}
@@ -193,8 +209,8 @@ export function FormationEditor({
                     type="button"
                     onClick={() => clickSpot(spot)}
                     aria-disabled={!selected}
-                    aria-label={selected ? `Move ${selected} to ${spot} (${position})` : `Empty spot ${spot} (${position})`}
-                    title={selected ? `Move ${selected} here` : spot}
+                    aria-label={selected ? t("moveTo", { from: selected, spot, position }) : t("emptySpot", { spot, position })}
+                    title={selected ? t("moveHere", { from: selected }) : spot}
                     className={[
                       chip,
                       "border-dashed text-[10px]",
@@ -228,12 +244,12 @@ export function FormationEditor({
                   aria-pressed={isGk ? undefined : isSelected}
                   aria-label={
                     isGk
-                      ? "Goalkeeper (fixed)"
+                      ? t("goalkeeperFixed")
                       : isSelected
-                        ? `${spot} (${position}) selected: choose a spot to move it to, or press again to cancel`
-                        : `${spot} (${position}): drag, or select to move`
+                        ? t("selected", { spot, position })
+                        : t("dragOrSelect", { spot, position })
                   }
-                  title={isGk ? "The keeper stays in goal" : `${position}: drag to another spot, or onto a position to swap`}
+                  title={isGk ? t("keeperStays") : t("dragTitle", { position })}
                   className={[
                     chip,
                     "touch-none",
@@ -262,12 +278,12 @@ export function FormationEditor({
         {dragging
           ? dragging.target
             ? used.has(dragging.target)
-              ? `Drop to swap ${dragging.spot} and ${dragging.target}.`
-              : `Drop to move ${dragging.spot} to ${dragging.target}.`
-            : "Drop on a spot, or anywhere else to cancel."
+              ? t("hint.dropSwap", { from: dragging.spot, to: dragging.target })
+              : t("hint.dropMove", { from: dragging.spot, to: dragging.target })
+            : t("hint.dropCancel")
           : selected
-            ? `Moving ${selected}: click a spot (or another position to swap), or ${selected} again to cancel.`
-            : "Drag a position to another spot, or onto a position to swap them."}
+            ? t("hint.moving", { spot: selected })
+            : t("hint.idle")}
       </p>
 
       <div className="mt-3">
@@ -279,7 +295,7 @@ export function FormationEditor({
             icon={<Trash2 className="h-3.5 w-3.5" aria-hidden />}
             onClick={() => remove(savedMatch.id)}
           >
-            Delete “{savedMatch.name}”
+            {t("delete", { name: savedMatch.name })}
           </Button>
         ) : (
           <form
@@ -293,8 +309,8 @@ export function FormationEditor({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={preset ? `My ${preset.name.split(" ")[0]}` : "Name this formation"}
-              aria-label="Name for this formation"
+              placeholder={preset ? t("myPlaceholder", { formation: preset.name.split(" ")[0] }) : t("namePlaceholder")}
+              aria-label={t("nameLabel")}
               maxLength={40}
               className="field h-8 min-w-0 flex-1 px-2 text-[13px] text-ink"
             />
@@ -306,7 +322,7 @@ export function FormationEditor({
               disabled={!canSave}
               icon={<Save className="h-3.5 w-3.5" aria-hidden />}
             >
-              Save
+              {t("save")}
             </Button>
           </form>
         )}
@@ -315,8 +331,8 @@ export function FormationEditor({
       <table className="mt-3 w-full text-sm">
         <thead>
           <tr className="text-left text-[12px] text-muted">
-            <th className="pb-1 pr-2 font-normal">Position</th>
-            <th className="pb-1 font-normal">Scored as</th>
+            <th className="pb-1 pr-2 font-normal">{tTerms("position")}</th>
+            <th className="pb-1 font-normal">{t("scoredAs")}</th>
           </tr>
         </thead>
         <tbody>
@@ -331,15 +347,15 @@ export function FormationEditor({
                 </td>
                 <td className="py-0.5">
                   <select
-                    aria-label={`Role for ${s.spot}, ${SLOT_LABEL[s.slot]}`}
+                    aria-label={t("roleFor", { spot: s.spot, position: SLOT_LABEL[s.slot] })}
                     value={missing ? AUTO : s.role}
                     onChange={(e) => onChange(slots.map((x) => (x.spot === s.spot ? { ...x, role: e.target.value } : x)))}
                     className="field h-8 w-full pl-2 text-[13px] text-ink"
                   >
-                    <option value={AUTO}>Auto: {shortRole(auto.name)}</option>
+                    <option value={AUTO}>{t("auto", { role: roleName(auto) })}</option>
                     {profiles.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.name}
+                        {profileName(p)}
                       </option>
                     ))}
                   </select>
@@ -350,11 +366,13 @@ export function FormationEditor({
         </tbody>
       </table>
       <p className="mt-2 text-[12px] text-muted">
-        Roles are your weight profiles from{" "}
-        <Link href="/players" className="link">
-          Players
-        </Link>
-        .
+        {t.rich("rolesFrom", {
+          link: (chunks) => (
+            <Link href="/players" className="link">
+              {chunks}
+            </Link>
+          ),
+        })}
       </p>
     </>
   );

@@ -1,0 +1,35 @@
+{
+  "close": "Chiudi",
+  "cancel": "Annulla",
+  "save": "Salva",
+  "reset": "Ripristina",
+  "delete": "Elimina",
+  "duplicate": "Duplica",
+  "import": "Importa",
+  "export": "Esporta",
+  "loading": "Caricamento…",
+  "modal": {
+    "close": "Chiudi finestra"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> di {total, number}",
+    "rows": "Righe",
+    "all": "Tutte",
+    "goTo": "Vai a",
+    "go": "Vai",
+    "first": "Prima",
+    "prev": "Prec.",
+    "next": "Succ.",
+    "last": "Ultima"
+  },
+  "grade": {
+    "label": "Voto {grade}",
+    "title": "Voto {grade} ({score} sulla scala 1–20)",
+    "titleWithLabel": "{label}: voto {grade} ({score} sulla scala 1–20)"
+  },
+  "estimated": {
+    "ranged": "Punteggio stimato: {ranged, number} qualità da un intervallo dell’osservatore (si usa il valore medio)",
+    "unknown": "Punteggio stimato: {unknown, number} qualità sconosciute (contate come 0)",
+    "both": "Punteggio stimato: {ranged, number} qualità da un intervallo dell’osservatore (si usa il valore medio), {unknown, number} sconosciute (contate come 0)"
+  }
+}

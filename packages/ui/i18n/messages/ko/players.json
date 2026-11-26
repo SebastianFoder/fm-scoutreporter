@@ -1,0 +1,89 @@
+{
+  "selectedCount": "{count, plural, one {#명 선택됨} other {#명 선택됨}}",
+  "home": {
+    "intro": "선수를 평가하고 순위를 매기고 비교합니다. 현재 기량과 잠재 기량(스캔 또는 Hidden Attributes 내보내기)이 있으면 잠재력과 나이 대비로 원더키드를 찾을 수 있습니다. 잠재력으로 정렬하면 누가 최고가 될 수 있는지 보입니다. FM27 역할 프로필(FM Match Lab의 포지션 연구 기준)은 가중치에 포함되어 있습니다.",
+    "scoredWith": "<link>{profile}</link> 기준 점수",
+    "myPlayersTitle": "선수단 가져오기에 있는 선수가 내 선수입니다",
+    "showMyPlayers": "내 선수 보기({count})",
+    "weights": "가중치",
+    "columns": "열",
+    "compareSelected": "선택한 선수 비교({count})",
+    "emptyDesktop": "아직 선수가 없습니다. FM에서 선수 검색을 열고 <kbd>F9</kbd> 또는 검색 스캔을 누르십시오.",
+    "empty": "아직 가져온 CSV가 없습니다. 위에서 CSV 파일을 선택하거나 테스트 데이터를 불러와 둘러보십시오."
+  },
+  "list": {
+    "searchLabel": "이름으로 선수 검색",
+    "searchPlaceholder": "이름 검색: 이름, 중간 이름 또는 성",
+    "clearSearch": "검색 지우기",
+    "noMatch": "“{query}” 검색 결과, 일치하는 선수가 없습니다",
+    "select": "선택",
+    "selectPlayer": "선택: {name}",
+    "openInNewTab": "새 탭에서 열기",
+    "openPlayerInNewTab": "새 탭에서 열기: {name}",
+    "loading": "표 불러오는 중…",
+    "columns": {
+      "position": "포지션",
+      "score": "점수",
+      "vsAge": "나이 대비",
+      "vsAgeTitle": "선수 나이의 FM27 기준값 대비 가중 평균",
+      "potentialTitle": "잠재 기량까지 추정한 능력치로 계산한 점수(Hidden Attributes 내보내기)",
+      "valueTitle": "FM의 몸값 범위(중간값으로 정렬)"
+    }
+  },
+  "profile": {
+    "subtitle": "{position} · {age, plural, one {#세} other {#세}} · {eu, select, yes {EU 국적} other {비 EU 국적}}",
+    "grades": "등급",
+    "now": "현재",
+    "noValuation": "몸값 정보 없음",
+    "noWage": "급료 정보 없음",
+    "contractExpires": "계약 만료",
+    "id": "ID",
+    "attributeView": "능력치 보기",
+    "current": "현재",
+    "fullPotential": "최대 잠재력",
+    "estimated": "잠재 기량 {pa}에서의 추정 능력치(현재 기량 {ca} 기준, FM27 현재 기량 비용 사용).",
+    "capped": "훈련으로 오르는 모든 능력치가 잠재 기량에 도달하기 전에 최대치에 이릅니다."
+  },
+  "attributes": {
+    "deltaTitle": "현재보다 +{delta}"
+  },
+  "positionMap": {
+    "label": "포지션: {position}"
+  },
+  "panel": {
+    "fullPage": "전체 페이지",
+    "close": "선수 패널 닫기",
+    "closeTitle": "닫기(Esc)"
+  },
+  "notFound": {
+    "title": "선수를 찾을 수 없습니다",
+    "body": "이 선수는 현재 가져온 데이터에 없습니다. <link>선수 페이지</link>에서 CSV를 가져온 후 다시 시도하십시오."
+  },
+  "compare": {
+    "title": "선수 비교",
+    "intro": "비교할 선수를 고르십시오. 금, 은, 동메달은 선택한 선수끼리 항목별로 매깁니다.",
+    "clearSelection": "선택 해제",
+    "selectFirst": "처음 {count}명 선택",
+    "choosePlayers": "선수 선택",
+    "searchLabel": "선수 검색",
+    "searchPlaceholder": "이름, 포지션 또는 ID로 검색…",
+    "noMatch": "검색과 일치하는 선수가 없습니다.",
+    "range": "{total} 중 {from}–{to}",
+    "prev": "이전",
+    "next": "다음",
+    "removePlayer": "제거: {name}",
+    "comparison": "비교",
+    "comparisonTitle": "비교 <muted>({count})</muted>",
+    "summary": "점수 + {count, plural, one {능력치 #개} other {능력치 #개}}",
+    "metric": "항목",
+    "weightedScore": "가중 점수",
+    "legend": "범례",
+    "best": "최고",
+    "medals": {
+      "gold": "1위",
+      "silver": "2위",
+      "bronze": "3위"
+    },
+    "empty": "비교하려면 선수를 2명 이상 선택하십시오."
+  }
+}

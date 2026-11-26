@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ImportPanel, STORAGE_FULL_MESSAGE } from "@scoutreporter/ui/components/ImportPanel";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { VIEW_STAFF } from "@scoutreporter/core/view-files";
@@ -8,20 +9,18 @@ import { VIEW_STAFF } from "@scoutreporter/core/view-files";
 export function StaffImportPanel({ onImported }: { onImported?: () => void }) {
   const { state, importCsv, clear } = useStaffData();
   const count = state.staff.length;
+  const t = useTranslations("importer.staff");
 
   return (
     <ImportPanel
-      title={count > 0 ? `${count} staff imported` : "Import staff CSV"}
-      description={
-        <>
-          Export a staff search with the{" "}
+      title={count > 0 ? t("imported", { count }) : t("title")}
+      description={t.rich("description", {
+        link: (chunks) => (
           <a href={VIEW_STAFF.href} className="link">
-            Scout Reporter Staff view
+            {chunks}
           </a>
-          . Columns are matched by name; FM26 words and 1–20 numbers both work. Kept separate from your player
-          import.
-        </>
-      }
+        ),
+      })}
       testFixture="staff"
       onLoad={async (text) => {
         const r = await importCsv(text);

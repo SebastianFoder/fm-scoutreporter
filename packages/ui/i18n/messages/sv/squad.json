@@ -1,0 +1,232 @@
+{
+  "title": "Truppanalys",
+  "intro": "Importera din trupp, välj uppställningen du spelar och se din första och andra elva, var truppen är tunn eller svag, vem som håller på att åldras ur laget och vilka unga spelare som kan ta steget.",
+  "import": {
+    "title": "Importera din trupp",
+    "titleCount": "{count, plural, one {# spelare i din trupp} other {# spelare i din trupp}}",
+    "description": "Exportera din truppskärm med vyn <squad>Squad</squad> eller <hidden>Squad Hidden Attributes</hidden> (lägger till potential). Hålls separat från din scoutingimport.",
+    "noColumns": "Importen saknar truppkolumner, så lån, skador, truppstatus och laguttagning kontrolleras inte."
+  },
+  "noImport": {
+    "desktop": "Ingen trupp än. Varje skanning läser även din egen klubbs spelare.",
+    "web": "Ingen trupp importerad än. Välj din trupp-CSV ovan, eller ladda testdatan för att titta runt.",
+    "usePlayerImportPrompt": "Har du redan exporterat din trupp som spelarimport?",
+    "usePlayerImport": "Använd spelarimporten ({count, plural, one {# spelare} other {# spelare}}) som din trupp"
+  },
+  "setup": {
+    "title": "Inställningar",
+    "reset": "Återställ",
+    "availability": "Tillgänglighet",
+    "includeLoans": "Räkna med utlånade spelare",
+    "loanHint": "{count} utlånade till andra klubbar.",
+    "excludeInjured": "Uteslut skadade spelare",
+    "injuredHint": "{count} skadade nu. På: elvorna du kan ställa upp i dag."
+  },
+  "cannotFill": {
+    "title": "Din trupp kan inte fylla uppställningen.",
+    "body": "Ingen spelar {positions} som naturlig position, så elvan blir inte fulltalig. Bara naturliga positioner från exporten räknas."
+  },
+  "footnote": "Varje position poängsätts efter sin roll (1–20, med betyg från S++ till F) och räknar bara spelare som har den som naturlig position. Första elvan har högst total poäng; andra elvan är den bästa elvan av alla som är kvar, så varje spelare täcker en position.",
+  "unknownPlayer": "Okänd",
+  "ageShort": "{age} år",
+  "nobody": "Ingen",
+  "injured": "Skadad",
+  "ability": "Förmåga",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: {value} av 5 stjärnor} other {{value} av 5 stjärnor}}",
+    "title": "{hasLabel, select, yes {{label}: {value} stjärnor} other {{value} stjärnor}}"
+  },
+  "days": {
+    "weeks": "{count} v",
+    "days": "{count} d"
+  },
+  "overview": {
+    "title": "Truppöversikt",
+    "firstXi": "Första elvan",
+    "firstXiAtPotential": "Första elvan vid potential",
+    "firstXiAverage": "Första elvans snitt",
+    "secondXi": "Andra elvan",
+    "secondXiAverage": "Andra elvans snitt",
+    "averageAge": "ålder {age}",
+    "unfilled": "{count} ofyllda",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {spelare} other {spelare}}, ålder {age}{unavailable, plural, =0 {} other {, # otillgängliga}}</text>",
+    "teamSheet": "FM:s laguttagning",
+    "teamSheetMatch": "<num>{matching}</num><text>av {count} stämmer med den här elvan</text>",
+    "pitchChoice": "Elvan på planen",
+    "legend": {
+      "high": "Behöver åtgärdas",
+      "medium": "Värt att bevaka",
+      "click": "Klicka på en position för att se dess anteckningar."
+    },
+    "notesAtPosition": "{count, plural, =0 {Inget att notera på den här positionen.} one {# anteckning på den här positionen} other {# anteckningar på den här positionen}}",
+    "showAll": "Visa alla",
+    "nothingToFix": "Inget att åtgärda: varje startspelare ligger nära elvans snitt och har en reserv mindre än 1,5 bakom sig.",
+    "groups": {
+      "fix": {
+        "title": "Åtgärda",
+        "blurb": "Positioner som kostar dig nu: luckor, svaga länkar och tunn bredd."
+      },
+      "manage": {
+        "title": "Hantera",
+        "blurb": "Truppstatus som inte stämmer med elvan. Reda ut det vid nästa kontraktssamtal."
+      },
+      "develop": {
+        "title": "Utveckla",
+        "blurb": "Unga spelare som kommer att växa förbi en startspelare, och efterträdare redo att kliva in."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {ingen}}{replacing, select, none {} other { in för {replacing}}}{issue, select, high { behöver åtgärdas} medium { värt att bevaka} other {}}",
+    "stampLabel": "{name} som {spot}",
+    "injuredBadge": "SKD",
+    "inBadge": "IN"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Ingen spelar här",
+      "weak": "Svag länk",
+      "no-cover": "Ingen reserv",
+      "drop-off": "Tunn bredd",
+      "ageing": "Åldrande startspelare",
+      "successor": "Efterträdare redo",
+      "prospect": "Löfte",
+      "status-benched": "Utlovad startplats",
+      "status-starting": "Startar med låg status"
+    },
+    "severity": {
+      "high": "Hög",
+      "medium": "Medel"
+    },
+    "empty": {
+      "evidence": "Ingen naturlig {position} i truppen{count, plural, one {} other {, # platser att fylla}}.",
+      "advice": "Värva en, eller träna om en spelare till positionen."
+    },
+    "weak": {
+      "evidence": "<delta></delta> mot elvans snitt",
+      "advice": "Det första stället att förstärka."
+    },
+    "noCover": {
+      "evidence": "ingen naturlig reserv",
+      "advice": "En skada eller avstängning betyder att någon får spela utanför sin position."
+    },
+    "dropOff": {
+      "advice": "Reserven är en nivå sämre. Värt en värvning för truppens bredd."
+    },
+    "ageing": {
+      "atPotential": "{score} vid potential",
+      "adviceSuccessor": "{name} är {age}; efterträdaren är redan nära.",
+      "adviceNone": "{name} är {age} och ingen som är 23 eller yngre är nära. Planera en efterträdare."
+    },
+    "prospect": {
+      "vs": "mot",
+      "starsAdvice": "Tränaren bedömer potentialen högre än {starter}s förmåga ({ability}★) och potential ({potential}★). Ge speltid.",
+      "projectedLabel": "Framräknad vid full potential",
+      "atPotentialVs": "vid potential, mot",
+      "starterAtPotential": "Startspelaren vid sin potential",
+      "starterToday": "Startspelaren i dag",
+      "projectedAdvice": "Framräknad {gap} över {starter}{own, select, yes { vid egen potential} other {}}. Ge speltid."
+    },
+    "statusBenched": {
+      "secondOnly": "bara andra elvan",
+      "neither": "i ingen av elvorna",
+      "advice": "Truppstatusen, {status}, utlovar en startplats. Spela spelaren mer, eller sänk statusen."
+    },
+    "statusStarting": {
+      "advice": "Startar här med låg status. Höj den vid nästa kontraktssamtal."
+    }
+  },
+  "teamSheet": {
+    "title": "Ändringar i din laguttagning i FM",
+    "summary": "{matching} av dina startspelare i FM behåller sin plats{moves, plural, =0 {} other {, # på en annan position}}.",
+    "columns": {
+      "out": "Ut: startar i FM nu",
+      "in": "In: den här elvan",
+      "gain": "Vinst på positionen"
+    },
+    "out": "Ut",
+    "in": "In",
+    "outDetail": "{picked, select, yes {{pickedAt} i FM} other {Startar i FM}}{natural, select, no {, inte naturlig {position}} other {}}",
+    "extraStarter": "Ingen: en extra startspelare",
+    "replacedBy": "ersätts av",
+    "nobodyPlaysThere": "Ingen i den här elvan spelar där",
+    "newPosition": "ny position",
+    "alsoMoves": "Flyttar också:",
+    "to": "till"
+  },
+  "depth": {
+    "title": "Djupdiagram",
+    "intro": "Startspelare och reserv på varje position{potential, select, yes {, vid full potential} other {}}. Reserverna kommer från andra elvan, så ingen täcker två platser.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Startspelare",
+      "cover": "Reserv",
+      "drop": "Fall",
+      "dropTitle": "Reservens poäng minus startspelarens",
+      "alsoPlays": "Spelar också här",
+      "alsoPlaysTitle": "Andra naturliga spelare, bäst först. XI: startar på annan plats. 2:a: reserv på annan plats."
+    },
+    "starterAt": "Startspelare som {spot}",
+    "coverAt": "Reserv som {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, startar på annan plats} second {, reserv på annan plats} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2:a",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Resten av truppen",
+    "intro": "{count, plural, one {# spelare} other {# spelare}} i ingen av elvorna, på den position där de kommer närmast startspelaren.",
+    "columns": {
+      "bestFit": "Bästa position",
+      "score": "Poäng",
+      "vsStarter": "mot startsp.",
+      "vsStarterTitle": "Poäng minus startspelaren på den positionen",
+      "potentialTitle": "Poäng på den positionen vid full potential",
+      "coachRating": "Tränarbetyg",
+      "coachRatingTitle": "Tränarrapport: förmåga nu och potential, jämfört med din trupp",
+      "happiness": "Nöjdhet",
+      "missed": "Missat",
+      "missedTitle": "Tid borta på grund av skada"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Löften",
+        "blurb": "Kommer att växa förbi en startspelare. Ge speltid."
+      },
+      "young": {
+        "title": "Under utveckling",
+        "blurb": "21 eller yngre. Låna ut eller behåll för träning."
+      },
+      "surplus": {
+        "title": "Överflödiga",
+        "blurb": "Förbi utvecklingsåldern och i ingen av elvorna. Sälj eller behåll som bredd."
+      },
+      "no-fit": {
+        "title": "Ingen position här",
+        "blurb": "Ingen naturlig position i den här uppställningen."
+      },
+      "away": {
+        "title": "Otillgängliga",
+        "blurb": "Skadade eller utlånade."
+      }
+    },
+    "showAll": "Visa alla {count}",
+    "showFewer": "Visa färre",
+    "onLoan": "Utlånad",
+    "scoreAt": "Poäng som {spot}",
+    "score": "Poäng",
+    "atFullPotential": "Vid full potential"
+  },
+  "upgrades": {
+    "title": "Förstärkningar från din scoutingimport",
+    "intro": "Scoutade spelare som är minst 0,5 bättre än din svagaste startspelare på varje position, i samma roll.",
+    "allInSquad": "Alla i din spelarimport finns redan i truppen.",
+    "teaser": "Vem i din scoutinglista som skulle förbättra elvan.",
+    "importHint": "Importera en scoutingexport (en spelarsökning) under <link>Spelare</link> för att se vem som skulle förbättra varje position.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Din startspelare",
+      "best": "Bästa scoutade förstärkningar"
+    },
+    "times": "×{count}",
+    "none": "Ingen förstärkning i din import för {positions}."
+  }
+}

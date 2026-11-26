@@ -1,0 +1,232 @@
+{
+  "title": "Trupanalyse",
+  "intro": "Importér din trup, vælg den formation, du spiller, og se din første og anden ellever, hvor truppen er tynd eller svag, hvem der er ved at blive for gamle, og hvilke unge spillere der kan tage næste skridt.",
+  "import": {
+    "title": "Importér din trup",
+    "titleCount": "{count, plural, one {# spiller i din trup} other {# spillere i din trup}}",
+    "description": "Eksportér din trupskærm med visningen <squad>Squad</squad> eller <hidden>Squad Hidden Attributes</hidden> (tilføjer potentiale). Holdes adskilt fra din spejderimport.",
+    "noColumns": "Denne import har ingen trupkolonner, så lejeaftaler, skader, holdstatus og holdopstilling tjekkes ikke."
+  },
+  "noImport": {
+    "desktop": "Ingen trup endnu. Hver scanning læser også spillerne i din egen klub.",
+    "web": "Ingen trup importeret endnu. Vælg din trup-CSV ovenfor, eller indlæs testdata for at se dig omkring.",
+    "usePlayerImportPrompt": "Har du allerede eksporteret din trup som spillerimport?",
+    "usePlayerImport": "Brug spillerimporten ({count, plural, one {# spiller} other {# spillere}}) som din trup"
+  },
+  "setup": {
+    "title": "Opsætning",
+    "reset": "Nulstil",
+    "availability": "Tilgængelighed",
+    "includeLoans": "Medregn udlejede spillere",
+    "loanHint": "{count} udlejet til andre klubber.",
+    "excludeInjured": "Udelad skadede spillere",
+    "injuredHint": "{count} skadet nu. Til: de elleve, du kan stille i dag."
+  },
+  "cannotFill": {
+    "title": "Din trup kan ikke udfylde denne formation.",
+    "body": "Ingen i truppen har {positions} som naturlig position, så elleveren er ikke fuldtallig. Kun naturlige positioner fra eksporten tæller."
+  },
+  "footnote": "Hver position får score efter sin rolle (1–20, med karakteren S++ til F) og tæller kun spillere, der har den som naturlig position. Den første ellever har den højeste samlede score; den anden ellever er de bedste elleve blandt resten, så hver spiller dækker én position.",
+  "unknownPlayer": "Ukendt",
+  "ageShort": "{age} år",
+  "nobody": "Ingen",
+  "injured": "Skadet",
+  "ability": "Evne",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: {value} af 5 stjerner} other {{value} af 5 stjerner}}",
+    "title": "{hasLabel, select, yes {{label}: {value} stjerner} other {{value} stjerner}}"
+  },
+  "days": {
+    "weeks": "{count} u.",
+    "days": "{count} d"
+  },
+  "overview": {
+    "title": "Trupoversigt",
+    "firstXi": "Første ellever",
+    "firstXiAtPotential": "Første ellever ved potentiale",
+    "firstXiAverage": "Gennemsnit for første ellever",
+    "secondXi": "Anden ellever",
+    "secondXiAverage": "Gennemsnit for anden ellever",
+    "averageAge": "alder {age}",
+    "unfilled": "{count} ubesat",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {spiller} other {spillere}}, alder {age}{unavailable, plural, =0 {} other {, # utilgængelige}}</text>",
+    "teamSheet": "FM-holdopstilling",
+    "teamSheetMatch": "<num>{matching}</num><text>af {count} passer med denne ellever</text>",
+    "pitchChoice": "Ellever på banen",
+    "legend": {
+      "high": "Skal løses",
+      "medium": "Værd at holde øje med",
+      "click": "Klik på en position for at se dens noter."
+    },
+    "notesAtPosition": "{count, plural, =0 {Intet at bemærke på denne position.} one {# note på denne position} other {# noter på denne position}}",
+    "showAll": "Vis alle",
+    "nothingToFix": "Intet at løse: alle startspillere ligger tæt på elleverens gennemsnit og har en afløser mindre end 1,5 bagefter.",
+    "groups": {
+      "fix": {
+        "title": "Løs",
+        "blurb": "Positioner, der koster dig nu: huller, svage led og tynd dækning."
+      },
+      "manage": {
+        "title": "Håndtér",
+        "blurb": "Holdstatus, der ikke passer til elleveren. Ret det ved næste kontraktforhandling."
+      },
+      "develop": {
+        "title": "Udvikl",
+        "blurb": "Unge spillere, der vil vokse forbi en startspiller, og arvtagere klar til at træde til."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {ingen}}{replacing, select, none {} other { i stedet for {replacing}}}{issue, select, high { skal løses} medium { værd at holde øje med} other {}}",
+    "stampLabel": "{name} på {spot}",
+    "injuredBadge": "SKD",
+    "inBadge": "IND"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Ingen spiller her",
+      "weak": "Svagt led",
+      "no-cover": "Ingen afløser",
+      "drop-off": "Tynd dækning",
+      "ageing": "Aldrende startspiller",
+      "successor": "Arvtager klar",
+      "prospect": "Talent",
+      "status-benched": "Lovet en startplads",
+      "status-starting": "Starter med lav status"
+    },
+    "severity": {
+      "high": "Høj",
+      "medium": "Mellem"
+    },
+    "empty": {
+      "evidence": "Ingen naturlig {position} i truppen{count, plural, one {} other {, # pladser at udfylde}}.",
+      "advice": "Køb en, eller omskol en spiller til positionen."
+    },
+    "weak": {
+      "evidence": "<delta></delta> i forhold til elleverens gennemsnit",
+      "advice": "Det første sted at forstærke."
+    },
+    "noCover": {
+      "evidence": "ingen naturlig afløser",
+      "advice": "En skade eller karantæne betyder, at nogen må spille uden for sin position."
+    },
+    "dropOff": {
+      "advice": "Afløseren er et niveau under. Værd at købe en spiller for bredden."
+    },
+    "ageing": {
+      "atPotential": "{score} ved potentiale",
+      "adviceSuccessor": "{name} er {age}; arvtageren er allerede tæt på.",
+      "adviceNone": "{name} er {age}, og ingen på 23 år eller yngre er tæt på. Planlæg en arvtager."
+    },
+    "prospect": {
+      "vs": "vs.",
+      "starsAdvice": "Træneren vurderer spillerens potentiale højere end evnen ({ability}★) og potentialet ({potential}★) hos {starter}. Giv spilleren minutter.",
+      "projectedLabel": "Fremskrevet til fuldt potentiale",
+      "atPotentialVs": "ved potentiale, vs.",
+      "starterAtPotential": "Startspiller ved sit potentiale",
+      "starterToday": "Startspiller i dag",
+      "projectedAdvice": "Fremskrevet {gap} over {starter}{own, select, yes { ved deres eget potentiale} other {}}. Giv spilleren minutter."
+    },
+    "statusBenched": {
+      "secondOnly": "kun i anden ellever",
+      "neither": "i ingen af elleverne",
+      "advice": "Spillerens holdstatus, {status}, lover en startplads. Giv spilleren mere spilletid, eller sænk statussen."
+    },
+    "statusStarting": {
+      "advice": "Starter her med lav status. Hæv den, næste gang I forhandler kontrakt."
+    }
+  },
+  "teamSheet": {
+    "title": "Ændringer i din FM-holdopstilling",
+    "summary": "{matching} af dine FM-startspillere beholder pladsen{moves, plural, =0 {} other {, # på en anden position}}.",
+    "columns": {
+      "out": "Ud: starter i FM nu",
+      "in": "Ind: denne ellever",
+      "gain": "Gevinst på positionen"
+    },
+    "out": "Ud",
+    "in": "Ind",
+    "outDetail": "{picked, select, yes {{pickedAt} i FM} other {Starter i FM}}{natural, select, no {, ikke en naturlig {position}} other {}}",
+    "extraStarter": "Ingen: en ekstra startspiller",
+    "replacedBy": "erstattet af",
+    "nobodyPlaysThere": "Ingen i denne ellever spiller der",
+    "newPosition": "ny position",
+    "alsoMoves": "Flytter også:",
+    "to": "til"
+  },
+  "depth": {
+    "title": "Dybdeoversigt",
+    "intro": "Startspiller og afløser på hver position{potential, select, yes {, ved fuldt potentiale} other {}}. Afløserne kommer fra anden ellever, så ingen dækker to pladser.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Startspiller",
+      "cover": "Afløser",
+      "drop": "Fald",
+      "dropTitle": "Afløserens score minus startspillerens",
+      "alsoPlays": "Spiller også her",
+      "alsoPlaysTitle": "Andre naturlige spillere, bedste først. XI: starter et andet sted. 2.: dækker et andet sted."
+    },
+    "starterAt": "Startspiller på {spot}",
+    "coverAt": "Afløser på {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, starter et andet sted} second {, dækker et andet sted} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2.",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Resten af truppen",
+    "intro": "{count, plural, one {# spiller} other {# spillere}} i ingen af elleverne, på den position, hvor de kommer tættest på startspilleren.",
+    "columns": {
+      "bestFit": "Passer bedst",
+      "score": "Score",
+      "vsStarter": "vs. startspiller",
+      "vsStarterTitle": "Score minus startspilleren på den position",
+      "potentialTitle": "Score på den position ved fuldt potentiale",
+      "coachRating": "Trænervurdering",
+      "coachRatingTitle": "Trænerrapport: evne nu og potentiale i forhold til din trup",
+      "happiness": "Tilfredshed",
+      "missed": "Misset",
+      "missedTitle": "Tid misset på grund af skade"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Talenter",
+        "blurb": "Vil vokse forbi en startspiller. Giv dem minutter."
+      },
+      "young": {
+        "title": "Under udvikling",
+        "blurb": "21 år eller yngre. Lej ud, eller behold til træning."
+      },
+      "surplus": {
+        "title": "Overskud",
+        "blurb": "Forbi udviklingsalderen og i ingen af elleverne. Sælg, eller behold som bredde."
+      },
+      "no-fit": {
+        "title": "Ingen position her",
+        "blurb": "Ingen naturlig position i denne formation."
+      },
+      "away": {
+        "title": "Utilgængelige",
+        "blurb": "Skadet eller udlejet."
+      }
+    },
+    "showAll": "Vis alle {count}",
+    "showFewer": "Vis færre",
+    "onLoan": "Udlejet",
+    "scoreAt": "Score på {spot}",
+    "score": "Score",
+    "atFullPotential": "Ved fuldt potentiale"
+  },
+  "upgrades": {
+    "title": "Forstærkninger fra din spejderimport",
+    "intro": "Spejdede spillere, der er mindst 0,5 bedre end din svageste startspiller på hver position, i samme rolle.",
+    "allInSquad": "Alle i din spillerimport er allerede i truppen.",
+    "teaser": "Hvem på din spejderliste ville forbedre elleveren.",
+    "importHint": "Importér en spejdereksport (en spillersøgning) under <link>Spillere</link> for at se, hvem der ville forbedre hver position.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Din startspiller",
+      "best": "Bedste spejdede forstærkninger"
+    },
+    "times": "×{count}",
+    "none": "Ingen forstærkning i din import til {positions}."
+  }
+}

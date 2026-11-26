@@ -11,6 +11,8 @@ import { PositionMap } from "@scoutreporter/ui/components/PositionMap";
 import { PlayerAttributesClient } from "./PlayerAttributesClient";
 import { Fm27RolePanel } from "@scoutreporter/ui/features/fm27/Fm27RolePanel";
 import { DevelopmentPlanPanel } from "@scoutreporter/ui/features/fm27/DevelopmentPlanPanel";
+import { useTranslations } from "next-intl";
+import { useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
 
 /**
  * Everything about one player: grades, facts, attributes (current or at full potential), FM27
@@ -29,6 +31,8 @@ export function PlayerProfile({
   headingId?: string;
 }) {
   const panel = layout === "panel";
+  const t = useTranslations("players.profile");
+  const tFm = useTranslations("fm");
   const [view, setView] = useState<"current" | "potential">("current");
   const scores = useMemo(() => fm27PlayerScores(player), [player]);
   const potentialGrouped = useMemo(
@@ -52,19 +56,19 @@ export function PlayerProfile({
             {raw.player}
           </Heading>
           <p className="mt-0.5 text-[15px] text-muted">
-            {raw.position} · {raw.age} years old · {raw.euNational ? "EU national" : "Non-EU"}
+            {t("subtitle", { position: raw.position, age: raw.age, eu: raw.euNational ? "yes" : "no" })}
           </p>
 
           {scores && (
-            <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="Grades">
+            <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" aria-label={t("grades")}>
               <GradeLine
-                label="Now"
+                label={t("now")}
                 role={scores.best.role}
                 score={scores.best.score}
                 mark={<EstimatedMark player={raw} />}
               />
               {scores.bestPotential && (
-                <GradeLine label="Potential" role={scores.bestPotential.role} score={scores.bestPotential.score} />
+                <GradeLine label={tFm("terms.potential")} role={scores.bestPotential.role} score={scores.bestPotential.score} />
               )}
             </div>
           )}
@@ -73,15 +77,21 @@ export function PlayerProfile({
             <dl
               className={`grid min-w-0 flex-1 grid-cols-2 gap-x-6 gap-y-3 text-sm ${panel ? "" : "mt-4 max-w-2xl sm:grid-cols-3"}`}
             >
-              {raw.currentAbility !== null && <Fact label="Current ability" value={String(raw.currentAbility)} strong />}
-              {raw.potentialAbility !== null && <Fact label="Potential ability" value={String(raw.potentialAbility)} strong />}
-              {raw.professionalism !== null && <Fact label="Professionalism" value={String(raw.professionalism)} />}
-              <Fact label="Value" value={raw.transferValueRange ?? "No valuation"} />
-              <Fact label="Wage" value={raw.wage ?? "No wage data"} />
-              <Fact label="Contract expires" value={raw.expires} />
-              <Fact label="Right foot" value={raw.rightFoot} />
-              <Fact label="Left foot" value={raw.leftFoot} />
-              <Fact label="ID" value={raw.uniqueId} muted />
+              {raw.currentAbility !== null && (
+                <Fact label={tFm("attributes.currentAbility")} value={String(raw.currentAbility)} strong />
+              )}
+              {raw.potentialAbility !== null && (
+                <Fact label={tFm("attributes.potentialAbility")} value={String(raw.potentialAbility)} strong />
+              )}
+              {raw.professionalism !== null && (
+                <Fact label={tFm("attributes.professionalism")} value={String(raw.professionalism)} />
+              )}
+              <Fact label={tFm("terms.value")} value={raw.transferValueRange ?? t("noValuation")} />
+              <Fact label={tFm("terms.wage")} value={raw.wage ?? t("noWage")} />
+              <Fact label={t("contractExpires")} value={raw.expires} />
+              <Fact label={tFm("terms.rightFoot")} value={raw.rightFoot} />
+              <Fact label={tFm("terms.leftFoot")} value={raw.leftFoot} />
+              <Fact label={t("id")} value={raw.uniqueId} muted />
             </dl>
             {panel && <PositionMap position={raw.position} />}
           </div>
@@ -91,7 +101,7 @@ export function PlayerProfile({
 
       {potentialGrouped && (
         <div className="flex flex-wrap items-center gap-3">
-          <div role="tablist" aria-label="Attribute view" className="inline-flex rounded-md border border-line bg-surface p-0.5">
+          <div role="tablist" aria-label={t("attributeView")} className="inline-flex rounded-md border border-line bg-surface p-0.5">
             {(["current", "potential"] as const).map((v) => (
               <button
                 key={v}
@@ -101,14 +111,14 @@ export function PlayerProfile({
                 onClick={() => setView(v)}
                 className={`btn h-8 px-3 text-[13px] ${view === v ? "bg-accent text-on-accent" : "text-muted hover:text-ink"}`}
               >
-                {v === "current" ? "Current" : "Full potential"}
+                {v === "current" ? t("current") : t("fullPotential")}
               </button>
             ))}
           </div>
           {showPotential && potential && (
             <p className="text-[13px] text-muted">
-              Estimated attributes at PA {potential.pa} (from CA {potential.ca}), using FM27 CA costs.
-              {potential.capped && " Every trainable attribute maxes out before reaching PA."}
+              {t("estimated", { pa: potential.pa, ca: potential.ca })}
+              {potential.capped && ` ${t("capped")}`}
             </p>
           )}
         </div>
@@ -131,6 +141,7 @@ export function PlayerProfile({
 }
 
 function GradeLine({ label, role, score, mark }: { label: string; role: string; score: number; mark?: ReactNode }) {
+  const formatNumber = useFormatNumber();
   return (
     <div className="flex items-center gap-2.5">
       <GradeStamp score={score} size="lg" label={label} />
@@ -140,7 +151,7 @@ function GradeLine({ label, role, score, mark }: { label: string; role: string; 
           {role}{" "}
           <span className="font-normal text-muted">
             {mark}
-            {score.toFixed(1)}
+            {formatNumber(score, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
           </span>
         </p>
       </div>

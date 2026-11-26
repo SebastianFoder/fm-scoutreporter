@@ -1,0 +1,17 @@
+{
+  "setup": {
+    "title": "설정 가이드",
+    "description": "Football Manager 27 또는 26에서 선수 목록을 내보내 이 앱으로 가져오는 단계를 따라 하십시오.",
+    "link": "가져오기로 이동"
+  },
+  "players": {
+    "title": "선수",
+    "description": "능력치의 가중 평균으로 선수를 평가하고 순위를 매깁니다. 기준값이 필요 없으니 가져오기만 하면 됩니다.",
+    "link": "선수로 이동"
+  },
+  "wonderkids": {
+    "title": "원더키드",
+    "description": "Hidden Attributes 뷰로 내보낸 파일(현재 기량, 잠재 기량, 프로 의식)에서 잠재력 도달 시 능력치를 추정하고, 검증된 FM27 역할로 유망주 순위를 매깁니다.",
+    "link": "선수로 이동"
+  }
+}

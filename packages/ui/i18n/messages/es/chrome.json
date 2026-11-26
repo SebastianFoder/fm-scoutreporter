@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Inicio de Scout Reporter",
+  "mainNav": "Principal",
+  "nav": {
+    "players": "Jugadores",
+    "squad": "Plantilla",
+    "staff": "Cuerpo técnico",
+    "howToUse": "Cómo se usa",
+    "desktopApp": "App de escritorio",
+    "scans": "Escaneos",
+    "growth": "Evolución"
+  },
+  "playerCount": {
+    "title": "Jugadores importados, compartidos por ambos modos",
+    "imported": "{hasTotal, select, yes {{shown} de {total}} other {{shown}}} {count, plural, one {jugador importado} other {jugadores importados}}",
+    "scanned": "{hasTotal, select, yes {{shown} de {total}} other {{shown}}} {count, plural, one {jugador escaneado} other {jugadores escaneados}}"
+  },
+  "language": {
+    "title": "Idioma",
+    "label": "Idioma: {language}"
+  },
+  "footer": {
+    "setupGuide": "Guía de configuración",
+    "faq": "Preguntas frecuentes"
+  }
+}

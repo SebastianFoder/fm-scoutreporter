@@ -9,6 +9,7 @@ import {
   type StoredPlayerRecords,
 } from "@scoutreporter/core/storage/stored-records";
 import { useStoredImport } from "./useStoredImport";
+import type { ImportMessage } from "./ImportPanel";
 import type { CaModelSet } from "@scoutreporter/core/fm27/potential";
 import { parseSquadFields, type SquadColumns, type SquadFields } from "@scoutreporter/core/squad/squad-fields";
 
@@ -25,7 +26,8 @@ type SquadDataState = {
   columns: SquadColumns | null;
 };
 
-export type SquadImportResult = { ok: true; persisted: boolean } | { ok: false; error: string };
+/** `error` is a key in importer.messages: translate it where it is shown. */
+export type SquadImportResult = { ok: true; persisted: boolean } | { ok: false; error: ImportMessage };
 
 type SquadDataContextValue = {
   state: SquadDataState;
@@ -86,7 +88,7 @@ export function SquadDataProvider({ children }: { children: React.ReactNode }) {
   const importRecords = useCallback(
     async (players: PlayerAttributes[], source: ImportSource): Promise<SquadImportResult> => {
       const next = stateForRecords(players, source);
-      if (!next) return { ok: false, error: "No players of your club were found in this scan." };
+      if (!next) return { ok: false, error: "noScanSquad" };
       setState(next);
       const stored: StoredPlayerRecords = { kind: "records", version: 1, source, players };
       return { ok: true, persisted: await save(stored) };
@@ -98,11 +100,7 @@ export function SquadDataProvider({ children }: { children: React.ReactNode }) {
     async (csvText: string): Promise<SquadImportResult> => {
       const next = stateFor(csvText);
       if (!next) {
-        return {
-          ok: false,
-          error:
-            "No players with positions found in this file. Export your squad with the Scout Reporter Standard or Hidden Attributes view.",
-        };
+        return { ok: false, error: "noSquadPlayers" };
       }
       setState(next);
       return { ok: true, persisted: await save(csvText) };

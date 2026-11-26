@@ -1,0 +1,70 @@
+{
+  "title": "Indstillinger",
+  "tabs": {
+    "weights": "Vægte",
+    "columns": "Kolonner",
+    "look": "Udseende",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Tema",
+    "attributeColours": "Egenskabsfarver"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Lyst",
+    "dark": "Mørkt",
+    "system": "System"
+  },
+  "profiles": {
+    "profile": "Profil",
+    "name": "Navn",
+    "namePlaceholder": "Profilnavn",
+    "createNew": "Opret ny",
+    "default": "Standard",
+    "newName": "Ny profil",
+    "copyName": "{name} kopi"
+  },
+  "weights": {
+    "intro": "Hvor meget hver egenskab tæller i en spillers score. Scorerne opdateres, mens du skriver. FM27-rolleprofilerne er benchmarket på FM Match Labs positionsstudie (13b).",
+    "weighted": "{count, number} vægtet",
+    "weighting": "Vægtning",
+    "linear": "Lineær (FM27-benchmark)",
+    "emphasized": "Fremhævet (vægte i anden)",
+    "benchmark": "Benchmarkede vægte for FM27-roller (FM Match Lab <link>Study 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "FM Match Labs FM27-benchmark (<link>Study 13b</link>): centerforsvarere.",
+      "fm27-wb": "FM Match Labs FM27-benchmark (<link>Study 13b</link>): backer og wingbacks.",
+      "fm27-dm": "FM Match Labs FM27-benchmark (<link>Study 13b</link>): defensive midtbanespillere, bruges også til centrale midtbanespillere.",
+      "fm27-10": "FM Match Labs FM27-benchmark (<link>Study 13b</link>): offensive midtbanespillere og fløjspillere.",
+      "fm27-9": "FM Match Labs FM27-benchmark (<link>Study 13b</link>): angribere.",
+      "fm27-gk": "FM Match Labs FM27-benchmark (<link>Study 13b</link>): målmænd."
+    },
+    "resetToBenchmark": "Nulstil til benchmark",
+    "linearNote": "Lineær svarer til, hvordan FM27-benchmarkerne og “vs. alder” er kalibreret.",
+    "json": {
+      "title": "Importér / eksportér JSON",
+      "label": "Profil-JSON",
+      "placeholder": "Eksporteret profil-JSON vises her. Indsæt JSON her for at importere.",
+      "invalid": "Ugyldig profil-JSON"
+    }
+  },
+  "columns": {
+    "intro": "De egenskaber, spillerlisten og sammenligningen viser som kolonner. Gem forskellige sæt som profiler.",
+    "shown": "{count, number} vist"
+  },
+  "colours": {
+    "intro": "Den værdi, en egenskab (1 til 20) skal have for hver farve. Farverne følger det lyse eller mørke tema.",
+    "band": "Niveau",
+    "minValue": "Min. værdi",
+    "preview": "Forhåndsvisning, 1 til 20",
+    "bands": {
+      "excellent": "Fremragende egenskab",
+      "good": "God egenskab",
+      "average": "Gennemsnitlig egenskab",
+      "low": "Lav egenskab"
+    },
+    "minValueLabel": "Minimumsværdi for {band}",
+    "below": "Under <b>{value, number}</b>"
+  }
+}

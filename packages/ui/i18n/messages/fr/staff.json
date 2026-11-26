@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Préparateur : tactique offensive",
+      "coach-attacking-technical": "Préparateur : technique offensive",
+      "coach-defending-tactical": "Préparateur : tactique défensive",
+      "coach-defending-technical": "Préparateur : technique défensive",
+      "coach-possession-tactical": "Préparateur : tactique de possession",
+      "coach-possession-technical": "Préparateur : technique avec le ballon"
+    },
+    "summaries": {
+      "manager": "Évaluation des joueurs, capacité à motiver, gestion des personnes et notions tactiques, puis les attributs d’entraînement.",
+      "assistant-manager": "Évaluation des joueurs, capacité à motiver et gestion des personnes, pour les rapports, les causeries et les conseils en match.",
+      "director-of-football": "Évaluation des joueurs et du potentiel. Business (aussi utilisé) est caché, donc non noté.",
+      "head-of-youth": "Évaluation des joueurs et du potentiel, et entraînement des jeunes. Son Professionnalisme caché influence celui des arrivées de jeunes : vérifiez-le vous-même.",
+      "coach-attacking-tactical": "Entraîne Sang-froid, Inspiration et Appels de balle.",
+      "coach-attacking-technical": "Entraîne Centres, Finition et Frappes de loin.",
+      "coach-defending-tactical": "Entraîne Agressivité, Concentration et Placement.",
+      "coach-defending-technical": "Entraîne Marquage et Tacles.",
+      "coach-possession-tactical": "Entraîne Anticipation, Décisions, Travail collectif et Vision du jeu.",
+      "coach-possession-technical": "Entraîne Dribble, Contrôle de balle, Têtes, Passes et Technique.",
+      "coach-goalkeeping": "Entraîne tous les attributs de gardien, y compris les attributs de joueur de champ utilisés par les gardiens.",
+      "coach-fitness": "Entraîne les attributs physiques et le Volume de jeu, la plus grosse part du poids de chaque poste.",
+      "coach-set-pieces": "Entraîne Corners, Coups francs, Touches longues et Penalties.",
+      "scout": "Évaluation des joueurs et du potentiel, puis notions tactiques.",
+      "performance-analyst": "Analyse de données, puis évaluation des joueurs et notions tactiques.",
+      "physio": "Kiné, appuyé par les sciences du sport et les attributs mentaux.",
+      "sports-scientist": "Sciences du sport, appuyées par la condition physique, la kiné et les attributs mentaux."
+    },
+    "groups": {
+      "management": "Direction",
+      "recruitmentAndAnalysis": "Recrutement et analyse"
+    }
+  },
+  "freeAgent": "Libre de tout contrat",
+  "preferredJob": "Poste souhaité",
+  "bestRole": "Meilleur rôle",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role} : {score} ({word})",
+    "partial": "{role} : {score} ({word}). {percent, number, percent} du poids de ce rôle figurait dans l’export"
+  },
+  "noImport": {
+    "desktop": "Pas encore de staff. Dans FM, ouvrez une Recherche de staff et appuyez sur <kbd>F9</kbd> ou sur Scanner la recherche."
+  },
+  "list": {
+    "title": "Staff",
+    "bestBackroom": "Meilleur staff",
+    "intro": "Classez préparateurs, recruteurs, analystes et directeurs sportifs à partir d’un export de recherche de staff FM26. Les appréciations en mots de FM26 sont reconverties sur l’échelle 1–20 et chaque membre du staff est noté sur chaque rôle.",
+    "noImport": "Aucun staff importé pour l’instant. Dans FM, ouvrez une recherche de staff, importez la vue Staff, sélectionnez les membres du staff et exportez un CSV, puis importez-le ci-dessus.",
+    "filters": "Filtres",
+    "rankBy": "Classer par",
+    "allJobs": "Tous les postes",
+    "search": "Rechercher",
+    "searchPlaceholder": "Nom ou club",
+    "freeAgentsOnly": "Libres de tout contrat uniquement",
+    "myClubTitle": "Staff de {club}",
+    "showMine": "Voir mon staff ({count, number})",
+    "ratingsAs": "Notes en",
+    "words": "Mots",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> sur {total, number} membres du staff",
+    "jobScoredAsOne": "<b>{job} :</b> noté comme {role}.",
+    "jobScoredAsBest": "<b>{job} :</b> noté sur son meilleur rôle parmi {roles}.",
+    "jobShowingWeighted": "Affichage {count, plural, one {de l’attribut pondéré} other {des # attributs pondérés}} par fm-scoring pour ce poste.",
+    "jobBoldWeighted": "Les colonnes en gras sont {count, plural, one {l’attribut pondéré} other {les # attributs pondérés}} par fm-scoring pour ce poste.",
+    "jobNoWeights": "<b>{job} :</b> fm-scoring n’a pas de pondérations pour ce poste, donc tous les attributs sont affichés et Poste souhaité n’a pas de score.",
+    "showAllAttributes": "Afficher tous les attributs",
+    "rankRole": "<b>{role} :</b> {summary} Les attributs pondérés sont en gras.",
+    "name": "Nom",
+    "job": "Poste",
+    "scoreTitle": "Score pondéré du rôle sur l’échelle 1–20. * = certains attributs du rôle manquaient.",
+    "attributeWeight": "{label} (poids {weight, number})",
+    "method": {
+      "title": "Comment le staff est noté",
+      "words": "FM26 affiche les attributs du staff sous forme de mots. Chaque mot couvre une plage fixe de l’ancienne échelle 1–20 et compte pour le milieu de cette plage (les valeurs exactes sont utilisées quand l’export les fournit) :",
+      "roles": "Le score d’un rôle est la moyenne pondérée des attributs que ce rôle utilise, avec les 17 rôles du staff et les pondérations de <link>fm-scoring</link> : une grille communautaire de notation du staff, renommée pour FM27 et vérifiée par rapport aux attributs clés que FM27 met en avant sur les profils du staff. Les préparateurs sont répartis dans les neuf groupes d’entraînement de FM, chacun noté sur ses deux attributs d’entraînement plus la discipline, la détermination, la capacité à motiver, la gestion des personnes et l’entraînement des jeunes. Un préparateur généraliste est noté sur son meilleur groupe de joueurs de champ. Adaptabilité, Évaluation niveau du staff et Négociation ne pèsent dans aucun rôle. Filtrer par poste souhaité n’affiche que les attributs pondérés pour ce poste. Meilleur rôle ne compte que les rôles dont la plupart des attributs pondérés figuraient dans l’export. Les scores de rôle reçoivent les mêmes notes de S++ à F que les scores des joueurs, sur les mêmes paliers de l’échelle 1–20."
+    }
+  },
+  "detail": {
+    "preferredJob": "Poste souhaité : {job}",
+    "age": "{age, number} ans",
+    "preferredScore": "Poste souhaité : {role} {score}",
+    "preferred": "(souhaité)",
+    "barsNote": "Les barres vont de 0 à 20. * signifie que certains attributs du rôle manquaient dans l’export.",
+    "notInExport": "Absent de l’export"
+  },
+  "backroom": {
+    "title": "Meilleur staff",
+    "staffList": "Liste du staff",
+    "intro": "Choisissez les rôles dont vous avez besoin et combien de chaque. Scout Reporter recrute la combinaison de membres du staff au meilleur score total, sans jamais utiliser deux fois la même personne. Verrouillez ceux que vous avez signés, et retirez ceux qui vous disent non pour obtenir le meilleur choix suivant à ce poste.",
+    "noImport": "Aucun staff importé pour l’instant. Choisissez un CSV de staff ci-dessus, ou chargez les données test pour découvrir l’outil.",
+    "reset": "Réinitialiser",
+    "preset": "Modèle",
+    "custom": "Personnalisé",
+    "oneFewer": "Un {role} de moins",
+    "oneMore": "Un {role} de plus",
+    "roleCount": "{role} : {count, number}",
+    "preferredJobOnly": "Seulement le staff dont c’est le poste souhaité",
+    "preferredJobOnlyHint": "Dans FM, le staff peut refuser d’autres postes.",
+    "empty": {
+      "title": "Aucun rôle choisi.",
+      "body": "Ajoutez au moins un rôle à gauche, ou choisissez un modèle."
+    },
+    "short": {
+      "title": "Pas assez de staff pour chaque rôle.",
+      "role": "{role} : {wanted, number} voulu(s), {eligible, plural, one {# admissible} other {# admissibles}}.",
+      "explain": "{filtered, select, yes {Un membre du staff est admissible si la plupart des attributs du rôle figurent dans l’export, s’il passe les filtres et s’il n’est pas exclu ; une personne ne peut occuper qu’un rôle.} other {Un membre du staff est admissible si la plupart des attributs du rôle figurent dans l’export ; une personne ne peut occuper qu’un rôle.}}"
+    },
+    "excluded": "Exclus :",
+    "allowAgainTitle": "Réautoriser cette personne",
+    "allowAgain": "(réautoriser)",
+    "clearAll": "Tout effacer",
+    "footer": "Chaque rôle est noté avec les pondérations du staff de fm-scoring (voir <link>Staff</link>). Le staff affiché a le meilleur score total de toutes les façons de pourvoir les rôles avec des personnes différentes : un profil polyvalent va là où il apporte le plus, pas au premier rôle qui le veut. Les membres du staff à qui manquent la plupart des attributs d’un rôle ne sont pas pris en compte pour ce rôle.",
+    "result": {
+      "title": "Votre staff",
+      "summary": "{count, plural, one {# membre du staff} other {# membres du staff}} · Score moyen",
+      "averageLabel": "Score moyen du staff",
+      "offJob": "· {count, plural, one {# à un rôle qui n’est pas son poste souhaité} other {# à un rôle qui n’est pas leur poste souhaité}} (poste en gris)",
+      "locked": "· {count, plural, one {# verrouillé} other {# verrouillés}}",
+      "unlockAll": "Tout déverrouiller",
+      "score": "Score",
+      "scoreTitle": "Score du rôle sur l’échelle 1–20 de FM",
+      "lockOrRemove": "Verrouiller ou retirer",
+      "offJobTitle": "Pas son poste souhaité : il peut refuser ce rôle",
+      "unlock": "Déverrouiller {name}",
+      "lockIn": "Verrouiller {name}",
+      "lockedTitle": "Verrouillé : reste à ce poste quand le reste est recalculé. Cliquez pour déverrouiller.",
+      "lockTitle": "Verrouiller : garder à ce poste (par ex. une fois signé) quand le reste est recalculé",
+      "exclude": "Exclure {name} et refaire le choix",
+      "excludeTitle": "Retirer et refaire le choix (par ex. négociations de contrat échouées)"
+    }
+  }
+}

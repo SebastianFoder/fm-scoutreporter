@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import type { Role, SlotSetting } from "@scoutreporter/core/best-xi/roles";
-import { shortRole } from "@scoutreporter/core/best-xi/roles";
+import { useRoleName } from "@scoutreporter/ui/features/best-xi/FormationEditor";
+import { useFixed } from "@scoutreporter/ui/features/best-xi/PitchLineup";
 import type { Pick, SquadAnalysis } from "@scoutreporter/core/squad/analysis";
 import { isInjured, type SquadFields } from "@scoutreporter/core/squad/squad-fields";
 import { DROP_OFF_GAP } from "@scoutreporter/core/squad/analysis";
@@ -24,15 +26,18 @@ export function DepthChart({
   fields: Map<string, SquadFields>;
   potentialBasis: boolean;
 }) {
+  const t = useTranslations("squad");
+  const fixed = useFixed();
+  const roleName = useRoleName();
   const cell = (p: Pick | null, label: string): ReactNode => {
-    if (!p) return <span className="text-[13px] font-semibold text-red">Nobody</span>;
+    if (!p) return <span className="text-[13px] font-semibold text-red">{t("nobody")}</span>;
     const f = fields.get(p.id);
     return (
       <span className="flex flex-col gap-0.5">
         <PlayerChip name={name(p.id)} score={p.score} age={age(p.id)} label={label}>
           {isInjured(f) && (
             <Tag tone="red" title={f?.injury ?? undefined}>
-              Injured
+              {t("injured")}
             </Tag>
           )}
         </PlayerChip>
@@ -45,28 +50,22 @@ export function DepthChart({
     <section aria-labelledby="squad-depth" className="panel">
       <div className="border-b border-line px-4 py-3">
         <h2 id="squad-depth" className="section-title">
-          Depth chart
+          {t("depth.title")}
         </h2>
-        <p className="mt-0.5 text-sm text-muted">
-          Starter and cover at every position{potentialBasis && ", at full potential"}. Cover comes from
-          the second eleven, so nobody covers two places.
-        </p>
+        <p className="mt-0.5 text-sm text-muted">{t("depth.intro", { potential: potentialBasis ? "yes" : "no" })}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="data-table">
           <thead>
             <tr>
-              <th className="px-3 py-2 text-left">Pos</th>
-              <th className="px-3 py-2 text-left">Starter</th>
-              <th className="px-3 py-2 text-left">Cover</th>
-              <th className="px-3 py-2 text-right" title="Cover's score minus the starter's">
-                Drop
+              <th className="px-3 py-2 text-left">{t("depth.columns.pos")}</th>
+              <th className="px-3 py-2 text-left">{t("depth.columns.starter")}</th>
+              <th className="px-3 py-2 text-left">{t("depth.columns.cover")}</th>
+              <th className="px-3 py-2 text-right" title={t("depth.columns.dropTitle")}>
+                {t("depth.columns.drop")}
               </th>
-              <th
-                className="px-3 py-2 text-left"
-                title="Other natural players, best first. XI: starts elsewhere. 2nd: covers elsewhere."
-              >
-                Also plays here
+              <th className="px-3 py-2 text-left" title={t("depth.columns.alsoPlaysTitle")}>
+                {t("depth.columns.alsoPlays")}
               </th>
             </tr>
           </thead>
@@ -75,10 +74,10 @@ export function DepthChart({
               <tr key={i}>
                 <td className="whitespace-nowrap px-3 py-2 align-top">
                   <SpotBadge spot={slots[i].spot} />
-                  <span className="mt-1 block text-[12px] text-muted">{shortRole(roles[i].name)}</span>
+                  <span className="mt-1 block text-[12px] text-muted">{roleName(roles[i])}</span>
                 </td>
-                <td className="px-3 py-2 align-top">{cell(r.starter, `Starter at ${slots[i].spot}`)}</td>
-                <td className="px-3 py-2 align-top">{cell(r.backup, `Cover at ${slots[i].spot}`)}</td>
+                <td className="px-3 py-2 align-top">{cell(r.starter, t("depth.starterAt", { spot: slots[i].spot }))}</td>
+                <td className="px-3 py-2 align-top">{cell(r.backup, t("depth.coverAt", { spot: slots[i].spot }))}</td>
                 <td className="px-3 py-2 text-right align-top text-sm">
                   {r.starter && r.backup ? (
                     <Delta value={r.backup.score - r.starter.score} warnAt={DROP_OFF_GAP} />
@@ -88,25 +87,29 @@ export function DepthChart({
                 </td>
                 <td className="px-3 py-2 align-top">
                   {r.others.length === 0 ? (
-                    <span className="text-[13px] text-muted">Nobody</span>
+                    <span className="text-[13px] text-muted">{t("nobody")}</span>
                   ) : (
                     <ul className="flex flex-wrap gap-1">
                       {r.others.slice(0, 4).map((o) => (
                         <li
                           key={o.id}
-                          title={`${name(o.id)}, ${o.score.toFixed(1)}${o.xi === 1 ? ", starts elsewhere" : o.xi === 2 ? ", covers elsewhere" : ""}`}
+                          title={t("depth.otherTitle", {
+                            name: name(o.id),
+                            score: fixed(o.score),
+                            xi: o.xi === 1 ? "first" : o.xi === 2 ? "second" : "none",
+                          })}
                           className={`inline-flex items-center gap-1 rounded-[3px] px-1.5 py-0.5 text-[12px] ring-1 ring-line ${
                             o.xi ? "text-muted" : "bg-surface"
                           }`}
                         >
                           <span className="font-semibold">{lastName(name(o.id))}</span>
-                          <span className="tabular-nums">{o.score.toFixed(1)}</span>
-                          {o.xi === 1 && <span className="text-[10px] font-bold">XI</span>}
-                          {o.xi === 2 && <span className="text-[10px] font-bold">2nd</span>}
+                          <span className="tabular-nums">{fixed(o.score)}</span>
+                          {o.xi === 1 && <span className="text-[10px] font-bold">{t("depth.firstBadge")}</span>}
+                          {o.xi === 2 && <span className="text-[10px] font-bold">{t("depth.secondBadge")}</span>}
                         </li>
                       ))}
                       {r.others.length > 4 && (
-                        <li className="px-1 py-0.5 text-[12px] text-muted">+{r.others.length - 4}</li>
+                        <li className="px-1 py-0.5 text-[12px] text-muted">{t("depth.more", { count: r.others.length - 4 })}</li>
                       )}
                     </ul>
                   )}

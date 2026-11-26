@@ -1,0 +1,109 @@
+{
+  "intro": "Vælger de elleve fra din import med højest score til en formation, med et valgfrit minimum og maksimum for, hvad de elleve koster i alt.",
+  "noImport": {
+    "desktop": "Ingen spillere endnu. Åbn en Spillersøgning i FM, og tryk på <kbd>F9</kbd> eller Scan søgning.",
+    "web": "Ingen CSV importeret endnu. Vælg en CSV-fil ovenfor, eller indlæs testdata for at se dig omkring."
+  },
+  "setup": {
+    "title": "Opsætning",
+    "reset": "Nulstil",
+    "minBudget": "Min. budget ({currency})",
+    "maxBudget": "Maks. budget ({currency})",
+    "noMinimum": "Intet minimum",
+    "noLimit": "Ingen grænse",
+    "budgetInvalid": "Indtast et beløb som 15M, 750K eller 2500000. Budgetter, der ikke kan læses, ignoreres.",
+    "budgetHint": "I alt for de elleve. Skriv beløb som 15M eller 750K.",
+    "valuation": "En spiller koster",
+    "valuations": {
+      "low": "Laveste ende af intervallet",
+      "mid": "Midten af intervallet",
+      "high": "Højeste ende af intervallet"
+    },
+    "includeFree": "Medtag spillere uden transferværdi",
+    "includeFreeHint": "Mest fritstillede spillere. De tæller som {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "Minimumsbudgettet er højere end maksimum.",
+      "body": "Ingen elleve kan koste mindst {min} og højst {max}."
+    },
+    "slots": {
+      "title": "Ikke nok spillere til at udfylde denne formation.",
+      "body": "Ingen egnet spiller tilbage til: {positions}. Kun naturlige positioner fra eksporten tæller.",
+      "leftOut": "Udelukkede spillere og spillere uden transferværdi er udeladt."
+    },
+    "budget": {
+      "title": "Ingen elleve passer til dette budget.",
+      "range": "Med disse indstillinger koster de billigst mulige elleve {min} og de dyreste {max}.",
+      "wider": "Prøv et bredere budget."
+    }
+  },
+  "excluded": {
+    "label": "Udelukket:",
+    "allowAgain": "Tillad denne spiller igen",
+    "allowAgainHidden": "(tillad igen)",
+    "clearAll": "Ryd alle"
+  },
+  "footnote": "Hver position får én spiller, der har den som naturlig position, med score efter positionens rolle (1–20). De viste elleve har den højeste samlede score af alle kombinationer, der passer til budgettet.",
+  "unpriced": "{count, plural, one {# spiller er} other {# spillere er}} udeladt, fordi eksporten ikke angiver en pris (for eksempel \"Ikke til salg\").",
+  "result": {
+    "title": "Bedste elleve",
+    "summary": "Gennemsnitlig score <b>{average}</b>{basis, select, potential { ved fuldt potentiale} other {}} · Pris <b>{cost}</b>{budget, select, range { (budget {min} til {max})} max { af {max}} min { (mindst {min})} other {}} · Løn <b>{wages} pr. uge</b>{unknownWages, plural, =0 {} one { (# uden kontrakt)} other { (# uden kontrakt)}}",
+    "notOptimal": "Søgningen løb tør for tid, før den kunne bevise, at dette er de allerbedste elleve. Bedre elleve kan højst lægge {gap} til den samlede score på {total}.",
+    "pitchLabel": "De elleve på banen",
+    "columns": {
+      "pos": "Pos",
+      "score": "Score",
+      "scoreTitle": "Rollescore på FM's skala 1–20",
+      "valueTitle": "Transferværdi i eksporten",
+      "counted": "Medregnet",
+      "countedTitle": "Medregnet i budgettet: {valuation, select, low {laveste ende af intervallet} high {højeste ende af intervallet} other {midten af intervallet}}",
+      "exclude": "Udeluk"
+    },
+    "excludeLabel": "Udeluk {name}, og vælg igen",
+    "excludeTitle": "Udeluk og vælg igen",
+    "total": "I alt",
+    "perWeek": "{amount} pr. uge"
+  },
+  "formation": {
+    "custom": "Brugerdefineret",
+    "yours": "Dine formationer",
+    "presets": "FM-formationer",
+    "moveTo": "Flyt {from} til {spot} ({position})",
+    "emptySpot": "Tom plads {spot} ({position})",
+    "moveHere": "Flyt {from} hertil",
+    "goalkeeperFixed": "Målmand (fast)",
+    "selected": "{spot} ({position}) valgt: vælg en plads at flytte den til, eller tryk igen for at annullere",
+    "dragOrSelect": "{spot} ({position}): træk, eller vælg for at flytte",
+    "keeperStays": "Målmanden bliver i målet",
+    "dragTitle": "{position}: træk til en anden plads eller hen på en position for at bytte",
+    "hint": {
+      "dropSwap": "Slip for at bytte {from} og {to}.",
+      "dropMove": "Slip for at flytte {from} til {to}.",
+      "dropCancel": "Slip på en plads, eller et andet sted for at annullere.",
+      "moving": "Flytter {spot}: klik på en plads (eller en anden position for at bytte), eller på {spot} igen for at annullere.",
+      "idle": "Træk en position til en anden plads, eller hen på en position for at bytte dem."
+    },
+    "delete": "Slet “{name}”",
+    "namePlaceholder": "Navngiv denne formation",
+    "myPlaceholder": "Min {formation}",
+    "nameLabel": "Navn på denne formation",
+    "save": "Gem",
+    "scoredAs": "Score som",
+    "roleFor": "Rolle for {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "Rollerne er dine vægtprofiler fra <link>Spillere</link>."
+  },
+  "basis": {
+    "label": "Score ud fra",
+    "potential": "Fuldt potentiale",
+    "potentialTitle": "Egenskaber fremskrevet til PE",
+    "needsTitle": "Kræver NE og PE: eksportér med visningen {view}",
+    "needs": "Fuldt potentiale kræver visningen {view}."
+  },
+  "pitch": {
+    "nobody": "Ingen",
+    "nobodyTitle": "{spot}: ingen i truppen spiller {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

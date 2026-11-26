@@ -1,0 +1,171 @@
+{
+  "scanLabel": {
+    "sample": "Eksempelskanning",
+    "dated": "Skanning fra {date}"
+  },
+  "scanButton": {
+    "group": "Skann Football Manager",
+    "scanning": "Skanner {progress, number, percent}",
+    "search": "Skann søk",
+    "searchTitle": "Behold personene i FMs Spillersøk eller Ansattsøk, pluss klubben din (F9)",
+    "save": "Skann lagret spill",
+    "saveTitle": "Behold alle spillere og ansatte i det lagrede spillet"
+  },
+  "counts": {
+    "players": "{count, plural, one {# spiller} other {# spillere}}",
+    "staff": "{count, plural, one {# ansatt} other {# ansatte}}",
+    "playersAndStaff": "{players, plural, one {# spiller} other {# spillere}} og {staff, plural, one {# ansatt} other {# ansatte}}"
+  },
+  "home": {
+    "notDesktop": {
+      "title": "Skrivebordsapp",
+      "body": "Denne siden hører til skrivebordsappen Scout Reporter, som leser det lagrede Football Manager-spillet ditt direkte. På nettsiden importerer du i stedet en CSV-eksport: se <link>oppsettguiden</link>."
+    },
+    "title": "Skann Football Manager",
+    "intro": "<b>Skann søk</b> {hotkey, select, on {(eller F9, også inne i FM)} other {(eller F9 når hurtigtasten er på, også inne i FM)}}: åpne Spillersøk eller Ansattsøk i Football Manager, sett filtrene dine, og appen tar med personene FM fant pluss din egen klubb. <b>Skann lagret spill</b>: alle spillere og ansatte i det lagrede spillet, uten at du trenger et søk. Alle skjermene (Spillere, Beste 11, Tropp, Støtteapparat) fungerer på skanningen. Ingenting i spillet ditt endres. F9-tasten, skjulte ferdigheter og oppdateringer finner du under <settings>Innstillinger</settings>.",
+    "phase": "{phase, select, importing {Lagrer skanningen…} writing {Skriver skanningen…} clubs {Leser klubber…} people {Leser personer…} other {Leser minnet…}}",
+    "errors": {
+      "notRunning": "Football Manager kjører ikke",
+      "noAccess": "Football Manager kjører som administrator",
+      "notLoaded": "Ikke noe spill lastet inn ennå",
+      "nothingFound": "Fant ingen spillere",
+      "tooMuchUnread": "Skanningen er ufullstendig",
+      "noSearch": "Fant ikke noe søk i Football Manager",
+      "busy": "En skanning pågår allerede",
+      "missingReader": "Leseren mangler",
+      "failed": "Skanningen mislyktes"
+    },
+    "scanWholeSave": "Eller <link>skann hele det lagrede spillet</link> i stedet.",
+    "doneSearch": "<b>{players, plural, one {# spiller} other {# spillere}}</b> og {staff, plural, one {# ansatt} other {# ansatte}} beholdt: FM-søket ditt ({search}) pluss klubben din{hasClub, select, yes {, {club}} other {}}. Åpne <playersLink>Spillere</playersLink>, <squadLink>Tropp</squadLink> eller <growthLink>Vekst</growthLink>.",
+    "doneFull": "<b>{players, plural, one {# spiller} other {# spillere}}</b> og {staff, plural, one {# ansatt} other {# ansatte}} skannet{hasClub, select, yes {, klubben din: {club}} other {}}. Åpne <playersLink>Spillere</playersLink>, <squadLink>Tropp</squadLink> eller <growthLink>Vekst</growthLink>.",
+    "loading": "Laster skanningen inn i skjermene…",
+    "partial": "Skjermene inneholder {players, number} av {totalPlayers, plural, one {# spiller} other {# spillere}} og {staff, number} av {totalStaff, plural, one {# ansatt} other {# ansatte}} fra denne skanningen: klubben din pluss {loadedFrom}, høyest NF først, for at skjermene skal gå raskt. Vekst sammenligner alltid alle spillere i begge skanningene.",
+    "loadedFrom": {
+      "playersSearch": "spillere fra FMs spillersøk ({count, number} funnet)",
+      "playersBest": "spillerne som er verdt å speide",
+      "staffSearch": "ansatte fra FMs ansattsøk ({count, number} funnet)",
+      "staffBest": "de ansatte som er verdt å ansette"
+    },
+    "version": {
+      "title": "Ukjent versjon av Football Manager",
+      "body": "Denne skanningen kom fra FM {version}, men leseren ble laget for {game}. Sjekk noen spillere mot spillet før du stoler på tallene, og se etter en oppdatering av Scout Reporter.",
+      "unknown": "(ukjent versjon)"
+    },
+    "loadError": "Kunne ikke laste inn skanningen",
+    "stored": {
+      "title": "Lagrede skanninger",
+      "kept": "De {retention} nyeste beholdes, pluss stjernemerkede, slik at <link>Vekst</link> kan sammenligne dem.",
+      "disk": "De bruker {size} på disken.",
+      "openFolder": "Åpne mappe",
+      "loadSample": "Last inn eksempelskanning",
+      "empty": "Ingen skanninger ennå. Trykk Skann søk eller Skann lagret spill, eller last inn eksempelskanningen for å se deg rundt."
+    },
+    "details": {
+      "noClub": "ingen klubb",
+      "scanned": "skannet {time}",
+      "search": "FM-søket ditt ({search}) og klubben din",
+      "wholeSave": "hele det lagrede spillet",
+      "fmSearch": "FM-søk: {search}"
+    },
+    "about": {
+      "title": "Om",
+      "version": "Scout Reporter desktop {version}. Støtter Football Manager 27 (27.0) og 26 (26.3) på Windows, fra Steam, Epic eller Game Pass.",
+      "reader": "Leseren leser bare minnet til Football Manager; den endrer aldri spillet eller det lagrede spillet ditt. Den er tilpasset fra <link>FMSuperScout</link> av mavarobli (MIT-lisens). Tusen takk!",
+      "credits": "FM27-rollevekter fra <matchLab>FM Match Lab</matchLab>; aldersreferanser, NF-kostnader og vekter for støtteapparatet fra <scoring>jamiebolden/fm-scoring</scoring>; treningsforskning av harvestgreen22."
+    }
+  },
+  "scanRow": {
+    "star": "Stjernemerk {label}",
+    "unstar": "Fjern stjerne fra {label}",
+    "starredTitle": "Stjernemerket: slettes aldri for å gi plass til nye skanninger",
+    "starTitle": "Stjernemerk: slett aldri denne skanningen for å gi plass til nye",
+    "rename": "Gi nytt navn til {label}",
+    "renameTitle": "Gi nytt navn",
+    "inUse": "I bruk",
+    "versionDiffers": "annen versjon",
+    "nameFor": "Navn på {label}",
+    "use": "Bruk",
+    "delete": "Slett {label}"
+  },
+  "settings": {
+    "loading": "Laster innstillingene…",
+    "scanning": "Skanning",
+    "hidden": {
+      "title": "Bruk NF, PF og skjulte ferdigheter",
+      "body": "På: skjermene får nåværende og potensielt nivå og Profesjonalitet for hver spiller, som Potensial-poengene trenger. Av: de holdes utenfor, som i en vanlig FM-eksport, og Vekst viser bare endringer i ferdigheter."
+    },
+    "hotkey": {
+      "title": "F9 skanner søket ditt fra hvor som helst",
+      "body": "Mens appen kjører, gjør F9 Skann søk, også inne i FM. Andre apper får ikke F9 så lenge."
+    },
+    "database": "Database",
+    "databases": {
+      "men": "Menn",
+      "women": "Kvinner",
+      "both": "Begge"
+    },
+    "keep": "Behold",
+    "keepSuffix": "skanninger",
+    "retentionNote": "Stjernemerkede skanninger beholdes i tillegg til disse og slettes aldri for å gi plass. En søkeskanning tar noen få MB, et helt lagret spill rundt 140 MB.",
+    "updates": "Oppdateringer",
+    "checkUpdates": {
+      "title": "Se etter oppdateringer",
+      "body": "Spør GitHub om den nyeste versjonen når appen starter og med noen timers mellomrom. Ingenting om deg eller spillet ditt sendes. Oppdatering beholder innstillingene, skanningene, vektene og formasjonene dine."
+    },
+    "checking": "Sjekker…",
+    "checkNow": "Sjekk nå",
+    "updateAvailable": "Versjon {latest} er ute (du har {current}): se linjen øverst.",
+    "upToDate": "Du har den nyeste versjonen ({current}).",
+    "version": "Versjon {current}.",
+    "privacy": "Personvern",
+    "usageStats": {
+      "title": "Send anonym bruksstatistikk",
+      "body": "Teller hvilke skjermer som åpnes, for å se hva som blir brukt. Den går til utviklerens egen statistikkserver, setter ingen informasjonskapsler og inneholder aldri det lagrede spillet ditt, skanninger, spillere eller noe som identifiserer deg."
+    }
+  },
+  "update": {
+    "installing": "Installerer Scout Reporter {version}. Appen lukkes og åpnes igjen om et øyeblikk.",
+    "downloading": "Laster ned Scout Reporter {version}… {progress, number, percent}",
+    "available": "Scout Reporter {version} er ute",
+    "availableDetail": "(du har {current}). Oppdatering beholder innstillingene, skanningene, vektene og formasjonene dine.",
+    "updateNow": "Oppdater nå",
+    "whatsNew": "Hva er nytt",
+    "downloadYourself": "Last ned selv",
+    "hide": "Skjul til en versjon nyere enn {version}"
+  },
+  "growth": {
+    "title": "Vekst",
+    "notDesktop": "Vekst sammenligner lagrede skanninger og er en del av skrivebordsappen Scout Reporter.",
+    "intro": "Hvor mye hver spiller har forbedret seg mellom to skanninger av det lagrede spillet ditt. Skann jevnlig (med noen måneders mellomrom i spillet) for å følge de unge spillerne dine og oppdage gjennombruddsspillere over hele verden.",
+    "twoNeeded": {
+      "title": "To skanninger trengs",
+      "body": "Vekst sammenligner to skanninger. Du har {count, number}. <link>Skann</link> igjen senere i spillet ditt."
+    },
+    "from": "Fra",
+    "to": "Til",
+    "option": "{label} ({count, plural, one {# spiller} other {# spillere}})",
+    "gainedAtLeast": "Økt minst",
+    "ca": "NF",
+    "any": "alle",
+    "maxAge": "Maks. alder",
+    "search": "Søk",
+    "searchPlaceholder": "Spiller eller klubb",
+    "searchScans": "En skanning av FM-søket ditt inneholder spillerne fra det søket og din egen klubb, så Vekst dekker spillerne som er med i begge skanningene. Din egen klubb er med i alle skanninger. For å følge alle spillerne i spillet bruker du Skann lagret spill på <link>Skanninger-siden</link>.",
+    "sameScan": {
+      "title": "Samme skanning to ganger",
+      "body": "Velg to forskjellige skanninger."
+    },
+    "compareError": "Kunne ikke sammenligne skanningene",
+    "comparing": "Sammenligner skanninger…",
+    "summary": "{total, plural, one {# spiller} other {# spillere}}{hasDays, select, yes { over {days, plural, one {# dag i spillet} other {# dager i spillet}}} other {}}{newPlayers, select, search {, pluss {newCount, plural, one {# spiller som bare er med i den seneste skanningen} other {# spillere som bare er med i den seneste skanningen}}} full {, pluss {newCount, plural, one {# ny spiller (inntak av unge spillere eller nylig innlastet liga)} other {# nye spillere (inntak av unge spillere eller nylig innlastede ligaer)}} uten tidligere skanning} other {}}.",
+    "updating": "Oppdaterer…",
+    "columns": {
+      "ca": "NF",
+      "caChange": "Endring NF",
+      "paChange": "Endring PF",
+      "biggestChanges": "Største endringer"
+    },
+    "firstOnly": "Viser de første {max, number}: snevre inn filtrene for å se andre",
+    "showMore": "Vis {count, number} til"
+  }
+}

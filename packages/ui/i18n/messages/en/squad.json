@@ -1,0 +1,232 @@
+{
+  "title": "Squad analysis",
+  "intro": "Import your squad, pick the formation you play, and see your first and second eleven, where the squad is thin or weak, who is ageing out and which youngsters can step up.",
+  "import": {
+    "title": "Import your squad",
+    "titleCount": "{count, plural, one {# player in your squad} other {# players in your squad}}",
+    "description": "Export your squad screen with the <squad>Squad</squad> or <hidden>Squad Hidden Attributes</hidden> view (adds potential). Kept separate from your scouting import.",
+    "noColumns": "This import has no squad columns, so loans, injuries, squad status and the team sheet are not checked."
+  },
+  "noImport": {
+    "desktop": "No squad yet. Every scan reads your own club's players too.",
+    "web": "No squad imported yet. Choose your squad CSV above, or load the test data to look around.",
+    "usePlayerImportPrompt": "Already exported your squad as the player import?",
+    "usePlayerImport": "Use the player import ({count, plural, one {# player} other {# players}}) as your squad"
+  },
+  "setup": {
+    "title": "Setup",
+    "reset": "Reset",
+    "availability": "Availability",
+    "includeLoans": "Count players out on loan",
+    "loanHint": "{count} out on loan at other clubs.",
+    "excludeInjured": "Leave out injured players",
+    "injuredHint": "{count} injured now. On: the elevens you can pick today."
+  },
+  "cannotFill": {
+    "title": "Your squad cannot fill this formation.",
+    "body": "Nobody plays {positions} as a natural position, so the eleven is short. Only natural positions from the export count."
+  },
+  "footnote": "Each position is scored on its role (1–20, with the S++ to F grade) and only counts players who list it as a natural position. The first eleven has the highest total score; the second eleven is the best eleven from everyone left, so each player covers one position.",
+  "unknownPlayer": "Unknown",
+  "ageShort": "{age}y",
+  "nobody": "Nobody",
+  "injured": "Injured",
+  "ability": "Ability",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: {value} of 5 stars} other {{value} of 5 stars}}",
+    "title": "{hasLabel, select, yes {{label}: {value} stars} other {{value} stars}}"
+  },
+  "days": {
+    "weeks": "{count} wk",
+    "days": "{count} d"
+  },
+  "overview": {
+    "title": "Squad overview",
+    "firstXi": "First eleven",
+    "firstXiAtPotential": "First eleven at potential",
+    "firstXiAverage": "First eleven average",
+    "secondXi": "Second eleven",
+    "secondXiAverage": "Second eleven average",
+    "averageAge": "age {age}",
+    "unfilled": "{count} unfilled",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {player} other {players}}, age {age}{unavailable, plural, =0 {} other {, # unavailable}}</text>",
+    "teamSheet": "FM team sheet",
+    "teamSheetMatch": "<num>{matching}</num><text>of {count} match this eleven</text>",
+    "pitchChoice": "Eleven on the pitch",
+    "legend": {
+      "high": "Needs fixing",
+      "medium": "Worth watching",
+      "click": "Click a position to see its notes."
+    },
+    "notesAtPosition": "{count, plural, =0 {Nothing to note at this position.} one {# note at this position} other {# notes at this position}}",
+    "showAll": "Show all",
+    "nothingToFix": "Nothing to fix: every starter is close to the eleven's average and has cover less than 1.5 behind them.",
+    "groups": {
+      "fix": {
+        "title": "Fix",
+        "blurb": "Positions that cost you now: gaps, weak links and thin cover."
+      },
+      "manage": {
+        "title": "Manage",
+        "blurb": "Squad status that does not match the eleven. Sort it out at the next contract talk."
+      },
+      "develop": {
+        "title": "Develop",
+        "blurb": "Young players who will outgrow a starter, and successors ready to step in."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {nobody}}{replacing, select, none {} other { in for {replacing}}}{issue, select, high { needs fixing} medium { worth watching} other {}}",
+    "stampLabel": "{name} at {spot}",
+    "injuredBadge": "INJ",
+    "inBadge": "IN"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Nobody plays here",
+      "weak": "Weak link",
+      "no-cover": "No cover",
+      "drop-off": "Thin cover",
+      "ageing": "Ageing starter",
+      "successor": "Successor ready",
+      "prospect": "Prospect",
+      "status-benched": "Promised a starting place",
+      "status-starting": "Starting on a low status"
+    },
+    "severity": {
+      "high": "High",
+      "medium": "Medium"
+    },
+    "empty": {
+      "evidence": "No natural {position} in the squad{count, plural, one {} other {, # places to fill}}.",
+      "advice": "Sign one, or retrain a player for the position."
+    },
+    "weak": {
+      "evidence": "<delta></delta> on the eleven's average",
+      "advice": "The first place to upgrade."
+    },
+    "noCover": {
+      "evidence": "no natural backup",
+      "advice": "An injury or ban means playing someone out of position."
+    },
+    "dropOff": {
+      "advice": "Cover a level below. Worth a squad-depth signing."
+    },
+    "ageing": {
+      "atPotential": "{score} at potential",
+      "adviceSuccessor": "{name} is {age}; the successor is already close.",
+      "adviceNone": "{name} is {age} and nobody 23 or younger is close. Plan a successor."
+    },
+    "prospect": {
+      "vs": "vs",
+      "starsAdvice": "Coach rates their potential above {starter}'s ability ({ability}★) and potential ({potential}★). Give them minutes.",
+      "projectedLabel": "Projected at full potential",
+      "atPotentialVs": "at potential, vs",
+      "starterAtPotential": "Starter at their potential",
+      "starterToday": "Starter today",
+      "projectedAdvice": "Projected {gap} above {starter}{own, select, yes { at their own potential} other {}}. Give them minutes."
+    },
+    "statusBenched": {
+      "secondOnly": "second eleven only",
+      "neither": "in neither eleven",
+      "advice": "Their squad status, {status}, promises a starting place. Play them more, or lower their status."
+    },
+    "statusStarting": {
+      "advice": "Starts here on a low status. Raise it when you next talk contracts."
+    }
+  },
+  "teamSheet": {
+    "title": "Changes to your FM team sheet",
+    "summary": "{matching} of your FM starters keep their place{moves, plural, =0 {} other {, # at another position}}.",
+    "columns": {
+      "out": "Out: starts in FM now",
+      "in": "In: this eleven",
+      "gain": "Gain at this position"
+    },
+    "out": "Out",
+    "in": "In",
+    "outDetail": "{picked, select, yes {{pickedAt} in FM} other {Starts in FM}}{natural, select, no {, not a natural {position}} other {}}",
+    "extraStarter": "Nobody: an extra starter",
+    "replacedBy": "replaced by",
+    "nobodyPlaysThere": "Nobody in this eleven plays there",
+    "newPosition": "new position",
+    "alsoMoves": "Also moves:",
+    "to": "to"
+  },
+  "depth": {
+    "title": "Depth chart",
+    "intro": "Starter and cover at every position{potential, select, yes {, at full potential} other {}}. Cover comes from the second eleven, so nobody covers two places.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Starter",
+      "cover": "Cover",
+      "drop": "Drop",
+      "dropTitle": "Cover's score minus the starter's",
+      "alsoPlays": "Also plays here",
+      "alsoPlaysTitle": "Other natural players, best first. XI: starts elsewhere. 2nd: covers elsewhere."
+    },
+    "starterAt": "Starter at {spot}",
+    "coverAt": "Cover at {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, starts elsewhere} second {, covers elsewhere} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2nd",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Rest of the squad",
+    "intro": "{count, plural, one {# player} other {# players}} in neither eleven, at the position where they come closest to the starter.",
+    "columns": {
+      "bestFit": "Best fit",
+      "score": "Score",
+      "vsStarter": "vs starter",
+      "vsStarterTitle": "Score minus the starter at that position",
+      "potentialTitle": "Score at that position at full potential",
+      "coachRating": "Coach rating",
+      "coachRatingTitle": "Coach report: ability now and potential, relative to your squad",
+      "happiness": "Happiness",
+      "missed": "Missed",
+      "missedTitle": "Time missed through injury"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Prospects",
+        "blurb": "Will outgrow a starter. Give them minutes."
+      },
+      "young": {
+        "title": "Developing",
+        "blurb": "21 or younger. Loan out or keep for training."
+      },
+      "surplus": {
+        "title": "Surplus",
+        "blurb": "Past development age and in neither eleven. Sell or keep as depth."
+      },
+      "no-fit": {
+        "title": "No position here",
+        "blurb": "No natural position in this formation."
+      },
+      "away": {
+        "title": "Unavailable",
+        "blurb": "Injured or out on loan."
+      }
+    },
+    "showAll": "Show all {count}",
+    "showFewer": "Show fewer",
+    "onLoan": "On loan",
+    "scoreAt": "Score at {spot}",
+    "score": "Score",
+    "atFullPotential": "At full potential"
+  },
+  "upgrades": {
+    "title": "Upgrades from your scouting import",
+    "intro": "Scouted players at least 0.5 better than your weakest starter at each position, on the same role.",
+    "allInSquad": "Everyone in your player import is already in the squad.",
+    "teaser": "Who in your scouting list would improve the eleven.",
+    "importHint": "Import a scouting export (a player search) in <link>Players</link> to see who would improve each position.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Your starter",
+      "best": "Best scouted upgrades"
+    },
+    "times": "×{count}",
+    "none": "No upgrade in your import for {positions}."
+  }
+}

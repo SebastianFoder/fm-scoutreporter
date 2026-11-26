@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { HowToShell } from "@scoutreporter/ui/features/how-to-use/HowToShell";
 import { WonderkidGuide } from "@scoutreporter/ui/features/how-to-use/guides";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
@@ -11,7 +12,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/how-to-use/wonderkids",
 });
 
-export default function WonderkidGuidePage() {
+export default async function WonderkidGuidePage() {
+  const t = await getTranslations("howToPages.wonderkids");
   return (
     <>
       <JsonLd
@@ -21,9 +23,9 @@ export default function WonderkidGuidePage() {
         ])}
       />
       <HowToShell
-        title="Wonderkids"
-        description="Estimate full-potential attributes from a Hidden Attributes view export (CA, PA, Professionalism) and rank prospects on benchmarked FM27 roles."
-        link={{ href: "/players", label: "Go to Players" }}
+        title={t("title")}
+        description={t("description")}
+        link={{ href: "/players", label: t("link") }}
       >
         <WonderkidGuide />
       </HowToShell>

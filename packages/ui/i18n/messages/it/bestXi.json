@@ -1,0 +1,109 @@
+{
+  "intro": "Sceglie gli undici con il punteggio più alto dalla tua importazione per una formazione, con un minimo e un massimo facoltativi su quanto costano in totale.",
+  "noImport": {
+    "desktop": "Ancora nessun giocatore. In FM apri una Ricerca giocatori e premi <kbd>F9</kbd> o Scansiona ricerca.",
+    "web": "Nessun CSV importato. Scegli un file CSV qui sopra, oppure carica i dati di prova per dare un’occhiata."
+  },
+  "setup": {
+    "title": "Impostazioni",
+    "reset": "Ripristina",
+    "minBudget": "Budget min. ({currency})",
+    "maxBudget": "Budget max. ({currency})",
+    "noMinimum": "Nessun minimo",
+    "noLimit": "Nessun limite",
+    "budgetInvalid": "Inserisci un importo come 15M, 750K o 2500000. I budget illeggibili vengono ignorati.",
+    "budgetHint": "Totale per gli undici. Scrivi importi come 15M o 750K.",
+    "valuation": "Un giocatore costa",
+    "valuations": {
+      "low": "Minimo dell’intervallo",
+      "mid": "Valore medio dell’intervallo",
+      "high": "Massimo dell’intervallo"
+    },
+    "includeFree": "Includi giocatori senza costo trasferimento",
+    "includeFreeHint": "Per lo più svincolati. Contano come {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "Il budget minimo è superiore al massimo.",
+      "body": "Nessun undici può costare almeno {min} e al massimo {max}."
+    },
+    "slots": {
+      "title": "Non ci sono abbastanza giocatori per questa formazione.",
+      "body": "Nessun giocatore disponibile per: {positions}. Contano solo i ruoli naturali dell’esportazione.",
+      "leftOut": "I giocatori esclusi e quelli senza costo trasferimento non vengono considerati."
+    },
+    "budget": {
+      "title": "Nessun undici rientra in questo budget.",
+      "range": "Con queste impostazioni l’undici più economico possibile costa {min} e il più caro {max}.",
+      "wider": "Prova un budget più ampio."
+    }
+  },
+  "excluded": {
+    "label": "Esclusi:",
+    "allowAgain": "Riammetti questo giocatore",
+    "allowAgainHidden": "(riammetti)",
+    "clearAll": "Cancella tutto"
+  },
+  "footnote": "Ogni posizione prende un giocatore che la indica come ruolo naturale, valutato sul ruolo di quella posizione (1–20). Gli undici mostrati hanno il punteggio totale più alto tra tutte le combinazioni che rientrano nel budget.",
+  "unpriced": "{count, plural, one {# giocatore è escluso} other {# giocatori sono esclusi}} perché l’esportazione non indica un prezzo (per esempio “Non in vendita”).",
+  "result": {
+    "title": "Migliori undici",
+    "summary": "Punteggio medio <b>{average}</b>{basis, select, potential { al pieno potenziale} other {}} · Costo <b>{cost}</b>{budget, select, range { (budget da {min} a {max})} max { su {max}} min { (almeno {min})} other {}} · Ingaggi <b>{wages} p/s</b>{unknownWages, plural, =0 {} one { (# senza contratto)} other { (# senza contratto)}}",
+    "notOptimal": "La ricerca ha esaurito il tempo prima di dimostrare che questi sono davvero i migliori undici. Una soluzione migliore potrebbe aggiungere al massimo {gap} al punteggio totale di {total}.",
+    "pitchLabel": "Gli undici in campo",
+    "columns": {
+      "pos": "Pos",
+      "score": "Punteggio",
+      "scoreTitle": "Punteggio del ruolo sulla scala 1–20 di FM",
+      "valueTitle": "Costo trasferimento nell’esportazione",
+      "counted": "Conteggiato",
+      "countedTitle": "Conteggiato nel budget: {valuation, select, low {minimo dell’intervallo} high {massimo dell’intervallo} other {valore medio dell’intervallo}}",
+      "exclude": "Escludi"
+    },
+    "excludeLabel": "Escludi {name} e scegli di nuovo",
+    "excludeTitle": "Escludi e scegli di nuovo",
+    "total": "Totale",
+    "perWeek": "{amount} p/s"
+  },
+  "formation": {
+    "custom": "Personalizzata",
+    "yours": "Le tue formazioni",
+    "presets": "Formazioni di FM",
+    "moveTo": "Sposta {from} in {spot} ({position})",
+    "emptySpot": "Posto vuoto {spot} ({position})",
+    "moveHere": "Sposta {from} qui",
+    "goalkeeperFixed": "Portiere (fisso)",
+    "selected": "{spot} ({position}) selezionato: scegli un posto in cui spostarlo, o premi di nuovo per annullare",
+    "dragOrSelect": "{spot} ({position}): trascina, o seleziona per spostare",
+    "keeperStays": "Il portiere resta in porta",
+    "dragTitle": "{position}: trascina in un altro posto, o su una posizione per scambiarle",
+    "hint": {
+      "dropSwap": "Rilascia per scambiare {from} e {to}.",
+      "dropMove": "Rilascia per spostare {from} in {to}.",
+      "dropCancel": "Rilascia su un posto, o in qualsiasi altro punto per annullare.",
+      "moving": "Stai spostando {spot}: clicca un posto (o un’altra posizione per scambiarle), o di nuovo {spot} per annullare.",
+      "idle": "Trascina una posizione in un altro posto, o su un’altra posizione per scambiarle."
+    },
+    "delete": "Elimina “{name}”",
+    "namePlaceholder": "Dai un nome a questa formazione",
+    "myPlaceholder": "Il mio {formation}",
+    "nameLabel": "Nome di questa formazione",
+    "save": "Salva",
+    "scoredAs": "Valutato come",
+    "roleFor": "Ruolo per {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "I ruoli sono i tuoi profili di pesi da <link>Giocatori</link>."
+  },
+  "basis": {
+    "label": "Valuta i giocatori su",
+    "potential": "Pieno potenziale",
+    "potentialTitle": "Qualità proiettate al PA",
+    "needsTitle": "Servono CA e PA: esporta con la vista {view}",
+    "needs": "Il pieno potenziale richiede la vista {view}."
+  },
+  "pitch": {
+    "nobody": "Nessuno",
+    "nobodyTitle": "{spot}: nessuno nella rosa gioca {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

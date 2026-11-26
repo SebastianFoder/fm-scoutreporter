@@ -1,0 +1,89 @@
+{
+  "selectedCount": "{count, plural, one {# vald} other {# valda}}",
+  "home": {
+    "intro": "Poängsätt, ranka och jämför spelare. Med NF och PF (en skanning eller en export med vyn Hidden Attributes) hittar Potential och mot ålder underbarnen: sortera på Potential för att se vem som kan bli bäst. FM27-rollprofiler (riktmärkta på FM Match Labs positionsstudie) finns under Vikter.",
+    "scoredWith": "Poängsatt med <link>{profile}</link>",
+    "myPlayersTitle": "Dina spelare är de som finns i din truppimport",
+    "showMyPlayers": "Visa mina spelare ({count})",
+    "weights": "Vikter",
+    "columns": "Kolumner",
+    "compareSelected": "Jämför valda ({count})",
+    "emptyDesktop": "Inga spelare än. Öppna en Spelarsökning i FM och tryck <kbd>F9</kbd> eller Skanna sökning.",
+    "empty": "Ingen CSV importerad än. Välj en CSV-fil ovan, eller ladda testdatan för att titta runt."
+  },
+  "list": {
+    "searchLabel": "Sök spelare efter namn",
+    "searchPlaceholder": "Sök namn: för-, mellan- eller efternamn",
+    "clearSearch": "Rensa sökning",
+    "noMatch": "Inga spelare matchar ”{query}”",
+    "select": "Välj",
+    "selectPlayer": "Välj {name}",
+    "openInNewTab": "Öppna i ny flik",
+    "openPlayerInNewTab": "Öppna {name} i ny flik",
+    "loading": "Laddar tabellen…",
+    "columns": {
+      "position": "Pos",
+      "score": "Poäng",
+      "vsAge": "mot ålder",
+      "vsAgeTitle": "Viktat medelvärde mot FM27-riktmärket för spelarens ålder",
+      "potentialTitle": "Poäng med egenskaperna framräknade till PF (export med Hidden Attributes)",
+      "valueTitle": "FM:s intervall för övergångsvärde (sorterat på mittvärdet)"
+    }
+  },
+  "profile": {
+    "subtitle": "{position} · {age, plural, one {# år} other {# år}} · {eu, select, yes {EU-medborgare} other {Utanför EU}}",
+    "grades": "Betyg",
+    "now": "Nu",
+    "noValuation": "Ingen värdering",
+    "noWage": "Inga lönedata",
+    "contractExpires": "Kontraktsslut",
+    "id": "ID",
+    "attributeView": "Egenskapsvy",
+    "current": "Nuvarande",
+    "fullPotential": "Full potential",
+    "estimated": "Uppskattade egenskaper vid PF {pa} (från NF {ca}), med FM27:s NF-kostnader.",
+    "capped": "Alla träningsbara egenskaper når taket innan PF är nådd."
+  },
+  "attributes": {
+    "deltaTitle": "+{delta} från nuvarande"
+  },
+  "positionMap": {
+    "label": "Positioner: {position}"
+  },
+  "panel": {
+    "fullPage": "Hel sida",
+    "close": "Stäng spelarpanelen",
+    "closeTitle": "Stäng (Esc)"
+  },
+  "notFound": {
+    "title": "Spelaren hittades inte",
+    "body": "Spelaren finns inte i den importerade datan. Importera en CSV på <link>sidan Spelare</link> och försök igen."
+  },
+  "compare": {
+    "title": "Jämför spelare",
+    "intro": "Välj spelare att jämföra. Guld, silver och brons delas ut per rad, jämfört med de valda spelarna.",
+    "clearSelection": "Rensa val",
+    "selectFirst": "Välj de {count} första",
+    "choosePlayers": "Välj spelare",
+    "searchLabel": "Sök spelare",
+    "searchPlaceholder": "Sök på namn, position eller ID…",
+    "noMatch": "Inga spelare matchar sökningen.",
+    "range": "{from}–{to} av {total}",
+    "prev": "Föreg.",
+    "next": "Nästa",
+    "removePlayer": "Ta bort {name}",
+    "comparison": "Jämförelse",
+    "comparisonTitle": "Jämförelse <muted>({count})</muted>",
+    "summary": "Poäng + {count, plural, one {# egenskap} other {# egenskaper}}",
+    "metric": "Mått",
+    "weightedScore": "Viktad poäng",
+    "legend": "Förklaring",
+    "best": "Bäst",
+    "medals": {
+      "gold": "1:a",
+      "silver": "2:a",
+      "bronze": "3:e"
+    },
+    "empty": "Välj minst 2 spelare för att börja jämföra."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "Import",
+    "clear": "Clear import",
+    "loadTestData": "Load test data",
+    "chooseFile": "Choose CSV file"
+  },
+  "messages": {
+    "storageFull": "Import loaded in this tab only: browser storage is full or blocked. Free space or allow storage to keep data across tabs and visits.",
+    "testDataFailed": "Could not load test data.",
+    "parseFailed": "Could not parse CSV. Please check the file format.",
+    "noStaffColumns": "No staff attributes found in this file. Export it from a staff search with the Scout Reporter Staff view (player exports go in Players).",
+    "noSquadPlayers": "No players with positions found in this file. Export your squad with the Scout Reporter Standard or Hidden Attributes view.",
+    "noScanSquad": "No players of your club were found in this scan."
+  },
+  "players": {
+    "title": "Import player CSV",
+    "imported": "{count, plural, one {# player} other {# players}} imported",
+    "description": "FM26 (<code>;</code>) or FM27 (<code>,</code>) export of the Scout Reporter view. Columns are matched by name. View file: <standard>Standard</standard> or <hidden>Hidden Attributes</hidden> (adds {professionalism}, CA, PA)."
+  },
+  "staff": {
+    "title": "Import staff CSV",
+    "imported": "{count, plural, one {# staff member} other {# staff}} imported",
+    "description": "Export a staff search with the <link>Scout Reporter Staff view</link>. Columns are matched by name; FM26 words and 1–20 numbers both work. Kept separate from your player import."
+  }
+}

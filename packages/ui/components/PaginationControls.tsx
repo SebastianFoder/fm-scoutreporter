@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useFormatNumber } from "../i18n/hooks";
 import { Button } from "./Button";
 
 export type PageSizeChoice = 10 | 25 | 50 | 100 | "all";
@@ -30,6 +32,8 @@ export function PaginationControls({
   onPageChange,
   onPageSizeChange,
 }: PaginationControlsProps) {
+  const t = useTranslations("common.pagination");
+  const formatNumber = useFormatNumber();
   /* The typed value belongs to the page it was typed on; when the page changes
      from outside, the field falls back to showing that page. */
   const [draft, setDraft] = useState<{ page: number; value: string } | null>(null);
@@ -51,13 +55,15 @@ export function PaginationControls({
     <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-4 text-[13px] text-muted">
         <span>
-          <span className="font-semibold text-ink">
-            {showingFrom}–{showingTo}
-          </span>{" "}
-          of {totalItems}
+          {t.rich("range", {
+            from: showingFrom,
+            to: showingTo,
+            total: totalItems,
+            b: (chunks) => <span className="font-semibold text-ink">{chunks}</span>,
+          })}
         </span>
         <label className="inline-flex items-center gap-1.5">
-          Rows
+          {t("rows")}
           <select
             value={pageSize === "all" ? "all" : String(pageSize)}
             onChange={(e) => {
@@ -68,13 +74,13 @@ export function PaginationControls({
           >
             {SIZE_OPTIONS.map((s) => (
               <option key={String(s)} value={s === "all" ? "all" : String(s)}>
-                {s === "all" ? "All" : s}
+                {s === "all" ? t("all") : formatNumber(s)}
               </option>
             ))}
           </select>
         </label>
         <label className="inline-flex items-center gap-1.5">
-          Go to
+          {t("goTo")}
           <input
             type="number"
             min={1}
@@ -85,7 +91,7 @@ export function PaginationControls({
             className="field h-8 w-14 px-2 text-right text-[13px] text-ink"
           />
           <Button color="alt" variant="outline" size="sm" type="button" onClick={applyJump}>
-            Go
+            {t("go")}
           </Button>
         </label>
       </div>
@@ -98,7 +104,7 @@ export function PaginationControls({
           disabled={page <= 1}
           onClick={() => onPageChange(1)}
         >
-          First
+          {t("first")}
         </Button>
         <Button
           color="alt"
@@ -108,10 +114,10 @@ export function PaginationControls({
           onClick={() => onPageChange(page - 1)}
           icon={<ChevronLeft className="h-4 w-4" aria-hidden />}
         >
-          Prev
+          {t("prev")}
         </Button>
         <span className="min-w-[4rem] px-1 text-center text-[13px] font-semibold">
-          {page} <span className="font-normal text-muted">/ {pageCount}</span>
+          {formatNumber(page)} <span className="font-normal text-muted">/ {formatNumber(pageCount)}</span>
         </span>
         <Button
           color="alt"
@@ -122,7 +128,7 @@ export function PaginationControls({
           icon={<ChevronRight className="h-4 w-4" aria-hidden />}
           iconPosition="right"
         >
-          Next
+          {t("next")}
         </Button>
         <Button
           color="alt"
@@ -131,7 +137,7 @@ export function PaginationControls({
           disabled={page >= pageCount}
           onClick={() => onPageChange(pageCount)}
         >
-          Last
+          {t("last")}
         </Button>
       </div>
     </div>

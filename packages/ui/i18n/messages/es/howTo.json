@@ -1,0 +1,203 @@
+{
+  "tabs": {
+    "label": "Guías",
+    "setup": "Guía de configuración",
+    "players": "Jugadores",
+    "wonderkids": "Chicos maravilla"
+  },
+  "step": {
+    "expand": "Desplegar",
+    "collapse": "Plegar"
+  },
+  "views": {
+    "hidden": {
+      "name": "Vista Hidden Attributes",
+      "label": "Recomendada",
+      "detail": "Todos los atributos más los ocultos Profesionalidad, CA y CP. Activa las puntuaciones de Potencial para encontrar chicos maravilla."
+    },
+    "standard": {
+      "name": "Vista Standard",
+      "label": "Solo atributos",
+      "detail": "Todos los atributos visibles. Suficiente para la lista de jugadores y el Mejor once."
+    },
+    "download": "Descargar {name}",
+    "both": "Las dos vistas exportan los mismos atributos, así que las importaciones de cualquiera de ellas funcionan en todas partes. Puedes instalar ambas y cambiar entre ellas en FM."
+  },
+  "setup": {
+    "gameVersion": "Versión del juego",
+    "installView": {
+      "title": "Instala la vista",
+      "download": "Descarga uno o los dos archivos de vista:",
+      "moveTo": "Muévelos a:"
+    },
+    "export": {
+      "title": "Exporta jugadores de {game}",
+      "importView": "Haz clic derecho en la cabecera de cualquier columna y selecciona <b>Importar vista</b>",
+      "importDownloaded": "Importa la vista que descargaste en el paso {step} (Hidden Attributes o Standard)",
+      "selectView": "Selecciona esa vista en el desplegable <b>Vistas personalizadas</b> (arriba a la derecha de la lista de jugadores)"
+    },
+    "importCsv": {
+      "title": "Importa el CSV",
+      "goTo": "Ve al <link>importador de esta web</link> y haz clic en <b>Elegir archivo CSV</b>.",
+      "navigateTo": "Ve a:",
+      "done": "¡Listo! Disfruta de tus datos de ojeo."
+    },
+    "fm27": {
+      "install": {
+        "title": "Instala FM View Exporter",
+        "intro": "Te recomendamos <link>FM View Exporter</link>. Exporta cualquier lista de jugadores de FM27 (plantilla, base de datos de jugadores o preselección) a CSV con una sola tecla, e incluye BepInEx, así que no hay que instalar nada más. Necesita FM27 en Steam y Windows 10 u 11.",
+        "setupTitle": "1.1 Opción A: programa de instalación (recomendado)",
+        "setupDownload": "Descarga <code>{file}</code> de la <link>página de versiones</link> y ejecútalo.",
+        "setupFind": "Encuentra FM27 en tus bibliotecas de Steam. Si no lo encuentra, elige la carpeta que contiene <code>{file}</code>.",
+        "setupInstall": "Deja el formato de salida en CSV y el estilo CSV con el separador de coma predeterminado, y haz clic en <b>Install</b>.",
+        "setupUpdate": "Para actualizar más adelante, ejecuta el nuevo instalador y haz clic en Update. Tu configuración se conserva.",
+        "manualTitle": "1.2 Opción B: instalación manual",
+        "manualDownload": "Descarga <code>{file}</code> de la <link>página de versiones</link> y abre la carpeta de instalación de FM27:",
+        "manualSteam": "Steam: clic derecho en FM27 → Administrar → Ver archivos locales",
+        "manualExtract": "Extrae el contenido del ZIP (no el ZIP en sí) en esa carpeta. Debería quedar así:",
+        "firstLaunchTitle": "1.3 Primer inicio",
+        "firstLaunch": "Inicia FM27. El primer inicio tarda unos minutos mientras BepInEx se configura; los siguientes van a velocidad normal. Para comprobar que el plugin se ha cargado, abre este archivo en la carpeta del juego y busca una línea que mencione <sb>FM View Exporter</sb>:"
+      },
+      "export": {
+        "open": "Abre tu partida de FM27 y ve a <b>Contratación → Base de datos de jugadores</b> (también vale una plantilla o una preselección)",
+        "filter": "Filtra la lista hasta dejar los jugadores que quieras. El exportador coge todas las filas de la lista, no solo las que se ven en pantalla.",
+        "press": "Pulsa <sb>F9</sb> y no hagas clic en nada hasta que termine. El plugin desplaza la lista él solo; las búsquedas grandes pueden tardar unos minutos."
+      },
+      "pickFile": "Elige el archivo más reciente, p. ej. <code>{file}</code>, e impórtalo.",
+      "help": {
+        "title": "Solución de problemas",
+        "f9Title": "F9 no hace nada",
+        "f9": "Revisa <code>{file}</code> en la carpeta del juego. «No player list found» significa que no había ninguna tabla de jugadores abierta al pulsar F9.",
+        "startTitle": "El juego no arranca",
+        "start": "Cambia el nombre de <code>{file}</code> en la carpeta del juego o bórralo para arrancar sin mods, o desinstala con el programa de instalación. Tus partidas no se ven afectadas.",
+        "antivirusTitle": "Aviso del antivirus",
+        "antivirus": "Algunos antivirus marcan el instalador porque aún no tiene firma de código e instala BepInEx. Si lo prefieres, usa la instalación manual con el ZIP."
+      }
+    },
+    "fm26": {
+      "bepinex": {
+        "title": "Instala BepInEx",
+        "downloadTitle": "1.1 Descarga BepInEx",
+        "download": "Ve a <link>BepInExPack_FootballManager26</link>, haz clic en Download y descomprime el archivo.",
+        "copyTitle": "1.2 Copia los archivos en tu carpeta de FM26",
+        "openFolder": "Abre la carpeta de instalación de FM26.",
+        "steam": "Steam: clic derecho en FM26 → Propiedades → Archivos instalados → Examinar",
+        "paste": "Pega ahí los archivos descomprimidos. Tu carpeta debería quedar así:",
+        "linuxTitle": "1.3 Solo Linux: opciones de lanzamiento",
+        "linux": "Clic derecho en FM26 en Steam → Propiedades → Opciones de lanzamiento, y pega:",
+        "firstLaunchTitle": "1.4 Primer inicio",
+        "firstLaunch": "Inicia FM26 una vez para que BepInEx se inicialice. Antes de seguir, comprueba que ya existe la carpeta <code>{folder}</code>."
+      },
+      "plugin": {
+        "title": "Instala el plugin",
+        "download": "Descarga el plugin de <link>FM26 Player CSV Export</link>.",
+        "copy": "Copia <code>{file}</code> del ZIP en:"
+      },
+      "export": {
+        "open": "Abre tu partida de FM26 y ve a <b>Contratación → Base de datos de jugadores</b>",
+        "select": "Selecciona los jugadores que quieras exportar",
+        "press": "Pulsa <sb>F9</sb> para exportar"
+      },
+      "selectFile": "Selecciona el archivo exportado e impórtalo."
+    }
+  },
+  "players": {
+    "use": {
+      "title": "Cómo usar la lista de jugadores",
+      "intro": "Jugadores te permite importar una exportación de jugadores y ordenarlos al instante según una media ponderada de sus atributos de FM26. No hace falta ninguna referencia: importa y puntúa.",
+      "download": {
+        "title": "1. Descarga una vista",
+        "intro": "Descarga una vista y colócala en tu carpeta de vistas de FM26 o FM27:",
+        "more": "Consulta la <link>guía de configuración</link> para ver cómo instalar el exportador en cada versión del juego."
+      },
+      "export": {
+        "title": "2. Exporta jugadores de FM",
+        "open": "Abre tu partida y ve a <b>Contratación → Base de datos de jugadores</b>",
+        "importView": "Clic derecho en la cabecera de una columna → <b>Importar vista</b> y carga la vista",
+        "selectView": "Selecciona la vista en el desplegable Vistas personalizadas",
+        "press": "Selecciona los jugadores que quieras y pulsa <sb>F9</sb>"
+      },
+      "import": {
+        "title": "3. Importa el CSV",
+        "goTo": "Ve a <link>Jugadores</link>, haz clic en <b>Elegir archivo CSV</b> y ve a la carpeta de salida de tu exportador:",
+        "after": "Los jugadores se puntúan y se ordenan nada más importarlos."
+      },
+      "tune": {
+        "title": "4. Ajusta pesos y columnas",
+        "body": "Haz clic en <b>Pesos</b> para abrir Configuración en los pesos y decide cuánto cuenta cada atributo. La lista de jugadores se reordena en directo al lado. Haz clic en <b>Columnas</b> para elegir qué atributos se resaltan en la tabla. Ambas cosas, y los colores de los atributos, están también en el botón <b>Configuración</b> de arriba."
+      },
+      "compare": {
+        "title": "5. Compara jugadores",
+        "body": "Marca dos o más jugadores en la lista y haz clic en <b>Comparar selección</b> para abrir una vista con sus atributos lado a lado."
+      }
+    },
+    "math": {
+      "title": "Cómo se puntúa a los jugadores",
+      "intro": "Scout Reporter puntúa a los jugadores con una media ponderada de los valores brutos de sus atributos de FM26 (escala 1–20) y luego normaliza esa media a una escala de 100 puntos.",
+      "weighted": {
+        "title": "Media ponderada de atributos",
+        "body": "A cada atributo le asignas un peso (0 = ignorar, más alto = más importante). La puntuación es la media ponderada de los valores de todos los atributos con un peso distinto de cero. Cada perfil elige una ponderación:",
+        "modes": "<b>Lineal</b> es como se calibraron las referencias de FM27 y es la opción predeterminada para perfiles nuevos. <b>Acentuada</b> eleva los pesos al cuadrado, así que doblar un peso más que dobla su influencia; los perfiles creados antes de esta opción la mantienen."
+      },
+      "benchmarks": {
+        "title": "Perfiles de referencia de FM27",
+        "body": "Los pesos incluyen seis perfiles de rol (Central, Lateral / Carrilero, Mediocentro / Centrocampista, Mediapunta / Extremo (10), Delantero (9) y Portero) creados a partir del <study>Estudio 13b de FM Match Lab</study>, que midió lo que vale un nivel de cada atributo en cada posición a lo largo de 50 000 partidos de FM27. Cada rol conserva los atributos que confirma el estudio, escalados para que el más valioso pese 10: velocidad y aceleración en todas partes, alcance de salto sobre todo en centrales y delanteros, remate y fuerza en los delanteros, agilidad y reflejos en los porteros. La mayoría de los atributos técnicos y mentales apenas se notan en el estudio, así que los roles los dejan fuera. La <arena>prueba de posiciones de FM-Arena</arena> de Purity con otra táctica encuentra el mismo patrón. Antes de la v1.24, los roles usaban los pesos de FM27 de <scoring>fm-scoring</scoring>, que siguen aportando la tabla de vs. edad. Edítalos libremente; «Volver a la referencia» restaura los originales."
+      },
+      "vsAge": {
+        "title": "vs. edad y Potencial",
+        "vsAge": "<b>vs. edad</b> divide la media ponderada entre la referencia de FM27 para la edad del jugador (10,3 a los 15 hasta 13,8 a partir de los 24). El 100 % significa que va camino de ser un jugador de la parte alta de la Championship / parte baja de la Premier League en su mejor momento.",
+        "potential": "Con una exportación Hidden Attributes aparece una columna <b>Potencial</b>: la misma puntuación usando los atributos proyectados a su CP. <link>Cómo funciona la estimación del potencial</link> explica la proyección."
+      },
+      "grades": {
+        "title": "Notas",
+        "body": "Cada puntuación recibe una letra, al estilo de FM, de A+ a F, más S, S+ y S++ por encima de A+ para la verdadera élite. Las notas leen la media ponderada en la escala 1–20 y suben cada 0,5. La referencia de plenitud (13,8, un jugador de la parte alta de la Championship / parte baja de la Premier League en su mejor momento) es una {grade}. Los jugadores jóvenes sacan notas bajas en Ahora y altas en Potencial, así que compáralos con la nota de Potencial o con vs. edad.",
+        "scale": "Escala de notas",
+        "under": "menos de {value}"
+      },
+      "normalisation": {
+        "title": "Normalización sobre 100",
+        "body": "La media ponderada está en la escala de atributos 1–20 de FM. Se normaliza para que una media ponderada de <sb>13</sb> (un profesional sólido) equivalga exactamente a <sb>100</sb>. Las puntuaciones por encima de 100 indican jugadores por encima de la media para tu perfil de pesos; por debajo de 100, por debajo de la media."
+      },
+      "categories": {
+        "title": "Categorías de atributos",
+        "body": "Los atributos se agrupan en cuatro categorías (Técnica, Mental, Físico y Portero), igual que los agrupa FM26. Puedes ponderar atributos de cualquier categoría en el mismo perfil, así que un conjunto de pesos para porteros puede incluir atributos físicos y mentales junto a los propios de portero."
+      },
+      "detail": {
+        "title": "Ficha del jugador y comparación",
+        "body": "Al hacer clic en un jugador se abre su ficha completa de atributos, con valores en colores (excelente / bueno / normal / bajo) según tu configuración de tema. La vista de comparación pone dos o más jugadores lado a lado con las diferencias resaltadas, para ver fácilmente en qué supera un jugador a otro según lo que necesitas para el rol."
+      }
+    }
+  },
+  "wonderkids": {
+    "use": {
+      "title": "Cómo encontrar chicos maravilla",
+      "export": {
+        "title": "1. Exporta con la vista Hidden Attributes",
+        "body": "Importa la vista Hidden Attributes en FM y exporta como siempre. Añade los atributos ocultos <b>Profesionalidad</b>, <b>CA</b> y <b>CP</b>. Las exportaciones con la vista Standard, o los jugadores sin CA/CP, se siguen puntuando con sus atributos actuales."
+      },
+      "import": {
+        "title": "2. Importa y ordena",
+        "body": "Impórtala en <link>Jugadores</link> y ordena por <b>Potencial</b> (la puntuación a pleno potencial con el perfil de pesos que hayas elegido) o por <b>vs. edad</b> (cuánto se adelantan ahora a su edad)."
+      },
+      "inspect": {
+        "title": "3. Analiza una promesa",
+        "body": "Haz clic en un jugador y cambia a <b>Pleno potencial</b> para ver los atributos estimados con su CP, con lo que gana cada atributo. El <b>Plan de desarrollo</b> de debajo sugiere el objetivo individual, el rol de entrenamiento, las sesiones de desarrollo y los preparadores que más partido le sacan."
+      }
+    },
+    "math": {
+      "title": "Cómo funciona la estimación a pleno potencial",
+      "ca": {
+        "title": "La CA es una suma de atributos ponderada por coste",
+        "body": "Cada punto de atributo cuesta una cantidad de CA que depende de la posición (tabla de costes de CA de FM27 de fm-scoring, p. ej. Decisiones 10 y Agilidad 8 para un portero). En una exportación Hidden Attributes de 109 porteros, la CA encaja casi exactamente con la suma ponderada por coste (r = 0,99, error ≈ 2,5 de CA). El ajuste se recalibra en cada importación que tenga CA."
+      },
+      "growth": {
+        "title": "Cómo se reparte el crecimiento",
+        "body": "Los puntos extra se reparten entre los atributos que aún pueden crecer, cada uno en proporción a su margen hasta 20 y a lo rápido que creció en la prueba de entrenamiento de FM27 de harvestgreen22 (un jugador de 18 años entrenando una temporada, recopilada en fm-scoring). Defensas, carrileros y mediocentros crecen como con los programas de trabajo defensivo con balón, los centrocampistas como con una mezcla, y los jugadores de banda, mediapuntas y delanteros como con los programas de trabajo ofensivo con balón. Los porteros no se probaron: sus atributos entrenados por el entrenador de porteros crecen al ritmo de los entrenados en los jugadores de campo. Los físicos se frenan después de los 21 (ritmo de ¾ hasta los 24, luego 0,4), tres años más tarde en los porteros. Determinación, Agresividad, Valentía y las tendencias de portero no cambian, y los jugadores de campo nunca mejoran atributos de portero. Los jugadores con varias posiciones usan el coste y el crecimiento medios de sus posiciones."
+      },
+      "reading": {
+        "title": "Cómo leer los números",
+        "body": "<b>Ahora</b> y <b>Potencial</b> son la mejor puntuación de rol de referencia de FM27 (1–20). <b>vs. plenitud</b> compara la puntuación potencial con 13,8, la referencia de un jugador plenamente desarrollado. Es una estimación del techo: la profesionalidad, los minutos y el entrenamiento deciden cuánto de su CP alcanza un jugador."
+      }
+    }
+  }
+}

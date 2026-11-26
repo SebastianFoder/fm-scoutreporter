@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "FM27 역할",
+    "scale": "점수 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: 현재 {current}, 잠재력 {potential}} other {{role}: 현재 {current}}}",
+    "legend": "범례",
+    "now": "현재",
+    "ageBenchmark": "{age}세 기준값 {value}",
+    "prime": "전성기 {value}",
+    "vsAge": "나이 대비",
+    "potentialVsPrime": "전성기 대비 잠재력"
+  },
+  "plan": {
+    "title": "육성 계획",
+    "builtFor": "{atPa, select, yes {잠재 기량 도달 시 최적 역할 기준: {role}({score})} other {최적 역할 기준: {role}({score})}}",
+    "focusLabel": "개인 집중 훈련",
+    "focus": {
+      "quickness": "신속함",
+      "goalkeeperReason": "골키퍼에게는 민첩성과 반사 신경의 비중이 가장 큽니다. FM27 훈련 코드를 분석한 테스터는 이 둘을 우선하는 골키퍼에게 이 복합 집중 훈련이 가장 좋다고 보았습니다.",
+      "quicknessReason": "주력과 가속도는 모든 필드 플레이어 역할에서 가중치가 가장 큰 축에 속합니다. harvestgreen22의 테스트에서 이 집중 훈련은 두 능력치의 시즌당 상승폭을 약 +1.6에서 +2.7로 끌어올렸습니다. 현재 주력 {pace}, 가속도 {acceleration}.",
+      "attributeReason": "주력({pace})과 가속도({acceleration})가 이미 높아 신속함 훈련으로 더할 여지가 거의 없습니다. {role} 점수를 가장 많이 올릴 수 있는 능력치는 {attribute}입니다.",
+      "quicknessFallbackReason": "주력과 가속도는 모든 필드 플레이어 역할에서 가중치가 가장 큰 축에 속합니다."
+    },
+    "trainingRoleLabel": "훈련 역할",
+    "trainingRole": {
+      "goalkeeper": "두 훈련 역할 모두 지정하지 않음",
+      "goalkeeperReason": "FM27 훈련 코드를 분석한 테스터는 역할 없이 위의 복합 집중 훈련을 할 때 골키퍼가 가장 많이 성장했다고 보았습니다.",
+      "outfield": "{role, select, defensive {공 미소유 시 수비형 미드필더, 공 소유 시 없음} other {공 미소유 시 공격형 미드필더, 공 소유 시 없음}}",
+      "outfieldReason": "FM27 훈련 코드를 분석한 테스터는 어린 필드 플레이어의 현재 기량이 공 미소유 시 역할 하나와 신속함 훈련만으로 가장 크게 올랐다고 보았습니다. 수비수, 윙백, 수비형 미드필더는 수비형 미드필더, 나머지는 공격형 미드필더입니다. 가장 많이 오른 능력치는 예측력이었습니다. 이는 한 테스터의 통제된 실험 결과입니다."
+    },
+    "sessions": {
+      "title": "{role} 점수를 위한 육성 훈련",
+      "more": "{attributes} 추가",
+      "nothingExtra": "추가 없음",
+      "barLabel": "{session}: 최고 훈련 대비 {percent}",
+      "note": "harvestgreen22의 FM27 테스트에서 각 훈련이 올린 역할 점수를 이 선수의 능력치에 적용하고, 최고 훈련 대비 비율로 나타냈습니다. “추가”는 평균적인 육성 훈련보다 더 키우는 능력치입니다.",
+      "goalkeeper": "골키퍼는 훈련 테스트에 포함되지 않았습니다. 골키퍼에게 필요한 대부분은 골키퍼 코치가 훈련하므로 가장 뛰어난 골키퍼 코치를 배정하십시오."
+    },
+    "coaching": {
+      "title": "가장 중요한 코칭",
+      "subtitle": "남은 {role} 성장 중 각 코칭 그룹이 훈련하는 비율",
+      "coach": "코치: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "참고",
+    "items": {
+      "role": {
+        "title": "육성 방향: {role}",
+        "detail": "현재 최적 역할은 {bestRole}({bestScore})입니다. 하지만 잠재 기량 도달 시 능력치는 {potentialRole}({potentialScore})에 더 잘 맞습니다."
+      },
+      "gapClose": {
+        "title": "한계에 가까움",
+        "detail": "현재 기량({ca})과 잠재 기량({pa})의 차이가 {gap}뿐입니다. 이제 훈련은 현재 기량의 양보다 어디에 쓰이는지를 주로 결정하므로, 역할에 필요한 능력치에 집중하십시오."
+      },
+      "gapUnlikely": {
+        "title": "잠재 기량 도달 가능성 낮음",
+        "detail": "{age}세에 현재 기량이 아직 {gap} 남아 있지만, {endAge}세 이후에는 능력치가 거의 오르지 않습니다. 현재 능력에 가깝게 평가하십시오."
+      },
+      "gapLeft": {
+        "title": "성장 여지: 현재 기량 {gap}",
+        "detail": "{goalkeeper, select, yes {현재 기량 {ca}에서 잠재 기량 {pa}까지, 실질적인 성장 기간은 약 {seasons, plural, one {#시즌} other {#시즌}} 남았습니다(골키퍼는 {endAge}세 이후 성장이 크게 느려짐).} other {현재 기량 {ca}에서 잠재 기량 {pa}까지, 실질적인 성장 기간은 약 {seasons, plural, one {#시즌} other {#시즌}} 남았습니다({endAge}세 이후 성장이 크게 느려짐).}}"
+      },
+      "minutesPeak": {
+        "title": "성장 전성기",
+        "detail": "16–18세는 능력치가 가장 빨리 오르는 시기입니다. 출전 시간과 상대 수준 모두 현재 기량 성장에 영향을 주므로, 자리를 지킬 수 있다면 유소년 경기보다 1군이나 임대 출전이 낫습니다. U18 선수에 대해 fm-scoring 제작자는 최소 일정(전술 훈련 없음)을 사용합니다."
+      },
+      "minutesSenior": {
+        "title": "1군 출전 필요",
+        "detail": "출전 시간과 상대 수준이 현재 기량 상승폭을 좌우합니다. 구단에 선발 자리가 없다면 선발로 기용해 줄 가장 강한 구단으로 임대 보내십시오."
+      },
+      "minutesPast": {
+        "title": "성장기 지남",
+        "detail": "{endAge}세 이후에는 능력치가 거의 오르지 않습니다. 이제 훈련은 주로 이미 있는 능력치를 재배분합니다."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "fm-scoring의 자료에 따르면 성장에 가장 중요한 숨은 능력치는 프로 의식입니다. 이 수준이면 잠재 기량을 최대한 끌어내는 데 도움이 됩니다."
+      },
+      "profLow": {
+        "title": "{level, select, low {낮은 {attribute}({value})} other {평균 {attribute}({value})}}",
+        "detail": "fm-scoring의 자료에 따르면 성장에 가장 중요한 숨은 능력치는 프로 의식입니다. FM에서 성격을 바꾸는 방법은 멘토링입니다. 프로 의식이 높은 베테랑 선수와 같은 멘토링 그룹에 넣으십시오(fm-scoring에는 멘토 선수 검색 필터가 포함되어 있습니다)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "훈련으로는 승부욕이 절대 변하지 않습니다. 성격을 바꾸려면 멘토링을 이용하십시오. 프로 의식을 보려면 Hidden Attributes 뷰로 내보내십시오."
+      },
+      "schedule": {
+        "title": "육성 훈련을 하루에 몰아서 배치",
+        "detail": "능력치를 올리는 훈련은 점유 중심, 공격 중심, 수비 중심 볼 운용, 컨디셔닝, 강도 높은 컨디셔닝, 개인 발전뿐입니다. 다른 훈련은 휴식보다 현재 기량을 더 올리지 못했고, 같은 훈련을 반복해도 효과는 적습니다. 한 테스터는 육성 훈련을 하루에 몰아 완전한 휴식일을 확보했는데, 휴식일에는 훈련 부상 판정이 없습니다. 그 결과 성장은 거의 같으면서 훈련 부상 위험이 13.8%에서 4.0%로 줄었습니다."
+      }
+    },
+    "source": "<link>fm-scoring</link>에 모인 FM27 훈련 연구 자료를 바탕으로 합니다: harvestgreen22의 훈련 테스트, fm-scoring 제작자의 일정 테스트, FM27 훈련 코드를 분석한 테스터의 결과.",
+    "younger": "대부분은 어린 선수에게 해당합니다.",
+    "odds": "성장은 매달 무작위로 달라지므로, 보장이 아니라 확률로 받아들이십시오."
+  }
+}

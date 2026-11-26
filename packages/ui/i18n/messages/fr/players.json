@@ -1,0 +1,89 @@
+{
+  "selectedCount": "{count, plural, one {# sélectionné} other {# sélectionnés}}",
+  "home": {
+    "intro": "Notez, classez et comparez les joueurs. Avec le NA et le potentiel (un scan, ou un export Hidden Attributes), les colonnes Potentiel et vs âge débusquent les jeunes prodiges : triez par Potentiel pour voir qui peut devenir le meilleur. Les profils de rôles FM27 (étalonnés sur l’étude des postes de FM Match Lab) sont inclus dans Pondérations.",
+    "scoredWith": "Noté avec <link>{profile}</link>",
+    "myPlayersTitle": "Vos joueurs sont ceux de votre import d’effectif",
+    "showMyPlayers": "Voir mes joueurs ({count})",
+    "weights": "Pondérations",
+    "columns": "Colonnes",
+    "compareSelected": "Comparer la sélection ({count})",
+    "emptyDesktop": "Aucun joueur pour l’instant. Dans FM, ouvrez une Recherche de joueur et appuyez sur <kbd>F9</kbd> ou sur Scanner la recherche.",
+    "empty": "Aucun CSV importé pour l’instant. Choisissez un fichier CSV ci-dessus, ou chargez les données test pour découvrir l’outil."
+  },
+  "list": {
+    "searchLabel": "Rechercher des joueurs par nom",
+    "searchPlaceholder": "Nom : prénom, deuxième prénom ou nom",
+    "clearSearch": "Effacer la recherche",
+    "noMatch": "Aucun joueur ne correspond à « {query} »",
+    "select": "Sélectionner",
+    "selectPlayer": "Sélectionner {name}",
+    "openInNewTab": "Ouvrir dans un nouvel onglet",
+    "openPlayerInNewTab": "Ouvrir {name} dans un nouvel onglet",
+    "loading": "Chargement du tableau…",
+    "columns": {
+      "position": "Poste",
+      "score": "Score",
+      "vsAge": "vs âge",
+      "vsAgeTitle": "Moyenne pondérée comparée à la référence FM27 pour l’âge du joueur",
+      "potentialTitle": "Score avec les attributs projetés au potentiel (export Hidden Attributes)",
+      "valueTitle": "Fourchette de valeur de transfert de FM (triée par sa valeur médiane)"
+    }
+  },
+  "profile": {
+    "subtitle": "{position} · {age, plural, one {# an} other {# ans}} · {eu, select, yes {Ressortissant UE} other {Hors UE}}",
+    "grades": "Notes",
+    "now": "Actuel",
+    "noValuation": "Pas d’estimation",
+    "noWage": "Salaire inconnu",
+    "contractExpires": "Fin du contrat",
+    "id": "ID",
+    "attributeView": "Affichage des attributs",
+    "current": "Actuels",
+    "fullPotential": "Potentiel max.",
+    "estimated": "Attributs estimés au potentiel {pa} (NA actuel {ca}), d’après les coûts en NA de FM27.",
+    "capped": "Chaque attribut entraînable atteint son maximum avant le potentiel."
+  },
+  "attributes": {
+    "deltaTitle": "+{delta} par rapport à maintenant"
+  },
+  "positionMap": {
+    "label": "Postes : {position}"
+  },
+  "panel": {
+    "fullPage": "Pleine page",
+    "close": "Fermer la fiche du joueur",
+    "closeTitle": "Fermer (Échap)"
+  },
+  "notFound": {
+    "title": "Joueur introuvable",
+    "body": "Ce joueur ne figure pas dans les données importées. Importez un CSV sur <link>la page Joueurs</link> et réessayez."
+  },
+  "compare": {
+    "title": "Comparer des joueurs",
+    "intro": "Choisissez les joueurs à comparer. Or, argent et bronze sont attribués ligne par ligne parmi les joueurs sélectionnés.",
+    "clearSelection": "Vider la sélection",
+    "selectFirst": "Sélectionner les {count} premiers",
+    "choosePlayers": "Choisir des joueurs",
+    "searchLabel": "Rechercher des joueurs",
+    "searchPlaceholder": "Rechercher par nom, poste ou ID…",
+    "noMatch": "Aucun joueur ne correspond à cette recherche.",
+    "range": "{from}–{to} sur {total}",
+    "prev": "Préc.",
+    "next": "Suiv.",
+    "removePlayer": "Retirer {name}",
+    "comparison": "Comparaison",
+    "comparisonTitle": "Comparaison <muted>({count})</muted>",
+    "summary": "Score + {count, plural, one {# attribut} other {# attributs}}",
+    "metric": "Critère",
+    "weightedScore": "Score pondéré",
+    "legend": "Légende",
+    "best": "Meilleur",
+    "medals": {
+      "gold": "1er",
+      "silver": "2e",
+      "bronze": "3e"
+    },
+    "empty": "Sélectionnez au moins 2 joueurs pour lancer la comparaison."
+  }
+}

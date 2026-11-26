@@ -8,7 +8,9 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "./Button";
+import { useFormatNumber } from "../i18n/hooks";
 
 export type AttributeBand = "excellent" | "good" | "average" | "low";
 
@@ -193,6 +195,12 @@ function useAttributeColorContext(): AttributeColorContextValue {
 export function AttributeColourSettings() {
   const { state, setState } = useAttributeColorContext();
   const { activeId, profiles } = state;
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
+  const formatNumber = useFormatNumber();
+  /** The built-in default's name in the current language; any other name as stored. */
+  const displayName = (p: AttributeColorProfile) =>
+    p.id === DEFAULT_PROFILE.id && p.name === DEFAULT_PROFILE.name ? t("profiles.default") : p.name;
 
   const active =
     profiles.find((p) => p.id === activeId) ?? profiles[0] ?? DEFAULT_PROFILE;
@@ -210,7 +218,7 @@ export function AttributeColourSettings() {
     const id = `profile-${Date.now()}`;
     const next: AttributeColorProfile = {
       id,
-      name: `${active.name} Copy`,
+      name: t("profiles.copyName", { name: displayName(active) }),
       thresholds: { ...active.thresholds },
     };
     setState((prev) => ({
@@ -230,12 +238,10 @@ export function AttributeColourSettings() {
 
   return (
         <div className="space-y-5">
-          <p className="text-[13px] text-muted">
-            The value an attribute (1 to 20) needs for each colour. The colours follow the light or dark theme.
-          </p>
+          <p className="text-[13px] text-muted">{t("colours.intro")}</p>
           <div className="grid gap-2 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-[13px] text-muted">
-              Profile
+              {t("profiles.profile")}
               <select
                 className="field h-9 w-full pl-2.5 text-sm font-semibold text-ink"
                 value={active.id}
@@ -245,13 +251,13 @@ export function AttributeColourSettings() {
               >
                 {profiles.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name}
+                    {displayName(p)}
                   </option>
                 ))}
               </select>
             </label>
             <label className="flex flex-col gap-1 text-[13px] text-muted">
-              Name
+              {t("profiles.name")}
               <input
                 type="text"
                 className="field h-9 w-full px-2.5 text-sm text-ink"
@@ -259,12 +265,12 @@ export function AttributeColourSettings() {
                 onChange={(e) =>
                   updateActive((p) => ({ ...p, name: e.target.value }))
                 }
-                placeholder="Profile name"
+                placeholder={t("profiles.namePlaceholder")}
               />
             </label>
             <div className="flex gap-1.5 sm:col-span-2">
               <Button color="alt" variant="outline" size="sm" onClick={addProfile}>
-                Duplicate
+                {tCommon("duplicate")}
               </Button>
               <Button
                 color="red"
@@ -273,7 +279,7 @@ export function AttributeColourSettings() {
                 onClick={deleteProfile}
                 disabled={profiles.length <= 1}
               >
-                Delete
+                {tCommon("delete")}
               </Button>
             </div>
           </div>
@@ -281,8 +287,8 @@ export function AttributeColourSettings() {
           <table className="data-table">
             <thead>
               <tr>
-                <th className="px-3 py-2 text-left">Band</th>
-                <th className="px-3 py-2 text-left">Min value</th>
+                <th className="px-3 py-2 text-left">{t("colours.band")}</th>
+                <th className="px-3 py-2 text-left">{t("colours.minValue")}</th>
               </tr>
             </thead>
             <tbody>
@@ -313,11 +319,11 @@ export function AttributeColourSettings() {
           </table>
 
           <div>
-            <p className="mb-1.5 text-[13px] text-muted">Preview, 1 to 20</p>
+            <p className="mb-1.5 text-[13px] text-muted">{t("colours.preview")}</p>
             <div className="flex flex-wrap gap-1">
               {Array.from({ length: 20 }, (_, i) => i + 1).map((v) => (
                 <span key={v} className="attr" data-band={getBandForValue(v, active.thresholds)}>
-                  {v}
+                  {formatNumber(v)}
                 </span>
               ))}
             </div>
@@ -336,16 +342,16 @@ function ThresholdRow(props: {
 }) {
   const { band, readOnlyThreshold, belowMax, onThresholdChange } = props;
   const threshold = props.threshold ?? 0;
-
-  const pretty =
-    band[0].toUpperCase() + band.slice(1).toLowerCase() + " attribute";
+  const t = useTranslations("settings.colours");
+  const formatNumber = useFormatNumber();
+  const pretty = t(`bands.${band}`);
 
   return (
     <tr>
       <td className="px-3 py-2">
         <span className="flex items-center gap-2.5">
           <span className="attr" data-band={band}>
-            {band === "low" ? Math.max(1, (belowMax ?? 1) - 1) : threshold}
+            {formatNumber(band === "low" ? Math.max(1, (belowMax ?? 1) - 1) : threshold)}
           </span>
           {pretty}
         </span>
@@ -354,9 +360,10 @@ function ThresholdRow(props: {
         {readOnlyThreshold ? (
           <span className="text-sm text-muted">
             {belowMax !== undefined ? (
-              <>
-                Below <span className="font-semibold text-ink">{belowMax}</span>
-              </>
+              t.rich("below", {
+                value: belowMax,
+                b: (chunks) => <span className="font-semibold text-ink">{chunks}</span>,
+              })
             ) : (
               <>–</>
             )}
@@ -366,7 +373,7 @@ function ThresholdRow(props: {
             type="number"
             min={0}
             max={20}
-            aria-label={`${pretty} minimum value`}
+            aria-label={t("minValueLabel", { band: pretty })}
             className="field h-8 w-16 px-2 text-right text-sm"
             value={threshold}
             onChange={(e) => onThresholdChange?.(Number(e.target.value) || 0)}

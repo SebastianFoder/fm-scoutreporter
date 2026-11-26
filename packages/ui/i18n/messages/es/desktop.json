@@ -1,0 +1,171 @@
+{
+  "scanLabel": {
+    "sample": "Escaneo de ejemplo",
+    "dated": "Escaneo del {date}"
+  },
+  "scanButton": {
+    "group": "Escanear Football Manager",
+    "scanning": "Escaneando {progress, number, percent}",
+    "search": "Escanear búsqueda",
+    "searchTitle": "Conserva a las personas de la Búsqueda de jugador o de empleado de FM, más tu club (F9)",
+    "save": "Escanear partida",
+    "saveTitle": "Conserva a todos los jugadores y empleados de la partida"
+  },
+  "counts": {
+    "players": "{count, plural, one {# jugador} other {# jugadores}}",
+    "staff": "{count, plural, one {# empleado} other {# empleados}}",
+    "playersAndStaff": "{players, plural, one {# jugador} other {# jugadores}} y {staff, plural, one {# empleado} other {# empleados}}"
+  },
+  "home": {
+    "notDesktop": {
+      "title": "App de escritorio",
+      "body": "Esta página es de la app de escritorio de Scout Reporter, que lee directamente tu partida de Football Manager. En la web, importa una exportación CSV: consulta la <link>guía de configuración</link>."
+    },
+    "title": "Escanear Football Manager",
+    "intro": "<b>Escanear búsqueda</b> {hotkey, select, on {(o F9, también dentro de FM)} other {(o F9 cuando actives el atajo, también dentro de FM)}}: abre la Búsqueda de jugador o la Búsqueda de empleado en Football Manager, pon tus filtros y la app se queda con las personas que ha encontrado FM más tu propio club. <b>Escanear partida</b>: todos los jugadores y empleados de la partida, sin necesidad de búsqueda. Todas las pantallas (Jugadores, Mejor once, Plantilla, Cuerpo técnico) funcionan con el escaneo. No se cambia nada de tu juego. La tecla F9, los atributos ocultos y las actualizaciones están en <settings>Configuración</settings>.",
+    "phase": "{phase, select, importing {Guardando el escaneo…} writing {Escribiendo el escaneo…} clubs {Leyendo clubes…} people {Leyendo personas…} other {Leyendo memoria…}}",
+    "errors": {
+      "notRunning": "Football Manager no se está ejecutando",
+      "noAccess": "Football Manager se ejecuta como administrador",
+      "notLoaded": "Aún no hay ninguna partida cargada",
+      "nothingFound": "No se han encontrado jugadores",
+      "tooMuchUnread": "Escaneo incompleto",
+      "noSearch": "No hay ninguna búsqueda en Football Manager",
+      "busy": "Ya hay un escaneo en curso",
+      "missingReader": "Falta el lector",
+      "failed": "El escaneo ha fallado"
+    },
+    "scanWholeSave": "O <link>escanea la partida entera</link>.",
+    "doneSearch": "Guardados <b>{players, plural, one {# jugador} other {# jugadores}}</b> y {staff, plural, one {# empleado} other {# empleados}}: tu búsqueda de FM ({search}) más tu club{hasClub, select, yes {, {club}} other {}}. Abre <playersLink>Jugadores</playersLink>, <squadLink>Plantilla</squadLink> o <growthLink>Evolución</growthLink>.",
+    "doneFull": "Escaneados <b>{players, plural, one {# jugador} other {# jugadores}}</b> y {staff, plural, one {# empleado} other {# empleados}}{hasClub, select, yes {, tu club: {club}} other {}}. Abre <playersLink>Jugadores</playersLink>, <squadLink>Plantilla</squadLink> o <growthLink>Evolución</growthLink>.",
+    "loading": "Cargando el escaneo en las pantallas…",
+    "partial": "Las pantallas tienen {players, number} de {totalPlayers, plural, one {# jugador} other {# jugadores}} y {staff, number} de {totalStaff, plural, one {# empleado} other {# empleados}} de este escaneo: tu club más {loadedFrom}, primero los de mayor CA, para que las pantallas vayan rápidas. Evolución siempre compara a todos los jugadores de ambos escaneos.",
+    "loadedFrom": {
+      "playersSearch": "los jugadores de la búsqueda de jugador de FM ({count, number} encontrados)",
+      "playersBest": "los jugadores que merece la pena ojear",
+      "staffSearch": "los empleados de la búsqueda de empleado de FM ({count, number} encontrados)",
+      "staffBest": "los empleados que merece la pena fichar"
+    },
+    "version": {
+      "title": "Versión de Football Manager no reconocida",
+      "body": "Este escaneo viene de FM {version}, pero el lector se hizo para {game}. Compara algunos jugadores con el juego antes de fiarte de los números y busca una actualización de Scout Reporter.",
+      "unknown": "(versión desconocida)"
+    },
+    "loadError": "No se ha podido cargar el escaneo",
+    "stored": {
+      "title": "Escaneos guardados",
+      "kept": "Se guardan los {retention} más recientes, más los destacados, para que <link>Evolución</link> pueda compararlos.",
+      "disk": "Ocupan {size} en disco.",
+      "openFolder": "Abrir carpeta",
+      "loadSample": "Cargar escaneo de ejemplo",
+      "empty": "Aún no hay escaneos. Pulsa Escanear búsqueda o Escanear partida, o carga el escaneo de ejemplo para echar un vistazo."
+    },
+    "details": {
+      "noClub": "sin club",
+      "scanned": "escaneado {time}",
+      "search": "tu búsqueda de FM ({search}) y tu club",
+      "wholeSave": "partida entera",
+      "fmSearch": "Búsqueda de FM: {search}"
+    },
+    "about": {
+      "title": "Acerca de",
+      "version": "Scout Reporter para escritorio {version}. Compatible con Football Manager 27 (27.0) y 26 (26.3) en Windows, de Steam, Epic o Game Pass.",
+      "reader": "El lector solo lee la memoria de Football Manager; nunca modifica tu juego ni tu partida. Está adaptado de <link>FMSuperScout</link>, de mavarobli (licencia MIT). ¡Gracias!",
+      "credits": "Pesos de rol de FM27 de <matchLab>FM Match Lab</matchLab>; referencias por edad, costes de CA y pesos del cuerpo técnico de <scoring>jamiebolden/fm-scoring</scoring>; investigación sobre entrenamiento de harvestgreen22."
+    }
+  },
+  "scanRow": {
+    "star": "Destacar {label}",
+    "unstar": "Quitar destacado de {label}",
+    "starredTitle": "Destacado: nunca se borra para hacer sitio a escaneos nuevos",
+    "starTitle": "Destacar: no borrar nunca este escaneo para hacer sitio a otros nuevos",
+    "rename": "Renombrar {label}",
+    "renameTitle": "Renombrar",
+    "inUse": "En uso",
+    "versionDiffers": "otra versión",
+    "nameFor": "Nombre de {label}",
+    "use": "Usar",
+    "delete": "Eliminar {label}"
+  },
+  "settings": {
+    "loading": "Cargando la configuración…",
+    "scanning": "Escaneo",
+    "hidden": {
+      "title": "Usar CA, CP y atributos ocultos",
+      "body": "Activado: las pantallas reciben la calidad actual y potencial y la Profesionalidad de cada jugador, que necesitan las puntuaciones de Potencial. Desactivado: se omiten, como en una exportación normal de FM, y Evolución solo muestra cambios de atributos."
+    },
+    "hotkey": {
+      "title": "F9 escanea tu búsqueda desde cualquier sitio",
+      "body": "Mientras la app está abierta, F9 hace Escanear búsqueda, también dentro de FM. Mientras tanto, las demás apps no reciben F9."
+    },
+    "database": "Base de datos",
+    "databases": {
+      "men": "Masculina",
+      "women": "Femenina",
+      "both": "Ambas"
+    },
+    "keep": "Guardar",
+    "keepSuffix": "escaneos",
+    "retentionNote": "Los escaneos destacados se guardan además de estos y nunca se borran para hacer sitio. Un escaneo de búsqueda ocupa unos pocos MB; una partida entera, unos 140 MB.",
+    "updates": "Actualizaciones",
+    "checkUpdates": {
+      "title": "Buscar actualizaciones",
+      "body": "Pregunta a GitHub por la versión más reciente al iniciar la app y cada pocas horas. No se envía nada sobre ti ni sobre tu partida. Al actualizar se conservan tu configuración, escaneos, pesos y formaciones."
+    },
+    "checking": "Comprobando…",
+    "checkNow": "Comprobar ahora",
+    "updateAvailable": "Ya está disponible la versión {latest} (tienes la {current}): mira la barra de arriba.",
+    "upToDate": "Tienes la versión más reciente ({current}).",
+    "version": "Versión {current}.",
+    "privacy": "Privacidad",
+    "usageStats": {
+      "title": "Enviar estadísticas de uso anónimas",
+      "body": "Cuenta qué pantallas se abren, para ver qué se usa. Se envía al servidor de estadísticas del propio desarrollador, no usa cookies y nunca incluye tu partida, escaneos, jugadores ni nada que te identifique."
+    }
+  },
+  "update": {
+    "installing": "Instalando Scout Reporter {version}. La app se cerrará y se volverá a abrir en un momento.",
+    "downloading": "Descargando Scout Reporter {version}… {progress, number, percent}",
+    "available": "Ya está disponible Scout Reporter {version}",
+    "availableDetail": "(tienes la {current}). Al actualizar se conservan tu configuración, escaneos, pesos y formaciones.",
+    "updateNow": "Actualizar ahora",
+    "whatsNew": "Novedades",
+    "downloadYourself": "Descargarla tú mismo",
+    "hide": "Ocultar hasta que haya una versión más nueva que la {version}"
+  },
+  "growth": {
+    "title": "Evolución",
+    "notDesktop": "Evolución compara escaneos guardados y forma parte de la app de escritorio de Scout Reporter.",
+    "intro": "Cuánto ha mejorado cada jugador entre dos escaneos de tu partida. Escanea con regularidad (cada pocos meses de juego) para seguir a tus juveniles y descubrir jugadores que despuntan en todo el mundo.",
+    "twoNeeded": {
+      "title": "Hacen falta dos escaneos",
+      "body": "Evolución compara dos escaneos. Tienes {count, number}. Vuelve a <link>escanear</link> más adelante en tu partida."
+    },
+    "from": "Desde",
+    "to": "Hasta",
+    "option": "{label} ({count, plural, one {# jugador} other {# jugadores}})",
+    "gainedAtLeast": "Ha ganado al menos",
+    "ca": "CA",
+    "any": "cualquiera",
+    "maxAge": "Edad máx.",
+    "search": "Buscar",
+    "searchPlaceholder": "Jugador o club",
+    "searchScans": "Un escaneo de tu búsqueda de FM contiene los jugadores de esa búsqueda y los de tu propio club, así que Evolución cubre a los jugadores que están en ambos escaneos. Tu club está en todos los escaneos. Para seguir a todos los jugadores de la partida, usa Escanear partida en la <link>página Escaneos</link>.",
+    "sameScan": {
+      "title": "El mismo escaneo dos veces",
+      "body": "Elige dos escaneos distintos."
+    },
+    "compareError": "No se han podido comparar los escaneos",
+    "comparing": "Comparando escaneos…",
+    "summary": "{total, plural, one {# jugador} other {# jugadores}}{hasDays, select, yes { en {days, plural, one {# día de juego} other {# días de juego}}} other {}}{newPlayers, select, search {, más {newCount, plural, one {# jugador que solo está en el escaneo posterior} other {# jugadores que solo están en el escaneo posterior}}} full {, más {newCount, plural, one {# jugador nuevo (juveniles admitidos o liga cargada nueva)} other {# jugadores nuevos (juveniles admitidos o ligas cargadas nuevas)}} sin escaneo anterior} other {}}.",
+    "updating": "Actualizando…",
+    "columns": {
+      "ca": "CA",
+      "caChange": "Cambio CA",
+      "paChange": "Cambio CP",
+      "biggestChanges": "Mayores cambios"
+    },
+    "firstOnly": "Se muestran los {max, number} primeros: ajusta los filtros para ver otros",
+    "showMore": "Ver {count, number} más"
+  }
+}

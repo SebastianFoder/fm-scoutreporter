@@ -1,8 +1,9 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, Lock, LockOpen, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { Button } from "@scoutreporter/ui/components/Button";
@@ -23,7 +24,8 @@ import { STAFF_ROLES, STAFF_ROLE_GROUPS, rolesForJob, scoreStaff } from "@scoutr
 import { StaffImportPanel } from "./StaffImportPanel";
 import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
 import { StaffDetailModal } from "./StaffDetailModal";
-import { ScoreCell } from "./StaffCells";
+import { useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
+import { ScoreCell, useStaffRoleText } from "./StaffCells";
 
 const STORAGE_KEY = "bestBackroomSettings";
 
@@ -62,7 +64,14 @@ function loadSettings(): Settings {
   }
 }
 
+const kbd = (chunks: ReactNode) => (
+  <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">{chunks}</kbd>
+);
+
 export default function BackroomClient() {
+  const t = useTranslations("staff");
+  const tFm = useTranslations("fm");
+  const roleText = useStaffRoleText();
   const { state } = useStaffData();
   const { staff } = state;
 
@@ -136,24 +145,20 @@ export default function BackroomClient() {
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
         <PageHeader
-          title="Best backroom"
+          title={t("backroom.title")}
           aside={
             <Link href="/staff" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
-              <ArrowLeft className="h-4 w-4" aria-hidden /> Staff list
+              <ArrowLeft className="h-4 w-4" aria-hidden /> {t("backroom.staffList")}
             </Link>
           }
         >
-          Choose the roles you need and how many of each. Scout Reporter hires the combination of staff with
-          the highest total role score, never using one person twice. Lock in staff you&apos;ve signed, and
-          remove anyone who turns you down to get the next best pick for that slot.
+          {t("backroom.intro")}
         </PageHeader>
 
         <StaffImportPanel onImported={() => update({ excluded: [] })} />
 
         {staff.length === 0 && (
-          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
-            No staff imported yet. Choose a staff CSV above, or load the test data to look around.
-          </NoImport>
+          <NoImport desktop={t.rich("noImport.desktop", { kbd })}>{t("backroom.noImport")}</NoImport>
         )}
 
         {staff.length > 0 && (
@@ -161,7 +166,7 @@ export default function BackroomClient() {
             <section aria-labelledby="backroom-setup" className="panel">
               <div className="flex items-center justify-between border-b border-line px-4 py-3">
                 <h2 id="backroom-setup" className="section-title">
-                  Roles
+                  {tFm("terms.roles")}
                 </h2>
                 <Button
                   color="alt"
@@ -170,13 +175,13 @@ export default function BackroomClient() {
                   icon={<RotateCcw className="h-3.5 w-3.5" aria-hidden />}
                   onClick={() => setSettings(DEFAULTS)}
                 >
-                  Reset
+                  {t("backroom.reset")}
                 </Button>
               </div>
 
               <div className="flex flex-col gap-3.5 px-4 py-3.5">
                 <label className={labelClass}>
-                  Preset
+                  {t("backroom.preset")}
                   <select
                     value={preset?.id ?? "custom"}
                     onChange={(e) => {
@@ -187,42 +192,43 @@ export default function BackroomClient() {
                   >
                     {BACKROOM_PRESETS.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.name}
+                        {tFm.has(`backroomSets.${p.id}`) ? tFm(`backroomSets.${p.id}`) : p.name}
                       </option>
                     ))}
                     <option value="custom" disabled>
-                      Custom
+                      {t("backroom.custom")}
                     </option>
                   </select>
                 </label>
 
                 {STAFF_ROLE_GROUPS.map((g) => (
                   <fieldset key={g}>
-                    <legend className="mb-1 text-[13px] font-semibold">{g}</legend>
+                    <legend className="mb-1 text-[13px] font-semibold">{roleText.group(g)}</legend>
                     <ul className="flex flex-col">
                       {STAFF_ROLES.filter((r) => r.group === g).map((r) => {
                         const n = settings.counts[r.id] ?? 0;
+                        const name = roleText.name(r);
                         return (
                           <li
                             key={r.id}
                             className="flex items-center justify-between gap-2 border-b border-line py-1 last:border-b-0"
                           >
-                            <span className={`min-w-0 truncate text-sm ${n > 0 ? "" : "text-muted"}`} title={r.summary}>
-                              {r.name.replace(/^Coach: /, "")}
+                            <span className={`min-w-0 truncate text-sm ${n > 0 ? "" : "text-muted"}`} title={roleText.summary(r)}>
+                              {roleText.shortName(r)}
                             </span>
                             <span className="flex shrink-0 items-center gap-1">
                               <button
                                 type="button"
                                 onClick={() => setCount(r.id, n - 1)}
                                 disabled={n === 0}
-                                aria-label={`One fewer ${r.name}`}
+                                aria-label={t("backroom.oneFewer", { role: name })}
                                 className="btn h-7 w-7 border border-line text-muted hover:bg-paper hover:text-ink disabled:opacity-40"
                               >
                                 <Minus className="h-3.5 w-3.5" aria-hidden />
                               </button>
                               <span
                                 className={`w-5 text-center text-sm tabular-nums ${n > 0 ? "font-semibold" : "text-muted"}`}
-                                aria-label={`${r.name}: ${n}`}
+                                aria-label={t("backroom.roleCount", { role: name, count: n })}
                               >
                                 {n}
                               </span>
@@ -230,7 +236,7 @@ export default function BackroomClient() {
                                 type="button"
                                 onClick={() => setCount(r.id, n + 1)}
                                 disabled={n >= MAX_PER_ROLE}
-                                aria-label={`One more ${r.name}`}
+                                aria-label={t("backroom.oneMore", { role: name })}
                                 className="btn h-7 w-7 border border-line text-muted hover:bg-paper hover:text-ink disabled:opacity-40"
                               >
                                 <Plus className="h-3.5 w-3.5" aria-hidden />
@@ -251,7 +257,7 @@ export default function BackroomClient() {
                       onChange={(e) => update({ freeAgentsOnly: e.target.checked })}
                       className="h-4 w-4 accent-accent"
                     />
-                    Free agents only
+                    {t("list.freeAgentsOnly")}
                   </label>
                   <label className="flex items-start gap-2">
                     <input
@@ -261,8 +267,8 @@ export default function BackroomClient() {
                       className="mt-0.5 h-4 w-4 accent-accent"
                     />
                     <span>
-                      Only staff whose preferred job is the role
-                      <span className="block text-[12px] text-muted">Staff can turn down other jobs in FM.</span>
+                      {t("backroom.preferredJobOnly")}
+                      <span className="block text-[12px] text-muted">{t("backroom.preferredJobOnlyHint")}</span>
                     </span>
                   </label>
                 </div>
@@ -271,19 +277,20 @@ export default function BackroomClient() {
 
             <div className="flex min-w-0 flex-col gap-4">
               {result?.kind === "empty" && (
-                <Notice title="No roles chosen.">Add at least one role on the left, or pick a preset.</Notice>
+                <Notice title={t("backroom.empty.title")}>{t("backroom.empty.body")}</Notice>
               )}
 
               {result?.kind === "short" && (
-                <Notice title="Not enough staff for every role.">
+                <Notice title={t("backroom.short.title")}>
                   {result.roles
-                    .map((r) => `${r.role.name}: ${r.wanted} wanted, ${r.eligible} qualify`)
-                    .join("; ")}
-                  . Staff qualify when most of the role&apos;s attributes are in the export
-                  {settings.freeAgentsOnly || settings.preferredJobOnly || settings.excluded.length > 0
-                    ? ", they pass the filters and they are not excluded"
-                    : ""}
-                  , and one person can only fill one role.
+                    .map((r) =>
+                      t("backroom.short.role", { role: roleText.name(r.role), wanted: r.wanted, eligible: r.eligible }),
+                    )
+                    .join(" ")}{" "}
+                  {t("backroom.short.explain", {
+                    filtered:
+                      settings.freeAgentsOnly || settings.preferredJobOnly || settings.excluded.length > 0 ? "yes" : "no",
+                  })}
                 </Notice>
               )}
 
@@ -301,34 +308,34 @@ export default function BackroomClient() {
 
               {excludedStaff.length > 0 && (
                 <div className="flex flex-wrap items-center gap-1.5 text-sm">
-                  <span className="text-muted">Excluded:</span>
+                  <span className="text-muted">{t("backroom.excluded")}</span>
                   {excludedStaff.map((s) => (
                     <button
                       key={s.uniqueId}
                       type="button"
                       onClick={() => update({ excluded: settings.excluded.filter((id) => id !== s.uniqueId) })}
                       className="btn h-7 gap-1 border border-line bg-surface px-2 text-[13px] font-normal hover:bg-paper"
-                      title="Allow this person again"
+                      title={t("backroom.allowAgainTitle")}
                     >
                       {s.name}
                       <X className="h-3.5 w-3.5 text-muted" aria-hidden />
-                      <span className="sr-only">(allow again)</span>
+                      <span className="sr-only">{t("backroom.allowAgain")}</span>
                     </button>
                   ))}
                   <button type="button" className="link ml-1 text-[13px]" onClick={() => update({ excluded: [] })}>
-                    Clear all
+                    {t("backroom.clearAll")}
                   </button>
                 </div>
               )}
 
               <p className="max-w-3xl text-[13px] leading-relaxed text-muted">
-                Each role is scored with fm-scoring&apos;s staff weights (see{" "}
-                <Link href="/staff" className="link">
-                  Staff
-                </Link>
-                ). The backroom shown has the highest total score of every way to fill the roles with different
-                people, so a strong all-rounder goes where they add the most rather than to the first role that
-                wants them. Staff missing most of a role&apos;s attributes are not considered for it.
+                {t.rich("backroom.footer", {
+                  link: (chunks) => (
+                    <Link href="/staff" className="link">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
             </div>
           </div>
@@ -365,6 +372,10 @@ function BackroomResultPanel({
   onToggleLock: (role: string, id: string) => void;
   onUnlockAll: () => void;
 }) {
+  const t = useTranslations("staff");
+  const tFm = useTranslations("fm");
+  const roleText = useStaffRoleText();
+  const formatNumber = useFormatNumber();
   const lockedCount = picks.filter((p) => p.locked).length;
   const offJob = picks.filter((p) => !rolesForJob(p.member.preferredJob).some((r) => r.id === p.role.id)).length;
 
@@ -372,18 +383,20 @@ function BackroomResultPanel({
     <section aria-labelledby="backroom-result" className="panel">
       <div className="border-b border-line px-4 py-3">
         <h2 id="backroom-result" className="section-title">
-          Your backroom
+          {t("backroom.result.title")}
         </h2>
         <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-muted">
-          <span>{wanted} staff · Average score</span>
-          <span className="font-semibold text-ink">{(totalScore / picks.length).toFixed(2)}</span>
-          <GradeStamp score={totalScore / picks.length} label="Average backroom score" />
-          {offJob > 0 && <span>· {offJob} in a role that isn&apos;t their preferred job (job in grey)</span>}
+          <span>{t("backroom.result.summary", { count: wanted })}</span>
+          <span className="font-semibold text-ink">
+            {formatNumber(totalScore / picks.length, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+          <GradeStamp score={totalScore / picks.length} label={t("backroom.result.averageLabel")} />
+          {offJob > 0 && <span>{t("backroom.result.offJob", { count: offJob })}</span>}
           {lockedCount > 0 && (
             <span>
-              · {lockedCount} locked in{" "}
+              {t("backroom.result.locked", { count: lockedCount })}{" "}
               <button type="button" className="link text-[13px]" onClick={onUnlockAll}>
-                Unlock all
+                {t("backroom.result.unlockAll")}
               </button>
             </span>
           )}
@@ -394,14 +407,14 @@ function BackroomResultPanel({
         <table className="data-table">
           <thead>
             <tr>
-              <th className="px-2.5 py-2 text-left">Role</th>
-              <th className="px-2.5 py-2 text-left">Staff</th>
-              <th className="px-2.5 py-2 text-left">Preferred job</th>
-              <th className="px-2.5 py-2 text-right" title="Role score on FM's 1–20 scale">
-                Score
+              <th className="px-2.5 py-2 text-left">{tFm("terms.role")}</th>
+              <th className="px-2.5 py-2 text-left">{tFm("terms.staff")}</th>
+              <th className="px-2.5 py-2 text-left">{t("preferredJob")}</th>
+              <th className="px-2.5 py-2 text-right" title={t("backroom.result.scoreTitle")}>
+                {t("backroom.result.score")}
               </th>
               <th className="px-2.5 py-2">
-                <span className="sr-only">Lock or remove</span>
+                <span className="sr-only">{t("backroom.result.lockOrRemove")}</span>
               </th>
             </tr>
           </thead>
@@ -413,16 +426,17 @@ function BackroomResultPanel({
                 <Fragment key={g}>
                   <tr>
                     <th colSpan={5} scope="colgroup" className="bg-paper px-2.5 py-1.5 text-left text-[13px] font-semibold text-ink">
-                      {g}
+                      {roleText.group(g)}
                     </th>
                   </tr>
                   {rows.map((p, i) => {
                     const firstOfRole = i === 0 || rows[i - 1].role.id !== p.role.id;
                     const onJob = rolesForJob(p.member.preferredJob).some((r) => r.id === p.role.id);
+                    const roleName = roleText.name(p.role);
                     return (
                       <tr key={`${p.role.id}-${p.member.uniqueId}`} className={p.locked ? "bg-accent/5" : undefined}>
-                        <td className="whitespace-nowrap px-2.5 py-1.5 text-[13px]" title={p.role.summary}>
-                          {firstOfRole ? p.role.name : <span className="sr-only">{p.role.name}</span>}
+                        <td className="whitespace-nowrap px-2.5 py-1.5 text-[13px]" title={roleText.summary(p.role)}>
+                          {firstOfRole ? roleName : <span className="sr-only">{roleName}</span>}
                         </td>
                         <td className="px-2.5 py-1.5">
                           <button
@@ -433,13 +447,13 @@ function BackroomResultPanel({
                             {p.member.name}
                           </button>
                           <span className="block text-[12px] text-muted">
-                            {p.member.club || "Free agent"}
+                            {p.member.club || t("freeAgent")}
                             {p.member.personality && ` · ${p.member.personality}`}
                           </span>
                         </td>
                         <td
                           className={`whitespace-nowrap px-2.5 py-1.5 text-[13px] ${onJob ? "" : "text-muted"}`}
-                          title={onJob ? undefined : "Not their preferred job: they may turn this role down"}
+                          title={onJob ? undefined : t("backroom.result.offJobTitle")}
                         >
                           {p.member.preferredJob || "–"}
                         </td>
@@ -452,13 +466,13 @@ function BackroomResultPanel({
                               color={p.locked ? "primary" : "alt"}
                               variant={p.locked ? "outline" : "ghost"}
                               size="sm"
-                              aria-label={p.locked ? `Unlock ${p.member.name}` : `Lock in ${p.member.name}`}
-                              aria-pressed={p.locked}
-                              title={
+                              aria-label={
                                 p.locked
-                                  ? "Locked in: kept in this slot when the rest is re-picked. Click to unlock."
-                                  : "Lock in: keep in this slot (e.g. once signed) when the rest is re-picked"
+                                  ? t("backroom.result.unlock", { name: p.member.name })
+                                  : t("backroom.result.lockIn", { name: p.member.name })
                               }
+                              aria-pressed={p.locked}
+                              title={p.locked ? t("backroom.result.lockedTitle") : t("backroom.result.lockTitle")}
                               onClick={() => onToggleLock(p.role.id, p.member.uniqueId)}
                               icon={
                                 p.locked ? (
@@ -472,8 +486,8 @@ function BackroomResultPanel({
                               color="alt"
                               variant="ghost"
                               size="sm"
-                              aria-label={`Exclude ${p.member.name} and pick again`}
-                              title="Remove and pick again (e.g. contract talks failed)"
+                              aria-label={t("backroom.result.exclude", { name: p.member.name })}
+                              title={t("backroom.result.excludeTitle")}
                               onClick={() => onExclude(p.member.uniqueId)}
                               icon={<X className="h-4 w-4" aria-hidden />}
                             />

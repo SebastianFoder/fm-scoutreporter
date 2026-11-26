@@ -1,0 +1,109 @@
+{
+  "intro": "Choisit dans votre import les onze joueurs au meilleur score pour une formation, avec en option un minimum et un maximum pour le coût total du onze.",
+  "noImport": {
+    "desktop": "Aucun joueur pour l’instant. Dans FM, ouvrez une Recherche de joueur et appuyez sur <kbd>F9</kbd> ou sur Scanner la recherche.",
+    "web": "Aucun CSV importé pour l’instant. Choisissez un fichier CSV ci-dessus, ou chargez les données test pour découvrir l’outil."
+  },
+  "setup": {
+    "title": "Réglages",
+    "reset": "Réinitialiser",
+    "minBudget": "Budget min. ({currency})",
+    "maxBudget": "Budget max. ({currency})",
+    "noMinimum": "Aucun minimum",
+    "noLimit": "Aucune limite",
+    "budgetInvalid": "Saisissez un montant comme 15M, 750K ou 2500000. Les budgets illisibles sont ignorés.",
+    "budgetHint": "Total pour les onze. Saisissez des montants comme 15M ou 750K.",
+    "valuation": "Un joueur coûte",
+    "valuations": {
+      "low": "Bas de la fourchette",
+      "mid": "Milieu de la fourchette",
+      "high": "Haut de la fourchette"
+    },
+    "includeFree": "Inclure les joueurs sans valeur de transfert",
+    "includeFreeHint": "Surtout des joueurs libres de tout contrat. Ils comptent pour {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "Le budget minimum dépasse le maximum.",
+      "body": "Aucun onze ne peut coûter au moins {min} et au plus {max}."
+    },
+    "slots": {
+      "title": "Pas assez de joueurs pour remplir cette formation.",
+      "body": "Plus aucun joueur éligible pour : {positions}. Seuls les postes naturels de l’export comptent.",
+      "leftOut": "Les joueurs exclus et ceux sans valeur de transfert sont écartés."
+    },
+    "budget": {
+      "title": "Aucun onze ne rentre dans ce budget.",
+      "range": "Avec ces réglages, le onze le moins cher possible coûte {min} et le plus cher {max}.",
+      "wider": "Essayez un budget plus large."
+    }
+  },
+  "excluded": {
+    "label": "Exclus :",
+    "allowAgain": "Réautoriser ce joueur",
+    "allowAgainHidden": "(réautoriser)",
+    "clearAll": "Tout effacer"
+  },
+  "footnote": "Chaque poste accueille un joueur pour qui c’est un poste naturel, noté sur le rôle de ce poste (1–20). Le onze affiché a le meilleur score total de toutes les combinaisons qui respectent le budget.",
+  "unpriced": "{count, plural, one {# joueur est écarté} other {# joueurs sont écartés}} car l’export ne donne pas de prix (par exemple « Pas à vendre »).",
+  "result": {
+    "title": "Meilleur onze",
+    "summary": "Score moyen <b>{average}</b>{basis, select, potential { au potentiel maximum} other {}} · Coût <b>{cost}</b>{budget, select, range { (budget de {min} à {max})} max { sur {max}} min { (au moins {min})} other {}} · Salaires <b>{wages}/sem.</b>{unknownWages, plural, =0 {} one { (# sans contrat)} other { (# sans contrat)}}",
+    "notOptimal": "Le temps de recherche est écoulé avant de prouver que ce onze est le meilleur possible. Un meilleur onze ajouterait au plus {gap} au score total de {total}.",
+    "pitchLabel": "Le onze sur le terrain",
+    "columns": {
+      "pos": "Poste",
+      "score": "Score",
+      "scoreTitle": "Score du rôle sur l’échelle 1–20 de FM",
+      "valueTitle": "Valeur de transfert dans l’export",
+      "counted": "Compté",
+      "countedTitle": "Compté dans le budget : {valuation, select, low {bas de la fourchette} high {haut de la fourchette} other {milieu de la fourchette}}",
+      "exclude": "Exclure"
+    },
+    "excludeLabel": "Exclure {name} et refaire le choix",
+    "excludeTitle": "Exclure et refaire le choix",
+    "total": "Total",
+    "perWeek": "{amount}/sem."
+  },
+  "formation": {
+    "custom": "Personnalisée",
+    "yours": "Vos formations",
+    "presets": "Formations FM",
+    "moveTo": "Déplacer {from} vers {spot} ({position})",
+    "emptySpot": "Emplacement libre {spot} ({position})",
+    "moveHere": "Déplacer {from} ici",
+    "goalkeeperFixed": "Gardien de but (fixe)",
+    "selected": "{spot} ({position}) sélectionné : choisissez un emplacement où le déplacer, ou appuyez à nouveau pour annuler",
+    "dragOrSelect": "{spot} ({position}) : faites glisser, ou sélectionnez pour déplacer",
+    "keeperStays": "Le gardien reste dans ses buts",
+    "dragTitle": "{position} : faites glisser vers un autre emplacement, ou sur un poste pour les échanger",
+    "hint": {
+      "dropSwap": "Relâchez pour échanger {from} et {to}.",
+      "dropMove": "Relâchez pour déplacer {from} vers {to}.",
+      "dropCancel": "Relâchez sur un emplacement, ou ailleurs pour annuler.",
+      "moving": "Déplacement de {spot} : cliquez sur un emplacement (ou sur un autre poste pour les échanger), ou à nouveau sur {spot} pour annuler.",
+      "idle": "Faites glisser un poste vers un autre emplacement, ou sur un autre poste pour les échanger."
+    },
+    "delete": "Supprimer « {name} »",
+    "namePlaceholder": "Nommez cette formation",
+    "myPlaceholder": "Mon {formation}",
+    "nameLabel": "Nom de cette formation",
+    "save": "Enregistrer",
+    "scoredAs": "Noté comme",
+    "roleFor": "Rôle pour {spot}, {position}",
+    "auto": "Auto : {role}",
+    "rolesFrom": "Les rôles sont vos profils de pondération de <link>Joueurs</link>."
+  },
+  "basis": {
+    "label": "Noter les joueurs sur",
+    "potential": "Potentiel max.",
+    "potentialTitle": "Attributs projetés au potentiel",
+    "needsTitle": "Nécessite le NA et le potentiel : exportez avec la vue {view}",
+    "needs": "Le potentiel maximum nécessite la vue {view}."
+  },
+  "pitch": {
+    "nobody": "Personne",
+    "nobodyTitle": "{spot} : personne dans l’effectif ne joue {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

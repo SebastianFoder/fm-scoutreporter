@@ -1,0 +1,101 @@
+{
+  "title": "Questions fréquentes",
+  "intro": "Exporter depuis FM27 et FM26, confidentialité et fonctionnement des scores. Toujours bloqué ? Le <link>guide d’installation</link> détaille chaque étape.",
+  "groups": {
+    "start": "Premiers pas",
+    "privacy": "Confidentialité",
+    "scores": "Scores et notes",
+    "wonderkids": "Jeunes prodiges, Meilleur 11 et effectifs",
+    "staff": "Staff"
+  },
+  "items": {
+    "what": {
+      "q": "Qu’est-ce que Scout Reporter ?",
+      "a": "Scout Reporter est un outil de recrutement gratuit pour Football Manager. Vous importez un export CSV d’une liste de joueurs de FM27 ou FM26, et il note chaque joueur sur des attributs pondérés, lui attribue une note de S++ à F, compare les joueurs côte à côte, estime les attributs des jeunes prodiges à leur potentiel maximum et choisit un Meilleur 11 dans les limites d’un budget."
+    },
+    "versions": {
+      "q": "Est-ce que ça marche avec FM27 et FM26 ?",
+      "a": "Oui. Les deux jeux exportent les mêmes attributs via les vues Scout Reporter, donc les imports de l’un ou de l’autre fonctionnent dans tous les modes. FM27 exporte avec FM View Exporter ; FM26 avec BepInEx et le plugin FM26 Player CSV Export. Les profils de notation et les estimations de progression sont étalonnés sur des données FM27.",
+      "more": "Guide d’installation pour les deux versions"
+    },
+    "export": {
+      "q": "Comment exporter des joueurs de Football Manager en CSV ?",
+      "a": "Installez un plugin d’export (FM View Exporter pour FM27, ou BepInEx avec le plugin FM26 Player CSV Export), téléchargez un fichier de vue Scout Reporter et placez-le dans votre dossier de vues FM. Dans la Base de données du joueur, faites un clic droit sur un en-tête de colonne, choisissez Importer la vue, sélectionnez la vue, filtrez les joueurs voulus et appuyez sur F9. Importez ensuite le CSV ici.",
+      "more": "Guide d’export étape par étape"
+    },
+    "view": {
+      "q": "Quel fichier de vue utiliser ?",
+      "a": "La vue Hidden Attributes est recommandée : elle exporte tous les attributs plus les attributs cachés Professionnalisme, Niveau actuel (NA) et Potentiel (Pot.), ce qui débloque les scores Potentiel pour trouver les jeunes prodiges. La vue Standard n’exporte que les attributs visibles, ce qui suffit pour la liste des joueurs et le Meilleur 11."
+    },
+    "platforms": {
+      "q": "Est-ce que ça marche sur Mac ou Linux ?",
+      "a": "Le site fonctionne dans n’importe quel navigateur récent. L’export se fait dans Football Manager : FM View Exporter pour FM27 nécessite la version Steam sous Windows 10 ou 11, et le guide FM26 donne l’option de lancement Steam nécessaire pour faire tourner BepInEx sous Linux."
+    },
+    "free": {
+      "q": "Scout Reporter est-il gratuit ?",
+      "a": "Oui. Il est gratuit, sans compte ni inscription, et son code source est public sur GitHub."
+    },
+    "upload": {
+      "q": "Mon CSV ou ma sauvegarde sont-ils envoyés quelque part ?",
+      "a": "Non. Le CSV est lu et noté dans votre navigateur et n’est jamais envoyé à un serveur. Le dernier import est conservé dans le stockage local de votre navigateur pour survivre à un rechargement, avec vos profils de pondération, de surlignage et de seuils. Importer un nouveau fichier le remplace, et effacer les données du site le supprime."
+    },
+    "analytics": {
+      "q": "Collectez-vous des statistiques ?",
+      "a": "Uniquement des pages vues anonymes, envoyées à un serveur Umami auto-hébergé : les pages ouvertes, le site d’origine, ainsi que le navigateur, le système d’exploitation et le pays. Aucun cookie n’est déposé, et rien de votre CSV, de vos scans ou de vos joueurs n’est jamais inclus. Dans l’appli Windows, vous pouvez désactiver cela dans Paramètres, Appli, Envoyer des statistiques d’utilisation anonymes."
+    },
+    "scoring": {
+      "q": "Comment les joueurs sont-ils notés ?",
+      "a": "Chaque attribut reçoit un poids. Le score d’un joueur est la moyenne pondérée de ses attributs sur l’échelle de 1 à 20 de FM, et le score sur 100 divise cette moyenne par 13 (un professionnel solide) puis la multiplie par 100. Modifiez les poids et la liste se reclasse instantanément.",
+      "more": "Comment les joueurs sont notés"
+    },
+    "benchmarks": {
+      "q": "Que sont les profils de rôles de référence FM27 ?",
+      "a": "Six profils de pondération, Défenseur central, Arrière latéral / Latéral offensif, Milieu défensif / Milieu axial, Attaquant / Ailier (10), Buteur (9) et Gardien de but, construits à partir de l’étude 13b de FM Match Lab, qui a mesuré ce que vaut chaque attribut à chaque poste sur 50 000 matchs FM27. Vitesse et Accélération dominent partout, Détente verticale compte surtout pour les défenseurs centraux et les buteurs, Agilité et Réflexes pour les gardiens, et la plupart des attributs techniques et mentaux pèsent à peine. Vous pouvez les modifier et revenir à la référence à tout moment. Le tableau vs âge vient toujours de fm-scoring, dont l’appli utilisait auparavant les poids de rôles."
+    },
+    "grades": {
+      "q": "Que signifient les notes de S++ à F ?",
+      "a": "Les notes se lisent sur la moyenne pondérée de l’échelle 1 à 20 et changent tous les 0,5 : S++ commence à {top}, {lowestGrade} à {lowest}, et tout ce qui est en dessous est un F. La référence d’apogée de {prime}, un joueur du haut de Championship ou du bas de Premier League à son apogée, correspond à un {primeGrade}."
+    },
+    "vsAge": {
+      "q": "Que signifie vs âge ?",
+      "a": "vs âge divise le score d’un joueur par la référence FM27 pour son âge, de {youngestBenchmark} à {youngestAge} ans jusqu’à {prime} à 24 ans et plus. 100 % signifie que le joueur est en passe de devenir un joueur du haut de Championship ou du bas de Premier League à son apogée : c’est donc la façon la plus juste de comparer les jeunes joueurs entre eux."
+    },
+    "wonderkids": {
+      "q": "Comment Scout Reporter trouve-t-il les jeunes prodiges ?",
+      "a": "Avec un export Hidden Attributes, il modélise le NA comme une somme d’attributs pondérée par poste, calcule combien de points d’attributs l’écart entre NA et potentiel permet d’acheter, et les répartit sur les attributs qui peuvent encore progresser, selon la vitesse de progression de chacun dans un test d’entraînement FM27. Il classe ensuite les espoirs sur les rôles FM27 à leur potentiel maximum. Filtrez par âge, professionnalisme et meilleur rôle.",
+      "more": "Comment fonctionne l’estimation du potentiel"
+    },
+    "potential": {
+      "q": "Un joueur atteindra-t-il vraiment le potentiel affiché ?",
+      "a": "Pas forcément. L’estimation est le plafond si le joueur atteint son potentiel. Le professionnalisme, le temps de jeu, l’entraînement et les préparateurs décident de la part qu’il en atteint : c’est pourquoi chaque fiche joueur comprend un plan de progression avec une priorité individuelle, un rôle à l’entraînement et les séances qui comptent le plus."
+    },
+    "bestXi": {
+      "q": "Comment fonctionne le Meilleur 11 ?",
+      "a": "Choisissez l’une des {formationCount} formations prédéfinies de FM, ou créez la vôtre sur un terrain tactique façon FM et enregistrez-la : Scout Reporter choisit dans votre import les onze joueurs au meilleur score combiné, chaque poste étant noté sur un profil de pondération de votre choix (les rôles de référence FM27 par défaut). Vous pouvez fixer une valeur de transfert totale minimale et maximale, et exclure des joueurs pour voir la meilleure option suivante.",
+      "more": "Ouvrir Meilleur 11"
+    },
+    "squad": {
+      "q": "Comment fonctionne l’analyse de l’effectif ?",
+      "a": "Importez la vue Scout Reporter Squad (ou Squad Hidden Attributes) sur votre écran d’effectif, exportez-la et importez le CSV dans Analyse de l’effectif. Il est stocké séparément de votre import de joueurs, donc votre liste de recrutement reste chargée. Choisissez votre formation : l’outil construit votre onze le plus fort, puis le onze le plus fort parmi les joueurs restants comme doublures, et signale les postes que personne ne joue, les titulaires nettement sous la moyenne de l’équipe, les postes sans remplaçant ou avec une grosse chute de niveau derrière, et les titulaires de 31 ans ou plus (34 pour les gardiens). La vue Squad exporte aussi votre feuille de match, le statut dans l’effectif, les blessures et les étoiles attribuées par les préparateurs : les joueurs prêtés sont écartés (les blessés aussi si vous le souhaitez), les joueurs à qui une place de titulaire est promise mais absents du onze et les joueurs à statut bas qui sont titulaires sont signalés, votre onze de départ FM est comparé à celui proposé, et les jeunes que les préparateurs jugent nettement au-dessus d’un titulaire sont mis en avant. Avec la vue cachée, ces espoirs sont repérés à partir des attributs projetés. Si votre import de joueurs contient des cibles de recrutement, l’outil liste celles qui battraient votre titulaire le plus faible à chaque poste.",
+      "more": "Ouvrir l’analyse de l’effectif"
+    },
+    "staffScouting": {
+      "q": "Comment évaluer le staff ?",
+      "a": "Importez la vue Scout Reporter Staff dans une recherche de staff FM (clic droit sur un en-tête de colonne, puis Importer la vue), sélectionnez les membres du staff et exportez un CSV comme pour les joueurs. Importez ce CSV dans Staff. Il est stocké séparément de votre import de joueurs, donc les deux peuvent être chargés en même temps.",
+      "more": "Ouvrir Staff"
+    },
+    "staffWords": {
+      "q": "FM26 affiche les attributs du staff sous forme de mots. Comment sont-ils notés ?",
+      "a": "Chaque mot couvre une plage fixe de l’ancienne échelle 1 à 20 : Inapte 1 à 3, Raisonnable 4 à 6, Convenable 7 à 9, Moyen 10 à 11, Bon 12 à 14, Très bon 15 à 17, Exceptionnel 18 à 19 et Élite 20. Scout Reporter compte chaque mot au milieu de sa plage, et utilise les valeurs exactes quand l’export les fournit."
+    },
+    "staffRoles": {
+      "q": "Comment les scores de rôle du staff sont-ils calculés ?",
+      "a": "Chaque rôle est une moyenne pondérée de ses attributs, avec les 17 rôles du staff et les pondérations de fm-scoring, vérifiés par rapport aux attributs clés que FM27 met en avant sur les profils du staff. Les préparateurs sont répartis dans les neuf groupes d’entraînement de FM (chacun noté sur ses deux attributs d’entraînement plus la discipline, la détermination, la capacité à motiver, la gestion des personnes et l’entraînement des jeunes), aux côtés de l’entraîneur, l’entraîneur adjoint, le directeur sportif, le responsable de la formation des jeunes, le recruteur, l’analyste de performance, le kiné et le chercheur en sciences du sport. Chaque score de rôle reçoit la même note de S++ à F que les scores des joueurs. Filtrez par poste souhaité pour ne voir que les attributs pondérés pour ce poste, ou ouvrez la fiche d’un membre du staff pour voir tous ses rôles classés."
+    },
+    "backroom": {
+      "q": "Comment Meilleur staff choisit-il mon staff ?",
+      "a": "Choisissez combien il vous faut de chaque rôle, ou partez d’un modèle (staff technique complet, préparateurs, équipe de recrutement, équipe médicale). Meilleur staff pourvoit chaque rôle à partir de votre import de staff avec la combinaison au meilleur score total, sans jamais utiliser deux fois la même personne : un profil polyvalent va donc là où il apporte le plus. Vous pouvez vous limiter aux libres de tout contrat ou au staff dont c’est le poste souhaité, et exclure n’importe qui pour voir le meilleur choix suivant.",
+      "more": "Ouvrir Meilleur staff"
+    }
+  }
+}

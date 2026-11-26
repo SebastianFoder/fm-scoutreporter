@@ -1,6 +1,7 @@
 import { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
 import type { AttributeKey } from "@scoutreporter/core/types/weights";
 import { csvLines, detectDelimiter, splitCsvLine } from "./csv-utils";
+import { englishExport } from "./export-locale";
 
 type NumKey = {
   [K in keyof PlayerAttributes]-?: PlayerAttributes[K] extends number ? K : never;
@@ -126,7 +127,8 @@ function optionalNumeric(v: string | undefined): number | null {
 }
 
 export function parsePlayersCsv(csv: string): PlayerAttributes[] {
-  const lines = csvLines(csv);
+  // An export from FM in another language reads as the English one.
+  const lines = csvLines(englishExport(csv));
 
   if (lines.length <= 1) return [];
 

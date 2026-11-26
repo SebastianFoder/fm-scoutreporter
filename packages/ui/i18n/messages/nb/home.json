@@ -1,0 +1,102 @@
+{
+  "intro": "Gi spillere poeng, ranger og sammenlign dem fra en spillereksport fra Football Manager 27 eller 26. Alt kjører i nettleseren din; CSV-filen forlater aldri maskinen din.",
+  "desktop": {
+    "title": "Skrivebordsapp for Windows",
+    "body": "Hopp over eksporten: den leser spillerne i FM-spillersøket ditt rett fra spillet, med ekte NF og PF.",
+    "cta": "Last ned"
+  },
+  "sections": {
+    "title": "Seksjoner",
+    "section": "Seksjon",
+    "whatItDoes": "Hva den gjør",
+    "needs": "Trenger",
+    "open": "Åpne"
+  },
+  "modes": {
+    "players": {
+      "name": "Spillere",
+      "blurb": "Gi spillere poeng og ranger dem etter dine egne ferdighetsvekter eller FM27-rollene, sammenlign dem og finn vidunderbarn: med NF og PF får hver spiller en Potensial-poengsum ved fullt potensial. Beste 11 velger de sterkeste elleve for en formasjon innenfor et budsjett.",
+      "needs": "Visningen Standard eller Hidden Attributes",
+      "cta": "Åpne Spillere"
+    },
+    "squad": {
+      "name": "Troppsanalyse",
+      "blurb": "Importer din egen tropp og velg formasjonen din for å se første og andre ellever, tynne eller svake posisjoner, aldrende startspillere, unge spillere som er klare for et steg opp, problemer med status i tropp og forsterkninger fra speidingsimporten din.",
+      "needs": "Visningen Squad eller Squad Hidden Attributes",
+      "cta": "Åpne Troppsanalyse"
+    },
+    "staff": {
+      "name": "Støtteapparat",
+      "blurb": "Ranger trenere, speidere, analytikere og direktører på alle roller i støtteapparatet, med FM26s ordvurderinger regnet om til 1–20. Beste støtteapparat velger det sterkeste settet med ansatte til rollene du trenger, uten å bruke noen to ganger.",
+      "needs": "Visningen Staff",
+      "cta": "Åpne Støtteapparat"
+    }
+  },
+  "screens": {
+    "players": "Spillere",
+    "bestXi": "Beste 11",
+    "staff": "Støtteapparat",
+    "backroom": "Beste støtteapparat"
+  },
+  "moreScreens": "Flere skjermer",
+  "screenshots": {
+    "open": "Åpne {title}",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Troppsanalyse",
+      "caption": "Første og andre ellever, tynn bredde, svake ledd og hvem som bør starte."
+    },
+    "players": {
+      "title": "Spillerliste",
+      "caption": "Alle spillere får poeng etter vektene dine eller en FM27-rolle, med karakterer, vs alder og verdi."
+    },
+    "bestXi": {
+      "title": "Beste 11",
+      "caption": "De beste elleve for hvilken som helst formasjon, innenfor et overgangsbudsjett."
+    },
+    "player": {
+      "title": "Spillerpanel",
+      "caption": "Klikk på en spiller for å se profil, NF, PF og ferdigheter i et sidepanel."
+    },
+    "staff": {
+      "title": "Støtteapparat",
+      "caption": "Trenere, speidere og direktører får poeng på 17 roller i støtteapparatet."
+    },
+    "backroom": {
+      "title": "Beste støtteapparat",
+      "caption": "Hvem du bør ansette til hver rolle, uten å bruke noen to ganger."
+    }
+  },
+  "start": {
+    "title": "Få spillerne ut av FM",
+    "exporter": "Installer en eksportør: FM View Exporter for FM27, eller BepInEx med utvidelsen FM26 Player CSV Export.",
+    "view": "Importer Scout Reporter-visningen i FMs Spiller database (høyreklikk en kolonneoverskrift, deretter Importer visning).",
+    "export": "Velg spillere og trykk <kbd>F9</kbd> for å eksportere en CSV.",
+    "import": "Importer den CSV-filen under Spillere.",
+    "guide": "Fullstendig oppsettguide",
+    "faq": "Vanlige spørsmål"
+  },
+  "views": {
+    "title": "Visningsfiler (.fmf)",
+    "hidden": {
+      "name": "Visningen Hidden Attributes",
+      "summary": "Standard-visningen pluss de skjulte Profesjonalitet, NF og PF. Anbefalt."
+    },
+    "standard": {
+      "name": "Visningen Standard",
+      "summary": "Alle synlige spillerferdigheter."
+    },
+    "squadHidden": {
+      "name": "Visningen Squad Hidden Attributes",
+      "summary": "Squad-visningen pluss de skjulte Profesjonalitet, NF og PF."
+    },
+    "squad": {
+      "name": "Visningen Squad",
+      "summary": "Troppsskjermen din: alle ferdigheter pluss lagoppstilling, status i tropp, skader og trenerstjerner. Til Troppsanalyse."
+    },
+    "staff": {
+      "name": "Visningen Staff",
+      "summary": "Alle ferdigheter i støtteapparatet, foretrukket stilling, klubb og personlighet. Til Støtteapparat-modus."
+    }
+  }
+}

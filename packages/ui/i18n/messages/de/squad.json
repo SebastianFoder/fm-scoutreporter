@@ -1,0 +1,232 @@
+{
+  "title": "Kaderanalyse",
+  "intro": "Importieren Sie Ihren Kader, wählen Sie Ihre Formation und sehen Sie Ihre erste und zweite Elf, wo der Kader dünn oder schwach besetzt ist, wer altersbedingt nachlässt und welche Nachwuchsspieler bereit sind.",
+  "import": {
+    "title": "Kader importieren",
+    "titleCount": "{count, plural, one {# Spieler in Ihrem Kader} other {# Spieler in Ihrem Kader}}",
+    "description": "Exportieren Sie Ihren Kaderbildschirm mit der Ansicht <squad>Squad</squad> oder <hidden>Squad Hidden Attributes</hidden> (ergänzt das Potenzial). Wird getrennt von Ihrem Scouting-Import gespeichert.",
+    "noColumns": "Dieser Import hat keine Kaderspalten, daher werden Leihen, Verletzungen, Teamstatus und Aufstellung nicht geprüft."
+  },
+  "noImport": {
+    "desktop": "Noch kein Kader. Jeder Scan liest auch die Spieler Ihres eigenen Vereins.",
+    "web": "Noch kein Kader importiert. Wählen Sie oben Ihre Kader-CSV oder laden Sie die Testdaten, um sich umzusehen.",
+    "usePlayerImportPrompt": "Haben Sie Ihren Kader schon als Spielerimport exportiert?",
+    "usePlayerImport": "Spielerimport ({count, plural, one {# Spieler} other {# Spieler}}) als Kader verwenden"
+  },
+  "setup": {
+    "title": "Einstellungen",
+    "reset": "Zurücksetzen",
+    "availability": "Verfügbarkeit",
+    "includeLoans": "Verliehene Spieler mitzählen",
+    "loanHint": "{count} an andere Vereine verliehen.",
+    "excludeInjured": "Verletzte Spieler weglassen",
+    "injuredHint": "{count} derzeit verletzt. An: die Elf, die Sie heute aufstellen können."
+  },
+  "cannotFill": {
+    "title": "Ihr Kader kann diese Formation nicht füllen.",
+    "body": "Niemand hat {positions} als Idealposition, daher ist die Elf unvollständig. Es zählen nur Idealpositionen aus dem Export."
+  },
+  "footnote": "Jede Position wird nach ihrer Rolle bewertet (1–20, mit Note von S++ bis F) und zählt nur Spieler, für die sie eine Idealposition ist. Die erste Elf hat die höchste Gesamtwertung; die zweite Elf ist die beste Elf aus allen übrigen, sodass jeder Spieler nur eine Position abdeckt.",
+  "unknownPlayer": "Unbekannt",
+  "ageShort": "{age} J.",
+  "nobody": "Niemand",
+  "injured": "Verletzt",
+  "ability": "Fähigkeit",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: {value} von 5 Sternen} other {{value} von 5 Sternen}}",
+    "title": "{hasLabel, select, yes {{label}: {value} Sterne} other {{value} Sterne}}"
+  },
+  "days": {
+    "weeks": "{count} Wo.",
+    "days": "{count} T."
+  },
+  "overview": {
+    "title": "Kaderübersicht",
+    "firstXi": "Erste Elf",
+    "firstXiAtPotential": "Erste Elf bei Potenzial",
+    "firstXiAverage": "Schnitt erste Elf",
+    "secondXi": "Zweite Elf",
+    "secondXiAverage": "Schnitt zweite Elf",
+    "averageAge": "Alter {age}",
+    "unfilled": "{count} unbesetzt",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {Spieler} other {Spieler}}, Alter {age}{unavailable, plural, =0 {} other {, # nicht verfügbar}}</text>",
+    "teamSheet": "FM-Aufstellung",
+    "teamSheetMatch": "<num>{matching}</num><text>von {count} stimmen mit dieser Elf überein</text>",
+    "pitchChoice": "Elf auf dem Platz",
+    "legend": {
+      "high": "Handlungsbedarf",
+      "medium": "Im Auge behalten",
+      "click": "Klicken Sie auf eine Position, um ihre Hinweise zu sehen."
+    },
+    "notesAtPosition": "{count, plural, =0 {Keine Hinweise zu dieser Position.} one {# Hinweis zu dieser Position} other {# Hinweise zu dieser Position}}",
+    "showAll": "Alle zeigen",
+    "nothingToFix": "Nichts zu tun: Jeder Stammspieler liegt nah am Schnitt der Elf und hat einen Ersatz, der weniger als 1,5 dahinter liegt.",
+    "groups": {
+      "fix": {
+        "title": "Beheben",
+        "blurb": "Positionen, die Sie jetzt etwas kosten: Lücken, Schwachstellen und dünne Besetzung."
+      },
+      "manage": {
+        "title": "Regeln",
+        "blurb": "Teamstatus, der nicht zur Elf passt. Klären Sie das bei der nächsten Vertragsverhandlung."
+      },
+      "develop": {
+        "title": "Entwickeln",
+        "blurb": "Junge Spieler, die einen Stammspieler überholen werden, und Nachfolger, die bereitstehen."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {niemand}}{replacing, select, none {} other { für {replacing}}}{issue, select, high {, Handlungsbedarf} medium {, im Auge behalten} other {}}",
+    "stampLabel": "{name} auf {spot}",
+    "injuredBadge": "VERL",
+    "inBadge": "NEU"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Niemand spielt hier",
+      "weak": "Schwachstelle",
+      "no-cover": "Kein Ersatz",
+      "drop-off": "Dünne Besetzung",
+      "ageing": "Alternder Stammspieler",
+      "successor": "Nachfolger bereit",
+      "prospect": "Talent",
+      "status-benched": "Stammplatz versprochen",
+      "status-starting": "Spielt trotz niedrigem Status"
+    },
+    "severity": {
+      "high": "Hoch",
+      "medium": "Mittel"
+    },
+    "empty": {
+      "evidence": "Niemand im Kader mit Idealposition {position}{count, plural, one {} other {, # Plätze zu besetzen}}.",
+      "advice": "Verpflichten Sie einen Spieler oder schulen Sie einen auf die Position um."
+    },
+    "weak": {
+      "evidence": "<delta></delta> zum Schnitt der Elf",
+      "advice": "Die erste Stelle für eine Verstärkung."
+    },
+    "noCover": {
+      "evidence": "kein Ersatz mit Idealposition",
+      "advice": "Bei einer Verletzung oder Sperre muss jemand außerhalb seiner Position spielen."
+    },
+    "dropOff": {
+      "advice": "Der Ersatz ist eine Klasse schwächer. Eine Verpflichtung für die Kadertiefe lohnt sich."
+    },
+    "ageing": {
+      "atPotential": "{score} bei Potenzial",
+      "adviceSuccessor": "{name} ist {age}; der Nachfolger ist schon nah dran.",
+      "adviceNone": "{name} ist {age}, und niemand mit 23 oder jünger ist nah dran. Planen Sie einen Nachfolger."
+    },
+    "prospect": {
+      "vs": "vs.",
+      "starsAdvice": "Das Trainerteam schätzt das Potenzial höher ein als Fähigkeit ({ability}★) und Potenzial ({potential}★) von {starter}. Sorgen Sie für Einsatzzeit.",
+      "projectedLabel": "Hochgerechnet bei vollem Potenzial",
+      "atPotentialVs": "bei Potenzial, vs.",
+      "starterAtPotential": "Stammspieler bei seinem Potenzial",
+      "starterToday": "Stammspieler heute",
+      "projectedAdvice": "Hochgerechnet {gap} über {starter}{own, select, yes { bei dessen eigenem Potenzial} other {}}. Sorgen Sie für Einsatzzeit."
+    },
+    "statusBenched": {
+      "secondOnly": "nur zweite Elf",
+      "neither": "in keiner Elf",
+      "advice": "Der Teamstatus {status} verspricht einen Stammplatz. Setzen Sie den Spieler öfter ein oder senken Sie den Status."
+    },
+    "statusStarting": {
+      "advice": "Spielt hier trotz niedrigem Status. Heben Sie ihn bei der nächsten Vertragsverhandlung an."
+    }
+  },
+  "teamSheet": {
+    "title": "Änderungen an Ihrer FM-Aufstellung",
+    "summary": "{matching} Ihrer FM-Startelfspieler behalten ihren Platz{moves, plural, =0 {} other {, # auf einer anderen Position}}.",
+    "columns": {
+      "out": "Raus: spielt jetzt in FM",
+      "in": "Rein: diese Elf",
+      "gain": "Gewinn auf dieser Position"
+    },
+    "out": "Raus",
+    "in": "Rein",
+    "outDetail": "{picked, select, yes {{pickedAt} in FM} other {Spielt in FM}}{natural, select, no {, {position} ist keine Idealposition} other {}}",
+    "extraStarter": "Niemand: ein zusätzlicher Startelfspieler",
+    "replacedBy": "ersetzt durch",
+    "nobodyPlaysThere": "Niemand aus dieser Elf spielt dort",
+    "newPosition": "neue Position",
+    "alsoMoves": "Ebenfalls verschoben:",
+    "to": "nach"
+  },
+  "depth": {
+    "title": "Kadertiefe",
+    "intro": "Stammspieler und Ersatz auf jeder Position{potential, select, yes {, bei vollem Potenzial} other {}}. Der Ersatz kommt aus der zweiten Elf, daher deckt niemand zwei Plätze ab.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Stammspieler",
+      "cover": "Ersatz",
+      "drop": "Abfall",
+      "dropTitle": "Wertung des Ersatzes minus die des Stammspielers",
+      "alsoPlays": "Spielt auch hier",
+      "alsoPlaysTitle": "Weitere Spieler mit dieser Idealposition, die besten zuerst. XI: spielt anderswo. 2.: Ersatz anderswo."
+    },
+    "starterAt": "Stammspieler auf {spot}",
+    "coverAt": "Ersatz auf {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, spielt anderswo} second {, Ersatz anderswo} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2.",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Restlicher Kader",
+    "intro": "{count, plural, one {# Spieler} other {# Spieler}} in keiner Elf, auf der Position, auf der sie dem Stammspieler am nächsten kommen.",
+    "columns": {
+      "bestFit": "Beste Position",
+      "score": "Wertung",
+      "vsStarter": "vs. Stammspieler",
+      "vsStarterTitle": "Wertung minus die des Stammspielers auf dieser Position",
+      "potentialTitle": "Wertung auf dieser Position bei vollem Potenzial",
+      "coachRating": "Trainerurteil",
+      "coachRatingTitle": "Assistenztrainerbericht: Fähigkeit jetzt und Potenzial, im Vergleich zu Ihrem Kader",
+      "happiness": "Zufriedenheit",
+      "missed": "Ausfall",
+      "missedTitle": "Verletzungsbedingte Ausfallzeit"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Talente",
+        "blurb": "Werden einen Stammspieler überholen. Sorgen Sie für Einsatzzeit."
+      },
+      "young": {
+        "title": "In Entwicklung",
+        "blurb": "21 oder jünger. Verleihen oder fürs Training behalten."
+      },
+      "surplus": {
+        "title": "Überzählig",
+        "blurb": "Über dem Entwicklungsalter und in keiner Elf. Verkaufen oder als Kadertiefe behalten."
+      },
+      "no-fit": {
+        "title": "Keine Position hier",
+        "blurb": "Keine Idealposition in dieser Formation."
+      },
+      "away": {
+        "title": "Nicht verfügbar",
+        "blurb": "Verletzt oder verliehen."
+      }
+    },
+    "showAll": "Alle {count} zeigen",
+    "showFewer": "Weniger zeigen",
+    "onLoan": "Verliehen",
+    "scoreAt": "Wertung auf {spot}",
+    "score": "Wertung",
+    "atFullPotential": "Bei vollem Potenzial"
+  },
+  "upgrades": {
+    "title": "Verstärkungen aus Ihrem Scouting-Import",
+    "intro": "Gescoutete Spieler, die mindestens 0,5 besser sind als Ihr schwächster Stammspieler auf der jeweiligen Position, in derselben Rolle.",
+    "allInSquad": "Alle Spieler aus Ihrem Spielerimport sind schon im Kader.",
+    "teaser": "Wer aus Ihrer Scouting-Liste die Elf verbessern würde.",
+    "importHint": "Importieren Sie einen Scouting-Export (eine Spielersuche) unter <link>Spieler</link>, um zu sehen, wer welche Position verbessern würde.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Ihr Stammspieler",
+      "best": "Beste gescoutete Verstärkungen"
+    },
+    "times": "×{count}",
+    "none": "Keine Verstärkung in Ihrem Import für {positions}."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "title": "Vanliga frågor",
+  "intro": "Export från FM27 och FM26, integritet och hur poängen fungerar. Sitter du fast? <link>Installationsguiden</link> går igenom varje steg.",
+  "groups": {
+    "start": "Kom igång",
+    "privacy": "Integritet",
+    "scores": "Poäng och betyg",
+    "wonderkids": "Underbarn, Bästa elva och truppar",
+    "staff": "Personal"
+  },
+  "items": {
+    "what": {
+      "q": "Vad är Scout Reporter?",
+      "a": "Scout Reporter är ett gratis scoutingverktyg för Football Manager. Du importerar en CSV-export av en spelarlista från FM27 eller FM26, och verktyget poängsätter varje spelare efter viktade egenskaper, ger betyg från S++ till F, jämför spelare sida vid sida, uppskattar underbarns egenskaper vid full potential och väljer en Bästa elva inom en budget."
+    },
+    "versions": {
+      "q": "Fungerar det med FM27 och FM26?",
+      "a": "Ja. Båda spelen exporterar samma egenskaper via Scout Reporter-vyerna, så importer från båda fungerar i alla lägen. FM27 exporterar med FM View Exporter; FM26 exporterar med BepInEx och pluginet FM26 Player CSV Export. Poängprofilerna och utvecklingsuppskattningarna är kalibrerade på FM27-data.",
+      "more": "Installationsguide för båda versionerna"
+    },
+    "export": {
+      "q": "Hur exporterar jag spelare från Football Manager till CSV?",
+      "a": "Installera ett exportplugin (FM View Exporter för FM27, eller BepInEx med pluginet FM26 Player CSV Export), ladda ner en Scout Reporter-vyfil och lägg den i FM:s mapp för vyer. I Spelardatabas högerklickar du på en kolumnrubrik, väljer Importera vy, väljer vyn, filtrerar fram spelarna du vill ha och trycker F9. Importera sedan CSV-filen här.",
+      "more": "Exportguide steg för steg"
+    },
+    "view": {
+      "q": "Vilken vyfil ska jag använda?",
+      "a": "Vyn Hidden Attributes rekommenderas: den exporterar alla egenskaper plus dolda Professionalism, Nuvarande förmåga (NF) och Potentiell förmåga (PF), vilket låser upp Potential-poäng för att hitta underbarn. Vyn Standard exporterar bara de synliga egenskaperna, vilket räcker för spelarlistan och Bästa elva."
+    },
+    "platforms": {
+      "q": "Fungerar det på Mac eller Linux?",
+      "a": "Webbplatsen fungerar i alla moderna webbläsare. Exporten sker inne i Football Manager: FM View Exporter för FM27 kräver Steam-versionen på Windows 10 eller 11, och FM26-guiden visar startalternativet i Steam som behövs för att köra BepInEx under Linux."
+    },
+    "free": {
+      "q": "Är Scout Reporter gratis?",
+      "a": "Ja. Det är gratis att använda, kräver inget konto eller någon registrering, och källkoden är öppen på GitHub."
+    },
+    "upload": {
+      "q": "Laddas min CSV eller sparfil upp någonstans?",
+      "a": "Nej. CSV-filen läses och poängsätts i din webbläsare och skickas aldrig till en server. Den senaste importen sparas i webbläsarens lokala lagring så att den finns kvar efter en omladdning, tillsammans med dina profiler för vikter, markeringar och gränsvärden. En ny import ersätter den, och rensar du webbplatsdata tas den bort."
+    },
+    "analytics": {
+      "q": "Samlar ni in någon statistik?",
+      "a": "Bara anonyma sidvisningar, som skickas till en egen Umami-server: vilka sidor som öppnas, den hänvisande webbplatsen samt webbläsare, operativsystem och land. Inga cookies sätts, och inget från din CSV, dina skanningar eller spelare tas någonsin med. I datorappen kan du stänga av det under Inställningar, App, Skicka anonym användningsstatistik."
+    },
+    "scoring": {
+      "q": "Hur poängsätts spelare?",
+      "a": "Varje egenskap får en vikt. En spelares poäng är det viktade medelvärdet av egenskaperna på FM:s skala 1 till 20, och 100-poängsskalan delar det medelvärdet med 13 (en stabil proffsspelare) och multiplicerar med 100. Ändra vikterna så rankas listan om direkt.",
+      "more": "Så poängsätts spelare"
+    },
+    "benchmarks": {
+      "q": "Vad är FM27:s riktmärkta rollprofiler?",
+      "a": "Sex viktprofiler, Mittback, Ytterback / Offensiv ytterback, Defensiv mittfältare / Innermittfältare, Offensiv mittfältare / Ytter (10), Anfallare (9) och Målvakt, byggda på FM Match Labs Study 13b, som mätte vad varje egenskap är värd på varje position över 50 000 FM27-matcher. Fart och acceleration leder överallt, spänst räknas mest för mittbackar och anfallare, smidighet och reflexer för målvakter, och de flesta tekniska och psykiska egenskaper märks knappt. Du kan redigera dem och återställa dem till riktmärket när som helst. Tabellen för mot ålder kommer fortfarande från fm-scoring, vars rollvikter appen använde tidigare."
+    },
+    "grades": {
+      "q": "Vad betyder betygen S++ till F?",
+      "a": "Betygen läser det viktade medelvärdet på skalan 1 till 20 och stiger var 0,5: S++ börjar vid {top}, {lowestGrade} vid {lowest}, och allt lägre är F. Toppnivåns riktmärke {prime}, en spelare från toppen av Championship eller botten av Premier League i sin bästa ålder, ger {primeGrade}."
+    },
+    "vsAge": {
+      "q": "Vad betyder mot ålder?",
+      "a": "Mot ålder delar en spelares poäng med FM27-riktmärket för spelarens ålder, från {youngestBenchmark} vid {youngestAge} upp till {prime} vid 24 och äldre. 100 % betyder att spelaren är på väg att bli en spelare från toppen av Championship eller botten av Premier League i sin bästa ålder, så det är det rättvisaste sättet att jämföra unga spelare med varandra."
+    },
+    "wonderkids": {
+      "q": "Hur hittar Scout Reporter underbarn?",
+      "a": "Med en export från Hidden Attributes anpassar verktyget NF som en positionsviktad summa av egenskaper, räknar ut hur många egenskapspoäng gapet mellan NF och PF räcker till, och fördelar dem på egenskaperna som fortfarande kan öka, efter hur snabbt var och en ökade i ett FM27-träningstest. Sedan rankas talangerna på FM27-rollerna vid full potential. Filtrera på ålder, professionalism och bästa roll.",
+      "more": "Så fungerar potentialuppskattningen"
+    },
+    "potential": {
+      "q": "Kommer en spelare verkligen nå potentialen som visas?",
+      "a": "Inte nödvändigtvis. Uppskattningen är taket om spelaren når sin PF. Professionalism, speltid, träning och tränare avgör hur mycket av den spelaren når, och därför har varje spelarsida en utvecklingsplan med individuellt fokus, träningsroll och de pass som betyder mest."
+    },
+    "bestXi": {
+      "q": "Hur fungerar Bästa elva?",
+      "a": "Välj en av {formationCount} förinställda uppställningar från FM, eller bygg en egen på en taktikplan i FM-stil och spara den, så väljer Scout Reporter de elva spelare ur din import som har högst sammanlagd poäng, där varje position poängsätts efter en viktprofil du väljer (FM27:s riktmärkta roller som standard). Du kan ange ett minsta och högsta totalt övergångsvärde, och exkludera spelare för att se näst bästa alternativ.",
+      "more": "Öppna Bästa elva"
+    },
+    "squad": {
+      "q": "Hur fungerar Truppanalys?",
+      "a": "Importera Scout Reporters vy Squad (eller Squad Hidden Attributes) på din truppskärm, exportera och importera CSV-filen i Truppanalys. Den sparas separat från din spelarimport, så din scoutinglista ligger kvar. Välj uppställning så bygger den din starkaste elva, sedan den starkaste elvan av alla som är kvar som reserver, och flaggar positioner som ingen spelar, startspelare långt under lagets snitt, positioner utan reserv eller med ett stort fall till reserven, och startspelare som är 31 eller äldre (34 för målvakter). Vyn Squad exporterar också din laguttagning, truppstatus, skador och tränarens stjärnbetyg: utlånade spelare lämnas utanför (skadade också om du vill), spelare med utlovad startplats som inte kommer med i elvan och spelare med låg status som startar flaggas, din startelva i FM jämförs med den föreslagna, och unga spelare som tränaren bedömer klart över en startspelare lyfts fram. Med den dolda vyn kommer de talangerna i stället från framräknade egenskaper. Om din spelarimport innehåller värvningsmål listas de som skulle slå din svagaste startspelare på varje position.",
+      "more": "Öppna Truppanalys"
+    },
+    "staffScouting": {
+      "q": "Hur scoutar jag personal?",
+      "a": "Importera Scout Reporters vy Staff i en personalsökning i FM (högerklicka på en kolumnrubrik och välj Importera vy), markera personalen och exportera en CSV på samma sätt som för spelare. Importera CSV-filen under Personal. Den sparas separat från din spelarimport, så båda kan vara laddade samtidigt.",
+      "more": "Öppna Personal"
+    },
+    "staffWords": {
+      "q": "FM26 visar personalegenskaper som ord. Hur poängsätts de?",
+      "a": "Varje ord täcker ett fast intervall av den gamla skalan 1 till 20: Olämplig 1 till 3, Hyfsad 4 till 6, Kompetent 7 till 9, Medel 10 till 11, Bra 12 till 14, Väldigt bra 15 till 17, Enastående 18 till 19 och Elit 20. Scout Reporter poängsätter varje ord efter mitten av dess intervall, och använder exakta siffror när en export har dem."
+    },
+    "staffRoles": {
+      "q": "Hur räknas personalens rollpoäng ut?",
+      "a": "Varje roll är ett viktat medelvärde av sina egenskaper, med de 17 personalrollerna och vikterna från fm-scoring, kontrollerade mot nyckelegenskaperna som FM27 lyfter fram på personalprofiler. Tränare delas in i FM:s nio träningsgrupper (var och en poängsatt efter sina två tränaregenskaper plus disciplin, beslutsamhet, motivera, personkontakt och arbeta med ungdomar), vid sidan av manager, assisterande manager, sportchef, ansvarig för ungdomsutveckling, scout, prestationsanalytiker, fysioterapeut och idrottsvetare. Varje rollpoäng får samma betygsstämpel från S++ till F som spelarpoäng. Filtrera på föredraget jobb för att bara se egenskaperna som jobbet viktas på, eller öppna en person för att se alla roller rankade."
+    },
+    "backroom": {
+      "q": "Hur väljer Bästa ledarstab min personal?",
+      "a": "Välj hur många av varje personalroll du behöver, eller utgå från en förinställning (hela ledarstaben, ledarstab, rekryteringsgrupp, läkarteam). Bästa ledarstab fyller varje roll från din personalimport med kombinationen som har högst total rollpoäng, och använder aldrig samma person två gånger, så en allroundperson hamnar där den tillför mest. Du kan begränsa till kontraktslösa, till personal vars föredragna jobb är rollen, och exkludera vem som helst för att se näst bästa val.",
+      "more": "Öppna Bästa ledarstab"
+    }
+  }
+}

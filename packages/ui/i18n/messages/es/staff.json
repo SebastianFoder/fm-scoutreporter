@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Preparador: táctica ofensiva",
+      "coach-attacking-technical": "Preparador: técnica ofensiva",
+      "coach-defending-tactical": "Preparador: táctica defensiva",
+      "coach-defending-technical": "Preparador: técnica defensiva",
+      "coach-possession-tactical": "Preparador: táctica con posesión",
+      "coach-possession-technical": "Preparador: técnica con posesión"
+    },
+    "summaries": {
+      "manager": "Juzgar calidad, motivación, gestión de personal y conocimiento táctico; después, los atributos de preparador.",
+      "assistant-manager": "Juzgar calidad, motivación y gestión de personal para informes, charlas al equipo y consejos en el partido.",
+      "director-of-football": "Juzgar calidad y potencial. Negocios (que también cuenta) es oculto, así que no se puntúa.",
+      "head-of-youth": "Juzgar calidad y potencial, y trabajo de cantera. Su Profesionalidad oculta influye en la de los juveniles admitidos: compruébala a mano.",
+      "coach-attacking-tactical": "Entrena Serenidad, Talento y Desmarques.",
+      "coach-attacking-technical": "Entrena Centros, Remate y Disparos lejanos.",
+      "coach-defending-tactical": "Entrena Agresividad, Concentración y Colocación.",
+      "coach-defending-technical": "Entrena Marcaje y Entradas.",
+      "coach-possession-tactical": "Entrena Anticipación, Decisiones, Trabajo en equipo y Visión.",
+      "coach-possession-technical": "Entrena Regate, Control, Cabeceo, Pase y Técnica.",
+      "coach-goalkeeping": "Entrena todos los atributos de portero, incluidos los de nombre de jugador de campo que usan los porteros.",
+      "coach-fitness": "Entrena los físicos y Sacrificio, la mayor parte del peso de cada posición.",
+      "coach-set-pieces": "Entrena Saques de esquina, Tiros libres, Saques largos y Lanzamiento de penaltis.",
+      "scout": "Juzgar calidad actual y potencial; después, conocimiento táctico.",
+      "performance-analyst": "Análisis de datos; después, juzgar calidad y conocimiento táctico.",
+      "physio": "Fisioterapia, apoyada en ciencia deportiva y los mentales.",
+      "sports-scientist": "Ciencia deportiva, apoyada en forma física, fisioterapia y los mentales."
+    },
+    "groups": {
+      "management": "Dirección",
+      "recruitmentAndAnalysis": "Captación y análisis"
+    }
+  },
+  "freeAgent": "Agente libre",
+  "preferredJob": "Trabajo preferido",
+  "bestRole": "Mejor rol",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role}: {score} ({word})",
+    "partial": "{role}: {score} ({word}). La exportación tenía el {percent, number, percent} del peso de este rol"
+  },
+  "noImport": {
+    "desktop": "Aún no hay empleados. En FM, abre una Búsqueda de empleado y pulsa <kbd>F9</kbd> o Escanear búsqueda."
+  },
+  "list": {
+    "title": "Cuerpo técnico",
+    "bestBackroom": "Mejor equipo técnico",
+    "intro": "Ordena preparadores, ojeadores, analistas y directores a partir de una exportación de búsqueda de empleado de FM26. Las valoraciones en palabras de FM26 se convierten de nuevo a la escala 1–20 y cada empleado se puntúa en cada rol del cuerpo técnico.",
+    "noImport": "Aún no has importado empleados. En FM, abre una búsqueda de empleado, importa la vista Staff, selecciona a los empleados y exporta un CSV; luego impórtalo arriba.",
+    "filters": "Filtros",
+    "rankBy": "Ordenar por",
+    "allJobs": "Todos los trabajos",
+    "search": "Buscar",
+    "searchPlaceholder": "Nombre o club",
+    "freeAgentsOnly": "Solo agentes libres",
+    "myClubTitle": "Empleados de {club}",
+    "showMine": "Ver mis empleados ({count, number})",
+    "ratingsAs": "Valoraciones en",
+    "words": "Palabras",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> de {total, number} empleados",
+    "jobScoredAsOne": "<b>{job}:</b> puntuado como {role}.",
+    "jobScoredAsBest": "<b>{job}:</b> puntuado con el mejor de {roles}.",
+    "jobShowingWeighted": "{count, plural, one {Se muestra el # atributo} other {Se muestran los # atributos}} que fm-scoring pondera para este trabajo.",
+    "jobBoldWeighted": "En negrita, {count, plural, one {el # atributo} other {los # atributos}} que fm-scoring pondera para este trabajo.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring no tiene pesos para este trabajo, así que se muestran todos los atributos y Trabajo preferido no tiene puntuación.",
+    "showAllAttributes": "Ver todos los atributos",
+    "rankRole": "<b>{role}:</b> {summary} Los atributos ponderados van en negrita.",
+    "name": "Nombre",
+    "job": "Trabajo",
+    "scoreTitle": "Puntuación ponderada del rol en la escala 1–20. * = faltaban algunos atributos del rol.",
+    "attributeWeight": "{label} (peso {weight, number})",
+    "method": {
+      "title": "Cómo se puntúa al cuerpo técnico",
+      "words": "FM26 muestra los atributos de los empleados como palabras. Cada palabra cubre un rango fijo de la antigua escala 1–20 y se puntúa en su punto medio (se usan los números exactos cuando la exportación los tiene):",
+      "roles": "La puntuación de un rol es la media ponderada de los atributos que usa ese rol, con los 17 roles del cuerpo técnico y los pesos de <link>fm-scoring</link>: una tabla de valoración de empleados de la comunidad, adaptada a FM27 y contrastada con los atributos clave que FM27 destaca en los perfiles de los empleados. Los preparadores se dividen en los nueve grupos de preparación de FM, y cada uno se puntúa con sus dos atributos de preparación más disciplina, determinación, motivación, gestión de personal y trabajo de cantera. Un preparador genérico se puntúa con su mejor grupo de jugadores de campo. Adaptabilidad, Juzgar calidad empleados y Negociaciones no pesan en ningún rol. Al filtrar por trabajo preferido solo se ven los atributos que pondera ese trabajo. Mejor rol solo cuenta los roles en los que la exportación tenía la mayoría de los atributos ponderados. Las puntuaciones de rol reciben las mismas notas de S++ a F que las de los jugadores, con los mismos tramos de la escala 1–20."
+    }
+  },
+  "detail": {
+    "preferredJob": "Trabajo preferido: {job}",
+    "age": "Edad {age, number}",
+    "preferredScore": "Trabajo preferido: {role} {score}",
+    "preferred": "(preferido)",
+    "barsNote": "Las barras van de 0 a 20. * significa que faltaban en la exportación algunos atributos del rol.",
+    "notInExport": "No está en la exportación"
+  },
+  "backroom": {
+    "title": "Mejor equipo técnico",
+    "staffList": "Lista de empleados",
+    "intro": "Elige los roles que necesitas y cuántos de cada uno. Scout Reporter contrata la combinación de empleados con la mayor puntuación de rol total, sin usar nunca a la misma persona dos veces. Fija a los empleados que ya hayas fichado y quita a quien te rechace para obtener la siguiente mejor opción para ese puesto.",
+    "noImport": "Aún no has importado empleados. Elige arriba un CSV de empleados o carga los datos de prueba para echar un vistazo.",
+    "reset": "Restablecer",
+    "preset": "Predeterminado",
+    "custom": "Personalizado",
+    "oneFewer": "Un {role} menos",
+    "oneMore": "Un {role} más",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "Solo empleados cuyo trabajo preferido sea el rol",
+    "preferredJobOnlyHint": "En FM, los empleados pueden rechazar otros trabajos.",
+    "empty": {
+      "title": "No has elegido ningún rol.",
+      "body": "Añade al menos un rol a la izquierda o elige un predeterminado."
+    },
+    "short": {
+      "title": "No hay empleados suficientes para todos los roles.",
+      "role": "{role}: {wanted, number} pedidos, {eligible, plural, one {# válido} other {# válidos}}.",
+      "explain": "{filtered, select, yes {Un empleado es válido cuando la exportación tiene la mayoría de los atributos del rol, pasa los filtros y no está excluido, y cada persona solo puede ocupar un rol.} other {Un empleado es válido cuando la exportación tiene la mayoría de los atributos del rol, y cada persona solo puede ocupar un rol.}}"
+    },
+    "excluded": "Excluidos:",
+    "allowAgainTitle": "Volver a permitir a esta persona",
+    "allowAgain": "(volver a permitir)",
+    "clearAll": "Borrar todo",
+    "footer": "Cada rol se puntúa con los pesos de cuerpo técnico de fm-scoring (consulta <link>Cuerpo técnico</link>). El equipo técnico que se muestra tiene la mayor puntuación total de todas las formas de cubrir los roles con personas distintas, así que un todoterreno va donde más aporta y no al primer rol que lo quiera. Los empleados a los que les falta la mayoría de los atributos de un rol no se tienen en cuenta para él.",
+    "result": {
+      "title": "Tu equipo técnico",
+      "summary": "{count, plural, one {# empleado} other {# empleados}} · Puntuación media",
+      "averageLabel": "Puntuación media del equipo técnico",
+      "offJob": "· {count, plural, one {# en un rol que no es su trabajo preferido} other {# en un rol que no es su trabajo preferido}} (trabajo en gris)",
+      "locked": "· {count, plural, one {# fijado} other {# fijados}}",
+      "unlockAll": "Desbloquear todos",
+      "score": "Puntuación",
+      "scoreTitle": "Puntuación del rol en la escala 1–20 de FM",
+      "lockOrRemove": "Fijar o quitar",
+      "offJobTitle": "No es su trabajo preferido: puede rechazar este rol",
+      "unlock": "Desbloquear a {name}",
+      "lockIn": "Fijar a {name}",
+      "lockedTitle": "Fijado: se mantiene en este puesto cuando se vuelve a elegir el resto. Haz clic para desbloquear.",
+      "lockTitle": "Fijar: mantener en este puesto (p. ej., una vez fichado) cuando se vuelva a elegir el resto",
+      "exclude": "Excluir a {name} y volver a elegir",
+      "excludeTitle": "Quitar y volver a elegir (p. ej., si la negociación del contrato fracasó)"
+    }
+  }
+}

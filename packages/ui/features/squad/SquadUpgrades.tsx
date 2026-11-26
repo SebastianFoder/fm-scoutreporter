@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
 import type { PlayerWithGroups } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { SLOT_LABEL } from "@scoutreporter/core/best-xi/formations";
 import type { SlotSetting } from "@scoutreporter/core/best-xi/roles";
 import type { Upgrade } from "@scoutreporter/core/squad/analysis";
+import { useFixed } from "@scoutreporter/ui/features/best-xi/PitchLineup";
 import { Delta, PlayerChip } from "./SquadBits";
 
 /** Scouted players (the player import) who would beat the weakest starter at each position. */
@@ -23,29 +25,33 @@ export function SquadUpgrades({
 }) {
   const withCandidates = upgrades?.filter((u) => u.candidates.length > 0) ?? [];
   const without = upgrades?.filter((u) => u.candidates.length === 0) ?? [];
+  const t = useTranslations("squad");
+  const fixed = useFixed();
 
   return (
     <section aria-labelledby="squad-upgrades" className="panel">
       <div className="border-b border-line px-4 py-3">
         <h2 id="squad-upgrades" className="section-title">
-          Upgrades from your scouting import
+          {t("upgrades.title")}
         </h2>
         <p className="mt-0.5 text-sm text-muted">
           {upgrades
-            ? "Scouted players at least 0.5 better than your weakest starter at each position, on the same role."
+            ? t("upgrades.intro")
             : scoutingCount > 0
-              ? "Everyone in your player import is already in the squad."
-              : "Who in your scouting list would improve the eleven."}
+              ? t("upgrades.allInSquad")
+              : t("upgrades.teaser")}
         </p>
       </div>
       {!upgrades ? (
         scoutingCount === 0 && (
           <p className="px-4 py-4 text-sm text-muted">
-            Import a scouting export (a player search) in{" "}
-            <Link href="/players" className="link">
-              Players
-            </Link>{" "}
-            to see who would improve each position.
+            {t.rich("upgrades.importHint", {
+              link: (chunks) => (
+                <Link href="/players" className="link">
+                  {chunks}
+                </Link>
+              ),
+            })}
           </p>
         )
       ) : (
@@ -55,9 +61,9 @@ export function SquadUpgrades({
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th className="px-3 py-2 text-left">Pos</th>
-                    <th className="px-3 py-2 text-left">Your starter</th>
-                    <th className="px-3 py-2 text-left">Best scouted upgrades</th>
+                    <th className="px-3 py-2 text-left">{t("upgrades.columns.pos")}</th>
+                    <th className="px-3 py-2 text-left">{t("upgrades.columns.starter")}</th>
+                    <th className="px-3 py-2 text-left">{t("upgrades.columns.best")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -65,13 +71,13 @@ export function SquadUpgrades({
                     <tr key={u.key}>
                       <td className="whitespace-nowrap px-3 py-2 align-top text-sm font-semibold">
                         {SLOT_LABEL[slots[u.indices[0]].slot]}
-                        {u.indices.length > 1 && <span className="font-normal text-muted"> ×{u.indices.length}</span>}
+                        {u.indices.length > 1 && <span className="font-normal text-muted"> {t("upgrades.times", { count: u.indices.length })}</span>}
                       </td>
                       <td className="px-3 py-2 align-top">
                         {u.starter ? (
                           <PlayerChip name={name(u.starter.id)} score={u.starter.score} />
                         ) : (
-                          <span className="text-[13px] font-semibold text-red">Nobody</span>
+                          <span className="text-[13px] font-semibold text-red">{t("nobody")}</span>
                         )}
                       </td>
                       <td className="px-3 py-2 align-top">
@@ -84,8 +90,8 @@ export function SquadUpgrades({
                                 <PlayerLink id={c.id} className="font-semibold hover:text-accent hover:underline">
                                   {raw?.player}
                                 </PlayerLink>
-                                <span className="text-[12px] text-muted">{raw?.age}y</span>
-                                <span className="tabular-nums text-muted">{c.score.toFixed(1)}</span>
+                                {raw && <span className="text-[12px] text-muted">{t("ageShort", { age: raw.age })}</span>}
+                                <span className="tabular-nums text-muted">{fixed(c.score)}</span>
                                 {u.starter && <Delta value={c.score - u.starter.score} />}
                                 {raw?.transferValueRange && (
                                   <span className="text-[13px] text-muted">{raw.transferValueRange}</span>
@@ -103,8 +109,7 @@ export function SquadUpgrades({
           )}
           {without.length > 0 && (
             <p className="border-t border-line px-4 py-2.5 text-[13px] text-muted">
-              No upgrade in your import for{" "}
-              {without.map((u) => SLOT_LABEL[slots[u.indices[0]].slot]).join(", ")}.
+              {t("upgrades.none", { positions: without.map((u) => SLOT_LABEL[slots[u.indices[0]].slot]).join(", ") })}
             </p>
           )}
         </>

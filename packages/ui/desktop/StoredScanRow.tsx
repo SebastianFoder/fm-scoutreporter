@@ -2,9 +2,10 @@
 
 import { useState, type ReactNode } from "react";
 import { Pencil, Star, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SNAPSHOT_NAME_MAX, type SnapshotInfo, type SnapshotPatch } from "@scoutreporter/core/desktop/bridge";
 import { Button } from "@scoutreporter/ui/components/Button";
-import { scanLabel } from "./DesktopProvider";
+import { useScanLabel } from "./DesktopProvider";
 
 /**
  * One stored scan on the Scans page: a star (starred scans are never deleted to make room for new
@@ -30,6 +31,8 @@ export function StoredScanRow({
   onUpdate: (patch: SnapshotPatch) => Promise<void>;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
+  const t = useTranslations("desktop.scanRow");
+  const scanLabel = useScanLabel();
   const label = scanLabel(scan);
   const dateLabel = scanLabel({ ...scan, name: undefined });
 
@@ -45,8 +48,8 @@ export function StoredScanRow({
       <button
         type="button"
         aria-pressed={!!scan.favorite}
-        aria-label={scan.favorite ? `Unstar ${label}` : `Star ${label}`}
-        title={scan.favorite ? "Starred: never deleted to make room for new scans" : "Star: never delete this scan to make room for new ones"}
+        aria-label={scan.favorite ? t("unstar", { label }) : t("star", { label })}
+        title={scan.favorite ? t("starredTitle") : t("starTitle")}
         onClick={() => void onUpdate({ favorite: !scan.favorite })}
         className={`btn h-8 w-8 shrink-0 hover:bg-ink/6 ${scan.favorite ? "text-gold" : "text-muted/60 hover:text-ink"}`}
       >
@@ -58,20 +61,20 @@ export function StoredScanRow({
             <span className="min-w-0 break-words">{label}</span>
             <button
               type="button"
-              aria-label={`Rename ${label}`}
-              title="Rename"
+              aria-label={t("rename", { label })}
+              title={t("renameTitle")}
               onClick={() => setDraft(scan.name ?? "")}
               className="btn h-6 w-6 text-muted hover:bg-ink/6 hover:text-ink"
             >
               <Pencil className="h-3.5 w-3.5" aria-hidden />
             </button>
-            {inUse && <span className="rounded bg-accent/12 px-1.5 py-0.5 text-[12px] font-semibold text-accent">In use</span>}
-            {!scan.versionOk && <span className="text-[12px] font-normal text-red">version differs</span>}
+            {inUse && <span className="rounded bg-accent/12 px-1.5 py-0.5 text-[12px] font-semibold text-accent">{t("inUse")}</span>}
+            {!scan.versionOk && <span className="text-[12px] font-normal text-red">{t("versionDiffers")}</span>}
           </p>
         ) : (
           <input
             autoFocus
-            aria-label={`Name for ${dateLabel}`}
+            aria-label={t("nameFor", { label: dateLabel })}
             className="field h-8 w-full max-w-sm px-2 text-sm font-semibold"
             maxLength={SNAPSHOT_NAME_MAX}
             placeholder={dateLabel}
@@ -90,13 +93,13 @@ export function StoredScanRow({
         </p>
       </div>
       <Button color="alt" variant="outline" size="sm" disabled={inUse || loading} onClick={onUse}>
-        Use
+        {t("use")}
       </Button>
       <Button
         color="red"
         variant="ghost"
         size="sm"
-        aria-label={`Delete ${label}`}
+        aria-label={t("delete", { label })}
         icon={<Trash2 className="h-4 w-4" aria-hidden />}
         onClick={onDelete}
       />

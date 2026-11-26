@@ -26,10 +26,22 @@ export function registerAppScheme() {
 const NO_BODY = new Set([101, 204, 205, 304]);
 
 /**
+ * The headers that pick the pages' language. Chromium sends neither cookies nor Accept-Language on a
+ * custom scheme, so the app adds them: the language chosen in the header (kept in the app's
+ * settings) as next-intl's NEXT_LOCALE cookie, and Windows' preferred languages.
+ */
+export interface LanguageHeaders {
+  /** The chosen language code, or null to follow Windows. */
+  language: () => string | null;
+  /** Windows' preferred languages, most preferred first ("fr-FR", "en-US"). */
+  systemLanguages: () => string[];
+}
+
+/**
  * Pass every scoutreporter://app request to the local server at `backend` (http://127.0.0.1:port),
  * adding the pages' Content Security Policy to each response.
  */
-export function serveAppScheme(backend: string, csp: string) {
+export function serveAppScheme(backend: string, csp: string, lang: LanguageHeaders) {
   protocol.handle(APP_SCHEME, async (request) => {
     const url = new URL(request.url);
     if (url.host !== "app") return new Response("Not found", { status: 404 });
@@ -40,6 +52,10 @@ export function serveAppScheme(backend: string, csp: string) {
     // font with faked bold. The server never needs it for reading pages and files.
     const headers = new Headers(request.headers);
     if (!hasBody) headers.delete("origin");
+    const language = lang.language();
+    if (language) headers.set("cookie", `NEXT_LOCALE=${language}`);
+    const system = lang.systemLanguages();
+    if (system.length > 0) headers.set("accept-language", system.join(","));
     let res: Response;
     try {
       res = await net.fetch(`${backend}${url.pathname}${url.search}`, {

@@ -1,0 +1,35 @@
+{
+  "close": "Luk",
+  "cancel": "Annuller",
+  "save": "Gem",
+  "reset": "Nulstil",
+  "delete": "Slet",
+  "duplicate": "Dupliker",
+  "import": "Importér",
+  "export": "Eksportér",
+  "loading": "Indlæser…",
+  "modal": {
+    "close": "Luk vindue"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> af {total, number}",
+    "rows": "Rækker",
+    "all": "Alle",
+    "goTo": "Gå til",
+    "go": "Gå",
+    "first": "Første",
+    "prev": "Forrige",
+    "next": "Næste",
+    "last": "Sidste"
+  },
+  "grade": {
+    "label": "Karakter {grade}",
+    "title": "Karakter {grade} ({score} på skalaen 1–20)",
+    "titleWithLabel": "{label}: karakter {grade} ({score} på skalaen 1–20)"
+  },
+  "estimated": {
+    "ranged": "Anslået score: {ranged, number} fra et spejderinterval (midtpunktet bruges)",
+    "unknown": "Anslået score: {unknown, number} ukendte (tæller som 0)",
+    "both": "Anslået score: {ranged, number} fra et spejderinterval (midtpunktet bruges), {unknown, number} ukendte (tæller som 0)"
+  }
+}

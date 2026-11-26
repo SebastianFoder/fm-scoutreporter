@@ -1,0 +1,203 @@
+{
+  "tabs": {
+    "label": "Guides",
+    "setup": "Setup guide",
+    "players": "Players",
+    "wonderkids": "Wonderkids"
+  },
+  "step": {
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "views": {
+    "hidden": {
+      "name": "Hidden Attributes view",
+      "label": "Recommended",
+      "detail": "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores, for finding wonderkids."
+    },
+    "standard": {
+      "name": "Standard view",
+      "label": "Attributes only",
+      "detail": "Every visible attribute. Enough for the player list and Best XI."
+    },
+    "download": "Download {name}",
+    "both": "Both views export the same attributes, so imports from either work everywhere. You can install both and switch between them in FM."
+  },
+  "setup": {
+    "gameVersion": "Game version",
+    "installView": {
+      "title": "Install the View",
+      "download": "Download one or both view files:",
+      "moveTo": "Move them to:"
+    },
+    "export": {
+      "title": "Export Players from {game}",
+      "importView": "Right-click any column header and select <b>Import View</b>",
+      "importDownloaded": "Import the view you downloaded in Step {step} (Hidden Attributes or Standard)",
+      "selectView": "Select that view from the <b>Custom Views</b> dropdown (top-right of the player list)"
+    },
+    "importCsv": {
+      "title": "Import the CSV",
+      "goTo": "Go to <link>this site's importer</link> and click <b>Choose CSV file</b>.",
+      "navigateTo": "Navigate to:",
+      "done": "You're done. Enjoy your scouting data!"
+    },
+    "fm27": {
+      "install": {
+        "title": "Install FM View Exporter",
+        "intro": "We recommend <link>FM View Exporter</link>. It exports any player list in FM27 (squad, player database or shortlist) to CSV with one key press, and it ships with BepInEx, so there is nothing else to install. It needs FM27 on Steam and Windows 10 or 11.",
+        "setupTitle": "1.1 Option A: Setup program (recommended)",
+        "setupDownload": "Download <code>{file}</code> from the <link>Releases page</link> and run it.",
+        "setupFind": "It finds FM27 in your Steam libraries. If it doesn't, pick the folder that contains <code>{file}</code>.",
+        "setupInstall": "Keep the output format on CSV and the CSV style on the default comma separator, then click <b>Install</b>.",
+        "setupUpdate": "To update later, run the new setup and click Update. Your settings are kept.",
+        "manualTitle": "1.2 Option B: Manual install",
+        "manualDownload": "Download <code>{file}</code> from the <link>Releases page</link> and open your FM27 installation folder:",
+        "manualSteam": "Steam: Right-click FM27 → Manage → Browse local files",
+        "manualExtract": "Extract the contents of the ZIP (not the ZIP itself) into that folder. It should look like:",
+        "firstLaunchTitle": "1.3 First launch",
+        "firstLaunch": "Start FM27. The first launch takes a few minutes while BepInEx sets itself up; later starts are normal speed. To check the plugin loaded, open this file in the game folder and look for a line mentioning <sb>FM View Exporter</sb>:"
+      },
+      "export": {
+        "open": "Open your FM27 save and go to <b>Recruitment → Player Database</b> (a squad or shortlist works too)",
+        "filter": "Filter the list down to the players you want. The exporter takes every row in the list, not just the ones on screen.",
+        "press": "Press <sb>F9</sb> and don't click anything until it finishes. The plugin scrolls the list itself; large searches can take a few minutes."
+      },
+      "pickFile": "Pick the newest file, e.g. <code>{file}</code>, and import.",
+      "help": {
+        "title": "Troubleshooting",
+        "f9Title": "F9 does nothing",
+        "f9": "Check <code>{file}</code> in the game folder. “No player list found” means no player table was open when you pressed F9.",
+        "startTitle": "The game won't start",
+        "start": "Rename or delete <code>{file}</code> in the game folder to start without mods, or uninstall with the setup program. Your saves are not affected.",
+        "antivirusTitle": "Antivirus warning",
+        "antivirus": "Some virus scanners flag the setup because it isn't code-signed yet and installs BepInEx. Use the manual ZIP install if you prefer."
+      }
+    },
+    "fm26": {
+      "bepinex": {
+        "title": "Install BepInEx",
+        "downloadTitle": "1.1 Download BepInEx",
+        "download": "Go to <link>BepInExPack_FootballManager26</link>, click Download, and unzip the file.",
+        "copyTitle": "1.2 Copy files to your FM26 folder",
+        "openFolder": "Open your FM26 installation folder.",
+        "steam": "Steam: Right-click FM26 → Properties → Installed Files → Browse",
+        "paste": "Paste the unzipped files there. Your folder should look like:",
+        "linuxTitle": "1.3 Linux only: set launch options",
+        "linux": "Right-click FM26 in Steam → Properties → Launch Options, and paste:",
+        "firstLaunchTitle": "1.4 First launch",
+        "firstLaunch": "Launch FM26 once so BepInEx can initialize. Confirm that the <code>{folder}</code> folder now exists before continuing."
+      },
+      "plugin": {
+        "title": "Install the Plugin",
+        "download": "Download the plugin from <link>FM26 Player CSV Export</link>.",
+        "copy": "Copy <code>{file}</code> from the ZIP into:"
+      },
+      "export": {
+        "open": "Open your FM26 save and go to <b>Recruitment → Player Database</b>",
+        "select": "Select the players you want to export",
+        "press": "Press <sb>F9</sb> to export"
+      },
+      "selectFile": "Select your exported file and import."
+    }
+  },
+  "players": {
+    "use": {
+      "title": "How to use the player list",
+      "intro": "Players lets you import a player export and instantly rank players by a weighted average of their FM26 attributes. No baseline required: just import and score.",
+      "download": {
+        "title": "1. Download a view",
+        "intro": "Download a view and place it in your FM26 or FM27 views folder:",
+        "more": "See the <link>setup guide</link> for full exporter install instructions for each game version."
+      },
+      "export": {
+        "title": "2. Export players from FM",
+        "open": "Open your save and go to <b>Recruitment → Player Database</b>",
+        "importView": "Right-click a column header → <b>Import View</b> and load the view",
+        "selectView": "Select the view from the Custom Views dropdown",
+        "press": "Select the players you want, then press <sb>F9</sb>"
+      },
+      "import": {
+        "title": "3. Import the CSV",
+        "goTo": "Go to <link>Players</link>, click <b>Choose CSV file</b>, and navigate to your exporter's output folder:",
+        "after": "Players are scored and sorted immediately after import."
+      },
+      "tune": {
+        "title": "4. Tune weights and columns",
+        "body": "Click <b>Weights</b> to open Settings at the weights and set how much each attribute counts. The player list re-ranks live next to it. Click <b>Columns</b> to choose which attributes are highlighted in the table. Both, and the attribute colours, are also under the <b>Settings</b> button at the top."
+      },
+      "compare": {
+        "title": "5. Compare players",
+        "body": "Tick two or more players in the list and click <b>Compare selected</b> to open a side-by-side attribute breakdown view."
+      }
+    },
+    "math": {
+      "title": "How players are scored",
+      "intro": "Scout Reporter scores players using a weighted average of their raw FM26 attribute values (1–20 scale), then normalises that average to a 100-point scale.",
+      "weighted": {
+        "title": "Weighted attribute average",
+        "body": "For each attribute you assign a weight (0 = ignore, higher = more important). The score is the weighted mean of all attribute values across every attribute with a non-zero weight. Each profile picks a weighting:",
+        "modes": "<b>Linear</b> is how the FM27 benchmarks were calibrated and is the default for new profiles. <b>Emphasized</b> squares weights so doubling a weight more than doubles its influence; profiles made before this option keep it."
+      },
+      "benchmarks": {
+        "title": "FM27 benchmark profiles",
+        "body": "The weights come with six role profiles (Centre-back, Full-back / Wing-back, Defensive / Central midfielder, Attacker / Winger (10), Striker (9) and Goalkeeper) built from <study>FM Match Lab's Study 13b</study>, which measured what one level of each attribute is worth in each position over 50,000 FM27 matches. Each role keeps the attributes the study confirms, scaled so the most valuable one weighs 10: pace and acceleration everywhere, jumping reach mostly for centre-backs and strikers, finishing and strength for forwards, agility and reflexes for keepers. Most technical and mental attributes barely register in the study, so the roles leave them out. Purity's <arena>FM-Arena position test</arena> on another tactic finds the same pattern. Before v1.24 the roles used <scoring>fm-scoring</scoring>'s FM27 weights, which still supply the vs Age table. Edit them freely; “Reset to benchmark” restores the originals."
+      },
+      "vsAge": {
+        "title": "vs Age and Potential",
+        "vsAge": "<b>vs Age</b> divides the weighted average by the FM27 benchmark for the player's age (10.3 at 15 up to 13.8 at 24+). 100% means on track to be a high-end Championship / low-end Premier League player in their prime.",
+        "potential": "With a Hidden Attributes export a <b>Potential</b> column appears: the same score using attributes projected to PA. <link>How the potential estimate works</link> explains the projection."
+      },
+      "grades": {
+        "title": "Grades",
+        "body": "Every score gets a letter stamp, FM-style from A+ down to F, plus S, S+ and S++ above A+ for the truly elite. Grades read the weighted average on the 1–20 scale and step every 0.5. The prime benchmark (13.8, a high-end Championship / low-end Premier League player in their prime) is a {grade}. Young players grade low on Now and high on Potential, so compare them with the Potential stamp or vs Age.",
+        "scale": "Grade scale",
+        "under": "under {value}"
+      },
+      "normalisation": {
+        "title": "100-point normalisation",
+        "body": "The weighted average sits on the FM 1–20 attribute scale. It is normalised so that a weighted average of <sb>13</sb> (considered a solid professional) maps to exactly <sb>100</sb>. Scores above 100 indicate above-average players for your weight profile; below 100 means below average."
+      },
+      "categories": {
+        "title": "Attribute categories",
+        "body": "Attributes are grouped into four categories (Technical, Mental, Physical and Goalkeeping), matching FM26's own groupings. You can weight attributes from any category in the same profile, so a goalkeeper weight set can include physical and mental attributes alongside GK-specific ones."
+      },
+      "detail": {
+        "title": "Player detail & comparison",
+        "body": "Clicking a player opens their full attribute sheet with colour-coded values (excellent / good / average / low) based on your theme settings. The compare view places two or more players side-by-side with differences highlighted, making it easy to spot where one player outperforms another for your specific role needs."
+      }
+    }
+  },
+  "wonderkids": {
+    "use": {
+      "title": "How to find wonderkids",
+      "export": {
+        "title": "1. Export with the Hidden Attributes view",
+        "body": "Import the Hidden Attributes view in FM and export as usual. It adds the hidden <b>Professionalism</b>, <b>CA</b> and <b>PA</b>. Standard view exports, or players without CA/PA, are still scored on their current attributes."
+      },
+      "import": {
+        "title": "2. Import and sort",
+        "body": "Import it on <link>Players</link> and sort by <b>Potential</b> (the score at full potential on the weight profile you picked) or <b>vs Age</b> (how far ahead of their age they are now)."
+      },
+      "inspect": {
+        "title": "3. Inspect a prospect",
+        "body": "Click a player and switch to <b>Full potential</b> to see the estimated attributes at PA, with the gain per attribute. The <b>Development plan</b> below suggests the individual focus, training role, development sessions and coaches that get the most out of them."
+      }
+    },
+    "math": {
+      "title": "How the full-potential estimate works",
+      "ca": {
+        "title": "CA is a cost-weighted attribute sum",
+        "body": "Each attribute point costs a position-specific amount of CA (fm-scoring's FM27 CA cost table, e.g. Decisions 10 and Agility 8 for a keeper). On a Hidden Attributes export of 109 keepers, CA fits the cost-weighted sum almost exactly (r = 0.99, error ≈ 2.5 CA). The fit is recalibrated on every import that has CA."
+      },
+      "growth": {
+        "title": "Spreading the growth",
+        "body": "The extra points are spread over attributes that can still grow, each in proportion to its room below 20 and to how fast it grew in harvestgreen22's FM27 training test (an 18-year-old training for a season, collected in fm-scoring). Defenders, wing-backs and DMs grow like the defensive ball work schedules, central midfielders like a mix, and wide players, AMs and strikers like the attacking ball work schedules. Keepers weren't tested: their goalkeeping-coached attributes grow at the outfield coached rate. Physicals slow down after 21 (¾ rate to 24, then 0.4), three years later for keepers. Determination, Aggression, Bravery and the keeper tendencies stay put, and outfielders never grow goalkeeping attributes. Multi-position players use the average cost and growth of their positions."
+      },
+      "reading": {
+        "title": "Reading the numbers",
+        "body": "<b>Now</b> and <b>Potential</b> are the best FM27 benchmark role score (1–20). <b>vs Prime</b> compares the potential score to 13.8, the fully developed benchmark. It is an estimate of the ceiling: professionalism, minutes and training decide how much of PA a player reaches."
+      }
+    }
+  }
+}
