@@ -1,3 +1,10 @@
+## [1.26.3](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.2...v1.26.3) (2026-11-26)
+
+
+### Bug Fixes
+
+* count every player page as /players/[id] in Umami ([6a61ccf](https://github.com/SebastianFoder/fm-scoutreporter/commit/6a61ccf0ba3bf7c21c83e9558a65a6bc6a7fee0b))
+
 ## [1.26.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.26.1...v1.26.2) (2026-11-25)
 
 
