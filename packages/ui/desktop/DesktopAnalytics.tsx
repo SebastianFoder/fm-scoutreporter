@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Script from "next/script";
+import { UMAMI_BEFORE_SEND, UMAMI_SRC, UMAMI_WEBSITE_ID } from "@scoutreporter/core/analytics/umami";
 import { useDesktop } from "./DesktopProvider";
 
 /** The tracker checks this key before every send, so turning stats off stops them at once, without a restart. */
@@ -30,10 +31,11 @@ export function DesktopAnalytics() {
   if (!enabled) return null;
   return (
     <Script
-      src="https://stats.sebastianfoder.com/app.js"
-      data-website-id="465aa84c-1243-4e51-9bc5-b7b3691f71ce"
+      src={UMAMI_SRC}
+      data-website-id={UMAMI_WEBSITE_ID}
       data-domains="app"
       data-tag="desktop"
+      data-before-send={UMAMI_BEFORE_SEND}
       strategy="afterInteractive"
     />
   );
