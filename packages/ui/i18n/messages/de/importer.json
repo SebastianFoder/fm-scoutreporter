@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "Import",
+    "clear": "Import löschen",
+    "loadTestData": "Testdaten laden",
+    "chooseFile": "CSV-Datei wählen"
+  },
+  "messages": {
+    "storageFull": "Import nur in diesem Tab geladen: Der Browserspeicher ist voll oder blockiert. Geben Sie Speicher frei oder erlauben Sie ihn, damit die Daten über Tabs und Besuche hinweg erhalten bleiben.",
+    "testDataFailed": "Die Testdaten konnten nicht geladen werden.",
+    "parseFailed": "Die CSV konnte nicht gelesen werden. Bitte prüfen Sie das Dateiformat.",
+    "noStaffColumns": "Keine Mitarbeiterattribute in dieser Datei. Exportieren Sie eine Personalsuche mit der Ansicht Scout Reporter Staff (Spielerexporte gehören unter Spieler).",
+    "noSquadPlayers": "Keine Spieler mit Positionen in dieser Datei. Exportieren Sie Ihren Kader mit der Ansicht Scout Reporter Standard oder Hidden Attributes.",
+    "noScanSquad": "In diesem Scan wurden keine Spieler Ihres Vereins gefunden."
+  },
+  "players": {
+    "title": "Spieler-CSV importieren",
+    "imported": "{count, plural, one {# Spieler} other {# Spieler}} importiert",
+    "description": "FM26-Export (<code>;</code>) oder FM27-Export (<code>,</code>) der Scout-Reporter-Ansicht. Spalten werden über ihren Namen zugeordnet. Ansichtsdatei: <standard>Standard</standard> oder <hidden>Hidden Attributes</hidden> (ergänzt {professionalism}, CA, PA)."
+  },
+  "staff": {
+    "title": "Mitarbeiter-CSV importieren",
+    "imported": "{count, plural, one {# Mitarbeiter} other {# Mitarbeiter}} importiert",
+    "description": "Exportieren Sie eine Personalsuche mit der <link>Ansicht Scout Reporter Staff</link>. Spalten werden über ihren Namen zugeordnet; FM26-Wörter und Zahlen von 1–20 funktionieren beide. Wird getrennt von Ihrem Spielerimport gespeichert."
+  }
+}

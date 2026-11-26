@@ -1,0 +1,35 @@
+{
+  "close": "Schließen",
+  "cancel": "Abbrechen",
+  "save": "Speichern",
+  "reset": "Zurücksetzen",
+  "delete": "Löschen",
+  "duplicate": "Duplizieren",
+  "import": "Importieren",
+  "export": "Exportieren",
+  "loading": "Wird geladen…",
+  "modal": {
+    "close": "Fenster schließen"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> von {total, number}",
+    "rows": "Zeilen",
+    "all": "Alle",
+    "goTo": "Gehe zu",
+    "go": "Los",
+    "first": "Erste",
+    "prev": "Zurück",
+    "next": "Weiter",
+    "last": "Letzte"
+  },
+  "grade": {
+    "label": "Note {grade}",
+    "title": "Note {grade} ({score} auf der Skala 1–20)",
+    "titleWithLabel": "{label}: Note {grade} ({score} auf der Skala 1–20)"
+  },
+  "estimated": {
+    "ranged": "Geschätzte Wertung: {ranged, number} aus einer Scouting-Spanne (Mittelwert verwendet)",
+    "unknown": "Geschätzte Wertung: {unknown, number} unbekannt (als 0 gezählt)",
+    "both": "Geschätzte Wertung: {ranged, number} aus einer Scouting-Spanne (Mittelwert verwendet), {unknown, number} unbekannt (als 0 gezählt)"
+  }
+}

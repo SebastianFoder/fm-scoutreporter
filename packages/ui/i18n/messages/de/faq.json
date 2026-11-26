@@ -1,0 +1,101 @@
+{
+  "title": "Häufige Fragen",
+  "intro": "Export aus FM27 und FM26, Datenschutz und wie die Wertungen funktionieren. Kommen Sie nicht weiter? Die <link>Einrichtungsanleitung</link> führt durch jeden Schritt.",
+  "groups": {
+    "start": "Erste Schritte",
+    "privacy": "Datenschutz",
+    "scores": "Wertungen und Noten",
+    "wonderkids": "Wunderknaben, Beste Elf und Kader",
+    "staff": "Mitarbeiter"
+  },
+  "items": {
+    "what": {
+      "q": "Was ist Scout Reporter?",
+      "a": "Scout Reporter ist ein kostenloses Scouting-Tool für Football Manager. Sie importieren einen CSV-Export einer Spielerliste aus FM27 oder FM26, und es bewertet jeden Spieler nach gewichteten Attributen, vergibt Noten von S++ bis F, vergleicht Spieler direkt nebeneinander, schätzt die Attribute von Wunderknaben bei vollem Potenzial und stellt eine Beste Elf innerhalb eines Budgets auf."
+    },
+    "versions": {
+      "q": "Funktioniert es mit FM27 und FM26?",
+      "a": "Ja. Beide Spiele exportieren über die Scout-Reporter-Ansichten dieselben Attribute, daher funktionieren Importe aus beiden in jedem Modus. FM27 exportiert mit FM View Exporter, FM26 mit BepInEx und dem Plugin FM26 Player CSV Export. Die Bewertungsprofile und Wachstumsschätzungen sind auf FM27-Daten kalibriert.",
+      "more": "Einrichtungsanleitung für beide Versionen"
+    },
+    "export": {
+      "q": "Wie exportiere ich Spieler aus Football Manager als CSV?",
+      "a": "Installieren Sie ein Exporter-Plugin (FM View Exporter für FM27 oder BepInEx mit dem Plugin FM26 Player CSV Export), laden Sie eine Scout-Reporter-Ansichtsdatei herunter und legen Sie sie in Ihren FM-Ansichtsordner. Klicken Sie in der Spielerdatenbank mit rechts auf eine Spaltenüberschrift, wählen Sie Ansicht importieren, wählen Sie die Ansicht aus, filtern Sie die gewünschten Spieler und drücken Sie F9. Importieren Sie die CSV dann hier.",
+      "more": "Exportanleitung Schritt für Schritt"
+    },
+    "view": {
+      "q": "Welche Ansichtsdatei soll ich verwenden?",
+      "a": "Empfohlen wird die Ansicht Hidden Attributes: Sie exportiert alle Attribute plus die verborgenen Werte Professionalität, derzeitige Fähigkeit (CA) und potenzielle Fähigkeit (PA) und schaltet damit die Potenzial-Wertungen zum Finden von Wunderknaben frei. Die Ansicht Standard exportiert nur die sichtbaren Attribute, was für die Spielerliste und die Beste Elf reicht."
+    },
+    "platforms": {
+      "q": "Funktioniert es auf Mac oder Linux?",
+      "a": "Die Website läuft in jedem modernen Browser. Der Export passiert in Football Manager: FM View Exporter für FM27 braucht die Steam-Version unter Windows 10 oder 11, und die FM26-Anleitung enthält die Steam-Startoption, die BepInEx unter Linux braucht."
+    },
+    "free": {
+      "q": "Ist Scout Reporter kostenlos?",
+      "a": "Ja. Es ist kostenlos, braucht kein Konto und keine Anmeldung, und der Quellcode ist öffentlich auf GitHub."
+    },
+    "upload": {
+      "q": "Wird meine CSV oder mein Spielstand irgendwo hochgeladen?",
+      "a": "Nein. Die CSV wird in Ihrem Browser gelesen und bewertet und nie an einen Server gesendet. Der letzte Import bleibt im lokalen Speicher Ihres Browsers, damit er ein Neuladen übersteht, zusammen mit Ihren Gewichtungs-, Hervorhebungs- und Schwellenprofilen. Ein neuer Import ersetzt ihn, und das Löschen der Websitedaten entfernt ihn."
+    },
+    "analytics": {
+      "q": "Sammeln Sie Nutzungsdaten?",
+      "a": "Nur anonyme Seitenaufrufe, gesendet an einen selbst betriebenen Umami-Server: welche Seiten geöffnet werden, die verweisende Website sowie Browser, Betriebssystem und Land. Es werden keine Cookies gesetzt, und nichts aus Ihrer CSV, Ihren Scans oder Spielern wird je übertragen. In der Desktop-App können Sie das unter Einstellungen, App, Anonyme Nutzungsstatistik senden abschalten."
+    },
+    "scoring": {
+      "q": "Wie werden Spieler bewertet?",
+      "a": "Jedes Attribut bekommt ein Gewicht. Die Wertung eines Spielers ist das gewichtete Mittel seiner Attribute auf der FM-Skala von 1 bis 20, und die 100-Punkte-Wertung teilt dieses Mittel durch 13 (ein solider Profi) und multipliziert mit 100. Ändern Sie die Gewichte, und die Liste wird sofort neu sortiert.",
+      "more": "So werden Spieler bewertet"
+    },
+    "benchmarks": {
+      "q": "Was sind die FM27-Benchmark-Rollenprofile?",
+      "a": "Sechs Gewichtungsprofile, Innenverteidiger, Außenverteidiger / Flügelverteidiger, Def. Mittelfeldspieler / Zentraler Mittelfeldspieler, Angreifer / Flügelspieler (10), Stürmer (9) und Torwart, erstellt aus Studie 13b von FM Match Lab, die über 50.000 FM27-Spiele gemessen hat, was jedes Attribut auf jeder Position wert ist. Schnelligkeit und Antritt führen überall, Sprunghöhe zählt am meisten bei Innenverteidigern und Stürmern, Beweglichkeit und Reflexe bei Torhütern, und die meisten technischen und mentalen Attribute fallen kaum ins Gewicht. Sie können die Profile bearbeiten und jederzeit auf den Benchmark zurücksetzen. Die Tabelle für vs. Alter stammt weiterhin von fm-scoring, dessen Rollengewichte die App früher verwendet hat."
+    },
+    "grades": {
+      "q": "Was bedeuten die Noten von S++ bis F?",
+      "a": "Die Noten lesen das gewichtete Mittel auf der Skala von 1 bis 20 ab und steigen in Schritten von 0,5: S++ beginnt bei {top}, {lowestGrade} bei {lowest}, und alles darunter ist ein F. Der Benchmark für den Zenit von {prime}, ein starker Championship- oder schwächerer Premier-League-Spieler in seinen besten Jahren, ist ein {primeGrade}."
+    },
+    "vsAge": {
+      "q": "Was bedeutet vs. Alter?",
+      "a": "vs. Alter teilt die Wertung eines Spielers durch den FM27-Benchmark für sein Alter, von {youngestBenchmark} mit {youngestAge} bis {prime} ab 24. 100 % bedeutet, dass der Spieler auf dem Weg ist, in seinen besten Jahren ein starker Championship- oder schwächerer Premier-League-Spieler zu werden. So lassen sich junge Spieler am fairsten miteinander vergleichen."
+    },
+    "wonderkids": {
+      "q": "Wie findet Scout Reporter Wunderknaben?",
+      "a": "Mit einem Export der Ansicht Hidden Attributes bildet es CA als positionsgewichtete Summe der Attribute ab, berechnet, wie viele Attributpunkte die Lücke zwischen CA und PA hergibt, und verteilt sie auf die Attribute, die noch wachsen können, je nachdem, wie schnell jedes in einem FM27-Trainingstest gewachsen ist. Dann ordnet es die Talente nach den FM27-Rollen bei vollem Potenzial. Filtern Sie nach Alter, Professionalität und bester Rolle.",
+      "more": "So funktioniert die Potenzialschätzung"
+    },
+    "potential": {
+      "q": "Erreicht ein Spieler das angezeigte Potenzial wirklich?",
+      "a": "Nicht unbedingt. Die Schätzung ist die Obergrenze, falls der Spieler seine PA erreicht. Professionalität, Einsatzzeit, Training und Trainer entscheiden, wie viel davon er erreicht. Deshalb enthält jede Spielerseite einen Entwicklungsplan mit Fokus individuelles Training, Trainingsrolle und den wichtigsten Einheiten."
+    },
+    "bestXi": {
+      "q": "Wie funktioniert die Beste Elf?",
+      "a": "Wählen Sie eine von {formationCount} FM-Formationsvorlagen oder bauen Sie Ihre eigene auf einem Taktikfeld wie in FM und speichern Sie sie. Scout Reporter wählt dann die elf Spieler aus Ihrem Import mit der höchsten Gesamtwertung, wobei jede Position nach einem Gewichtungsprofil Ihrer Wahl bewertet wird (standardmäßig die FM27-Benchmark-Rollen). Sie können einen minimalen und maximalen Gesamttransferwert festlegen und Spieler ausschließen, um die nächstbeste Option zu sehen.",
+      "more": "Beste Elf öffnen"
+    },
+    "squad": {
+      "q": "Wie funktioniert die Kaderanalyse?",
+      "a": "Importieren Sie die Scout-Reporter-Ansicht Squad (oder Squad Hidden Attributes) auf Ihrem Kaderbildschirm, exportieren Sie sie und importieren Sie die CSV in der Kaderanalyse. Sie wird getrennt von Ihrem Spielerimport gespeichert, sodass Ihre Scouting-Liste geladen bleibt. Wählen Sie Ihre Formation, und die Analyse stellt Ihre stärkste Elf auf, dann die stärkste Elf aus allen übrigen als Ersatz, und markiert Positionen, die niemand spielt, Stammspieler deutlich unter dem Schnitt der Mannschaft, Positionen ohne Ersatz oder mit großem Abfall zum Ersatz sowie Stammspieler ab 31 Jahren (Torhüter ab 34). Die Ansicht Squad exportiert auch Ihre Aufstellung, den Teamstatus, Verletzungen und die Sternebewertungen des Trainerteams: Verliehene Spieler werden weggelassen (auf Wunsch auch verletzte), Spieler mit versprochenem Stammplatz, die es nicht in die Elf schaffen, und Spieler mit niedrigem Status, die spielen, werden markiert, Ihre FM-Startelf wird mit der vorgeschlagenen verglichen, und Nachwuchsspieler, die das Trainerteam deutlich über einem Stammspieler sieht, werden hervorgehoben. Mit der Hidden-Attributes-Ansicht stammen diese Talente stattdessen aus hochgerechneten Attributen. Wenn Ihr Spielerimport Scouting-Ziele enthält, listet die Analyse die auf, die Ihren schwächsten Stammspieler auf jeder Position übertreffen würden.",
+      "more": "Kaderanalyse öffnen"
+    },
+    "staffScouting": {
+      "q": "Wie scoute ich Mitarbeiter?",
+      "a": "Importieren Sie die Scout-Reporter-Ansicht Staff in einer FM-Personalsuche (Rechtsklick auf eine Spaltenüberschrift, dann Ansicht importieren), wählen Sie die Mitarbeiter aus und exportieren Sie eine CSV wie bei Spielern. Importieren Sie diese CSV unter Mitarbeiter. Sie wird getrennt von Ihrem Spielerimport gespeichert, sodass beide gleichzeitig geladen sein können.",
+      "more": "Mitarbeiter öffnen"
+    },
+    "staffWords": {
+      "q": "FM26 zeigt Mitarbeiterattribute als Wörter. Wie werden sie bewertet?",
+      "a": "Jedes Wort deckt einen festen Bereich der alten Skala von 1 bis 20 ab: Ungeeignet 1 bis 3, Fundiert 4 bis 6, Passabel 7 bis 9, Durchschnittlich 10 bis 11, Gut 12 bis 14, Sehr gut 15 bis 17, Außergewöhnlich 18 bis 19 und Elite 20. Scout Reporter bewertet jedes Wort mit der Mitte seines Bereichs und verwendet genaue Zahlen, wenn ein Export sie enthält."
+    },
+    "staffRoles": {
+      "q": "Wie werden die Rollenwertungen der Mitarbeiter berechnet?",
+      "a": "Jede Rolle ist ein gewichtetes Mittel ihrer Attribute, mit den 17 Mitarbeiterrollen und Gewichten von fm-scoring, abgeglichen mit den Schlüsselattributen, die FM27 in Mitarbeiterprofilen hervorhebt. Assistenztrainer werden in die neun Trainingsbereiche von FM aufgeteilt (jeweils bewertet nach den beiden Trainerattributen des Bereichs plus Autorität, Zielstrebigkeit, Motivationsfähigkeit, Führungsqualitäten und Nachwuchsarbeit), dazu kommen Trainer, Co-Trainer, Sportdirektor, Jugendabteilungsleiter, Scout, Leistungsanalyst, Physio und Sportwissenschaftler. Jede Rollenwertung bekommt denselben Notenstempel von S++ bis F wie Spielerwertungen. Filtern Sie nach bevorzugtem Job, um nur die Attribute zu sehen, die für diesen Job gewichtet sind, oder öffnen Sie einen Mitarbeiter, um alle Rollen in der Rangfolge zu sehen."
+    },
+    "backroom": {
+      "q": "Wie wählt Bester Mitarbeiterstab meine Mitarbeiter aus?",
+      "a": "Legen Sie fest, wie viele Mitarbeiter Sie für jede Rolle brauchen, oder starten Sie mit einer Vorlage (kompletter Mitarbeiterstab, Trainingspersonal, Transferabteilung, medizinische Abteilung). Bester Mitarbeiterstab besetzt jede Rolle aus Ihrem Mitarbeiterimport mit der Kombination mit der höchsten Gesamtwertung und setzt niemanden doppelt ein, sodass ein Allrounder dort landet, wo er am meisten bringt. Sie können auf vertragslose Mitarbeiter oder auf Mitarbeiter beschränken, deren bevorzugter Job die Rolle ist, und jeden ausschließen, um die nächstbeste Wahl zu sehen.",
+      "more": "Bester Mitarbeiterstab öffnen"
+    }
+  }
+}

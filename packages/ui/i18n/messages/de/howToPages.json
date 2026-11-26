@@ -1,0 +1,17 @@
+{
+  "setup": {
+    "title": "Einrichtungsanleitung",
+    "description": "So exportieren Sie eine Spielerliste aus Football Manager 27 oder 26 und importieren sie in diese App.",
+    "link": "Zum Import"
+  },
+  "players": {
+    "title": "Spieler",
+    "description": "Bewerten und sortieren Sie Spieler nach dem gewichteten Mittel ihrer Attribute. Keine Vergleichsbasis nötig: importieren und loslegen.",
+    "link": "Zu den Spielern"
+  },
+  "wonderkids": {
+    "title": "Wunderknaben",
+    "description": "Schätzen Sie die Attribute bei vollem Potenzial aus einem Export der Ansicht Hidden Attributes (CA, PA, Professionalität) und ordnen Sie Talente nach den FM27-Benchmark-Rollen.",
+    "link": "Zu den Spielern"
+  }
+}

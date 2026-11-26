@@ -1,0 +1,36 @@
+{
+  "title": "Scout Reporter für Windows",
+  "intro": "Alle Bereiche dieser Website, plus <b>Suche scannen</b>: Richten Sie in Football Manager eine Spielersuche ein, drücken Sie <kbd>F9</kbd>, und wenige Sekunden später stehen die gefundenen Spieler samt Ihrem eigenen Kader unter Spieler, Beste Elf, Kader und Mitarbeiter. Keine Ansichtsdateien, kein CSV-Export.",
+  "screenshotAlt": "Die Spielerliste: jeder Spieler bewertet nach Ihren Gewichten oder einer FM27-Rolle",
+  "get": {
+    "title": "Download",
+    "button": "Für Windows herunterladen",
+    "version": "Version {version}",
+    "versionDate": "Version {version}, {date}",
+    "file": "{file}, {size} MB",
+    "releaseNotes": "Versionshinweise und Prüfsumme",
+    "allVersions": "Alle Versionen",
+    "fallback": "Das Installationsprogramm wird auf GitHub veröffentlicht: <link>Scout Reporter Desktop-Releases</link>. Laden Sie <b>{file}</b> aus dem neuesten herunter.",
+    "requirements": "Windows 10 oder 11, 64 Bit. Football Manager 27 (27.0) oder 26 (26.3), von Steam, Epic oder Game Pass. Eine Mac-Version ist geplant."
+  },
+  "install": {
+    "title": "Installieren",
+    "run": "Starten Sie das heruntergeladene Installationsprogramm.",
+    "smartScreen": "Das Installationsprogramm ist noch nicht signiert, daher meldet Windows SmartScreen einen unbekannten Herausgeber. Klicken Sie auf <b>Weitere Informationen</b> und dann auf <b>Trotzdem ausführen</b>.",
+    "location": "Wählen Sie den Installationsort. Es legt einen Eintrag im Startmenü und eine Desktop-Verknüpfung an."
+  },
+  "use": {
+    "title": "Verwenden",
+    "start": "Starten Sie Football Manager und laden Sie Ihren Spielstand. Lassen Sie Scout Reporter daneben geöffnet.",
+    "search": "Öffnen Sie in FM die <b>Spielersuche</b> (oder die Personalsuche) und setzen Sie Ihre Filter, zum Beispiel Spielerinteresse: Interessiert, um nur Spieler zu sehen, die zu Ihnen wechseln würden.",
+    "scan": "Drücken Sie <kbd>F9</kbd> (funktioniert auch in FM) oder <b>Suche scannen</b> in der App. Die Spieler aus der Suche und Ihr eigener Verein erscheinen in allen Bereichen. <b>Spielstand scannen</b> liest stattdessen den ganzen Spielstand, ganz ohne Suche.",
+    "hidden": "Schalten Sie <b>CA, PA und verborgene Attribute verwenden</b> aus, wenn Sie sie lieber nicht sehen möchten. Scannen Sie alle paar Spielmonate erneut, um die Entwicklung auf der Seite Fortschritt zu verfolgen.",
+    "admin": "Wenn Football Manager als Administrator läuft, starten Sie Scout Reporter ebenfalls als Administrator."
+  },
+  "safe": {
+    "title": "Ist das sicher?",
+    "reader": "Die App liest nur den Speicher von Football Manager; sie verändert nie Ihr Spiel oder Ihren Spielstand. Das Einzige, was sie im Internet abfragt, ist, ob es auf GitHub eine neuere Version gibt (das lässt sich abschalten); nichts über Sie oder Ihren Spielstand wird gesendet. Scans bleiben auf Ihrem PC, unter <code>{path}</code>. Der Code ist offen auf <github>GitHub</github>, und jedes Release wird dort von GitHub Actions gebaut. Der Speicherleser basiert auf <fmss>FMSuperScout</fmss> (MIT-Lizenz).",
+    "updates": "Nach einem großen Football-Manager-Patch braucht der Leser eventuell ein Update. Die App warnt, wenn Ihre Spielversion von der abweicht, für die sie gemacht wurde, und meldet neue Versionen: <b>Jetzt aktualisieren</b> installiert sie und behält Ihre Einstellungen, Scans, Gewichte und Formationen."
+  },
+  "website": "Lieber nichts installieren? <link>Nutzen Sie die Website mit einem CSV-Export</link>."
+}

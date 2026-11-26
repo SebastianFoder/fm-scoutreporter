@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
 import { SLOT_LABEL, SPOT_SLOT, type FormationSpot } from "@scoutreporter/core/best-xi/formations";
+import { useFixed } from "@scoutreporter/ui/features/best-xi/PitchLineup";
 
 /** FM position code for a spot on the tactics pitch (DCL, AMR…), with the export position as tooltip. */
 export function SpotBadge({ spot, label }: { spot: FormationSpot; label?: string }) {
@@ -32,12 +34,14 @@ export function PlayerChip({
   /** Tags after the name (injured, squad status…). */
   children?: ReactNode;
 }) {
+  const t = useTranslations("squad");
+  const fixed = useFixed();
   return (
     <span className={`inline-flex min-w-0 items-center gap-1.5 ${muted ? "opacity-75" : ""}`}>
       {score !== null && <GradeStamp score={score} label={label ?? name} />}
       <span className="min-w-0 truncate font-semibold">{name}</span>
-      {score !== null && <span className="text-[13px] tabular-nums text-muted">{score.toFixed(1)}</span>}
-      {age !== undefined && <span className="text-[12px] text-muted">{age}y</span>}
+      {score !== null && <span className="text-[13px] tabular-nums text-muted">{fixed(score)}</span>}
+      {age !== undefined && <span className="text-[12px] text-muted">{t("ageShort", { age })}</span>}
       {children}
     </span>
   );
@@ -45,14 +49,18 @@ export function PlayerChip({
 
 /** A score difference. Red when it is a real drop (at or past `warnAt` below zero), green when positive. */
 export function Delta({ value, warnAt = 1.5, className = "" }: { value: number; warnAt?: number; className?: string }) {
+  const fixed = useFixed();
   const r = Math.round(value * 10) / 10;
-  const text = r >= 0 ? `+${r.toFixed(1)}` : `−${(-r).toFixed(1)}`;
+  const text = r >= 0 ? `+${fixed(r)}` : `−${fixed(-r)}`;
   const tone = r > 0 ? "text-positive" : r <= -warnAt ? "font-semibold text-red" : "text-muted";
   return <span className={`tabular-nums ${tone} ${className}`}>{text}</span>;
 }
 
 /** The coach's star rating (0–5 in halves), drawn like FM's report card, with the number for screen readers. */
 export function Stars({ value, label }: { value: number; label?: string }) {
+  const t = useTranslations("squad.stars");
+  const fixed = useFixed();
+  const args = { hasLabel: label ? "yes" : "no", label: label ?? "", value: fixed(value) };
   const pct = Math.max(0, Math.min(100, (value / 5) * 100));
   const row = (cls: string) => (
     <span className={`flex ${cls}`} aria-hidden>
@@ -66,8 +74,8 @@ export function Stars({ value, label }: { value: number; label?: string }) {
   return (
     <span
       role="img"
-      aria-label={`${label ? `${label}: ` : ""}${value.toFixed(1)} of 5 stars`}
-      title={`${label ? `${label}: ` : ""}${value.toFixed(1)} stars`}
+      aria-label={t("label", args)}
+      title={t("title", args)}
       className="relative inline-flex align-middle"
     >
       {row("text-line")}
@@ -114,12 +122,9 @@ export function Happiness({ value }: { value: string | null }) {
 }
 
 /** Days as FM writes them back: "3 wk", "9 d". */
-export function formatDays(days: number): string {
-  if (days >= 14 && days % 7 === 0) return `${days / 7} wk`;
-  return `${days} d`;
+export function useFormatDays(): (days: number) => string {
+  const t = useTranslations("squad.days");
+  return (days) => (days >= 14 && days % 7 === 0 ? t("weeks", { count: days / 7 }) : t("days", { count: days }));
 }
 
 export const lastName = (name: string) => name.trim().split(/\s+/).pop() ?? name;
-
-/** "an Important Player", "a Star Player". */
-export const withArticle = (status: string) => `${/^[aeiou]/i.test(status) ? "an" : "a"} ${status}`;

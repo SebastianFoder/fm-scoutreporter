@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Home di Scout Reporter",
+  "mainNav": "Principale",
+  "nav": {
+    "players": "Giocatori",
+    "squad": "Rosa",
+    "staff": "Staff",
+    "howToUse": "Guida",
+    "desktopApp": "App desktop",
+    "scans": "Scansioni",
+    "growth": "Crescita"
+  },
+  "playerCount": {
+    "title": "Giocatori importati, condivisi da entrambe le modalità",
+    "imported": "{hasTotal, select, yes {{shown} di {total}} other {{shown}}} {count, plural, one {giocatore importato} other {giocatori importati}}",
+    "scanned": "{hasTotal, select, yes {{shown} di {total}} other {{shown}}} {count, plural, one {giocatore scansionato} other {giocatori scansionati}}"
+  },
+  "language": {
+    "title": "Lingua",
+    "label": "Lingua: {language}"
+  },
+  "footer": {
+    "setupGuide": "Guida all’installazione",
+    "faq": "FAQ"
+  }
+}

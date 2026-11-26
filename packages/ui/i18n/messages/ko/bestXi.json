@@ -1,0 +1,109 @@
+{
+  "intro": "가져온 선수 중 점수가 가장 높은 11명을 포메이션에 맞게 고릅니다. 11명의 총비용에 최소 및 최대 한도를 정할 수도 있습니다.",
+  "noImport": {
+    "desktop": "아직 선수가 없습니다. FM에서 선수 검색을 열고 <kbd>F9</kbd> 또는 검색 스캔을 누르십시오.",
+    "web": "아직 가져온 CSV가 없습니다. 위에서 CSV 파일을 선택하거나 테스트 데이터를 불러와 둘러보십시오."
+  },
+  "setup": {
+    "title": "설정",
+    "reset": "초기화",
+    "minBudget": "최소 예산({currency})",
+    "maxBudget": "최대 예산({currency})",
+    "noMinimum": "최소 없음",
+    "noLimit": "제한 없음",
+    "budgetInvalid": "15M, 750K, 2500000처럼 금액을 입력하십시오. 읽을 수 없는 예산은 무시됩니다.",
+    "budgetHint": "11명의 합계입니다. 15M이나 750K처럼 입력하십시오.",
+    "valuation": "선수 비용 기준",
+    "valuations": {
+      "low": "범위의 하한",
+      "mid": "범위의 중간값",
+      "high": "범위의 상한"
+    },
+    "includeFree": "몸값이 없는 선수 포함",
+    "includeFreeHint": "대부분 자유 계약 선수입니다. {amount} 기준으로 계산합니다."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "최소 예산이 최대 예산보다 큽니다.",
+      "body": "최소 {min}, 최대 {max} 조건을 만족하는 11명을 구성할 수 없습니다."
+    },
+    "slots": {
+      "title": "이 포메이션을 채울 선수가 부족합니다.",
+      "body": "다음 포지션에 남은 적격 선수가 없습니다: {positions}. 내보낸 파일의 주 포지션만 인정됩니다.",
+      "leftOut": "제외한 선수와 몸값이 없는 선수는 빠집니다."
+    },
+    "budget": {
+      "title": "이 예산에 맞는 11명이 없습니다.",
+      "range": "현재 설정에서 가장 저렴한 11명은 {min}, 가장 비싼 11명은 {max}입니다.",
+      "wider": "예산 범위를 넓혀 보십시오."
+    }
+  },
+  "excluded": {
+    "label": "제외됨:",
+    "allowAgain": "이 선수 다시 허용",
+    "allowAgainHidden": "(다시 허용)",
+    "clearAll": "모두 지우기"
+  },
+  "footnote": "각 포지션에는 그 포지션을 주 포지션으로 가진 선수 1명이 들어가며, 해당 포지션 역할로 점수를 매깁니다(1–20). 표시된 11명은 예산에 맞는 모든 조합 중 총점이 가장 높습니다.",
+  "unpriced": "{count, plural, one {#명은} other {#명은}} 내보낸 파일에 가격이 없어(예: “매각 불가”) 제외됩니다.",
+  "result": {
+    "title": "베스트 11",
+    "summary": "평균 점수 <b>{average}</b>{basis, select, potential { (잠재력 도달 시)} other {}} · 비용 <b>{cost}</b>{budget, select, range { (예산 {min}~{max})} max { (예산 {max} 중)} min { (최소 {min})} other {}} · 급료 <b>주당 {wages}</b>{unknownWages, plural, =0 {} one { (#명 계약 없음)} other { (#명 계약 없음)}}",
+    "notOptimal": "이 11명이 최선임을 증명하기 전에 탐색 시간이 다 되었습니다. 더 나은 조합이 있더라도 총점 {total}에 최대 {gap}까지만 더할 수 있습니다.",
+    "pitchLabel": "경기장 위의 11명",
+    "columns": {
+      "pos": "포지션",
+      "score": "점수",
+      "scoreTitle": "FM의 1–20 척도 기준 역할 점수",
+      "valueTitle": "내보낸 파일의 몸값",
+      "counted": "반영액",
+      "countedTitle": "예산에 반영되는 금액: {valuation, select, low {범위의 하한} high {범위의 상한} other {범위의 중간값}}",
+      "exclude": "제외"
+    },
+    "excludeLabel": "제외하고 다시 선택: {name}",
+    "excludeTitle": "제외하고 다시 선택",
+    "total": "합계",
+    "perWeek": "주당 {amount}"
+  },
+  "formation": {
+    "custom": "사용자 지정",
+    "yours": "내 포메이션",
+    "presets": "FM 사전 설정",
+    "moveTo": "{from} 이동: {spot}({position})",
+    "emptySpot": "빈 자리 {spot}({position})",
+    "moveHere": "{from} 여기로 이동",
+    "goalkeeperFixed": "골키퍼(고정)",
+    "selected": "{spot}({position}) 선택됨: 옮길 자리를 고르거나, 다시 눌러 취소하십시오",
+    "dragOrSelect": "{spot}({position}): 끌어서 옮기거나 선택해서 이동",
+    "keeperStays": "골키퍼는 골문에 고정됩니다",
+    "dragTitle": "{position}: 다른 자리로 끌어 놓거나, 다른 포지션 위에 놓아 맞바꾸십시오",
+    "hint": {
+      "dropSwap": "놓으면 자리를 맞바꿉니다: {from} ↔ {to}.",
+      "dropMove": "놓으면 이동합니다: {from} → {to}.",
+      "dropCancel": "자리 위에 놓거나, 다른 곳에 놓아 취소하십시오.",
+      "moving": "{spot} 이동 중: 옮길 자리를 클릭하거나(다른 포지션을 클릭하면 맞바꿈), 같은 {spot} 자리를 다시 클릭해 취소하십시오.",
+      "idle": "포지션을 다른 자리로 끌어 놓거나, 다른 포지션 위에 놓아 맞바꾸십시오."
+    },
+    "delete": "삭제: “{name}”",
+    "namePlaceholder": "포메이션 이름",
+    "myPlaceholder": "내 {formation}",
+    "nameLabel": "이 포메이션의 이름",
+    "save": "저장",
+    "scoredAs": "평가 역할",
+    "roleFor": "{spot} 역할, {position}",
+    "auto": "자동: {role}",
+    "rolesFrom": "역할은 <link>선수</link>의 가중치 프로필입니다."
+  },
+  "basis": {
+    "label": "점수 기준",
+    "potential": "최대 잠재력",
+    "potentialTitle": "잠재 기량까지 추정한 능력치",
+    "needsTitle": "현재 기량과 잠재 기량이 필요합니다: {view} 뷰로 내보내십시오",
+    "needs": "최대 잠재력을 쓰려면 {view} 뷰가 필요합니다."
+  },
+  "pitch": {
+    "nobody": "없음",
+    "nobodyTitle": "{spot}: 선수단에 {position} 포지션을 뛰는 선수가 없습니다",
+    "entryTitle": "{name}, {spot}({position}), {score}"
+  }
+}

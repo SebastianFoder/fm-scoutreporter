@@ -24,6 +24,8 @@ import { SCAN_STAFF_COLUMNS, scanPlayers, scanStaff } from "@scoutreporter/core/
 import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
 import type { ImportSource } from "@scoutreporter/core/storage/stored-records";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useIntlLocale } from "@scoutreporter/ui/i18n/hooks";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useSquadData } from "@scoutreporter/ui/components/SquadDataProvider";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
@@ -62,11 +64,23 @@ function withoutHidden(p: PlayerAttributes): PlayerAttributes {
   return { ...p, currentAbility: null, potentialAbility: null, professionalism: null };
 }
 
-export function scanLabel(s: Pick<SnapshotInfo, "gameDate" | "scannedAt" | "sample" | "name">): string {
-  if (s.name) return s.name;
-  if (s.sample) return "Sample scan";
-  const date = s.gameDate ?? s.scannedAt.slice(0, 10);
-  return `Scan of ${new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`;
+type ScanLabelInfo = Pick<SnapshotInfo, "gameDate" | "scannedAt" | "sample" | "name">;
+
+/** A scan's name in the current language: the name you gave it, "Sample scan", or "Scan of 14 Aug 2027" (its in-game date). */
+export function useScanLabel(): (s: ScanLabelInfo) => string {
+  const t = useTranslations("desktop.scanLabel");
+  const locale = useIntlLocale();
+  return useCallback(
+    (s: ScanLabelInfo) => {
+      if (s.name) return s.name;
+      if (s.sample) return t("sample");
+      const date = s.gameDate ?? s.scannedAt.slice(0, 10);
+      return t("dated", {
+        date: new Date(`${date}T12:00:00Z`).toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" }),
+      });
+    },
+    [t, locale],
+  );
 }
 
 type DesktopContextValue = {
@@ -116,6 +130,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
   const players = usePlayersData();
   const squad = useSquadData();
   const staff = useStaffData();
+  const scanLabel = useScanLabel();
   const [settings, setSettings] = useState<DesktopSettings | null>(null);
   const [snapshots, setSnapshots] = useState<SnapshotInfo[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -213,7 +228,7 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         if (!stale()) setLoading(false);
       }
     },
-    [bridge, snapshots, players, squad, staff],
+    [bridge, snapshots, players, squad, staff, scanLabel],
   );
 
   const reloadActive = useCallback(async () => {

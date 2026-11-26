@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "Ruoli FM27",
+    "scale": "punteggio 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: ora {current}, potenziale {potential}} other {{role}: ora {current}}}",
+    "legend": "Legenda",
+    "now": "Ora",
+    "ageBenchmark": "Riferimento per {age} anni: {value}",
+    "prime": "Apice {value}",
+    "vsAge": "vs Età",
+    "potentialVsPrime": "Potenziale vs apice"
+  },
+  "plan": {
+    "title": "Piano di sviluppo",
+    "builtFor": "{atPa, select, yes {Pensato per il ruolo migliore al PA: {role} ({score})} other {Pensato per il ruolo migliore: {role} ({score})}}",
+    "focusLabel": "Focus sull’allenamento individuale",
+    "focus": {
+      "quickness": "Rapidità",
+      "goalkeeperReason": "Agilità e Riflessi hanno il peso maggiore per i portieri. Un tester che ha analizzato il codice di allenamento di FM27 ha trovato questo focus combinato il migliore per i portieri che li privilegiano.",
+      "quicknessReason": "Velocità e Accelerazione sono tra i pesi maggiori in ogni ruolo di movimento. Nel test di harvestgreen22 il focus le ha portate da circa +1,6 a +2,7 a stagione. Velocità attuale {pace}, Accelerazione {acceleration}.",
+      "attributeReason": "Velocità e Accelerazione sono già a {pace} e {acceleration}, quindi Rapidità ha poco da aggiungere. {attribute} è dove il punteggio da {role} ha più margine.",
+      "quicknessFallbackReason": "Velocità e Accelerazione sono tra i pesi maggiori in ogni ruolo di movimento."
+    },
+    "trainingRoleLabel": "Ruolo di allenamento",
+    "trainingRole": {
+      "goalkeeper": "Lascia entrambi i ruoli di allenamento non assegnati",
+      "goalkeeperReason": "Un tester che ha analizzato il codice di allenamento di FM27 ha ottenuto la crescita maggiore per i portieri senza ruolo e con il focus combinato qui sopra.",
+      "outfield": "{role, select, defensive {Mediano non in possesso, nulla in possesso} other {Centrocampista offensivo non in possesso, nulla in possesso}}",
+      "outfieldReason": "Un tester che ha analizzato il codice di allenamento di FM27 ha ottenuto la crescita di CA più forte per i giovani di movimento con un solo ruolo non in possesso, più Rapidità: Mediano per difensori, esterni e mediani, Centrocampista offensivo per tutti gli altri. Intuito è cresciuto più di tutto. Il dato viene dalle prove controllate di un solo tester."
+    },
+    "sessions": {
+      "title": "Sessioni di sviluppo per il punteggio da {role}",
+      "more": "più {attributes}",
+      "nothingExtra": "niente in più",
+      "barLabel": "{session}: {percent} della sessione migliore",
+      "note": "Crescita del punteggio del ruolo per ogni sessione nel test FM27 di harvestgreen22, applicata alle qualità di questo giocatore, in proporzione alla migliore. “Più” elenca cosa sviluppa una sessione oltre la media delle sessioni di sviluppo.",
+      "goalkeeper": "I portieri non erano nel test delle sessioni. L’allenatore dei portieri allena gran parte di ciò che serve a un portiere, quindi assegna il migliore che hai."
+    },
+    "coaching": {
+      "title": "Gli allenamenti che contano di più",
+      "subtitle": "Quota della crescita residua da {role} allenata da ogni gruppo",
+      "coach": "preparatore: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Note",
+    "items": {
+      "role": {
+        "title": "Da sviluppare come {role}",
+        "detail": "Oggi il ruolo migliore è {bestRole} ({bestScore}), ma le qualità al PA si adattano meglio a {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Vicino al tetto",
+        "detail": "Solo {gap} di CA tra CA {ca} e PA {pa}. Ormai l’allenamento decide soprattutto dove va la CA, non quanta ce n’è, quindi indirizzala sulle qualità che servono al ruolo."
+      },
+      "gapUnlikely": {
+        "title": "Difficilmente arriverà al PA",
+        "detail": "Ancora {gap} di CA da guadagnare a {age} anni, e le qualità crescono poco dopo i {endAge}. Valuta il giocatore più vicino alla sua abilità attuale."
+      },
+      "gapLeft": {
+        "title": "{gap} di CA ancora da raggiungere",
+        "detail": "{goalkeeper, select, yes {CA {ca} verso PA {pa}, con circa {seasons, plural, one {# stagione} other {# stagioni}} di sviluppo reale ancora davanti (per i portieri la crescita rallenta molto dopo i {endAge}).} other {CA {ca} verso PA {pa}, con circa {seasons, plural, one {# stagione} other {# stagioni}} di sviluppo reale ancora davanti (la crescita rallenta molto dopo i {endAge}).}}"
+      },
+      "minutesPeak": {
+        "title": "Anni di massimo sviluppo",
+        "detail": "Dai 16 ai 18 anni le qualità crescono più in fretta. Minuti giocati e qualità degli avversari alimentano entrambi la crescita della CA, quindi i minuti in prima squadra o in prestito valgono più del calcio giovanile appena il giocatore può tenere il posto. Per l’Under 18, l’autore di fm-scoring usa il programma minimo (nessuna sessione tattica)."
+      },
+      "minutesSenior": {
+        "title": "Gli servono minuti in prima squadra",
+        "detail": "Minuti giocati e qualità degli avversari determinano quanta CA guadagna un giocatore. Se nella tua società non c’è un posto da titolare per lui, mandalo in prestito alla squadra più forte che lo farà giocare."
+      },
+      "minutesPast": {
+        "title": "Oltre la finestra di sviluppo",
+        "detail": "Le qualità crescono poco dopo i {endAge}. Da qui in poi l’allenamento per lo più ridistribuisce quello che c’è già."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "Le note di fm-scoring indicano la Professionalità come l’attributo nascosto più importante per la crescita. Questo livello aiuta un giocatore a ottenere il massimo dal suo PA."
+      },
+      "profLow": {
+        "title": "{level, select, low {{attribute} bassa ({value})} other {{attribute} nella media ({value})}}",
+        "detail": "Le note di fm-scoring indicano la Professionalità come l’attributo nascosto più importante per la crescita. In FM la personalità si cambia con i tutoraggi: inserisci il giocatore in un gruppo di tutoraggio con giocatori esperti di alta Professionalità (fm-scoring include un filtro di ricerca giocatori per i tutor)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "L’allenamento non cambia mai la Determinazione. Per cambiare la personalità servono i tutoraggi. Esporta con la vista Hidden Attributes per vedere la Professionalità."
+      },
+      "schedule": {
+        "title": "Metti le sessioni di sviluppo in un solo giorno",
+        "detail": "Solo Lavoro con la palla in fase di possesso, Lavoro offensivo e difensivo con la palla, Condizionamento, Condizionamento pesante e Sviluppo individuale fanno crescere le qualità. Ogni altra sessione non ha fatto crescere la CA più del riposo, e ripetere una sessione aggiunge poco. Un tester ha concentrato le sessioni di sviluppo in un solo giorno per tenere giorni interi A riposo, che non prevedono controlli sugli infortuni in allenamento. Così il rischio di infortuni in allenamento è sceso dal 13,8% al 4,0% con quasi la stessa crescita."
+      }
+    },
+    "source": "Dalle ricerche sull’allenamento in FM27 raccolte in <link>fm-scoring</link>: il test di allenamento di harvestgreen22, i test sui programmi dell’autore di fm-scoring e un tester che ha analizzato il codice di allenamento di FM27.",
+    "younger": "Vale soprattutto per i giocatori più giovani.",
+    "odds": "La crescita varia a caso di mese in mese, quindi prendi questi dati come probabilità, non come promessa."
+  }
+}

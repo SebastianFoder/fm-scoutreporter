@@ -155,6 +155,12 @@ export interface DesktopSettings {
   checkUpdates: boolean;
   /** Send anonymous page views to the self-hosted Umami (stats.sebastianfoder.com). Nothing from the save. */
   usageStats: boolean;
+  /**
+   * The language picked in the header (a locale code like "fr"), or null to follow Windows. The app
+   * keeps it here because its scoutreporter:// pages can't hold cookies: app-origin.ts sends it on
+   * to the page server as the NEXT_LOCALE cookie.
+   */
+  language: string | null;
 }
 
 export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
@@ -164,6 +170,7 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   hideHidden: false,
   checkUpdates: true,
   usageStats: true,
+  language: null,
 };
 
 
@@ -277,5 +284,7 @@ export function normaliseSettings(value: unknown): DesktopSettings {
     hideHidden: v.hideHidden === true,
     checkUpdates: v.checkUpdates !== false,
     usageStats: v.usageStats !== false,
+    // A short language code; the page server ignores one it doesn't have.
+    language: typeof v.language === "string" && /^[a-z]{2,3}$/.test(v.language) ? v.language : null,
   };
 }

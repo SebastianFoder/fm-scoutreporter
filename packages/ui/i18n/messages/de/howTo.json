@@ -1,0 +1,203 @@
+{
+  "tabs": {
+    "label": "Anleitungen",
+    "setup": "Einrichtung",
+    "players": "Spieler",
+    "wonderkids": "Wunderknaben"
+  },
+  "step": {
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen"
+  },
+  "views": {
+    "hidden": {
+      "name": "Ansicht Hidden Attributes",
+      "label": "Empfohlen",
+      "detail": "Alle Attribute plus die verborgenen Werte Professionalität, CA und PA. Schaltet die Potenzial-Wertungen frei, zum Finden von Wunderknaben."
+    },
+    "standard": {
+      "name": "Ansicht Standard",
+      "label": "Nur Attribute",
+      "detail": "Alle sichtbaren Attribute. Reicht für die Spielerliste und die Beste Elf."
+    },
+    "download": "{name} herunterladen",
+    "both": "Beide Ansichten exportieren dieselben Attribute, daher funktionieren Importe aus beiden überall. Sie können beide installieren und in FM zwischen ihnen wechseln."
+  },
+  "setup": {
+    "gameVersion": "Spielversion",
+    "installView": {
+      "title": "Ansicht installieren",
+      "download": "Laden Sie eine oder beide Ansichtsdateien herunter:",
+      "moveTo": "Verschieben Sie sie nach:"
+    },
+    "export": {
+      "title": "Spieler aus {game} exportieren",
+      "importView": "Klicken Sie mit rechts auf eine beliebige Spaltenüberschrift und wählen Sie <b>Ansicht importieren</b>",
+      "importDownloaded": "Importieren Sie die Ansicht, die Sie in Schritt {step} heruntergeladen haben (Hidden Attributes oder Standard)",
+      "selectView": "Wählen Sie diese Ansicht im Dropdown <b>Benutzerdefinierte Ansichten</b> (oben rechts in der Spielerliste)"
+    },
+    "importCsv": {
+      "title": "CSV importieren",
+      "goTo": "Öffnen Sie den <link>Import dieser Website</link> und klicken Sie auf <b>CSV-Datei wählen</b>.",
+      "navigateTo": "Wechseln Sie zu:",
+      "done": "Fertig. Viel Spaß mit Ihren Scouting-Daten!"
+    },
+    "fm27": {
+      "install": {
+        "title": "FM View Exporter installieren",
+        "intro": "Wir empfehlen <link>FM View Exporter</link>. Er exportiert jede Spielerliste in FM27 (Kader, Spielerdatenbank oder Auswahlliste) mit einem Tastendruck als CSV und bringt BepInEx gleich mit, sodass nichts weiter zu installieren ist. Er braucht FM27 auf Steam und Windows 10 oder 11.",
+        "setupTitle": "1.1 Option A: Setup-Programm (empfohlen)",
+        "setupDownload": "Laden Sie <code>{file}</code> von der <link>Releases-Seite</link> herunter und starten Sie es.",
+        "setupFind": "Es findet FM27 in Ihren Steam-Bibliotheken. Falls nicht, wählen Sie den Ordner, der <code>{file}</code> enthält.",
+        "setupInstall": "Lassen Sie das Ausgabeformat auf CSV und den CSV-Stil auf dem Standard-Trennzeichen Komma, und klicken Sie dann auf <b>Install</b>.",
+        "setupUpdate": "Für ein späteres Update starten Sie das neue Setup und klicken auf Update. Ihre Einstellungen bleiben erhalten.",
+        "manualTitle": "1.2 Option B: Manuelle Installation",
+        "manualDownload": "Laden Sie <code>{file}</code> von der <link>Releases-Seite</link> herunter und öffnen Sie Ihren FM27-Installationsordner:",
+        "manualSteam": "Steam: Rechtsklick auf FM27 → Verwalten → Lokale Dateien durchsuchen",
+        "manualExtract": "Entpacken Sie den Inhalt der ZIP-Datei (nicht die ZIP-Datei selbst) in diesen Ordner. Er sollte so aussehen:",
+        "firstLaunchTitle": "1.3 Erster Start",
+        "firstLaunch": "Starten Sie FM27. Der erste Start dauert einige Minuten, während sich BepInEx einrichtet; spätere Starts sind normal schnell. Um zu prüfen, ob das Plugin geladen wurde, öffnen Sie diese Datei im Spielordner und suchen Sie nach einer Zeile mit <sb>FM View Exporter</sb>:"
+      },
+      "export": {
+        "open": "Öffnen Sie Ihren FM27-Spielstand und gehen Sie zu <b>Kaderplanung → Spielerdatenbank</b> (ein Kader oder eine Auswahlliste geht auch)",
+        "filter": "Filtern Sie die Liste auf die gewünschten Spieler. Der Exporter nimmt jede Zeile der Liste, nicht nur die auf dem Bildschirm.",
+        "press": "Drücken Sie <sb>F9</sb> und klicken Sie nichts an, bis der Export fertig ist. Das Plugin scrollt die Liste selbst; große Suchen können einige Minuten dauern."
+      },
+      "pickFile": "Wählen Sie die neueste Datei, z. B. <code>{file}</code>, und importieren Sie sie.",
+      "help": {
+        "title": "Fehlerbehebung",
+        "f9Title": "F9 bewirkt nichts",
+        "f9": "Prüfen Sie <code>{file}</code> im Spielordner. „No player list found“ heißt, dass beim Drücken von F9 keine Spielertabelle geöffnet war.",
+        "startTitle": "Das Spiel startet nicht",
+        "start": "Benennen Sie <code>{file}</code> im Spielordner um oder löschen Sie die Datei, um ohne Mods zu starten, oder deinstallieren Sie mit dem Setup-Programm. Ihre Spielstände sind nicht betroffen.",
+        "antivirusTitle": "Warnung des Virenscanners",
+        "antivirus": "Manche Virenscanner schlagen beim Setup an, weil es noch nicht signiert ist und BepInEx installiert. Nutzen Sie bei Bedarf die manuelle ZIP-Installation."
+      }
+    },
+    "fm26": {
+      "bepinex": {
+        "title": "BepInEx installieren",
+        "downloadTitle": "1.1 BepInEx herunterladen",
+        "download": "Öffnen Sie <link>BepInExPack_FootballManager26</link>, klicken Sie auf Download und entpacken Sie die Datei.",
+        "copyTitle": "1.2 Dateien in den FM26-Ordner kopieren",
+        "openFolder": "Öffnen Sie Ihren FM26-Installationsordner.",
+        "steam": "Steam: Rechtsklick auf FM26 → Eigenschaften → Installierte Dateien → Durchsuchen",
+        "paste": "Fügen Sie die entpackten Dateien dort ein. Ihr Ordner sollte so aussehen:",
+        "linuxTitle": "1.3 Nur Linux: Startoptionen setzen",
+        "linux": "Rechtsklick auf FM26 in Steam → Eigenschaften → Startoptionen, und fügen Sie ein:",
+        "firstLaunchTitle": "1.4 Erster Start",
+        "firstLaunch": "Starten Sie FM26 einmal, damit sich BepInEx einrichten kann. Prüfen Sie, ob der Ordner <code>{folder}</code> jetzt existiert, bevor Sie fortfahren."
+      },
+      "plugin": {
+        "title": "Plugin installieren",
+        "download": "Laden Sie das Plugin von <link>FM26 Player CSV Export</link> herunter.",
+        "copy": "Kopieren Sie <code>{file}</code> aus der ZIP-Datei nach:"
+      },
+      "export": {
+        "open": "Öffnen Sie Ihren FM26-Spielstand und gehen Sie zu <b>Kaderplanung → Spielerdatenbank</b>",
+        "select": "Wählen Sie die Spieler aus, die Sie exportieren möchten",
+        "press": "Drücken Sie <sb>F9</sb>, um zu exportieren"
+      },
+      "selectFile": "Wählen Sie Ihre exportierte Datei und importieren Sie sie."
+    }
+  },
+  "players": {
+    "use": {
+      "title": "So nutzen Sie die Spielerliste",
+      "intro": "Unter Spieler importieren Sie einen Spielerexport und ordnen die Spieler sofort nach dem gewichteten Mittel ihrer FM26-Attribute. Keine Vergleichsbasis nötig: einfach importieren und bewerten.",
+      "download": {
+        "title": "1. Ansicht herunterladen",
+        "intro": "Laden Sie eine Ansicht herunter und legen Sie sie in Ihren Ansichtsordner von FM26 oder FM27:",
+        "more": "In der <link>Einrichtungsanleitung</link> finden Sie die vollständige Installation des Exporters für jede Spielversion."
+      },
+      "export": {
+        "title": "2. Spieler aus FM exportieren",
+        "open": "Öffnen Sie Ihren Spielstand und gehen Sie zu <b>Kaderplanung → Spielerdatenbank</b>",
+        "importView": "Rechtsklick auf eine Spaltenüberschrift → <b>Ansicht importieren</b> und die Ansicht laden",
+        "selectView": "Wählen Sie die Ansicht im Dropdown Benutzerdefinierte Ansichten",
+        "press": "Wählen Sie die gewünschten Spieler aus und drücken Sie <sb>F9</sb>"
+      },
+      "import": {
+        "title": "3. CSV importieren",
+        "goTo": "Öffnen Sie <link>Spieler</link>, klicken Sie auf <b>CSV-Datei wählen</b> und wechseln Sie in den Ausgabeordner Ihres Exporters:",
+        "after": "Die Spieler werden direkt nach dem Import bewertet und sortiert."
+      },
+      "tune": {
+        "title": "4. Gewichte und Spalten anpassen",
+        "body": "Klicken Sie auf <b>Gewichtung</b>, um die Einstellungen bei den Gewichten zu öffnen, und legen Sie fest, wie stark jedes Attribut zählt. Die Spielerliste daneben sortiert sich live neu. Mit <b>Spalten</b> wählen Sie, welche Attribute in der Tabelle hervorgehoben werden. Beides, und dazu die Attributfarben, finden Sie auch oben unter <b>Einstellungen</b>."
+      },
+      "compare": {
+        "title": "5. Spieler vergleichen",
+        "body": "Haken Sie zwei oder mehr Spieler in der Liste an und klicken Sie auf <b>Auswahl vergleichen</b>, um die Attribute nebeneinander zu sehen."
+      }
+    },
+    "math": {
+      "title": "So werden Spieler bewertet",
+      "intro": "Scout Reporter bewertet Spieler über ein gewichtetes Mittel ihrer FM26-Attributwerte (Skala 1–20) und rechnet dieses Mittel dann auf eine 100-Punkte-Skala um.",
+      "weighted": {
+        "title": "Gewichtetes Attributmittel",
+        "body": "Für jedes Attribut legen Sie ein Gewicht fest (0 = ignorieren, höher = wichtiger). Die Wertung ist das gewichtete Mittel aller Attributwerte mit einem Gewicht über null. Jedes Profil wählt eine Gewichtung:",
+        "modes": "<b>Linear</b> entspricht der Kalibrierung der FM27-Benchmarks und ist der Standard für neue Profile. <b>Betont</b> quadriert die Gewichte, sodass ein doppeltes Gewicht mehr als doppelten Einfluss hat; Profile, die vor dieser Option erstellt wurden, behalten sie."
+      },
+      "benchmarks": {
+        "title": "FM27-Benchmark-Profile",
+        "body": "Die Gewichtung enthält sechs Rollenprofile (Innenverteidiger, Außenverteidiger / Flügelverteidiger, Def. Mittelfeldspieler / Zentraler Mittelfeldspieler, Angreifer / Flügelspieler (10), Stürmer (9) und Torwart), erstellt aus <study>Studie 13b von FM Match Lab</study>, die über 50.000 FM27-Spiele gemessen hat, was eine Stufe jedes Attributs auf jeder Position wert ist. Jede Rolle behält die Attribute, die die Studie bestätigt, so skaliert, dass das wertvollste 10 wiegt: Schnelligkeit und Antritt überall, Sprunghöhe vor allem für Innenverteidiger und Stürmer, Abschluss und Kraft für Angreifer, Beweglichkeit und Reflexe für Torhüter. Die meisten technischen und mentalen Attribute fallen in der Studie kaum ins Gewicht, daher lassen die Rollen sie weg. Der <arena>Positionstest auf FM-Arena</arena> von Purity kommt mit einer anderen Taktik auf dasselbe Muster. Vor v1.24 nutzten die Rollen die FM27-Gewichte von <scoring>fm-scoring</scoring>, die weiterhin die Tabelle für vs. Alter liefern. Bearbeiten Sie sie nach Belieben; „Auf Benchmark zurücksetzen“ stellt die Originale wieder her."
+      },
+      "vsAge": {
+        "title": "vs. Alter und Potenzial",
+        "vsAge": "<b>vs. Alter</b> teilt das gewichtete Mittel durch den FM27-Benchmark für das Alter des Spielers (10,3 mit 15 bis 13,8 ab 24). 100 % bedeutet, dass der Spieler auf dem Weg ist, in seinen besten Jahren ein starker Championship- oder schwächerer Premier-League-Spieler zu werden.",
+        "potential": "Mit einem Export der Ansicht Hidden Attributes erscheint eine Spalte <b>Potenzial</b>: dieselbe Wertung mit auf PA hochgerechneten Attributen. <link>So funktioniert die Potenzialschätzung</link> erklärt die Hochrechnung."
+      },
+      "grades": {
+        "title": "Noten",
+        "body": "Jede Wertung bekommt einen Buchstabenstempel, wie in FM von A+ bis F, dazu S, S+ und S++ über A+ für die echte Elite. Die Noten lesen das gewichtete Mittel auf der Skala 1–20 ab und steigen in Schritten von 0,5. Der Benchmark für den Zenit (13,8, ein starker Championship- oder schwächerer Premier-League-Spieler in seinen besten Jahren) ist ein {grade}. Junge Spieler bekommen bei Jetzt niedrige und bei Potenzial hohe Noten, vergleichen Sie sie also mit dem Potenzial-Stempel oder vs. Alter.",
+        "scale": "Notenskala",
+        "under": "unter {value}"
+      },
+      "normalisation": {
+        "title": "100-Punkte-Skala",
+        "body": "Das gewichtete Mittel liegt auf der FM-Attributskala 1–20. Es wird so umgerechnet, dass ein gewichtetes Mittel von <sb>13</sb> (ein solider Profi) genau <sb>100</sb> ergibt. Wertungen über 100 stehen für überdurchschnittliche Spieler für Ihr Gewichtungsprofil, unter 100 für unterdurchschnittliche."
+      },
+      "categories": {
+        "title": "Attributkategorien",
+        "body": "Die Attribute sind in vier Kategorien gruppiert (Technik, Mentales, Athletik und Torwarttraining), wie in FM26 selbst. Sie können Attribute aus jeder Kategorie im selben Profil gewichten, ein Torwartprofil kann also neben den torwartspezifischen auch athletische und mentale Attribute enthalten."
+      },
+      "detail": {
+        "title": "Spielerdetails und Vergleich",
+        "body": "Ein Klick auf einen Spieler öffnet sein vollständiges Attributblatt mit farbigen Werten (hervorragend / gut / durchschnittlich / schwach) gemäß Ihren Design-Einstellungen. Der Vergleich stellt zwei oder mehr Spieler nebeneinander und hebt die Unterschiede hervor, sodass Sie leicht sehen, wo ein Spieler für Ihre Rolle besser ist als ein anderer."
+      }
+    }
+  },
+  "wonderkids": {
+    "use": {
+      "title": "So finden Sie Wunderknaben",
+      "export": {
+        "title": "1. Mit der Ansicht Hidden Attributes exportieren",
+        "body": "Importieren Sie die Ansicht Hidden Attributes in FM und exportieren Sie wie gewohnt. Sie ergänzt die verborgenen Werte <b>Professionalität</b>, <b>CA</b> und <b>PA</b>. Exporte der Ansicht Standard oder Spieler ohne CA/PA werden weiterhin nach ihren aktuellen Attributen bewertet."
+      },
+      "import": {
+        "title": "2. Importieren und sortieren",
+        "body": "Importieren Sie den Export unter <link>Spieler</link> und sortieren Sie nach <b>Potenzial</b> (die Wertung bei vollem Potenzial mit dem gewählten Gewichtungsprofil) oder <b>vs. Alter</b> (wie weit der Spieler seinem Alter jetzt voraus ist)."
+      },
+      "inspect": {
+        "title": "3. Ein Talent ansehen",
+        "body": "Klicken Sie auf einen Spieler und wechseln Sie zu <b>Volles Potenzial</b>, um die geschätzten Attribute bei PA mit dem Zuwachs pro Attribut zu sehen. Der <b>Entwicklungsplan</b> darunter schlägt Fokus individuelles Training, Trainingsrolle, Entwicklungseinheiten und Trainer vor, die das Meiste aus dem Spieler herausholen."
+      }
+    },
+    "math": {
+      "title": "So funktioniert die Schätzung bei vollem Potenzial",
+      "ca": {
+        "title": "CA ist eine kostengewichtete Attributsumme",
+        "body": "Jeder Attributpunkt kostet je nach Position unterschiedlich viel CA (die FM27-CA-Kostentabelle von fm-scoring, z. B. Entscheidungen 10 und Beweglichkeit 8 bei einem Torwart). Bei einem Export der Ansicht Hidden Attributes mit 109 Torhütern passt CA fast genau zur kostengewichteten Summe (r = 0,99, Fehler ≈ 2,5 CA). Die Anpassung wird bei jedem Import mit CA neu kalibriert."
+      },
+      "growth": {
+        "title": "Verteilung des Wachstums",
+        "body": "Die zusätzlichen Punkte werden auf die Attribute verteilt, die noch wachsen können, jeweils im Verhältnis zu ihrem Abstand zu 20 und dazu, wie schnell sie im FM27-Trainingstest von harvestgreen22 gewachsen sind (ein 18-Jähriger, eine Saison lang trainiert, gesammelt in fm-scoring). Verteidiger, Flügelverteidiger und DMs wachsen wie bei den Trainingsplänen mit Defensivarbeit mit Ball, zentrale Mittelfeldspieler wie bei einer Mischung, und Außenspieler, AMs und Stürmer wie bei den Trainingsplänen mit Angriffsspiel mit Ball. Torhüter wurden nicht getestet: Ihre vom Torwarttrainer trainierten Attribute wachsen mit der Rate trainierter Feldspielerattribute. Athletik-Attribute wachsen ab 21 langsamer (¾ der Rate bis 24, dann 0,4), bei Torhütern drei Jahre später. Zielstrebigkeit, Aggressivität, Mut und die Torwart-Tendenzen bleiben unverändert, und Feldspieler bekommen nie Torwartattribute dazu. Spieler mit mehreren Positionen nutzen die durchschnittlichen Kosten und das durchschnittliche Wachstum ihrer Positionen."
+      },
+      "reading": {
+        "title": "Die Zahlen lesen",
+        "body": "<b>Jetzt</b> und <b>Potenzial</b> sind die beste Wertung in einer FM27-Benchmark-Rolle (1–20). <b>vs. Zenit</b> vergleicht die Potenzial-Wertung mit 13,8, dem voll entwickelten Benchmark. Es ist eine Schätzung der Obergrenze: Professionalität, Einsatzzeit und Training entscheiden, wie viel seiner PA ein Spieler erreicht."
+      }
+    }
+  }
+}

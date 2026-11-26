@@ -1,0 +1,109 @@
+{
+  "intro": "Elige los once jugadores con mayor puntuación de tu importación para una formación, con un mínimo y un máximo opcionales para lo que cuesta el once en total.",
+  "noImport": {
+    "desktop": "Aún no hay jugadores. En FM, abre una Búsqueda de jugador y pulsa <kbd>F9</kbd> o Escanear búsqueda.",
+    "web": "Aún no has importado ningún CSV. Elige un archivo CSV arriba o carga los datos de prueba para echar un vistazo."
+  },
+  "setup": {
+    "title": "Ajustes",
+    "reset": "Restablecer",
+    "minBudget": "Presupuesto mín. ({currency})",
+    "maxBudget": "Presupuesto máx. ({currency})",
+    "noMinimum": "Sin mínimo",
+    "noLimit": "Sin límite",
+    "budgetInvalid": "Escribe una cantidad como 15M, 750K o 2500000. Los presupuestos ilegibles se ignoran.",
+    "budgetHint": "Total para el once. Escribe cantidades como 15M o 750K.",
+    "valuation": "Un jugador cuesta",
+    "valuations": {
+      "low": "Parte baja del rango",
+      "mid": "Punto medio del rango",
+      "high": "Parte alta del rango"
+    },
+    "includeFree": "Incluir jugadores sin valor de traspaso",
+    "includeFreeHint": "Sobre todo agentes libres. Cuentan como {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "El presupuesto mínimo es mayor que el máximo.",
+      "body": "Ningún once puede costar al menos {min} y como mucho {max}."
+    },
+    "slots": {
+      "title": "No hay jugadores suficientes para completar esta formación.",
+      "body": "No queda ningún jugador válido para: {positions}. Solo cuentan las posiciones naturales de la exportación.",
+      "leftOut": "Se dejan fuera los jugadores excluidos y los que no tienen valor de traspaso."
+    },
+    "budget": {
+      "title": "Ningún once encaja en este presupuesto.",
+      "range": "Con estos ajustes, el once más barato posible cuesta {min} y el más caro {max}.",
+      "wider": "Prueba con un presupuesto más amplio."
+    }
+  },
+  "excluded": {
+    "label": "Excluidos:",
+    "allowAgain": "Volver a permitir a este jugador",
+    "allowAgainHidden": "(volver a permitir)",
+    "clearAll": "Borrar todo"
+  },
+  "footnote": "Cada posición la ocupa un jugador que la tenga como posición natural, puntuado con el rol de esa posición (1–20). El once que se muestra tiene la mayor puntuación total de todas las combinaciones que caben en el presupuesto.",
+  "unpriced": "{count, plural, one {Se deja fuera # jugador} other {Se dejan fuera # jugadores}} porque la exportación no da precio (por ejemplo, «No a la venta»).",
+  "result": {
+    "title": "Mejor once",
+    "summary": "Puntuación media <b>{average}</b>{basis, select, potential { a pleno potencial} other {}} · Coste <b>{cost}</b>{budget, select, range { (presupuesto de {min} a {max})} max { de {max}} min { (al menos {min})} other {}} · Salarios <b>{wages} p/sem</b>{unknownWages, plural, =0 {} one { (# sin contrato)} other { (# sin contrato)}}",
+    "notOptimal": "La búsqueda se quedó sin tiempo antes de demostrar que este es el mejor once posible. Uno mejor podría sumar como mucho {gap} a la puntuación total de {total}.",
+    "pitchLabel": "El once en el campo",
+    "columns": {
+      "pos": "Pos",
+      "score": "Puntuación",
+      "scoreTitle": "Puntuación del rol en la escala 1–20 de FM",
+      "valueTitle": "Valor de traspaso en la exportación",
+      "counted": "Computado",
+      "countedTitle": "Lo que cuenta para el presupuesto: {valuation, select, low {parte baja del rango} high {parte alta del rango} other {punto medio del rango}}",
+      "exclude": "Excluir"
+    },
+    "excludeLabel": "Excluir a {name} y volver a elegir",
+    "excludeTitle": "Excluir y volver a elegir",
+    "total": "Total",
+    "perWeek": "{amount} p/sem"
+  },
+  "formation": {
+    "custom": "Personalizada",
+    "yours": "Tus formaciones",
+    "presets": "Predeterminadas de FM",
+    "moveTo": "Mover {from} a {spot} ({position})",
+    "emptySpot": "Hueco libre {spot} ({position})",
+    "moveHere": "Mover {from} aquí",
+    "goalkeeperFixed": "Portero (fijo)",
+    "selected": "{spot} ({position}) seleccionado: elige un hueco al que moverlo o vuelve a pulsar para cancelar",
+    "dragOrSelect": "{spot} ({position}): arrastra o selecciona para mover",
+    "keeperStays": "El portero se queda en la portería",
+    "dragTitle": "{position}: arrastra a otro hueco o sobre una posición para intercambiarlas",
+    "hint": {
+      "dropSwap": "Suelta para intercambiar {from} y {to}.",
+      "dropMove": "Suelta para mover {from} a {to}.",
+      "dropCancel": "Suelta sobre un hueco, o en cualquier otro sitio para cancelar.",
+      "moving": "Moviendo {spot}: haz clic en un hueco (o en otra posición para intercambiarlas), o de nuevo en {spot} para cancelar.",
+      "idle": "Arrastra una posición a otro hueco, o sobre otra posición para intercambiarlas."
+    },
+    "delete": "Eliminar «{name}»",
+    "namePlaceholder": "Ponle nombre a esta formación",
+    "myPlaceholder": "Mi {formation}",
+    "nameLabel": "Nombre de esta formación",
+    "save": "Guardar",
+    "scoredAs": "Puntuado como",
+    "roleFor": "Rol para {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "Los roles son tus perfiles de pesos de <link>Jugadores</link>."
+  },
+  "basis": {
+    "label": "Puntuar a los jugadores por",
+    "potential": "Pleno potencial",
+    "potentialTitle": "Atributos proyectados a su CP",
+    "needsTitle": "Necesita CA y CP: exporta con la vista {view}",
+    "needs": "Pleno potencial necesita la vista {view}."
+  },
+  "pitch": {
+    "nobody": "Nadie",
+    "nobodyTitle": "{spot}: nadie en la plantilla juega de {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

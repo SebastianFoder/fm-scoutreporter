@@ -11,7 +11,8 @@ import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { getGroupedAttributeValue } from "@scoutreporter/core/grouped-attribute-value";
-import { attributeLabel } from "@scoutreporter/core/attribute-labels";
+import { useTranslations } from "next-intl";
+import { useAttributeLabel, useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
 
 interface Props {
   players: PlayerWithGroups[];
@@ -34,16 +35,20 @@ export default function CompareClient({
   const [page, setPage] = useState(1);
   const { weights, emphasis } = useActiveWeightProfile();
   const highlighted = useHighlightedAttributes();
+  const t = useTranslations("players");
+  const tFm = useTranslations("fm.terms");
+  const attributeLabel = useAttributeLabel();
+  const formatNumber = useFormatNumber();
 
   const highlightedKeys =
     highlighted.length > 0 ? highlighted : FALLBACK_HIGHLIGHTED_KEYS;
 
   useEffect(() => {
-    const t = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setDebouncedQuery(query);
       setPage(1);
     }, 250);
-    return () => window.clearTimeout(t);
+    return () => window.clearTimeout(timer);
   }, [query]);
 
   const filteredPlayers = useMemo(() => {
@@ -86,7 +91,7 @@ export default function CompareClient({
   return (
     <div className="mx-auto max-w-7xl space-y-5 px-5 py-6 text-ink md:py-8">
       <PageHeader
-        title="Compare players"
+        title={t("compare.title")}
         aside={
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -96,7 +101,7 @@ export default function CompareClient({
               onClick={() => setSelectedIds([])}
               disabled={selectedIds.length === 0}
             >
-              Clear selection
+              {t("compare.clearSelection")}
             </Button>
             <Button
               color="alt"
@@ -110,24 +115,23 @@ export default function CompareClient({
               }}
               disabled={filteredPlayers.length === 0}
             >
-              Select first 10
+              {t("compare.selectFirst", { count: 10 })}
             </Button>
           </div>
         }
       >
-        Pick players to compare. Gold, silver and bronze are awarded per row
-        relative to the selected players.
+        {t("compare.intro")}
       </PageHeader>
 
       <div className="grid gap-5 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <section
-          aria-label="Choose players"
+          aria-label={t("compare.choosePlayers")}
           className="panel flex flex-col lg:max-h-[calc(100vh-12rem)] lg:self-start"
         >
           <div className="border-b border-line px-3 py-3">
             <div className="mb-2 flex items-baseline justify-between">
-              <h2 className="section-title">Players</h2>
-              <p className="text-[13px] text-muted">{selectedIds.length} selected</p>
+              <h2 className="section-title">{tFm("players")}</h2>
+              <p className="text-[13px] text-muted">{t("selectedCount", { count: selectedIds.length })}</p>
             </div>
             <span className="relative block">
               <Search
@@ -137,8 +141,8 @@ export default function CompareClient({
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by name, position, or ID…"
-                aria-label="Search players"
+                placeholder={t("compare.searchPlaceholder")}
+                aria-label={t("compare.searchLabel")}
                 className="field h-9 w-full py-2 pl-8 pr-3 text-sm"
               />
             </span>
@@ -171,7 +175,7 @@ export default function CompareClient({
 
               {filteredPlayers.length === 0 && (
                 <div className="px-3 py-6 text-center text-sm text-muted">
-                  No players match that search.
+                  {t("compare.noMatch")}
                 </div>
               )}
             </div>
@@ -180,9 +184,11 @@ export default function CompareClient({
           {filteredPlayers.length > 0 && (
             <div className="flex items-center justify-between gap-2 border-t border-line px-3 py-2">
               <div className="text-[12px] text-muted">
-                {(page - 1) * PAGE_SIZE + 1}–
-                {Math.min(page * PAGE_SIZE, filteredPlayers.length)} of{" "}
-                {filteredPlayers.length}
+                {t("compare.range", {
+                  from: (page - 1) * PAGE_SIZE + 1,
+                  to: Math.min(page * PAGE_SIZE, filteredPlayers.length),
+                  total: filteredPlayers.length,
+                })}
               </div>
               <div className="flex items-center gap-1">
                 <Button
@@ -192,7 +198,7 @@ export default function CompareClient({
                   disabled={page <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                 >
-                  Prev
+                  {t("compare.prev")}
                 </Button>
                 <div className="px-1 text-[12px] font-semibold">
                   {page} <span className="font-normal text-muted">/ {pageCount}</span>
@@ -204,7 +210,7 @@ export default function CompareClient({
                   disabled={page >= pageCount}
                   onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
                 >
-                  Next
+                  {t("compare.next")}
                 </Button>
               </div>
             </div>
@@ -219,7 +225,7 @@ export default function CompareClient({
                   key={p.raw.uniqueId}
                   type="button"
                   onClick={() => toggleSelected(p.raw.uniqueId)}
-                  aria-label={`Remove ${p.raw.player}`}
+                  aria-label={t("compare.removePlayer", { name: p.raw.player })}
                   className="group inline-flex items-center gap-1.5 rounded border border-line bg-surface py-1 pl-2.5 pr-1.5 text-[13px] font-medium hover:border-red/60"
                 >
                   <span>{p.raw.player}</span>
@@ -230,13 +236,16 @@ export default function CompareClient({
           )}
 
           {selected.length > 0 && (
-            <section aria-label="Comparison" className="panel overflow-hidden">
+            <section aria-label={t("compare.comparison")} className="panel overflow-hidden">
               <div className="flex items-baseline justify-between gap-3 px-4 py-3">
                 <h2 className="section-title">
-                  Comparison <span className="font-normal text-muted">({selected.length})</span>
+                  {t.rich("compare.comparisonTitle", {
+                    count: selected.length,
+                    muted: (chunks) => <span className="font-normal text-muted">{chunks}</span>,
+                  })}
                 </h2>
                 <p className="text-[13px] text-muted">
-                  Score + {highlightedKeys.length} attributes
+                  {t("compare.summary", { count: highlightedKeys.length })}
                 </p>
               </div>
 
@@ -245,7 +254,7 @@ export default function CompareClient({
                   <thead>
                     <tr>
                       <th className="sticky left-0 z-10 border-r border-line px-3 py-2 text-left">
-                        Metric
+                        {t("compare.metric")}
                       </th>
                       {scored.map(({ p }) => (
                         <th key={p.raw.uniqueId} className="px-3 py-2 text-right align-bottom">
@@ -263,7 +272,7 @@ export default function CompareClient({
                   <tbody>
                     <tr>
                       <td className="sticky left-0 z-10 border-r border-line bg-surface px-3 py-2 font-semibold">
-                        Weighted score
+                        {t("compare.weightedScore")}
                       </td>
                       {(() => {
                         const medals = medalsByPlayerId(
@@ -278,7 +287,7 @@ export default function CompareClient({
                           return (
                             <td key={p.raw.uniqueId} className="px-3 py-2 text-right">
                               <MedalValue medal={medal} className="font-bold">
-                                {score.toFixed(2)}
+                                {formatNumber(score, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </MedalValue>
                             </td>
                           );
@@ -318,16 +327,16 @@ export default function CompareClient({
               </div>
               <ul
                 className="flex flex-wrap items-center gap-4 border-t border-line px-4 py-2 text-[12px] text-muted"
-                aria-label="Legend"
+                aria-label={t("compare.legend")}
               >
                 <li className="inline-flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-[2px] bg-gold" aria-hidden /> Best
+                  <span className="h-3 w-3 rounded-[2px] bg-gold" aria-hidden /> {t("compare.best")}
                 </li>
                 <li className="inline-flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-[2px] bg-silver" aria-hidden /> 2nd
+                  <span className="h-3 w-3 rounded-[2px] bg-silver" aria-hidden /> {t("compare.medals.silver")}
                 </li>
                 <li className="inline-flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-[2px] bg-bronze" aria-hidden /> 3rd
+                  <span className="h-3 w-3 rounded-[2px] bg-bronze" aria-hidden /> {t("compare.medals.bronze")}
                 </li>
               </ul>
             </section>
@@ -335,7 +344,7 @@ export default function CompareClient({
 
           {selected.length === 0 && (
             <div className="rounded-md border border-dashed border-line p-8 text-center text-sm text-muted">
-              Select at least 2 players to start comparing.
+              {t("compare.empty")}
             </div>
           )}
         </div>
@@ -352,12 +361,6 @@ const medalClass: Record<Medal, string> = {
   bronze: "bg-bronze text-on-bronze",
 };
 
-const medalLabel: Record<Medal, string> = {
-  gold: "1st",
-  silver: "2nd",
-  bronze: "3rd",
-};
-
 function MedalValue({
   medal,
   className,
@@ -367,6 +370,7 @@ function MedalValue({
   className?: string;
   children: React.ReactNode;
 }) {
+  const t = useTranslations("players.compare.medals");
   return (
     <span
       className={[
@@ -374,7 +378,7 @@ function MedalValue({
         medal ? `${medalClass[medal]} font-bold` : "",
         className ?? "",
       ].join(" ")}
-      title={medal ? medalLabel[medal] : undefined}
+      title={medal ? t(medal) : undefined}
     >
       {children}
     </span>

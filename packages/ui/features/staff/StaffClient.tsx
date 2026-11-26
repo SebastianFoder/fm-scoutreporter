@@ -3,6 +3,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useIntlLocale } from "@scoutreporter/ui/i18n/hooks";
 import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { useStoredToggle } from "@scoutreporter/ui/components/useStoredToggle";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
@@ -29,7 +31,7 @@ import {
 import { StaffDetailModal } from "./StaffDetailModal";
 import { StaffImportPanel } from "./StaffImportPanel";
 import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
-import { RatingCell, ScoreCell, type ValueMode } from "./StaffCells";
+import { RatingCell, ScoreCell, useFormatScore, useStaffRoleText, type ValueMode } from "./StaffCells";
 import { compareNames } from "@scoutreporter/core/text";
 
 type Row = { s: StaffMember; scores: StaffScores };
@@ -62,7 +64,17 @@ const ATTRS_BY_GROUP = STAFF_ATTRIBUTE_GROUPS.map((g) => ({
   attrs: STAFF_ATTRIBUTES.filter((a) => a.group === g),
 }));
 
+const kbd = (chunks: ReactNode) => (
+  <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">{chunks}</kbd>
+);
+const bold = (chunks: ReactNode) => <span className="font-semibold text-ink">{chunks}</span>;
+
 export default function StaffClient() {
+  const t = useTranslations("staff");
+  const tFm = useTranslations("fm");
+  const roleText = useStaffRoleText();
+  const formatScore = useFormatScore();
+  const locale = useIntlLocale();
   const { state } = useStaffData();
   const { staff, columns } = state;
 
@@ -140,7 +152,7 @@ export default function StaffClient() {
     : rankBy === "preferred" && jobRoles.length > 0
       ? jobWeights
       : new Map();
-  const scoreLabel = rankRole ? rankRole.name : rankBy === "preferred" ? "Preferred job" : "Best role";
+  const scoreLabel = rankRole ? roleText.name(rankRole) : rankBy === "preferred" ? t("preferredJob") : t("bestRole");
 
   const onSort = (key: SortKey) => {
     if (key === sort) setDir(dir === "asc" ? "desc" : "asc");
@@ -189,35 +201,31 @@ export default function StaffClient() {
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
         <PageHeader
-          title="Staff"
+          title={t("list.title")}
           aside={
             <Link href="/staff/backroom" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
-              Best backroom <ArrowRight className="h-4 w-4" aria-hidden />
+              {t("list.bestBackroom")} <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
           }
         >
-          Rank coaches, scouts, analysts and directors from an FM26 staff search export. FM26&apos;s word
-          ratings are mapped back to the 1–20 scale and every staff member is scored on each staff role.
+          {t("list.intro")}
         </PageHeader>
 
         <StaffImportPanel onImported={resetPage} />
 
         {staff.length === 0 && (
-          <NoImport desktop={<>No staff yet. In FM, open a Staff Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
-            No staff imported yet. In FM, open a staff search, import the Staff view, select the staff and export
-            a CSV, then import it above.
-          </NoImport>
+          <NoImport desktop={t.rich("noImport.desktop", { kbd })}>{t("list.noImport")}</NoImport>
         )}
 
         {staff.length > 0 && (
-          <section aria-label="Staff" className="panel">
+          <section aria-label={t("list.title")} className="panel">
             <div
               role="group"
-              aria-label="Filters"
+              aria-label={t("list.filters")}
               className="flex flex-wrap items-end gap-x-4 gap-y-3 border-b border-line px-4 py-3"
             >
               <label className={filterLabel}>
-                Rank by
+                {t("list.rankBy")}
                 <select
                   value={rankBy}
                   onChange={(e) => {
@@ -228,13 +236,13 @@ export default function StaffClient() {
                   }}
                   className={`${inputClass} pl-2.5`}
                 >
-                  <option value="best">Best role</option>
-                  <option value="preferred">Preferred job</option>
+                  <option value="best">{t("bestRole")}</option>
+                  <option value="preferred">{t("preferredJob")}</option>
                   {STAFF_ROLE_GROUPS.map((g) => (
-                    <optgroup key={g} label={g}>
+                    <optgroup key={g} label={roleText.group(g)}>
                       {STAFF_ROLES.filter((r) => r.group === g).map((r) => (
                         <option key={r.id} value={r.id}>
-                          {r.name}
+                          {roleText.name(r)}
                         </option>
                       ))}
                     </optgroup>
@@ -242,7 +250,7 @@ export default function StaffClient() {
                 </select>
               </label>
               <label className={filterLabel}>
-                Preferred job
+                {t("preferredJob")}
                 <select
                   value={job}
                   onChange={(e) => {
@@ -257,7 +265,7 @@ export default function StaffClient() {
                   }}
                   className={`${inputClass} pl-2.5`}
                 >
-                  <option value="all">All jobs</option>
+                  <option value="all">{t("list.allJobs")}</option>
                   {jobs.map(([j, n]) => (
                     <option key={j} value={j}>
                       {j} ({n})
@@ -266,7 +274,7 @@ export default function StaffClient() {
                 </select>
               </label>
               <label className={`${filterLabel} min-w-48 flex-1 sm:max-w-xs`}>
-                Search
+                {t("list.search")}
                 <input
                   type="text"
                   value={query}
@@ -274,7 +282,7 @@ export default function StaffClient() {
                     setQuery(e.target.value);
                     resetPage();
                   }}
-                  placeholder="Name or club"
+                  placeholder={t("list.searchPlaceholder")}
                   className={`${inputClass} w-full`}
                 />
               </label>
@@ -288,10 +296,10 @@ export default function StaffClient() {
                   }}
                   className="h-4 w-4 accent-accent"
                 />
-                Free agents only
+                {t("list.freeAgentsOnly")}
               </label>
               {mine > 0 && (
-                <label className="flex h-9 items-center gap-2 text-sm" title={`Staff at ${myClub}`}>
+                <label className="flex h-9 items-center gap-2 text-sm" title={t("list.myClubTitle", { club: myClub ?? "" })}>
                   <input
                     type="checkbox"
                     checked={showMine}
@@ -301,23 +309,23 @@ export default function StaffClient() {
                     }}
                     className="h-4 w-4 accent-accent"
                   />
-                  Show my staff ({mine})
+                  {t("list.showMine", { count: mine })}
                 </label>
               )}
               <div className="flex flex-col gap-1 text-[13px] text-muted">
-                <span id="value-mode">Ratings as</span>
+                <span id="value-mode">{t("list.ratingsAs")}</span>
                 <SegmentedControl
                   labelledBy="value-mode"
                   value={mode}
                   onChange={setMode}
                   options={[
-                    { value: "words", label: "Words" },
-                    { value: "numbers", label: "1–20" },
+                    { value: "words", label: t("list.words") },
+                    { value: "numbers", label: t("list.numbers") },
                   ]}
                 />
               </div>
               <p className="ml-auto pb-2 text-sm text-muted">
-                <span className="font-semibold text-ink">{total}</span> of {staff.length} staff
+                {t.rich("list.count", { shown: total, total: staff.length, b: bold })}
               </p>
             </div>
 
@@ -325,18 +333,21 @@ export default function StaffClient() {
               <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-b border-line px-4 py-2 text-[13px] text-muted">
                 {jobRoles.length > 0 ? (
                   <p>
-                    <span className="font-semibold text-ink">{job}:</span> scored as{" "}
                     {jobRoles.length === 1
-                      ? jobRoles[0].name
-                      : `their best of ${jobRoles.map((r) => r.short).join(", ")}`}
-                    . {narrowToJob ? "Showing" : "Bold columns are"} the {jobWeights.size} attributes fm-scoring
-                    weights for this job.
+                      ? t.rich("list.jobScoredAsOne", { job, role: roleText.name(jobRoles[0]), b: bold })
+                      : t.rich("list.jobScoredAsBest", {
+                          job,
+                          roles: new Intl.ListFormat(locale, { type: "conjunction" }).format(
+                            jobRoles.map((r) => roleText.shortName(r)),
+                          ),
+                          b: bold,
+                        })}{" "}
+                    {narrowToJob
+                      ? t("list.jobShowingWeighted", { count: jobWeights.size })
+                      : t("list.jobBoldWeighted", { count: jobWeights.size })}
                   </p>
                 ) : (
-                  <p>
-                    <span className="font-semibold text-ink">{job}:</span> fm-scoring has no weights for this job, so
-                    every attribute is shown and Preferred job has no score.
-                  </p>
+                  <p>{t.rich("list.jobNoWeights", { job, b: bold })}</p>
                 )}
                 {jobRoles.length > 0 && (
                   <label className="flex items-center gap-2 text-ink">
@@ -346,7 +357,7 @@ export default function StaffClient() {
                       onChange={(e) => setShowAllAttrs(e.target.checked)}
                       className="h-4 w-4 accent-accent"
                     />
-                    Show all attributes
+                    {t("list.showAllAttributes")}
                   </label>
                 )}
               </div>
@@ -354,8 +365,7 @@ export default function StaffClient() {
 
             {rankRole && (
               <p className="border-b border-line px-4 py-2 text-[13px] text-muted">
-                <span className="font-semibold text-ink">{rankRole.name}:</span> {rankRole.summary} Weighted
-                attributes are in bold.
+                {t.rich("list.rankRole", { role: roleText.name(rankRole), summary: roleText.summary(rankRole), b: bold })}
               </p>
             )}
 
@@ -371,29 +381,32 @@ export default function StaffClient() {
                         scope="colgroup"
                         className="border-l border-line px-2 pt-2 text-center font-semibold text-ink"
                       >
-                        {g.group}
+                        {tFm(`staffAttributeGroups.${g.group}`)}
                       </th>
                     ))}
                   </tr>
                   <tr>
-                    {th("name", "Name", { align: "left" })}
+                    {th("name", t("list.name"), { align: "left" })}
                     <th scope="col" className="px-2 py-2 text-left">
-                      Job
+                      {t("list.job")}
                     </th>
-                    {th("score", scoreLabel, {
-                      title: "Weighted role score on the 1–20 scale. * = some of the role's attributes were missing.",
-                    })}
+                    {th("score", scoreLabel, { title: t("list.scoreTitle") })}
                     {rankBy === "best" ? (
                       <th scope="col" className="px-2 py-2 text-left">
-                        Role
+                        {tFm("terms.role")}
                       </th>
                     ) : (
-                      th("best", "Best role", { align: "left" })
+                      th("best", t("bestRole"), { align: "left" })
                     )}
                     {shownAttrs.flatMap((g) =>
                       g.attrs.map((a: StaffAttributeDef, i) =>
-                        th(a.key, a.abbr, {
-                          title: weights.has(a.key) ? `${a.label} (weight ${weights.get(a.key)})` : a.label,
+                        th(a.key, tFm(`staffAttributeAbbr.${a.key}`), {
+                          title: weights.has(a.key)
+                            ? t("list.attributeWeight", {
+                                label: tFm(`staffAttributes.${a.key}`),
+                                weight: weights.get(a.key) ?? 0,
+                              })
+                            : tFm(`staffAttributes.${a.key}`),
                           align: "center",
                           className: `${i === 0 ? "border-l border-line" : ""} ${
                             weights.has(a.key) ? "font-bold text-ink" : ""
@@ -418,7 +431,7 @@ export default function StaffClient() {
                             {s.name}
                           </button>
                           <span className="block whitespace-nowrap text-[12px] text-muted">
-                            {s.club || "Free agent"}
+                            {s.club || t("freeAgent")}
                             {s.personality && ` · ${s.personality}`}
                           </span>
                         </td>
@@ -428,11 +441,11 @@ export default function StaffClient() {
                         </td>
                         <td className="whitespace-nowrap px-2 py-1.5 text-[13px]">
                           {rankBy === "best" ? (
-                            (scores.best?.role.name ?? "–")
+                            (scores.best ? roleText.name(scores.best.role) : "–")
                           ) : scores.best ? (
                             <>
-                              {scores.best.role.name}{" "}
-                              <span className="text-muted">{scores.best.score.toFixed(1)}</span>
+                              {roleText.name(scores.best.role)}{" "}
+                              <span className="text-muted">{formatScore(scores.best.score)}</span>
                             </>
                           ) : (
                             "–"
@@ -475,12 +488,9 @@ export default function StaffClient() {
 
         <section aria-labelledby="method" className="max-w-3xl space-y-2.5 text-sm leading-relaxed text-muted">
           <h2 id="method" className="section-title">
-            How staff are scored
+            {t("list.method.title")}
           </h2>
-          <p>
-            FM26 shows staff attributes as words. Each word covers a fixed range of the old 1–20 scale, and is
-            scored at the middle of it (exact numbers are used when an export has them):
-          </p>
+          <p>{t("list.method.words")}</p>
           <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-ink">
             {STAFF_RATING_BANDS.map((b) => (
               <li key={b.word} className="inline-flex items-center gap-1.5">
@@ -492,24 +502,18 @@ export default function StaffClient() {
             ))}
           </ul>
           <p>
-            A role score is the weighted average of the attributes that role uses, with the 17 staff roles and
-            weights from{" "}
-            <a
-              href="https://github.com/jamiebolden/fm-scoring/blob/main/weights/fm27_staff.md"
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
-              fm-scoring
-            </a>
-            : a community staff rating grid, relabelled for FM27 and checked against the key attributes FM27
-            highlights on staff profiles. Coaches are split into FM&apos;s nine coaching groups, each scored on
-            its two coaching attributes plus authority, determination, motivating, people management and working
-            with youngsters. A generic Coach is scored on their best outfield group. Adaptability, Judging Staff
-            Ability and Negotiating carry no weight in any role. Filtering by preferred job shows only the
-            attributes that job is weighted on. Best role only counts roles where most of the weighted
-            attributes were in the export. Role scores get the same S++ to F grade stamps as player scores, on
-            the same 1–20 steps.
+            {t.rich("list.method.roles", {
+              link: (chunks) => (
+                <a
+                  href="https://github.com/jamiebolden/fm-scoring/blob/main/weights/fm27_staff.md"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </p>
         </section>
       </main>

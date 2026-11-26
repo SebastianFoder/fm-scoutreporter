@@ -1,0 +1,232 @@
+{
+  "title": "Analyse de l’effectif",
+  "intro": "Importez votre effectif, choisissez la formation que vous jouez, et voyez votre premier et votre deuxième onze, les postes trop justes ou faibles, les joueurs en fin de parcours et les jeunes prêts à franchir un cap.",
+  "import": {
+    "title": "Importer votre effectif",
+    "titleCount": "{count, plural, one {# joueur dans votre effectif} other {# joueurs dans votre effectif}}",
+    "description": "Exportez votre écran d’effectif avec la vue <squad>Squad</squad> ou <hidden>Squad Hidden Attributes</hidden> (ajoute le potentiel). Séparé de votre import de recrutement.",
+    "noColumns": "Cet import n’a pas les colonnes d’effectif : prêts, blessures, statut dans l’effectif et feuille de match ne sont donc pas vérifiés."
+  },
+  "noImport": {
+    "desktop": "Pas encore d’effectif. Chaque scan lit aussi les joueurs de votre club.",
+    "web": "Aucun effectif importé pour l’instant. Choisissez le CSV de votre effectif ci-dessus, ou chargez les données test pour découvrir l’outil.",
+    "usePlayerImportPrompt": "Vous avez déjà exporté votre effectif comme import de joueurs ?",
+    "usePlayerImport": "Utiliser l’import de joueurs ({count, plural, one {# joueur} other {# joueurs}}) comme effectif"
+  },
+  "setup": {
+    "title": "Réglages",
+    "reset": "Réinitialiser",
+    "availability": "Disponibilité",
+    "includeLoans": "Compter les joueurs prêtés",
+    "loanHint": "{count} prêté(s) à d’autres clubs.",
+    "excludeInjured": "Écarter les joueurs blessés",
+    "injuredHint": "{count} blessé(s) actuellement. Activé : les onze que vous pouvez aligner aujourd’hui."
+  },
+  "cannotFill": {
+    "title": "Votre effectif ne peut pas remplir cette formation.",
+    "body": "Personne n’a {positions} comme poste naturel, le onze est donc incomplet. Seuls les postes naturels de l’export comptent."
+  },
+  "footnote": "Chaque poste est noté sur son rôle (1–20, avec la note de S++ à F) et ne compte que les joueurs pour qui c’est un poste naturel. Le premier onze a le meilleur score total ; le deuxième onze est le meilleur onze parmi les joueurs restants, si bien que chaque joueur ne couvre qu’un poste.",
+  "unknownPlayer": "Inconnu",
+  "ageShort": "{age} ans",
+  "nobody": "Personne",
+  "injured": "Blessé",
+  "ability": "Niveau",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label} : {value} étoiles sur 5} other {{value} étoiles sur 5}}",
+    "title": "{hasLabel, select, yes {{label} : {value} étoiles} other {{value} étoiles}}"
+  },
+  "days": {
+    "weeks": "{count} sem.",
+    "days": "{count} j"
+  },
+  "overview": {
+    "title": "Vue d’ensemble de l’effectif",
+    "firstXi": "Premier onze",
+    "firstXiAtPotential": "Premier onze au potentiel",
+    "firstXiAverage": "Moyenne du premier onze",
+    "secondXi": "Deuxième onze",
+    "secondXiAverage": "Moyenne du deuxième onze",
+    "averageAge": "âge {age}",
+    "unfilled": "{count} non pourvu(s)",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {joueur} other {joueurs}}, âge {age}{unavailable, plural, =0 {} one {, # indisponible} other {, # indisponibles}}</text>",
+    "teamSheet": "Feuille de match FM",
+    "teamSheetMatch": "<num>{matching}</num><text>sur {count} correspondent à ce onze</text>",
+    "pitchChoice": "Onze sur le terrain",
+    "legend": {
+      "high": "À corriger",
+      "medium": "À surveiller",
+      "click": "Cliquez sur un poste pour voir ses remarques."
+    },
+    "notesAtPosition": "{count, plural, =0 {Rien à signaler à ce poste.} one {# remarque à ce poste} other {# remarques à ce poste}}",
+    "showAll": "Tout afficher",
+    "nothingToFix": "Rien à corriger : chaque titulaire est proche de la moyenne du onze et a une doublure à moins de 1,5 derrière lui.",
+    "groups": {
+      "fix": {
+        "title": "À corriger",
+        "blurb": "Les postes qui vous coûtent maintenant : trous, maillons faibles et doublures trop justes."
+      },
+      "manage": {
+        "title": "À gérer",
+        "blurb": "Statuts dans l’effectif qui ne collent pas au onze. À régler lors de la prochaine discussion de contrat."
+      },
+      "develop": {
+        "title": "À développer",
+        "blurb": "Des jeunes qui dépasseront un titulaire, et des successeurs prêts à prendre le relais."
+      }
+    },
+    "pitchEntry": "{spot} : {hasPlayer, select, yes {{name}, {score}} other {personne}}{replacing, select, none {} other { à la place de {replacing}}}{issue, select, high {, à corriger} medium {, à surveiller} other {}}",
+    "stampLabel": "{name} à {spot}",
+    "injuredBadge": "BLS",
+    "inBadge": "ENT"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Personne à ce poste",
+      "weak": "Maillon faible",
+      "no-cover": "Pas de doublure",
+      "drop-off": "Doublure trop juste",
+      "ageing": "Titulaire vieillissant",
+      "successor": "Successeur prêt",
+      "prospect": "Espoir",
+      "status-benched": "Place de titulaire promise",
+      "status-starting": "Titulaire avec un statut bas"
+    },
+    "severity": {
+      "high": "Élevée",
+      "medium": "Moyenne"
+    },
+    "empty": {
+      "evidence": "Aucun {position} naturel dans l’effectif{count, plural, one {} other {, # places à pourvoir}}.",
+      "advice": "Recrutez-en un, ou reconvertissez un joueur à ce poste."
+    },
+    "weak": {
+      "evidence": "<delta></delta> par rapport à la moyenne du onze",
+      "advice": "Le premier poste à renforcer."
+    },
+    "noCover": {
+      "evidence": "pas de remplaçant naturel",
+      "advice": "Une blessure ou une suspension oblige à aligner quelqu’un hors de son poste."
+    },
+    "dropOff": {
+      "advice": "Une doublure d’un niveau inférieur. Une recrue pour la profondeur de l’effectif se justifie."
+    },
+    "ageing": {
+      "atPotential": "{score} au potentiel",
+      "adviceSuccessor": "{name} a {age} ans ; son successeur n’est déjà plus loin.",
+      "adviceNone": "{name} a {age} ans et aucun joueur de 23 ans ou moins n’est proche. Prévoyez un successeur."
+    },
+    "prospect": {
+      "vs": "vs",
+      "starsAdvice": "Les préparateurs jugent son potentiel supérieur au niveau ({ability}★) et au potentiel ({potential}★) de {starter}. Donnez-lui du temps de jeu.",
+      "projectedLabel": "Projeté au potentiel maximum",
+      "atPotentialVs": "au potentiel, vs",
+      "starterAtPotential": "Titulaire à son potentiel",
+      "starterToday": "Titulaire aujourd’hui",
+      "projectedAdvice": "Projeté {gap} au-dessus de {starter}{own, select, yes { à son propre potentiel} other {}}. Donnez-lui du temps de jeu."
+    },
+    "statusBenched": {
+      "secondOnly": "deuxième onze uniquement",
+      "neither": "dans aucun des deux onze",
+      "advice": "Son statut dans l’effectif, {status}, lui promet une place de titulaire. Faites-le jouer davantage, ou baissez son statut."
+    },
+    "statusStarting": {
+      "advice": "Titulaire ici avec un statut bas. Relevez-le lors de la prochaine discussion de contrat."
+    }
+  },
+  "teamSheet": {
+    "title": "Changements sur votre feuille de match FM",
+    "summary": "{matching} de vos titulaires FM gardent leur place{moves, plural, =0 {} one {, # à un autre poste} other {, # à un autre poste}}.",
+    "columns": {
+      "out": "Sortant : titulaire dans FM",
+      "in": "Entrant : ce onze",
+      "gain": "Gain à ce poste"
+    },
+    "out": "Sortant",
+    "in": "Entrant",
+    "outDetail": "{picked, select, yes {{pickedAt} dans FM} other {Titulaire dans FM}}{natural, select, no {, {position} non naturel} other {}}",
+    "extraStarter": "Personne : un titulaire en plus",
+    "replacedBy": "remplacé par",
+    "nobodyPlaysThere": "Personne dans ce onze ne joue à ce poste",
+    "newPosition": "nouveau poste",
+    "alsoMoves": "Change aussi de poste :",
+    "to": "vers"
+  },
+  "depth": {
+    "title": "Profondeur de l’effectif",
+    "intro": "Titulaire et doublure à chaque poste{potential, select, yes {, au potentiel maximum} other {}}. Les doublures viennent du deuxième onze, donc personne ne double deux postes.",
+    "columns": {
+      "pos": "Poste",
+      "starter": "Titulaire",
+      "cover": "Doublure",
+      "drop": "Écart",
+      "dropTitle": "Score de la doublure moins celui du titulaire",
+      "alsoPlays": "Jouent aussi ici",
+      "alsoPlaysTitle": "Autres joueurs naturels à ce poste, du meilleur au moins bon. XI : titulaire ailleurs. 2e : doublure ailleurs."
+    },
+    "starterAt": "Titulaire en {spot}",
+    "coverAt": "Doublure en {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, titulaire ailleurs} second {, doublure ailleurs} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2e",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Reste de l’effectif",
+    "intro": "{count, plural, one {# joueur} other {# joueurs}} dans aucun des deux onze, au poste où ils se rapprochent le plus du titulaire.",
+    "columns": {
+      "bestFit": "Meilleur poste",
+      "score": "Score",
+      "vsStarter": "vs titulaire",
+      "vsStarterTitle": "Score moins celui du titulaire à ce poste",
+      "potentialTitle": "Score à ce poste au potentiel maximum",
+      "coachRating": "Avis prép.",
+      "coachRatingTitle": "Rapport du préparateur : niveau actuel et potentiel, par rapport à votre effectif",
+      "happiness": "État d’esprit",
+      "missed": "Absence",
+      "missedTitle": "Temps manqué sur blessure"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Espoirs",
+        "blurb": "Dépasseront un titulaire. Donnez-leur du temps de jeu."
+      },
+      "young": {
+        "title": "En formation",
+        "blurb": "21 ans ou moins. À prêter ou à garder pour l’entraînement."
+      },
+      "surplus": {
+        "title": "En surplus",
+        "blurb": "Passé l’âge de progresser et dans aucun des deux onze. À vendre ou à garder pour la profondeur."
+      },
+      "no-fit": {
+        "title": "Aucun poste ici",
+        "blurb": "Aucun poste naturel dans cette formation."
+      },
+      "away": {
+        "title": "Indisponibles",
+        "blurb": "Blessés ou prêtés."
+      }
+    },
+    "showAll": "Afficher les {count}",
+    "showFewer": "Afficher moins",
+    "onLoan": "En prêt",
+    "scoreAt": "Score en {spot}",
+    "score": "Score",
+    "atFullPotential": "Au potentiel maximum"
+  },
+  "upgrades": {
+    "title": "Renforts issus de votre import de recrutement",
+    "intro": "Joueurs supervisés supérieurs d’au moins 0,5 à votre titulaire le plus faible à chaque poste, sur le même rôle.",
+    "allInSquad": "Tous les joueurs de votre import de joueurs sont déjà dans l’effectif.",
+    "teaser": "Qui, dans votre liste de recrutement, améliorerait le onze.",
+    "importHint": "Importez un export de recrutement (une recherche de joueur) dans <link>Joueurs</link> pour voir qui améliorerait chaque poste.",
+    "columns": {
+      "pos": "Poste",
+      "starter": "Votre titulaire",
+      "best": "Meilleurs renforts supervisés"
+    },
+    "times": "×{count}",
+    "none": "Aucun renfort dans votre import pour {positions}."
+  }
+}

@@ -10,7 +10,8 @@
   "dependencies": {
     "@scoutreporter/core": "workspace:*",
     "@tanstack/react-virtual": "^3.13.23",
-    "lucide-react": "^0.577.0"
+    "lucide-react": "^0.577.0",
+    "next-intl": "^4.16.2"
   },
   "peerDependencies": {
     "next": "16.1.7",

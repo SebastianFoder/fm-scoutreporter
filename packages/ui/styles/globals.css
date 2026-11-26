@@ -106,16 +106,18 @@
   --color-bronze: oklch(var(--bronze-bg));
   --color-on-bronze: oklch(var(--bronze-text));
 
-  --font-sans: var(--font-ui);
-  --font-mono: var(--font-ui);
-  --font-condensed: var(--font-ui-condensed);
+  /* Sofia Sans has no Hangul: Korean falls through to the system's Korean UI font. */
+  --font-hangul: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR";
+  --font-sans: var(--font-ui), var(--font-hangul);
+  --font-mono: var(--font-ui), var(--font-hangul);
+  --font-condensed: var(--font-ui-condensed), var(--font-hangul);
 }
 
 @layer base {
   body {
     background-color: oklch(var(--background));
     color: oklch(var(--text));
-    font-family: var(--font-ui), system-ui, sans-serif;
+    font-family: var(--font-ui), var(--font-hangul), system-ui, sans-serif;
     font-size: 15px;
     line-height: 1.5;
     /* Tabular figures everywhere so columns of numbers line up. No ligatures:
@@ -158,7 +160,7 @@
 
   /* Small section heading inside panels: sentence case, semibold, condensed. */
   .section-title {
-    font-family: var(--font-ui-condensed), var(--font-ui), sans-serif;
+    font-family: var(--font-ui-condensed), var(--font-ui), var(--font-hangul), sans-serif;
     font-size: 0.95rem;
     font-weight: 650;
     color: oklch(var(--text));
@@ -238,7 +240,7 @@
     background-color: oklch(var(--background));
     border-bottom: 1px solid oklch(var(--border));
     color: oklch(var(--muted));
-    font-family: var(--font-ui-condensed), var(--font-ui), sans-serif;
+    font-family: var(--font-ui-condensed), var(--font-ui), var(--font-hangul), sans-serif;
     font-size: 0.8rem;
     font-weight: 650;
     white-space: nowrap;
@@ -333,7 +335,7 @@
       inset 0 -1px 0 oklch(0 0 0 / 0.14),
       inset 0 0 0 1px oklch(var(--gi) / 0.18),
       inset 0 0 var(--inner-blur, 6px) 0 oklch(1 0 0 / var(--inner));
-    font-family: var(--font-ui-condensed), var(--font-ui), sans-serif;
+    font-family: var(--font-ui-condensed), var(--font-ui), var(--font-hangul), sans-serif;
     font-weight: 800;
     font-size: 0.8125rem;
     letter-spacing: 0.01em;

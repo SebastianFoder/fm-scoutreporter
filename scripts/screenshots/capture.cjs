@@ -2,11 +2,12 @@
  * Electron main script for scripts/screenshots/screenshots.mjs: opens each Storybook story, waits
  * until it has rendered, and saves a PNG. Size and pixel density are set through the DevTools
  * protocol (device metrics), so the pictures do not depend on this PC's display scaling. The job
- * comes in SR_SHOTS (JSON): { base, outDir, width, height, scale, settleMs, shots: [{ name, id, theme, height? }] }.
+ * comes in SR_SHOTS (JSON): { base, outDir, width, height, scale, settleMs, shots: [{ name, id, theme, locale, height? }] }.
+ * English goes in outDir itself, every other language in outDir/<locale>/.
  */
 const { app, BrowserWindow } = require("electron");
 const { writeFileSync, mkdirSync } = require("node:fs");
-const { join } = require("node:path");
+const { dirname, join } = require("node:path");
 
 const job = JSON.parse(process.env.SR_SHOTS || "{}");
 app.commandLine.appendSwitch("hide-scrollbars");
@@ -37,9 +38,10 @@ app.whenReady().then(async () => {
 
   let failed = 0;
   for (const shot of job.shots) {
-    const label = `${shot.name}-${shot.theme}`;
+    const locale = shot.locale || "en";
+    const label = `${locale === "en" ? "" : `${locale}/`}${shot.name}-${shot.theme}`;
     try {
-      const url = `${job.base}/iframe.html?id=${encodeURIComponent(shot.id)}&viewMode=story&globals=theme:${shot.theme}`;
+      const url = `${job.base}/iframe.html?id=${encodeURIComponent(shot.id)}&viewMode=story&globals=theme:${shot.theme};locale:${locale}`;
       // A screen whose content ends early gets a shorter picture (shot.height, CSS pixels).
       await metrics(shot.height || job.height);
       await win.loadURL(url);
@@ -62,6 +64,7 @@ app.whenReady().then(async () => {
         sleep(20000).then(() => { throw new Error("no frame to capture after 20 s"); }),
       ]);
       const file = join(job.outDir, `${label}.png`);
+      mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, Buffer.from(data, "base64"));
       console.log(`${label}.png`);
     } catch (e) {

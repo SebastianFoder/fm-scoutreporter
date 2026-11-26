@@ -1,0 +1,102 @@
+{
+  "intro": "Score, rank and compare players from a Football Manager 27 or 26 player export. Everything runs in your browser; the CSV never leaves your machine.",
+  "desktop": {
+    "title": "Desktop app for Windows",
+    "body": "Skip the export: it reads the players in your FM player search straight from the game, with real CA and PA.",
+    "cta": "Download"
+  },
+  "sections": {
+    "title": "Sections",
+    "section": "Section",
+    "whatItDoes": "What it does",
+    "needs": "Needs",
+    "open": "Open"
+  },
+  "modes": {
+    "players": {
+      "name": "Players",
+      "blurb": "Score and rank players on your own attribute weights or the FM27 roles, compare them and find wonderkids: with CA and PA, every player gets a Potential score at full potential. Best XI picks the strongest eleven for a formation within a budget.",
+      "needs": "Standard or Hidden Attributes view",
+      "cta": "Open Players"
+    },
+    "squad": {
+      "name": "Squad analysis",
+      "blurb": "Import your own squad and pick your formation to see your first and second eleven, thin or weak positions, ageing starters, youngsters ready to step up, squad-status problems and upgrades from your scouting import.",
+      "needs": "Squad or Squad Hidden Attributes view",
+      "cta": "Open Squad analysis"
+    },
+    "staff": {
+      "name": "Staff",
+      "blurb": "Rank coaches, scouts, analysts and directors on every staff role, with FM26's word ratings mapped back to 1–20. Best backroom picks the strongest set of staff for the roles you need, nobody used twice.",
+      "needs": "Staff view",
+      "cta": "Open Staff"
+    }
+  },
+  "screens": {
+    "players": "Players",
+    "bestXi": "Best XI",
+    "staff": "Staff",
+    "backroom": "Best backroom"
+  },
+  "moreScreens": "More screens",
+  "screenshots": {
+    "open": "Open {title}",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Squad analysis",
+      "caption": "Your first and second eleven, thin cover, weak links and who should start."
+    },
+    "players": {
+      "title": "Player list",
+      "caption": "Every player scored on your weights or an FM27 role, with grades, vs-age and value."
+    },
+    "bestXi": {
+      "title": "Best XI",
+      "caption": "The best eleven for any formation, within a transfer budget."
+    },
+    "player": {
+      "title": "Player panel",
+      "caption": "Click any player for their profile, CA, PA and attributes in a side panel."
+    },
+    "staff": {
+      "title": "Staff",
+      "caption": "Coaches, scouts and directors scored on 17 staff roles."
+    },
+    "backroom": {
+      "title": "Best backroom",
+      "caption": "The staff to hire for every role, nobody used twice."
+    }
+  },
+  "start": {
+    "title": "Getting players out of FM",
+    "exporter": "Install an exporter: FM View Exporter for FM27, or BepInEx with the FM26 Player CSV Export plugin.",
+    "view": "Import the Scout Reporter view in FM's Player Database (right-click a column header, then Import View).",
+    "export": "Select players and press <kbd>F9</kbd> to export a CSV.",
+    "import": "Import that CSV under Players.",
+    "guide": "Full setup guide",
+    "faq": "Frequently asked questions"
+  },
+  "views": {
+    "title": "View files (.fmf)",
+    "hidden": {
+      "name": "Hidden Attributes view",
+      "summary": "Standard view plus the hidden Professionalism, CA and PA. Recommended."
+    },
+    "standard": {
+      "name": "Standard view",
+      "summary": "All visible player attributes."
+    },
+    "squadHidden": {
+      "name": "Squad Hidden Attributes view",
+      "summary": "Squad view plus the hidden Professionalism, CA and PA."
+    },
+    "squad": {
+      "name": "Squad view",
+      "summary": "Your squad screen: every attribute plus team sheet, squad status, injuries and coach stars. For Squad analysis."
+    },
+    "staff": {
+      "name": "Staff view",
+      "summary": "Every staff attribute, preferred job, club and personality. For Staff mode."
+    }
+  }
+}

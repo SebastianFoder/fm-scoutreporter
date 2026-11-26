@@ -1,0 +1,89 @@
+{
+  "selectedCount": "{count, plural, one {# selected} other {# selected}}",
+  "home": {
+    "intro": "Score, rank and compare players. With CA and PA (a scan, or a Hidden Attributes export), Potential and vs Age find the wonderkids: sort by Potential to see who could become the best. FM27 role profiles (benchmarked on FM Match Lab's position study) are included under Weights.",
+    "scoredWith": "Scored with <link>{profile}</link>",
+    "myPlayersTitle": "Your players are the ones in your squad import",
+    "showMyPlayers": "Show my players ({count})",
+    "weights": "Weights",
+    "columns": "Columns",
+    "compareSelected": "Compare selected ({count})",
+    "emptyDesktop": "No players yet. In FM, open a Player Search and press <kbd>F9</kbd> or Scan search.",
+    "empty": "No CSV imported yet. Choose a CSV file above, or load the test data to look around."
+  },
+  "list": {
+    "searchLabel": "Search players by name",
+    "searchPlaceholder": "Search name: first, middle or last",
+    "clearSearch": "Clear search",
+    "noMatch": "No players match “{query}”",
+    "select": "Select",
+    "selectPlayer": "Select {name}",
+    "openInNewTab": "Open in new tab",
+    "openPlayerInNewTab": "Open {name} in new tab",
+    "loading": "Loading table…",
+    "columns": {
+      "position": "Pos",
+      "score": "Score",
+      "vsAge": "vs Age",
+      "vsAgeTitle": "Weighted average vs the FM27 benchmark for the player's age",
+      "potentialTitle": "Score with attributes projected to PA (Hidden Attributes export)",
+      "valueTitle": "FM's transfer value range (sorted by its middle)"
+    }
+  },
+  "profile": {
+    "subtitle": "{position} · {age, plural, one {# year old} other {# years old}} · {eu, select, yes {EU national} other {Non-EU}}",
+    "grades": "Grades",
+    "now": "Now",
+    "noValuation": "No valuation",
+    "noWage": "No wage data",
+    "contractExpires": "Contract expires",
+    "id": "ID",
+    "attributeView": "Attribute view",
+    "current": "Current",
+    "fullPotential": "Full potential",
+    "estimated": "Estimated attributes at PA {pa} (from CA {ca}), using FM27 CA costs.",
+    "capped": "Every trainable attribute maxes out before reaching PA."
+  },
+  "attributes": {
+    "deltaTitle": "+{delta} from current"
+  },
+  "positionMap": {
+    "label": "Positions: {position}"
+  },
+  "panel": {
+    "fullPage": "Full page",
+    "close": "Close player panel",
+    "closeTitle": "Close (Esc)"
+  },
+  "notFound": {
+    "title": "Player not found",
+    "body": "This player isn't in the currently imported dataset. Import a CSV on <link>the Players page</link> and try again."
+  },
+  "compare": {
+    "title": "Compare players",
+    "intro": "Pick players to compare. Gold, silver and bronze are awarded per row relative to the selected players.",
+    "clearSelection": "Clear selection",
+    "selectFirst": "Select first {count}",
+    "choosePlayers": "Choose players",
+    "searchLabel": "Search players",
+    "searchPlaceholder": "Search by name, position, or ID…",
+    "noMatch": "No players match that search.",
+    "range": "{from}–{to} of {total}",
+    "prev": "Prev",
+    "next": "Next",
+    "removePlayer": "Remove {name}",
+    "comparison": "Comparison",
+    "comparisonTitle": "Comparison <muted>({count})</muted>",
+    "summary": "Score + {count, plural, one {# attribute} other {# attributes}}",
+    "metric": "Metric",
+    "weightedScore": "Weighted score",
+    "legend": "Legend",
+    "best": "Best",
+    "medals": {
+      "gold": "1st",
+      "silver": "2nd",
+      "bronze": "3rd"
+    },
+    "empty": "Select at least 2 players to start comparing."
+  }
+}

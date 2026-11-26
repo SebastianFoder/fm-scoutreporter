@@ -1,0 +1,232 @@
+{
+  "title": "선수단 분석",
+  "intro": "선수단을 가져와 사용하는 포메이션을 고르면 1진과 2진 11명, 선수층이 얇거나 약한 포지션, 나이로 밀려날 선수, 올라올 수 있는 어린 선수를 보여 줍니다.",
+  "import": {
+    "title": "선수단 가져오기",
+    "titleCount": "{count, plural, one {선수단 선수 #명} other {선수단 선수 #명}}",
+    "description": "<squad>Squad</squad> 또는 <hidden>Squad Hidden Attributes</hidden> 뷰(잠재력 추가)로 선수단 화면을 내보내십시오. 스카우트 데이터 가져오기와는 따로 보관됩니다.",
+    "noColumns": "이 가져오기에는 선수단 열이 없어 임대, 부상, 팀 내 위상, 팀 선발은 확인하지 않습니다."
+  },
+  "noImport": {
+    "desktop": "아직 선수단이 없습니다. 모든 스캔은 내 구단 선수도 함께 읽습니다.",
+    "web": "아직 가져온 선수단이 없습니다. 위에서 선수단 CSV를 선택하거나 테스트 데이터를 불러와 둘러보십시오.",
+    "usePlayerImportPrompt": "선수단을 이미 선수 가져오기로 내보내셨습니까?",
+    "usePlayerImport": "선수 가져오기({count, plural, one {선수 #명} other {선수 #명}})를 선수단으로 사용"
+  },
+  "setup": {
+    "title": "설정",
+    "reset": "초기화",
+    "availability": "출전 가능 여부",
+    "includeLoans": "임대 보낸 선수 포함",
+    "loanHint": "다른 구단에 임대 중: {count}명.",
+    "excludeInjured": "부상 선수 제외",
+    "injuredHint": "현재 부상: {count}명. 켜면 오늘 기용할 수 있는 11명으로 구성합니다."
+  },
+  "cannotFill": {
+    "title": "선수단으로 이 포메이션을 채울 수 없습니다.",
+    "body": "{positions} 포지션을 주 포지션으로 뛰는 선수가 없어 11명이 부족합니다. 내보낸 파일의 주 포지션만 인정됩니다."
+  },
+  "footnote": "각 포지션은 해당 역할로 점수를 매기며(1–20, S++부터 F까지 등급), 그 포지션을 주 포지션으로 가진 선수만 고려합니다. 1진 11명은 총점이 가장 높은 조합이고, 2진 11명은 남은 선수 중 최고의 11명이므로 한 선수는 한 포지션만 맡습니다.",
+  "unknownPlayer": "알 수 없음",
+  "ageShort": "{age}세",
+  "nobody": "없음",
+  "injured": "부상",
+  "ability": "능력",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: 별 5개 중 {value}개} other {별 5개 중 {value}개}}",
+    "title": "{hasLabel, select, yes {{label}: 별 {value}개} other {별 {value}개}}"
+  },
+  "days": {
+    "weeks": "{count}주",
+    "days": "{count}일"
+  },
+  "overview": {
+    "title": "선수단 개요",
+    "firstXi": "1진 11명",
+    "firstXiAtPotential": "잠재력 도달 시 1진 11명",
+    "firstXiAverage": "1진 11명 평균",
+    "secondXi": "2진 11명",
+    "secondXiAverage": "2진 11명 평균",
+    "averageAge": "{age}세",
+    "unfilled": "{count}자리 공석",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {명} other {명}}, {age}세{unavailable, plural, =0 {} other {, #명 출전 불가}}</text>",
+    "teamSheet": "FM 팀 선발",
+    "teamSheetMatch": "<num>{matching}</num><text>/ {count}명이 이 11명과 일치</text>",
+    "pitchChoice": "경기장에 표시할 11명",
+    "legend": {
+      "high": "보강 필요",
+      "medium": "주시 필요",
+      "click": "포지션을 클릭하면 해당 메모가 표시됩니다."
+    },
+    "notesAtPosition": "{count, plural, =0 {이 포지션에는 메모가 없습니다.} one {이 포지션의 메모 #개} other {이 포지션의 메모 #개}}",
+    "showAll": "모두 보기",
+    "nothingToFix": "고칠 것이 없습니다. 모든 주전이 11명 평균에 가깝고, 1.5 이내 차이의 백업이 있습니다.",
+    "groups": {
+      "fix": {
+        "title": "보강",
+        "blurb": "지금 손해를 보는 포지션: 공백, 약점, 얇은 선수층."
+      },
+      "manage": {
+        "title": "관리",
+        "blurb": "11명 구성과 맞지 않는 팀 내 위상. 다음 계약 협상 때 정리하십시오."
+      },
+      "develop": {
+        "title": "육성",
+        "blurb": "주전을 넘어설 어린 선수와 바로 이어받을 준비가 된 후계자."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {없음}}{replacing, select, none {} other {, 교체 대상: {replacing}}}{issue, select, high {, 보강 필요} medium {, 주시 필요} other {}}",
+    "stampLabel": "{spot}: {name}",
+    "injuredBadge": "부상",
+    "inBadge": "투입"
+  },
+  "findings": {
+    "headline": {
+      "empty": "이 포지션을 뛰는 선수 없음",
+      "weak": "약점",
+      "no-cover": "백업 없음",
+      "drop-off": "얇은 선수층",
+      "ageing": "노장 주전",
+      "successor": "후계자 준비됨",
+      "prospect": "유망주",
+      "status-benched": "주전을 약속받은 선수",
+      "status-starting": "낮은 위상의 선발 선수"
+    },
+    "severity": {
+      "high": "높음",
+      "medium": "보통"
+    },
+    "empty": {
+      "evidence": "선수단에 주 포지션이 {position}인 선수가 없습니다{count, plural, one {} other {, 채울 자리 #개}}.",
+      "advice": "영입하거나, 다른 선수를 이 포지션으로 재훈련하십시오."
+    },
+    "weak": {
+      "evidence": "11명 평균 대비 <delta></delta>",
+      "advice": "가장 먼저 보강할 자리입니다."
+    },
+    "noCover": {
+      "evidence": "주 포지션 백업 없음",
+      "advice": "부상이나 출장 정지 시 다른 포지션 선수를 기용해야 합니다."
+    },
+    "dropOff": {
+      "advice": "백업이 한 수준 아래입니다. 선수층 보강을 위한 영입을 고려할 만합니다."
+    },
+    "ageing": {
+      "atPotential": "잠재력 도달 시 {score}",
+      "adviceSuccessor": "{name}: {age}세. 후계자가 이미 가까이 와 있습니다.",
+      "adviceNone": "{name}: {age}세. 23세 이하 중 근접한 선수가 없습니다. 후계자를 준비하십시오."
+    },
+    "prospect": {
+      "vs": "vs",
+      "starsAdvice": "코치는 이 선수의 잠재력을 {starter}의 능력({ability}★)과 잠재력({potential}★)보다 높게 평가합니다. 출전 시간을 주십시오.",
+      "projectedLabel": "잠재력 도달 시 추정",
+      "atPotentialVs": "잠재력 도달 시, 비교 대상",
+      "starterAtPotential": "잠재력 도달 시 주전",
+      "starterToday": "현재 주전",
+      "projectedAdvice": "{starter}보다 {gap} 높을 것으로 추정{own, select, yes {(주전도 잠재력 도달 시 기준)} other {}}. 출전 시간을 주십시오."
+    },
+    "statusBenched": {
+      "secondOnly": "2진 11명에만 포함",
+      "neither": "두 11명 모두에 없음",
+      "advice": "팀 내 위상({status})이 선발 자리를 약속합니다. 더 많이 기용하거나 위상을 낮추십시오."
+    },
+    "statusStarting": {
+      "advice": "낮은 위상으로 이 자리에서 선발 출전합니다. 다음 계약 협상 때 위상을 높이십시오."
+    }
+  },
+  "teamSheet": {
+    "title": "FM 팀 선발 변경 사항",
+    "summary": "FM 선발 선수 중 {matching}명이 자리를 지킵니다{moves, plural, =0 {} other {(#명은 다른 포지션)}}.",
+    "columns": {
+      "out": "OUT: 현재 FM 선발",
+      "in": "IN: 이 11명",
+      "gain": "이 포지션의 개선폭"
+    },
+    "out": "OUT",
+    "in": "IN",
+    "outDetail": "{picked, select, yes {FM에서 {pickedAt}} other {FM에서 선발}}{natural, select, no {, 주 포지션이 {position} 아님} other {}}",
+    "extraStarter": "없음: 추가 선발 선수",
+    "replacedBy": "교체 선수",
+    "nobodyPlaysThere": "이 11명 중 그 포지션을 뛰는 선수 없음",
+    "newPosition": "새 포지션",
+    "alsoMoves": "추가 이동:",
+    "to": "→"
+  },
+  "depth": {
+    "title": "뎁스 차트",
+    "intro": "모든 포지션의 주전과 백업{potential, select, yes {(잠재력 도달 시)} other {}}. 백업은 2진 11명에서 나오므로 한 선수가 두 자리를 백업하지 않습니다.",
+    "columns": {
+      "pos": "포지션",
+      "starter": "주전",
+      "cover": "백업",
+      "drop": "차이",
+      "dropTitle": "백업 점수에서 주전 점수를 뺀 값",
+      "alsoPlays": "이 포지션도 가능",
+      "alsoPlaysTitle": "이 포지션이 주 포지션인 다른 선수, 높은 순. XI: 다른 자리 주전. 2nd: 다른 자리 백업."
+    },
+    "starterAt": "{spot} 주전",
+    "coverAt": "{spot} 백업",
+    "otherTitle": "{name}, {score}{xi, select, first {, 다른 자리 주전} second {, 다른 자리 백업} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2nd",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "나머지 선수단",
+    "intro": "두 11명 어디에도 없는 {count, plural, one {선수 #명} other {선수 #명}}을, 주전과 가장 가까운 포지션 기준으로 표시합니다.",
+    "columns": {
+      "bestFit": "최적 포지션",
+      "score": "점수",
+      "vsStarter": "주전 대비",
+      "vsStarterTitle": "그 포지션 주전과의 점수 차이",
+      "potentialTitle": "잠재력 도달 시 그 포지션 점수",
+      "coachRating": "코치 평가",
+      "coachRatingTitle": "코치 보고서: 선수단 대비 현재 능력과 잠재력",
+      "happiness": "만족도",
+      "missed": "결장",
+      "missedTitle": "부상으로 결장한 기간"
+    },
+    "groups": {
+      "prospect": {
+        "title": "유망주",
+        "blurb": "주전을 넘어설 선수입니다. 출전 시간을 주십시오."
+      },
+      "young": {
+        "title": "육성 중",
+        "blurb": "21세 이하. 임대 보내거나 훈련을 위해 보유하십시오."
+      },
+      "surplus": {
+        "title": "잉여 자원",
+        "blurb": "성장기가 지났고 두 11명 어디에도 없습니다. 매각하거나 백업으로 보유하십시오."
+      },
+      "no-fit": {
+        "title": "맞는 포지션 없음",
+        "blurb": "이 포메이션에 주 포지션이 없습니다."
+      },
+      "away": {
+        "title": "출전 불가",
+        "blurb": "부상 또는 임대 중."
+      }
+    },
+    "showAll": "모두 보기({count})",
+    "showFewer": "간단히 보기",
+    "onLoan": "임대 중",
+    "scoreAt": "{spot} 점수",
+    "score": "점수",
+    "atFullPotential": "잠재력 도달 시"
+  },
+  "upgrades": {
+    "title": "스카우트 데이터 중 보강 후보",
+    "intro": "같은 역할 기준으로 각 포지션의 가장 약한 주전보다 0.5 이상 높은 스카우트 대상 선수입니다.",
+    "allInSquad": "선수 가져오기의 모든 선수가 이미 선수단에 있습니다.",
+    "teaser": "스카우트 목록 중 누가 11명을 강화할지 보여 줍니다.",
+    "importHint": "<link>선수</link>에서 스카우트 내보내기(선수 검색)를 가져오면 각 포지션을 강화할 선수를 볼 수 있습니다.",
+    "columns": {
+      "pos": "포지션",
+      "starter": "내 주전",
+      "best": "스카우트한 최고 보강 후보"
+    },
+    "times": "×{count}",
+    "none": "가져온 데이터에 보강 후보 없음: {positions}."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "가져오기",
+    "clear": "가져온 데이터 지우기",
+    "loadTestData": "테스트 데이터 불러오기",
+    "chooseFile": "CSV 파일 선택"
+  },
+  "messages": {
+    "storageFull": "가져온 데이터는 이 탭에서만 사용됩니다. 브라우저 저장 공간이 가득 찼거나 차단되었습니다. 탭을 바꾸거나 다시 방문해도 데이터를 유지하려면 공간을 확보하거나 저장소를 허용하십시오.",
+    "testDataFailed": "테스트 데이터를 불러올 수 없습니다.",
+    "parseFailed": "CSV를 읽을 수 없습니다. 파일 형식을 확인하십시오.",
+    "noStaffColumns": "이 파일에서 스탭 능력치를 찾을 수 없습니다. 스탭 검색에서 Scout Reporter Staff 뷰로 내보내십시오(선수 파일은 선수 메뉴에서 가져옵니다).",
+    "noSquadPlayers": "이 파일에서 포지션이 있는 선수를 찾을 수 없습니다. Scout Reporter Standard 또는 Hidden Attributes 뷰로 선수단을 내보내십시오.",
+    "noScanSquad": "이 스캔에서 소속 구단 선수를 찾을 수 없습니다."
+  },
+  "players": {
+    "title": "선수 CSV 가져오기",
+    "imported": "{count, plural, one {선수 #명} other {선수 #명}} 가져옴",
+    "description": "Scout Reporter 뷰로 내보낸 FM26(<code>;</code>) 또는 FM27(<code>,</code>) 파일입니다. 열은 이름으로 맞춥니다. 뷰 파일: <standard>Standard</standard> 또는 <hidden>Hidden Attributes</hidden>({professionalism}, 현재 기량, 잠재 기량 추가)."
+  },
+  "staff": {
+    "title": "스탭 CSV 가져오기",
+    "imported": "{count, plural, one {스탭 #명} other {스탭 #명}} 가져옴",
+    "description": "<link>Scout Reporter Staff 뷰</link>로 스탭 검색 결과를 내보내십시오. 열은 이름으로 맞추며, FM26의 단어 평가와 1–20 숫자 모두 사용할 수 있습니다. 선수 가져오기와는 따로 보관됩니다."
+  }
+}

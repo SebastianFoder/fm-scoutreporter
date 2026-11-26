@@ -1,0 +1,35 @@
+{
+  "close": "Cerrar",
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "reset": "Restablecer",
+  "delete": "Eliminar",
+  "duplicate": "Duplicar",
+  "import": "Importar",
+  "export": "Exportar",
+  "loading": "Cargando…",
+  "modal": {
+    "close": "Cerrar ventana"
+  },
+  "pagination": {
+    "range": "<b>{from, number}–{to, number}</b> de {total, number}",
+    "rows": "Filas",
+    "all": "Todas",
+    "goTo": "Ir a",
+    "go": "Ir",
+    "first": "Primera",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "last": "Última"
+  },
+  "grade": {
+    "label": "Nota {grade}",
+    "title": "Nota {grade} ({score} en la escala 1–20)",
+    "titleWithLabel": "{label}: nota {grade} ({score} en la escala 1–20)"
+  },
+  "estimated": {
+    "ranged": "Puntuación estimada: {ranged, number} a partir de un rango de ojeo (se usa el punto medio)",
+    "unknown": "Puntuación estimada: {unknown, number} desconocidos (cuentan como 0)",
+    "both": "Puntuación estimada: {ranged, number} a partir de un rango de ojeo (se usa el punto medio), {unknown, number} desconocidos (cuentan como 0)"
+  }
+}

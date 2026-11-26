@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Tränare: anfallstaktik",
+      "coach-attacking-technical": "Tränare: anfallsteknik",
+      "coach-defending-tactical": "Tränare: försvarstaktik",
+      "coach-defending-technical": "Tränare: försvarsteknik",
+      "coach-possession-tactical": "Tränare: bollinnehavstaktik",
+      "coach-possession-technical": "Tränare: tekniskt med boll"
+    },
+    "summaries": {
+      "manager": "Bedöma förmåga, motivera, personkontakt och taktiskt kunnande, sedan tränaregenskaperna.",
+      "assistant-manager": "Bedöma förmåga, motivera och personkontakt för rapporter, taktiksnack och matchråd.",
+      "director-of-football": "Bedöma förmåga och potential. Affärer (används också) är dold, så den poängsätts inte.",
+      "head-of-youth": "Bedöma förmåga och potential samt arbeta med ungdomar. Den dolda Professionalism påverkar ungdomskullens: kontrollera den för hand.",
+      "coach-attacking-tactical": "Tränar Kyla, Finess och Spel utan boll.",
+      "coach-attacking-technical": "Tränar Inlägg, Avslut och Långskott.",
+      "coach-defending-tactical": "Tränar Aggressivitet, Koncentration och Positionsspel.",
+      "coach-defending-technical": "Tränar Markeringsspel och Tacklingar.",
+      "coach-possession-tactical": "Tränar Förutseende, Beslut, Lagarbete och Speluppfattning.",
+      "coach-possession-technical": "Tränar Dribblingar, Bollmottagning, Huvudspel, Passningsspel och Teknik.",
+      "coach-goalkeeping": "Tränar alla målvaktsegenskaper, även de med utespelarnamn som målvakter använder.",
+      "coach-fitness": "Tränar de fysiska egenskaperna och Arbetskapacitet, den största delen av varje positions vikt.",
+      "coach-set-pieces": "Tränar Hörnor, Frisparkar, Långa inkast och Straffsparkar.",
+      "scout": "Bedöma nuvarande och potentiell förmåga, sedan taktiskt kunnande.",
+      "performance-analyst": "Dataanalys, sedan bedöma förmåga och taktiskt kunnande.",
+      "physio": "Fysioterapi, med stöd av idrottsvetenskap och de psykiska egenskaperna.",
+      "sports-scientist": "Idrottsvetenskap, med stöd av fysik, fysioterapi och de psykiska egenskaperna."
+    },
+    "groups": {
+      "management": "Ledning",
+      "recruitmentAndAnalysis": "Rekrytering och analys"
+    }
+  },
+  "freeAgent": "Kontraktslös",
+  "preferredJob": "Föredraget jobb",
+  "bestRole": "Bästa roll",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role}: {score} ({word})",
+    "partial": "{role}: {score} ({word}). {percent, number, percent} av rollens vikt fanns i exporten"
+  },
+  "noImport": {
+    "desktop": "Ingen personal än. Öppna en Personalsökning i FM och tryck <kbd>F9</kbd> eller Skanna sökning."
+  },
+  "list": {
+    "title": "Personal",
+    "bestBackroom": "Bästa ledarstab",
+    "intro": "Ranka tränare, scouter, analytiker och chefer från en export av en personalsökning i FM26. FM26:s betyg i ord räknas om till skalan 1–20 och varje person poängsätts i alla personalroller.",
+    "noImport": "Ingen personal importerad än. Öppna en personalsökning i FM, importera vyn Staff, markera personalen och exportera en CSV, och importera den sedan ovan.",
+    "filters": "Filter",
+    "rankBy": "Ranka efter",
+    "allJobs": "Alla jobb",
+    "search": "Sök",
+    "searchPlaceholder": "Namn eller klubb",
+    "freeAgentsOnly": "Bara kontraktslösa",
+    "myClubTitle": "Personal i {club}",
+    "showMine": "Visa min personal ({count, number})",
+    "ratingsAs": "Betyg som",
+    "words": "Ord",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> av {total, number} i personalen",
+    "jobScoredAsOne": "<b>{job}:</b> poängsätts som {role}.",
+    "jobScoredAsBest": "<b>{job}:</b> poängsätts som sin bästa av {roles}.",
+    "jobShowingWeighted": "Visar {count, plural, one {den # egenskap} other {de # egenskaper}} som fm-scoring viktar för det här jobbet.",
+    "jobBoldWeighted": "Fetstilta kolumner är {count, plural, one {den # egenskap} other {de # egenskaper}} som fm-scoring viktar för det här jobbet.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring har inga vikter för det här jobbet, så alla egenskaper visas och Föredraget jobb får ingen poäng.",
+    "showAllAttributes": "Visa alla egenskaper",
+    "rankRole": "<b>{role}:</b> {summary} Viktade egenskaper är i fetstil.",
+    "name": "Namn",
+    "job": "Jobb",
+    "scoreTitle": "Viktad rollpoäng på skalan 1–20. * = några av rollens egenskaper saknades.",
+    "attributeWeight": "{label} (vikt {weight, number})",
+    "method": {
+      "title": "Så poängsätts personalen",
+      "words": "FM26 visar personalegenskaper som ord. Varje ord täcker ett fast intervall av den gamla skalan 1–20 och poängsätts efter mitten av det (exakta siffror används när en export har dem):",
+      "roles": "En rollpoäng är det viktade medelvärdet av egenskaperna som rollen använder, med de 17 personalrollerna och vikterna från <link>fm-scoring</link>: ett betygsunderlag för personal från communityn, ommärkt för FM27 och kontrollerat mot nyckelegenskaperna som FM27 lyfter fram på personalprofiler. Tränare delas in i FM:s nio träningsgrupper, var och en poängsatt efter sina två tränaregenskaper plus disciplin, beslutsamhet, motivera, personkontakt och arbeta med ungdomar. En vanlig hjälptränare poängsätts efter sin bästa utespelargrupp. Anpassningsförmåga, Bedöma ledarförmåga och Förhandlingsförmåga har ingen vikt i någon roll. Filtrerar du på föredraget jobb visas bara egenskaperna som jobbet viktas på. Bästa roll räknar bara roller där de flesta viktade egenskaperna fanns i exporten. Rollpoäng får samma betygsstämplar från S++ till F som spelarpoäng, med samma steg på skalan 1–20."
+    }
+  },
+  "detail": {
+    "preferredJob": "Föredraget jobb: {job}",
+    "age": "Ålder {age, number}",
+    "preferredScore": "Föredraget jobb: {role} {score}",
+    "preferred": "(föredraget)",
+    "barsNote": "Staplarna går från 0 till 20. * betyder att några av rollens egenskaper saknades i exporten.",
+    "notInExport": "Inte i exporten"
+  },
+  "backroom": {
+    "title": "Bästa ledarstab",
+    "staffList": "Personallista",
+    "intro": "Välj rollerna du behöver och hur många av varje. Scout Reporter anställer kombinationen av personal med högst total rollpoäng, och använder aldrig samma person två gånger. Lås personal du har skrivit kontrakt med, och ta bort den som tackar nej för att få näst bästa val till den platsen.",
+    "noImport": "Ingen personal importerad än. Välj en personal-CSV ovan, eller ladda testdatan för att titta runt.",
+    "reset": "Återställ",
+    "preset": "Förinställning",
+    "custom": "Anpassad",
+    "oneFewer": "En {role} färre",
+    "oneMore": "En {role} till",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "Bara personal vars föredragna jobb är rollen",
+    "preferredJobOnlyHint": "Personal kan tacka nej till andra jobb i FM.",
+    "empty": {
+      "title": "Inga roller valda.",
+      "body": "Lägg till minst en roll till vänster, eller välj en förinställning."
+    },
+    "short": {
+      "title": "Inte tillräckligt med personal för alla roller.",
+      "role": "{role}: {wanted, number} önskade, {eligible, plural, one {# kvalificerar sig} other {# kvalificerar sig}}.",
+      "explain": "{filtered, select, yes {Personal kvalificerar sig när de flesta av rollens egenskaper finns i exporten, de klarar filtren och inte är exkluderade, och en person kan bara fylla en roll.} other {Personal kvalificerar sig när de flesta av rollens egenskaper finns i exporten, och en person kan bara fylla en roll.}}"
+    },
+    "excluded": "Exkluderade:",
+    "allowAgainTitle": "Tillåt personen igen",
+    "allowAgain": "(tillåt igen)",
+    "clearAll": "Rensa alla",
+    "footer": "Varje roll poängsätts med fm-scorings personalvikter (se <link>Personal</link>). Ledarstaben som visas har högst total poäng av alla sätt att fylla rollerna med olika personer, så en stark allroundperson hamnar där den tillför mest i stället för i den första roll som vill ha den. Personal som saknar de flesta av en rolls egenskaper övervägs inte för den.",
+    "result": {
+      "title": "Din ledarstab",
+      "summary": "{count, plural, one {# person} other {# personer}} · Medelpoäng",
+      "averageLabel": "Ledarstabens medelpoäng",
+      "offJob": "· {count, plural, one {# i en roll som inte är det föredragna jobbet} other {# i en roll som inte är det föredragna jobbet}} (jobb i grått)",
+      "locked": "· {count, plural, one {# låst} other {# låsta}}",
+      "unlockAll": "Lås upp alla",
+      "score": "Poäng",
+      "scoreTitle": "Rollpoäng på FM:s skala 1–20",
+      "lockOrRemove": "Lås eller ta bort",
+      "offJobTitle": "Inte det föredragna jobbet: personen kan tacka nej till rollen",
+      "unlock": "Lås upp {name}",
+      "lockIn": "Lås {name}",
+      "lockedTitle": "Låst: behålls på platsen när resten väljs om. Klicka för att låsa upp.",
+      "lockTitle": "Lås: behåll på platsen (t.ex. när kontraktet är klart) när resten väljs om",
+      "exclude": "Exkludera {name} och välj igen",
+      "excludeTitle": "Ta bort och välj igen (t.ex. om kontraktssamtalen misslyckades)"
+    }
+  }
+}

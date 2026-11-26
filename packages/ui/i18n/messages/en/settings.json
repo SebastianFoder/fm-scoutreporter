@@ -1,0 +1,70 @@
+{
+  "title": "Settings",
+  "tabs": {
+    "weights": "Weights",
+    "columns": "Columns",
+    "look": "Look",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Theme",
+    "attributeColours": "Attribute colours"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "profiles": {
+    "profile": "Profile",
+    "name": "Name",
+    "namePlaceholder": "Profile name",
+    "createNew": "Create New",
+    "default": "Default",
+    "newName": "New Profile",
+    "copyName": "{name} Copy"
+  },
+  "weights": {
+    "intro": "How much each attribute counts towards a player's score. The scores update as you type. The FM27 role profiles are benchmarked on FM Match Lab's position study (13b).",
+    "weighted": "{count, number} weighted",
+    "weighting": "Weighting",
+    "linear": "Linear (FM27 benchmark)",
+    "emphasized": "Emphasized (weights squared)",
+    "benchmark": "Benchmarked FM27 role weights (FM Match Lab <link>Study 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "FM Match Lab FM27 benchmark (<link>Study 13b</link>): centre-backs.",
+      "fm27-wb": "FM Match Lab FM27 benchmark (<link>Study 13b</link>): full-backs and wing-backs.",
+      "fm27-dm": "FM Match Lab FM27 benchmark (<link>Study 13b</link>): defensive midfielders, also used for central midfielders.",
+      "fm27-10": "FM Match Lab FM27 benchmark (<link>Study 13b</link>): attacking midfielders and wingers.",
+      "fm27-9": "FM Match Lab FM27 benchmark (<link>Study 13b</link>): strikers.",
+      "fm27-gk": "FM Match Lab FM27 benchmark (<link>Study 13b</link>): goalkeepers."
+    },
+    "resetToBenchmark": "Reset to benchmark",
+    "linearNote": "Linear matches how the FM27 benchmarks and “vs Age” are calibrated.",
+    "json": {
+      "title": "Import / export JSON",
+      "label": "Profile JSON",
+      "placeholder": "Exported profile JSON will appear here. Paste JSON here to import.",
+      "invalid": "Invalid profile JSON"
+    }
+  },
+  "columns": {
+    "intro": "The attributes the player list and compare show as columns. Save different sets as profiles.",
+    "shown": "{count, number} shown"
+  },
+  "colours": {
+    "intro": "The value an attribute (1 to 20) needs for each colour. The colours follow the light or dark theme.",
+    "band": "Band",
+    "minValue": "Min value",
+    "preview": "Preview, 1 to 20",
+    "bands": {
+      "excellent": "Excellent attribute",
+      "good": "Good attribute",
+      "average": "Average attribute",
+      "low": "Low attribute"
+    },
+    "minValueLabel": "{band} minimum value",
+    "below": "Below <b>{value, number}</b>"
+  }
+}

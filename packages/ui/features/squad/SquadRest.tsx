@@ -1,21 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
 import type { PlayerWithGroups } from "@scoutreporter/ui/components/PlayersDataProvider";
 import type { SlotSetting } from "@scoutreporter/core/best-xi/roles";
 import type { MemberStatus, SquadAnalysis, SquadMember } from "@scoutreporter/core/squad/analysis";
 import type { SquadColumns, SquadFields } from "@scoutreporter/core/squad/squad-fields";
-import { Delta, Happiness, SpotBadge, Stars, Tag, formatDays } from "./SquadBits";
+import { useFixed } from "@scoutreporter/ui/features/best-xi/PitchLineup";
+import { Delta, Happiness, SpotBadge, Stars, Tag, useFormatDays } from "./SquadBits";
 
 type GroupId = "prospect" | "young" | "surplus" | "no-fit" | "away";
 
-const GROUPS: { id: GroupId; title: string; blurb: string; statuses: MemberStatus[] }[] = [
-  { id: "prospect", title: "Prospects", blurb: "Will outgrow a starter. Give them minutes.", statuses: ["prospect"] },
-  { id: "young", title: "Developing", blurb: "21 or younger. Loan out or keep for training.", statuses: ["young"] },
-  { id: "surplus", title: "Surplus", blurb: "Past development age and in neither eleven. Sell or keep as depth.", statuses: ["surplus"] },
-  { id: "no-fit", title: "No position here", blurb: "No natural position in this formation.", statuses: ["no-fit"] },
-  { id: "away", title: "Unavailable", blurb: "Injured or out on loan.", statuses: ["injured", "loan"] },
+/** Titles and blurbs are in squad.rest.groups.<id>. */
+const GROUPS: { id: GroupId; statuses: MemberStatus[] }[] = [
+  { id: "prospect", statuses: ["prospect"] },
+  { id: "young", statuses: ["young"] },
+  { id: "surplus", statuses: ["surplus"] },
+  { id: "no-fit", statuses: ["no-fit"] },
+  { id: "away", statuses: ["injured", "loan"] },
 ];
 
 /** Rows shown before a long group folds. */
@@ -37,6 +40,8 @@ export function SquadRest({
   showPotential: boolean;
 }) {
   const [open, setOpen] = useState<Set<GroupId>>(new Set());
+  const t = useTranslations("squad.rest");
+  const tTerms = useTranslations("fm.terms");
   if (analysis.rest.length === 0) return null;
 
   const showStars = Boolean(columns?.stars);
@@ -48,40 +53,38 @@ export function SquadRest({
     <section aria-labelledby="squad-rest" className="panel">
       <div className="border-b border-line px-4 py-3">
         <h2 id="squad-rest" className="section-title">
-          Rest of the squad
+          {t("title")}
         </h2>
-        <p className="mt-0.5 text-sm text-muted">
-          {analysis.rest.length} players in neither eleven, at the position where they come closest to the starter.
-        </p>
+        <p className="mt-0.5 text-sm text-muted">{t("intro", { count: analysis.rest.length })}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="data-table">
           <thead>
             <tr>
-              <th className={`${th} text-left`}>Player</th>
-              <th className={`${th} text-left`}>Best fit</th>
-              <th className={`${th} text-left`}>Score</th>
-              <th className={`${th} text-right`} title="Score minus the starter at that position">
-                vs starter
+              <th className={`${th} text-left`}>{tTerms("player")}</th>
+              <th className={`${th} text-left`}>{t("columns.bestFit")}</th>
+              <th className={`${th} text-left`}>{t("columns.score")}</th>
+              <th className={`${th} text-right`} title={t("columns.vsStarterTitle")}>
+                {t("columns.vsStarter")}
               </th>
               {showPotential && (
-                <th className={`${th} text-left`} title="Score at that position at full potential">
-                  Potential
+                <th className={`${th} text-left`} title={t("columns.potentialTitle")}>
+                  {tTerms("potential")}
                 </th>
               )}
               {showStars && (
-                <th className={`${th} text-left`} title="Coach report: ability now and potential, relative to your squad">
-                  Coach rating
+                <th className={`${th} text-left`} title={t("columns.coachRatingTitle")}>
+                  {t("columns.coachRating")}
                 </th>
               )}
-              {columns?.playingTime && <th className={`${th} text-left`}>Squad status</th>}
-              {columns?.happiness && <th className={`${th} text-left`}>Happiness</th>}
+              {columns?.playingTime && <th className={`${th} text-left`}>{tTerms("squadStatus")}</th>}
+              {columns?.happiness && <th className={`${th} text-left`}>{t("columns.happiness")}</th>}
               {columns?.timeMissed && (
-                <th className={`${th} text-right`} title="Time missed through injury">
-                  Missed
+                <th className={`${th} text-right`} title={t("columns.missedTitle")}>
+                  {t("columns.missed")}
                 </th>
               )}
-              <th className={`${th} text-left`}>Contract</th>
+              <th className={`${th} text-left`}>{tTerms("contract")}</th>
             </tr>
           </thead>
           {GROUPS.map((g) => {
@@ -93,9 +96,9 @@ export function SquadRest({
               <tbody key={g.id}>
                 <tr>
                   <th colSpan={colCount} scope="rowgroup" className="bg-paper px-3 py-1.5 text-left font-normal">
-                    <span className="section-title">{g.title}</span>{" "}
+                    <span className="section-title">{t(`groups.${g.id}.title`)}</span>{" "}
                     <span className="text-[13px] font-semibold text-muted">{members.length}</span>
-                    <span className="ml-2 text-[12px] text-muted">{g.blurb}</span>
+                    <span className="ml-2 text-[12px] text-muted">{t(`groups.${g.id}.blurb`)}</span>
                   </th>
                 </tr>
                 {rows.map((m) => (
@@ -127,7 +130,7 @@ export function SquadRest({
                           })
                         }
                       >
-                        {folded ? `Show all ${members.length}` : "Show fewer"}
+                        {folded ? t("showAll", { count: members.length }) : t("showFewer")}
                       </button>
                     </td>
                   </tr>
@@ -161,18 +164,22 @@ function MemberRow({
   td: string;
 }) {
   const spot = m.index !== null ? slots[m.index].spot : null;
+  const t = useTranslations("squad");
+  const tTerms = useTranslations("fm.terms");
+  const fixed = useFixed();
+  const formatDays = useFormatDays();
   return (
     <tr>
       <td className={td}>
         <span className="flex items-center gap-1.5">
           <span className="font-semibold">{raw?.player}</span>
-          <span className="text-[12px] text-muted">{m.age}y</span>
+          <span className="text-[12px] text-muted">{t("ageShort", { age: m.age })}</span>
           {m.status === "injured" && (
             <Tag tone="red" title={f?.injury ?? undefined}>
-              Injured
+              {t("injured")}
             </Tag>
           )}
-          {m.status === "loan" && <Tag tone="gold">On loan</Tag>}
+          {m.status === "loan" && <Tag tone="gold">{t("rest.onLoan")}</Tag>}
         </span>
         <span className="block text-[12px] text-muted">
           {raw?.position}
@@ -183,8 +190,8 @@ function MemberRow({
       <td className={td}>
         {m.score !== null ? (
           <span className="inline-flex items-center gap-1.5">
-            <GradeStamp score={m.score} label={spot ? `Score at ${spot}` : "Score"} />
-            <span className="tabular-nums">{m.score.toFixed(1)}</span>
+            <GradeStamp score={m.score} label={spot ? t("rest.scoreAt", { spot }) : t("rest.score")} />
+            <span className="tabular-nums">{fixed(m.score)}</span>
           </span>
         ) : (
           <span className="text-muted">–</span>
@@ -195,9 +202,9 @@ function MemberRow({
         <td className={td}>
           {m.potential !== null ? (
             <span className="inline-flex items-center gap-1.5">
-              <GradeStamp score={m.potential} label="At full potential" />
+              <GradeStamp score={m.potential} label={t("rest.atFullPotential")} />
               <span className={`tabular-nums ${m.status === "prospect" ? "font-semibold text-positive" : ""}`}>
-                {m.potential.toFixed(1)}
+                {fixed(m.potential)}
               </span>
             </span>
           ) : (
@@ -209,8 +216,8 @@ function MemberRow({
         <td className={`whitespace-nowrap ${td}`}>
           {f?.abilityStars != null && f.potentialStars != null ? (
             <span className="flex flex-col gap-0.5">
-              <Stars value={f.abilityStars} label="Ability" />
-              <Stars value={f.potentialStars} label="Potential" />
+              <Stars value={f.abilityStars} label={t("ability")} />
+              <Stars value={f.potentialStars} label={tTerms("potential")} />
             </span>
           ) : (
             <span className="text-muted">–</span>

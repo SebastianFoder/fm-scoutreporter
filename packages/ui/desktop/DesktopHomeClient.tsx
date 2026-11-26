@@ -1,6 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { AlertTriangle, CheckCircle2, FolderOpen } from "lucide-react";
 import { Button } from "@scoutreporter/ui/components/Button";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
@@ -8,30 +10,41 @@ import { useStaffData } from "@scoutreporter/ui/components/StaffDataProvider";
 import { Notice } from "@scoutreporter/ui/components/Notice";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
 import { useSettings } from "@scoutreporter/ui/components/Settings";
+import { useFormatNumber, useIntlLocale } from "@scoutreporter/ui/i18n/hooks";
 import { useDesktop } from "./DesktopProvider";
 import { ScanButton } from "./ScanButton";
 import { StoredScanRow } from "./StoredScanRow";
 
-const ERROR_TITLES: Record<string, string> = {
-  "not-running": "Football Manager is not running",
-  "no-access": "Football Manager runs as administrator",
-  "not-loaded": "No save loaded yet",
-  "nothing-found": "No players found",
-  "too-much-unread": "Scan incomplete",
-  "no-search": "No search found in Football Manager",
-  busy: "A scan is already running",
-  "missing-reader": "Reader missing",
+/** The reader's error codes → keys in desktop.home.errors (anything else: "failed"). */
+const ERROR_KEYS: Record<string, string> = {
+  "not-running": "notRunning",
+  "no-access": "noAccess",
+  "not-loaded": "notLoaded",
+  "nothing-found": "nothingFound",
+  "too-much-unread": "tooMuchUnread",
+  "no-search": "noSearch",
+  busy: "busy",
+  "missing-reader": "missingReader",
 };
 
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" });
-}
-
-function formatBytes(bytes: number): string {
-  return bytes >= 1e9 ? `${(bytes / 1e9).toFixed(1)} GB` : `${Math.max(1, Math.round(bytes / 1e6))} MB`;
-}
-
-const n = (v: number) => v.toLocaleString("en-GB");
+const bold = (chunks: ReactNode) => <span className="font-semibold text-ink">{chunks}</span>;
+const strong = (chunks: ReactNode) => <span className="font-semibold">{chunks}</span>;
+const pageLink = (href: string) => {
+  const PageLink = (chunks: ReactNode) => (
+    <Link href={href} className="link">
+      {chunks}
+    </Link>
+  );
+  return PageLink;
+};
+const externalLink = (href: string) => {
+  const ExternalLink = (chunks: ReactNode) => (
+    <a href={href} className="link" target="_blank" rel="noreferrer">
+      {chunks}
+    </a>
+  );
+  return ExternalLink;
+};
 
 /** The desktop app's home: scan FM, the stored scans and credits. Its settings are in Settings > App. */
 export function DesktopHomeClient() {
@@ -39,16 +52,24 @@ export function DesktopHomeClient() {
   const { state: playersState } = usePlayersData();
   const { state: staffState } = useStaffData();
   const { openSettings } = useSettings();
+  const t = useTranslations("desktop");
+  const formatNumber = useFormatNumber();
+  const locale = useIntlLocale();
   if (!desktop) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-10 text-ink">
-        <PageHeader title="Desktop app">
-          This page belongs to the Scout Reporter desktop app, which reads your Football Manager save directly. On the
-          website, import a CSV export instead: see the <Link href="/how-to-use" className="link">setup guide</Link>.
+        <PageHeader title={t("home.notDesktop.title")}>
+          {t.rich("home.notDesktop.body", { link: pageLink("/how-to-use") })}
         </PageHeader>
       </div>
     );
   }
+
+  const formatTime = (iso: string) => new Date(iso).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" });
+  const formatBytes = (bytes: number) =>
+    bytes >= 1e9
+      ? formatNumber(bytes / 1e9, { style: "unit", unit: "gigabyte", minimumFractionDigits: 1, maximumFractionDigits: 1 })
+      : formatNumber(Math.max(1, Math.round(bytes / 1e6)), { style: "unit", unit: "megabyte" });
 
   const {
     bridge,
@@ -77,44 +98,57 @@ export function DesktopHomeClient() {
     fromScan && active && (loadedPlayers < active.players || loadedStaff < active.staff)
       ? { players: loadedPlayers, staff: loadedStaff, totalPlayers: active.players, totalStaff: active.staff }
       : null;
-  const hotkeyHint = settings?.hotkey ? "" : " once the hotkey is on";
   // FM's search result in the scan in use, and whether the screens were loaded from it.
   const staffFromScan = staffState.source?.snapshotId === activeId ? staffState.source : null;
   const searchText = (s: { players: number; staff: number }) =>
-    [s.players > 0 && `${n(s.players)} players`, s.staff > 0 && `${n(s.staff)} staff`].filter(Boolean).join(" and ");
+    s.players > 0 && s.staff > 0
+      ? t("counts.playersAndStaff", { players: s.players, staff: s.staff })
+      : s.staff > 0
+        ? t("counts.staff", { count: s.staff })
+        : t("counts.players", { count: s.players });
   // What was loaded next to your club, for the kinds (players, staff) of which only part was loaded.
-  const loadedFrom = [
-    partial && partial.players < partial.totalPlayers &&
-      (fromScan?.search ? `players from FM's player search (${n(fromScan.search)} found)` : "the players worth scouting"),
-    partial && partial.staff < partial.totalStaff &&
-      (staffFromScan?.search ? `staff from FM's staff search (${n(staffFromScan.search)} found)` : "the staff worth hiring"),
-  ]
-    .filter(Boolean)
-    .join(" and ");
+  const loadedFrom = new Intl.ListFormat(locale, { type: "conjunction" }).format(
+    [
+      partial &&
+        partial.players < partial.totalPlayers &&
+        (fromScan?.search
+          ? t("home.loadedFrom.playersSearch", { count: fromScan.search })
+          : t("home.loadedFrom.playersBest")),
+      partial &&
+        partial.staff < partial.totalStaff &&
+        (staffFromScan?.search
+          ? t("home.loadedFrom.staffSearch", { count: staffFromScan.search })
+          : t("home.loadedFrom.staffBest")),
+    ].filter((x): x is string => typeof x === "string"),
+  );
   const lastScan = lastOutcome?.ok ? lastOutcome.snapshot : null;
+  const screenLinks = {
+    b: strong,
+    playersLink: pageLink("/players"),
+    squadLink: pageLink("/squad"),
+    growthLink: pageLink("/growth"),
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-5 px-5 py-6 text-ink">
       <PageHeader
-        title="Scan Football Manager"
+        title={t("home.title")}
         aside={<ScanButton variant="page" />}
       >
-        <span className="font-semibold text-ink">Scan search</span> (or F9{hotkeyHint}, also inside FM): open Player Search or Staff
-        Search in Football Manager, set your filters, and the app takes the people FM found plus your own club.{" "}
-        <span className="font-semibold text-ink">Scan save</span>: every player and staff member in the save, no search needed.
-        Every screen (Players, Best XI, Squad, Staff) works on the scan. Nothing in your game is changed. The F9 key, hidden
-        attributes and updates are under{" "}
-        <button type="button" className="link" onClick={() => openSettings("app")}>
-          Settings
-        </button>
-        .
+        {t.rich("home.intro", {
+          hotkey: settings?.hotkey ? "on" : "off",
+          b: bold,
+          settings: (chunks) => (
+            <button type="button" className="link" onClick={() => openSettings("app")}>
+              {chunks}
+            </button>
+          ),
+        })}
       </PageHeader>
 
       {scanning && (
         <div className="panel px-4 py-3" role="status">
-          <p className="text-sm font-semibold">
-            {progress?.phase === "importing" ? "Saving the scan…" : `Reading ${progress?.phase ?? "memory"}…`}
-          </p>
+          <p className="text-sm font-semibold">{t("home.phase", { phase: progress?.phase ?? "memory" })}</p>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
             <div className="h-full bg-accent transition-[width]" style={{ width: `${pct}%` }} />
           </div>
@@ -125,15 +159,17 @@ export function DesktopHomeClient() {
         <div role="alert" className="flex items-start gap-2.5 rounded-md border border-red bg-red/8 px-4 py-3 text-sm">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red" aria-hidden />
           <div>
-            <p className="font-semibold">{ERROR_TITLES[lastOutcome.code] ?? "The scan failed"}</p>
+            <p className="font-semibold">{t(`home.errors.${ERROR_KEYS[lastOutcome.code] ?? "failed"}`)}</p>
             <p className="text-muted">{lastOutcome.message}</p>
             {lastOutcome.code === "no-search" && (
               <p className="text-muted">
-                Or{" "}
-                <button type="button" className="link" onClick={() => void scan("full")}>
-                  scan the whole save
-                </button>{" "}
-                instead.
+                {t.rich("home.scanWholeSave", {
+                  link: (chunks) => (
+                    <button type="button" className="link" onClick={() => void scan("full")}>
+                      {chunks}
+                    </button>
+                  ),
+                })}
               </p>
             )}
           </div>
@@ -144,111 +180,115 @@ export function DesktopHomeClient() {
         <div role="status" className="flex items-start gap-2.5 rounded-md border border-line bg-surface px-4 py-3 text-sm">
           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive" aria-hidden />
           <p>
-            <span className="font-semibold">{n(lastScan.players)} players</span> and {n(lastScan.staff)} staff{" "}
             {lastScan.scope === "search"
-              ? `kept: your FM search (${searchText({ players: lastScan.searchPlayers ?? 0, staff: lastScan.searchStaff ?? 0 })}) plus your club${lastScan.myClub ? `, ${lastScan.myClub}` : ""}`
-              : `scanned${lastScan.myClub ? `, your club: ${lastScan.myClub}` : ""}`}
-            . Open{" "}
-            <Link href="/players" className="link">Players</Link>, <Link href="/squad" className="link">Squad</Link> or{" "}
-            <Link href="/growth" className="link">Growth</Link>.
+              ? t.rich("home.doneSearch", {
+                  players: lastScan.players,
+                  staff: lastScan.staff,
+                  search: searchText({ players: lastScan.searchPlayers ?? 0, staff: lastScan.searchStaff ?? 0 }),
+                  hasClub: lastScan.myClub ? "yes" : "no",
+                  club: lastScan.myClub ?? "",
+                  ...screenLinks,
+                })
+              : t.rich("home.doneFull", {
+                  players: lastScan.players,
+                  staff: lastScan.staff,
+                  hasClub: lastScan.myClub ? "yes" : "no",
+                  club: lastScan.myClub ?? "",
+                  ...screenLinks,
+                })}
           </p>
         </div>
       )}
 
       {loading && (
         <p className="text-sm text-muted" role="status">
-          Loading the scan into the screens…
+          {t("home.loading")}
         </p>
       )}
       {partial && !loading && (
         <p className="text-[13px] text-muted">
-          The screens hold {n(partial.players)} of {n(partial.totalPlayers)} players and {n(partial.staff)} of {n(partial.totalStaff)} staff
-          from this scan: your club plus {loadedFrom}, best CA first, to keep the screens quick. Growth
-          always compares every player in both scans.
+          {t("home.partial", {
+            players: partial.players,
+            totalPlayers: partial.totalPlayers,
+            staff: partial.staff,
+            totalStaff: partial.totalStaff,
+            loadedFrom,
+          })}
         </p>
       )}
 
       {active && !active.versionOk && (
-        <Notice title="Unrecognised Football Manager version">
-          This scan came from FM {active.gameVersion ?? "(unknown version)"}, but the reader was made for {active.game}. Check a few players
-          against the game before trusting the numbers, and look for a Scout Reporter update.
+        <Notice title={t("home.version.title")}>
+          {t("home.version.body", { version: active.gameVersion ?? t("home.version.unknown"), game: active.game })}
         </Notice>
       )}
-      {loadError && <Notice title="Could not load the scan">{loadError}</Notice>}
+      {loadError && <Notice title={t("home.loadError")}>{loadError}</Notice>}
 
       <section className="panel" aria-labelledby="scans-title">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3">
           <div>
-            <h2 id="scans-title" className="section-title">Stored scans</h2>
+            <h2 id="scans-title" className="section-title">{t("home.stored.title")}</h2>
             <p className="text-[13px] text-muted">
-              The newest {settings?.retention ?? "…"} are kept, plus starred ones, so <Link href="/growth" className="link">Growth</Link> can
-              compare them.
-              {diskBytes > 0 && ` They use ${formatBytes(diskBytes)} on disk.`}
+              {t.rich("home.stored.kept", {
+                retention: settings ? formatNumber(settings.retention) : "…",
+                link: pageLink("/growth"),
+              })}
+              {diskBytes > 0 && ` ${t("home.stored.disk", { size: formatBytes(diskBytes) })}`}
             </p>
           </div>
           <div className="flex gap-2">
             <Button color="alt" variant="ghost" size="md" icon={<FolderOpen className="h-4 w-4" aria-hidden />} onClick={() => void bridge.openDataFolder()}>
-              Open folder
+              {t("home.stored.openFolder")}
             </Button>
             <Button color="alt" variant="outline" size="md" onClick={() => void loadSample()}>
-              Load sample scan
+              {t("home.stored.loadSample")}
             </Button>
           </div>
         </div>
         {snapshots.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-muted">No scans yet. Press Scan search or Scan save, or load the sample scan to look around.</p>
+          <p className="px-4 py-8 text-center text-sm text-muted">{t("home.stored.empty")}</p>
         ) : (
           <ul className="divide-y divide-line">
             {/* Starred scans first, then the rest; newest first within each. */}
-            {[...snapshots.filter((s) => s.favorite), ...snapshots.filter((s) => !s.favorite)].map((s) => (
-              <StoredScanRow
-                key={s.id}
-                scan={s}
-                inUse={s.id === activeId}
-                loading={loading}
-                onUse={() => void loadSnapshot(s.id)}
-                onDelete={() => void deleteSnapshot(s.id)}
-                onUpdate={(patch) => updateSnapshot(s.id, patch)}
-                details={
-                  <>
-                    {n(s.players)} players · {n(s.staff)} staff · {s.myClub ?? "no club"} · {s.game} {s.gameVersion ?? ""} · scanned{" "}
-                    {formatTime(s.scannedAt)}
-                    {s.bytes !== undefined && ` · ${formatBytes(s.bytes)}`}
-                    {s.scope === "search"
-                      ? ` · your FM search (${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}) and your club`
-                      : `${s.sample ? "" : " · whole save"}${
-                          s.searchPlayers || s.searchStaff
-                            ? ` · FM search: ${searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 })}`
-                            : ""
-                        }`}
-                  </>
-                }
-              />
-            ))}
+            {[...snapshots.filter((s) => s.favorite), ...snapshots.filter((s) => !s.favorite)].map((s) => {
+              const search = searchText({ players: s.searchPlayers ?? 0, staff: s.searchStaff ?? 0 });
+              const details = [
+                t("counts.players", { count: s.players }),
+                t("counts.staff", { count: s.staff }),
+                s.myClub ?? t("home.details.noClub"),
+                `${s.game} ${s.gameVersion ?? ""}`.trim(),
+                t("home.details.scanned", { time: formatTime(s.scannedAt) }),
+                s.bytes !== undefined && formatBytes(s.bytes),
+                s.scope === "search" && t("home.details.search", { search }),
+                s.scope !== "search" && !s.sample && t("home.details.wholeSave"),
+                s.scope !== "search" && (s.searchPlayers || s.searchStaff) && t("home.details.fmSearch", { search }),
+              ].filter((x): x is string => typeof x === "string" && x !== "");
+              return (
+                <StoredScanRow
+                  key={s.id}
+                  scan={s}
+                  inUse={s.id === activeId}
+                  loading={loading}
+                  onUse={() => void loadSnapshot(s.id)}
+                  onDelete={() => void deleteSnapshot(s.id)}
+                  onUpdate={(patch) => updateSnapshot(s.id, patch)}
+                  details={details.join(" · ")}
+                />
+              );
+            })}
           </ul>
         )}
       </section>
 
       <section className="panel space-y-1.5 px-4 py-3 text-[13px] text-muted" aria-labelledby="about-title">
-        <h2 id="about-title" className="section-title text-ink">About</h2>
-        <p>Scout Reporter desktop {bridge.version}. Supports Football Manager 27 (27.0) and 26 (26.3) on Windows, from Steam, Epic or Game Pass.</p>
+        <h2 id="about-title" className="section-title text-ink">{t("home.about.title")}</h2>
+        <p>{t("home.about.version", { version: bridge.version })}</p>
+        <p>{t.rich("home.about.reader", { link: externalLink("https://github.com/mavarobli/FMSuperScout") })}</p>
         <p>
-          The reader only reads Football Manager&apos;s memory; it never changes your game or save. It is adapted from{" "}
-          <a href="https://github.com/mavarobli/FMSuperScout" className="link" target="_blank" rel="noreferrer">
-            FMSuperScout
-          </a>{" "}
-          by mavarobli (MIT licence). Thank you!
-        </p>
-        <p>
-          FM27 role weights from{" "}
-          <a href="https://github.com/caiograco289/Fm-Match-Lab" className="link" target="_blank" rel="noreferrer">
-            FM Match Lab
-          </a>
-          ; age benchmarks, CA costs and staff weights from{" "}
-          <a href="https://github.com/jamiebolden/fm-scoring" className="link" target="_blank" rel="noreferrer">
-            jamiebolden/fm-scoring
-          </a>
-          ; training research by harvestgreen22.
+          {t.rich("home.about.credits", {
+            matchLab: externalLink("https://github.com/caiograco289/Fm-Match-Lab"),
+            scoring: externalLink("https://github.com/jamiebolden/fm-scoring"),
+          })}
         </p>
       </section>
     </div>

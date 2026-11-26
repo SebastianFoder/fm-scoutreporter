@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "FM27-roller",
+    "scale": "score 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: nu {current}, potentiale {potential}} other {{role}: nu {current}}}",
+    "legend": "Forklaring",
+    "now": "Nu",
+    "ageBenchmark": "Benchmark for alder {age}: {value}",
+    "prime": "Toppen {value}",
+    "vsAge": "vs. alder",
+    "potentialVsPrime": "Potentiale vs. toppen"
+  },
+  "plan": {
+    "title": "Udviklingsplan",
+    "builtFor": "{atPa, select, yes {Bygget til den bedste rolle ved PE: {role} ({score})} other {Bygget til den bedste rolle: {role} ({score})}}",
+    "focusLabel": "Individuelt træningsfokus",
+    "focus": {
+      "quickness": "Hurtighed",
+      "goalkeeperReason": "Adræthed og Reflekser vægter mest for målmænd. En tester, der gennemgik FM27's træningskode, fandt, at dette kombinerede fokus er det bedste for målmænd, der prioriterer dem.",
+      "quicknessReason": "Hurtighed og Acceleration er blandt de tungeste vægte i alle markspillerroller. I harvestgreen22's test løftede fokusset dem fra cirka +1,6 til +2,7 pr. sæson. Nuværende Hurtighed {pace}, Acceleration {acceleration}.",
+      "attributeReason": "Hurtighed og Acceleration er allerede {pace} og {acceleration}, så fokus på Hurtighed har ikke meget mere at give. {attribute} er der, hvor scoren som {role} har mest at vinde.",
+      "quicknessFallbackReason": "Hurtighed og Acceleration er blandt de tungeste vægte i alle markspillerroller."
+    },
+    "trainingRoleLabel": "Træningsrolle",
+    "trainingRole": {
+      "goalkeeper": "Lad begge træningsroller være utildelte",
+      "goalkeeperReason": "En tester, der gennemgik FM27's træningskode, fik mest udvikling hos målmænd uden rolle og med det kombinerede fokus ovenfor.",
+      "outfield": "{role, select, defensive {Defensiv midtbanespiller uden boldbesiddelse, intet i boldbesiddelse} other {Offensiv midtbanespiller uden boldbesiddelse, intet i boldbesiddelse}}",
+      "outfieldReason": "En tester, der gennemgik FM27's træningskode, fik den største NE-vækst hos unge markspillere med kun en rolle uden boldbesiddelse, kombineret med Hurtighed: Defensiv midtbanespiller for forsvarere, wingbacks og DM'er, Offensiv midtbanespiller for alle andre. Forudseenhed voksede mest. Det bygger på én testers kontrollerede kørsler."
+    },
+    "sessions": {
+      "title": "Udviklingstræningspas for scoren som {role}",
+      "more": "mere {attributes}",
+      "nothingExtra": "intet ekstra",
+      "barLabel": "{session}: {percent} af det bedste træningspas",
+      "note": "Vækst i rollescore fra hvert træningspas i harvestgreen22's FM27-test, anvendt på denne spillers egenskaber, som andel af det bedste. \"Mere\" viser, hvad et træningspas bygger op ud over det gennemsnitlige udviklingstræningspas.",
+      "goalkeeper": "Målmænd var ikke med i testen af træningspas. Målmandstræneren træner det meste af det, en målmand har brug for, så sæt din bedste på."
+    },
+    "coaching": {
+      "title": "Den træning, der betyder mest",
+      "subtitle": "Andel af den resterende vækst som {role}, hver træningsgruppe træner",
+      "coach": "træner: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Noter",
+    "items": {
+      "role": {
+        "title": "Udvikl som {role}",
+        "detail": "Bedste rolle i dag er {bestRole} ({bestScore}), men egenskaberne ved PE passer bedre til {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Tæt på loftet",
+        "detail": "Kun {gap} NE mellem NE {ca} og PE {pa}. Træningen afgør nu mest, hvor NE havner, ikke hvor meget der er, så ret den mod de egenskaber, rollen har brug for."
+      },
+      "gapUnlikely": {
+        "title": "Når næppe PE",
+        "detail": "{gap} NE mangler stadig som {age}-årig, og egenskaberne vokser kun lidt efter {endAge}. Vurdér spilleren tættere på nuværende evne."
+      },
+      "gapLeft": {
+        "title": "{gap} NE tilbage at vokse",
+        "detail": "{goalkeeper, select, yes {NE {ca} mod PE {pa}, med cirka {seasons, plural, one {# sæson} other {# sæsoner}} reel udvikling tilbage (væksten aftager markant efter {endAge} for målmænd).} other {NE {ca} mod PE {pa}, med cirka {seasons, plural, one {# sæson} other {# sæsoner}} reel udvikling tilbage (væksten aftager markant efter {endAge}).}}"
+      },
+      "minutesPeak": {
+        "title": "De vigtigste udviklingsår",
+        "detail": "Fra 16 til 18 år vokser egenskaberne hurtigst. Både spilletid og modstandernes niveau giver NE-vækst, så minutter på seniorholdet eller på leje slår ungdomsfodbold, så snart spilleren kan holde en plads. Til U/18-holdet bruger fm-scorings forfatter det minimale program (ingen taktiske træningspas)."
+      },
+      "minutesSenior": {
+        "title": "Har brug for seniorminutter",
+        "detail": "Spilletid og modstandernes niveau styrer, hvor meget NE en spiller får. Er der ingen startplads til spilleren i din klub, så lej vedkommende ud til den stærkeste klub, der vil starte dem."
+      },
+      "minutesPast": {
+        "title": "Forbi udviklingsvinduet",
+        "detail": "Egenskaberne vokser kun lidt efter {endAge}. Træning fra nu af omformer mest det, der allerede er der."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "fm-scorings noter peger på Professionalisme som den skjulte egenskab, der betyder mest for udviklingen. Dette niveau hjælper spilleren med at få mest muligt ud af sit PE."
+      },
+      "profLow": {
+        "title": "{level, select, low {Lav {attribute} ({value})} other {Gennemsnitlig {attribute} ({value})}}",
+        "detail": "fm-scorings noter peger på Professionalisme som den skjulte egenskab, der betyder mest for udviklingen. Oplæring er FM's måde at ændre personlighed på: sæt spilleren i en oplæringsgruppe med seniorspillere, der har høj Professionalisme (fm-scoring indeholder et filter til spillersøgning efter mentorer)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "Træning ændrer aldrig Beslutsomhed. Oplæring er måden at ændre personlighed på. Eksportér med visningen Hidden Attributes for at se Professionalisme."
+      },
+      "schedule": {
+        "title": "Læg udviklingstræningspassene på én dag",
+        "detail": "Kun Boldbehandling i boldbesiddelse, Offensiv og Defensiv boldbehandling, Kondition, Hård konditionstræning og Individuel udvikling får egenskaberne til at vokse. Alle andre træningspas gav ikke mere NE end hvil, og det giver kun lidt at gentage et træningspas. En tester samlede udviklingstræningspassene på én dag for at beholde hele hviledage, hvor der ikke tjekkes for træningsskader. Det sænkede risikoen for træningsskader fra 13,8 % til 4,0 % med næsten samme udvikling."
+      }
+    },
+    "source": "Fra FM27-træningsforskningen samlet i <link>fm-scoring</link>: harvestgreen22's træningstest, fm-scoring-forfatterens egne tests af træningsprogrammer og en tester, der gennemgik FM27's træningskode.",
+    "younger": "Det meste gælder yngre spillere.",
+    "odds": "Udviklingen er tilfældig fra måned til måned, så se det som sandsynligheder, ikke et løfte."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Windows용 Scout Reporter",
+  "intro": "이 웹사이트의 모든 화면에 <b>검색 스캔</b>이 더해집니다. Football Manager에서 선수 검색을 설정하고 <kbd>F9</kbd>를 누르면, 몇 초 후 FM이 찾은 선수와 내 선수단이 선수, 베스트 11, 선수단, 스탭 화면에 들어옵니다. 뷰 파일도 CSV 내보내기도 필요 없습니다.",
+  "screenshotAlt": "선수 목록: 모든 선수를 내 가중치나 FM27 역할로 평가",
+  "get": {
+    "title": "다운로드",
+    "button": "Windows용 다운로드",
+    "version": "버전 {version}",
+    "versionDate": "버전 {version}, {date}",
+    "file": "{file}, {size} MB",
+    "releaseNotes": "릴리스 노트 및 체크섬",
+    "allVersions": "모든 버전",
+    "fallback": "설치 파일은 GitHub에 게시되어 있습니다: <link>Scout Reporter 데스크톱 릴리스</link>. 가장 최신 릴리스에서 <b>{file}</b> 파일을 다운로드하십시오.",
+    "requirements": "Windows 10 또는 11, 64비트. Steam, Epic 또는 Game Pass판 Football Manager 27(27.0) 또는 26(26.3). Mac 버전은 계획 중입니다."
+  },
+  "install": {
+    "title": "설치",
+    "run": "다운로드한 설치 파일을 실행하십시오.",
+    "smartScreen": "설치 파일에 아직 코드 서명이 없어 Windows SmartScreen이 알 수 없는 게시자라고 표시합니다. <b>추가 정보</b>를 클릭한 후 <b>실행</b>을 클릭하십시오.",
+    "location": "설치할 위치를 고르십시오. 시작 메뉴 항목과 바탕 화면 바로 가기가 추가됩니다."
+  },
+  "use": {
+    "title": "사용",
+    "start": "Football Manager를 시작하고 세이브를 불러오십시오. Scout Reporter는 옆에 열어 두십시오.",
+    "search": "FM에서 <b>선수 검색</b>(또는 스탭 검색)을 열고 필터를 설정하십시오. 예를 들어 선수의 관심사: 관심 있음으로 설정하면 나에게 올 선수만 볼 수 있습니다.",
+    "scan": "<kbd>F9</kbd>(FM 안에서도 작동) 또는 앱의 <b>검색 스캔</b>을 누르십시오. 검색 결과의 선수와 내 구단이 모든 화면에 나타납니다. <b>세이브 스캔</b>은 검색 없이 세이브 전체를 읽습니다.",
+    "hidden": "보고 싶지 않다면 <b>현재 기량, 잠재 기량, 숨은 능력치 사용</b>을 끄십시오. 게임 내 몇 달마다 다시 스캔하면 성장 페이지에서 성장을 추적할 수 있습니다.",
+    "admin": "Football Manager를 관리자 권한으로 실행한다면 Scout Reporter도 관리자 권한으로 실행하십시오."
+  },
+  "safe": {
+    "title": "안전합니까?",
+    "reader": "앱은 Football Manager의 메모리를 읽기만 하며, 게임이나 세이브를 절대 변경하지 않습니다. 인터넷에 묻는 것은 GitHub에 새 버전이 있는지뿐이며(끌 수 있음), 사용자나 세이브에 관한 정보는 전송하지 않습니다. 스캔은 PC의 <code>{path}</code>에 저장됩니다. 코드는 <github>GitHub</github>에 공개되어 있으며, 모든 릴리스는 GitHub Actions로 그곳에서 빌드됩니다. 메모리 리더는 <fmss>FMSuperScout</fmss>(MIT 라이선스)를 바탕으로 만들었습니다.",
+    "updates": "Football Manager의 대형 패치 후에는 리더 업데이트가 필요할 수 있습니다. 앱은 게임 버전이 지원 버전과 다르면 경고하고, 새 버전이 나오면 알려 줍니다. <b>지금 업데이트</b>를 누르면 설치되며 설정, 스캔, 가중치, 포메이션은 유지됩니다."
+  },
+  "website": "설치하고 싶지 않으십니까? <link>CSV 내보내기로 웹사이트를 사용하십시오</link>."
+}

@@ -1,4 +1,6 @@
 import type { CSSProperties } from "react";
+import { useTranslations } from "next-intl";
+import { useFormatNumber } from "../i18n/hooks";
 import { gradeFor, type Grade, type GradeTier } from "@scoutreporter/core/grades";
 
 type Size = "sm" | "lg";
@@ -23,6 +25,7 @@ export function GradeBadge({
   /** Seconds to offset looping effects, so stamps in a table don't all move in step. */
   delay?: number;
 }) {
+  const t = useTranslations("common.grade");
   const letter = grade.charAt(0);
   // Show the minus as a true minus sign; the accessible name keeps the plain grade.
   const mod = grade.slice(1).replace("-", "−");
@@ -34,7 +37,7 @@ export function GradeBadge({
       data-size={size}
       style={{ "--grade-delay": `${delay.toFixed(2)}s` } as CSSProperties}
       title={title}
-      aria-label={title ?? `Grade ${grade}`}
+      aria-label={title ?? t("label", { grade })}
       role="img"
     >
       <span aria-hidden>
@@ -57,8 +60,13 @@ export function GradeStamp({
   /** What the score is, for the tooltip and screen readers (e.g. "Potential"). */
   label?: string;
 }) {
+  const t = useTranslations("common.grade");
+  const formatNumber = useFormatNumber();
   const { grade, tier } = gradeFor(score);
-  const title = `${label ? `${label}: ` : ""}grade ${grade} (${score.toFixed(1)} on the 1–20 scale)`;
+  const formatted = formatNumber(score, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const title = label
+    ? t("titleWithLabel", { label, grade, score: formatted })
+    : t("title", { grade, score: formatted });
   // Spread looping effects over a few seconds, stable per score.
   const delay = ((score * 1000) % 3600) / 1000;
   return <GradeBadge grade={grade} tier={tier} size={size} title={title} delay={delay} />;

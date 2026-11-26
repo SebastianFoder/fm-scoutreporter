@@ -1,0 +1,17 @@
+{
+  "setup": {
+    "title": "Setup guide",
+    "description": "Follow these steps to export a player list from Football Manager 27 or 26 and import it into this app.",
+    "link": "Go to the importer"
+  },
+  "players": {
+    "title": "Players",
+    "description": "Score and rank players by a weighted average of their attributes. No baseline needed: import and go.",
+    "link": "Go to Players"
+  },
+  "wonderkids": {
+    "title": "Wonderkids",
+    "description": "Estimate full-potential attributes from a Hidden Attributes view export (CA, PA, Professionalism) and rank prospects on benchmarked FM27 roles.",
+    "link": "Go to Players"
+  }
+}

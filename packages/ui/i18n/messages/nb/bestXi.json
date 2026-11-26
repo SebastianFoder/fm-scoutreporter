@@ -1,0 +1,109 @@
+{
+  "intro": "Velger de elleve med høyest poengsum fra importen din for en formasjon, med et valgfritt minimum og maksimum for hva de elleve koster til sammen.",
+  "noImport": {
+    "desktop": "Ingen spillere ennå. Åpne et Spillersøk i FM og trykk <kbd>F9</kbd> eller Skann søk.",
+    "web": "Ingen CSV importert ennå. Velg en CSV-fil over, eller last inn testdataene for å se deg rundt."
+  },
+  "setup": {
+    "title": "Oppsett",
+    "reset": "Tilbakestill",
+    "minBudget": "Min. budsjett ({currency})",
+    "maxBudget": "Maks. budsjett ({currency})",
+    "noMinimum": "Ingen minimum",
+    "noLimit": "Ingen grense",
+    "budgetInvalid": "Skriv inn et beløp som 15M, 750K eller 2500000. Budsjetter som ikke kan leses, ignoreres.",
+    "budgetHint": "Totalt for de elleve. Skriv beløp som 15M eller 750K.",
+    "valuation": "En spiller koster",
+    "valuations": {
+      "low": "Lav ende av intervallet",
+      "mid": "Midtpunktet i intervallet",
+      "high": "Høy ende av intervallet"
+    },
+    "includeFree": "Ta med spillere uten overgangsverdi",
+    "includeFreeHint": "Stort sett spillere uten kontrakt. De teller som {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "Minimumsbudsjettet er høyere enn maksimum.",
+      "body": "Ingen ellever kan koste minst {min} og høyst {max}."
+    },
+    "slots": {
+      "title": "Ikke nok spillere til å fylle denne formasjonen.",
+      "body": "Ingen aktuelle spillere igjen for: {positions}. Bare naturlige posisjoner fra eksporten teller.",
+      "leftOut": "Utelukkede spillere og spillere uten overgangsverdi er holdt utenfor."
+    },
+    "budget": {
+      "title": "Ingen ellever passer dette budsjettet.",
+      "range": "Med disse innstillingene koster den billigste mulige elleveren {min} og den dyreste {max}.",
+      "wider": "Prøv et bredere budsjett."
+    }
+  },
+  "excluded": {
+    "label": "Utelukket:",
+    "allowAgain": "Tillat denne spilleren igjen",
+    "allowAgainHidden": "(tillat igjen)",
+    "clearAll": "Fjern alle"
+  },
+  "footnote": "Hver posisjon får én spiller som har den som naturlig posisjon, med poeng etter rollen for den posisjonen (1–20). Elleveren som vises, har høyest total poengsum av alle kombinasjoner som passer budsjettet.",
+  "unpriced": "{count, plural, one {# spiller er} other {# spillere er}} holdt utenfor fordi eksporten ikke oppgir noen pris (for eksempel «Ikke til salgs»).",
+  "result": {
+    "title": "Beste ellever",
+    "summary": "Snittpoeng <b>{average}</b>{basis, select, potential { ved fullt potensial} other {}} · Kostnad <b>{cost}</b>{budget, select, range { (budsjett {min} til {max})} max { av {max}} min { (minst {min})} other {}} · Lønn <b>{wages} p/u</b>{unknownWages, plural, =0 {} one { (# uten kontrakt)} other { (# uten kontrakt)}}",
+    "notOptimal": "Søket gikk tom for tid før det kunne bevise at dette er den aller beste elleveren. En bedre ellever kan legge til høyst {gap} til den totale poengsummen på {total}.",
+    "pitchLabel": "Elleveren på banen",
+    "columns": {
+      "pos": "Pos",
+      "score": "Poeng",
+      "scoreTitle": "Rollepoeng på FMs skala 1–20",
+      "valueTitle": "Overgangsverdi i eksporten",
+      "counted": "Telt",
+      "countedTitle": "Telt mot budsjettet: {valuation, select, low {lav ende av intervallet} high {høy ende av intervallet} other {midtpunktet i intervallet}}",
+      "exclude": "Utelukk"
+    },
+    "excludeLabel": "Utelukk {name} og velg på nytt",
+    "excludeTitle": "Utelukk og velg på nytt",
+    "total": "Totalt",
+    "perWeek": "{amount} p/u"
+  },
+  "formation": {
+    "custom": "Tilpasset",
+    "yours": "Dine formasjoner",
+    "presets": "FM-formasjoner",
+    "moveTo": "Flytt {from} til {spot} ({position})",
+    "emptySpot": "Tom plass {spot} ({position})",
+    "moveHere": "Flytt {from} hit",
+    "goalkeeperFixed": "Keeper (fast)",
+    "selected": "{spot} ({position}) valgt: velg en plass å flytte den til, eller trykk igjen for å avbryte",
+    "dragOrSelect": "{spot} ({position}): dra, eller velg for å flytte",
+    "keeperStays": "Keeperen blir stående i mål",
+    "dragTitle": "{position}: dra til en annen plass, eller over en posisjon for å bytte",
+    "hint": {
+      "dropSwap": "Slipp for å bytte {from} og {to}.",
+      "dropMove": "Slipp for å flytte {from} til {to}.",
+      "dropCancel": "Slipp på en plass, eller hvor som helst ellers for å avbryte.",
+      "moving": "Flytter {spot}: klikk på en plass (eller en annen posisjon for å bytte), eller {spot} igjen for å avbryte.",
+      "idle": "Dra en posisjon til en annen plass, eller over en posisjon for å bytte dem."
+    },
+    "delete": "Slett «{name}»",
+    "namePlaceholder": "Gi formasjonen et navn",
+    "myPlaceholder": "Min {formation}",
+    "nameLabel": "Navn på denne formasjonen",
+    "save": "Lagre",
+    "scoredAs": "Poeng som",
+    "roleFor": "Rolle for {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "Rollene er vektprofilene dine fra <link>Spillere</link>."
+  },
+  "basis": {
+    "label": "Gi spillere poeng etter",
+    "potential": "Fullt potensial",
+    "potentialTitle": "Ferdigheter framskrevet til PF",
+    "needsTitle": "Trenger NF og PF: eksporter med visningen {view}",
+    "needs": "Fullt potensial trenger visningen {view}."
+  },
+  "pitch": {
+    "nobody": "Ingen",
+    "nobodyTitle": "{spot}: ingen i troppen spiller {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

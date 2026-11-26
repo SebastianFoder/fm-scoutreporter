@@ -1,0 +1,70 @@
+{
+  "title": "Inställningar",
+  "tabs": {
+    "weights": "Vikter",
+    "columns": "Kolumner",
+    "look": "Utseende",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Tema",
+    "attributeColours": "Egenskapsfärger"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Ljust",
+    "dark": "Mörkt",
+    "system": "System"
+  },
+  "profiles": {
+    "profile": "Profil",
+    "name": "Namn",
+    "namePlaceholder": "Profilnamn",
+    "createNew": "Skapa ny",
+    "default": "Standard",
+    "newName": "Ny profil",
+    "copyName": "{name} kopia"
+  },
+  "weights": {
+    "intro": "Hur mycket varje egenskap räknas i en spelares poäng. Poängen uppdateras medan du skriver. FM27-rollprofilerna är riktmärkta på FM Match Labs positionsstudie (13b).",
+    "weighted": "{count, number} viktade",
+    "weighting": "Viktning",
+    "linear": "Linjär (FM27-riktmärke)",
+    "emphasized": "Förstärkt (vikter i kvadrat)",
+    "benchmark": "Riktmärkta FM27-rollvikter (FM Match Lab <link>Study 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "FM Match Labs FM27-riktmärke (<link>Study 13b</link>): mittbackar.",
+      "fm27-wb": "FM Match Labs FM27-riktmärke (<link>Study 13b</link>): ytterbackar och offensiva ytterbackar.",
+      "fm27-dm": "FM Match Labs FM27-riktmärke (<link>Study 13b</link>): defensiva mittfältare, används även för innermittfältare.",
+      "fm27-10": "FM Match Labs FM27-riktmärke (<link>Study 13b</link>): offensiva mittfältare och yttrar.",
+      "fm27-9": "FM Match Labs FM27-riktmärke (<link>Study 13b</link>): anfallare.",
+      "fm27-gk": "FM Match Labs FM27-riktmärke (<link>Study 13b</link>): målvakter."
+    },
+    "resetToBenchmark": "Återställ till riktmärket",
+    "linearNote": "Linjär motsvarar hur FM27-riktmärkena och ”mot ålder” är kalibrerade.",
+    "json": {
+      "title": "Importera/exportera JSON",
+      "label": "Profil-JSON",
+      "placeholder": "Exporterad profil-JSON visas här. Klistra in JSON här för att importera.",
+      "invalid": "Ogiltig profil-JSON"
+    }
+  },
+  "columns": {
+    "intro": "Egenskaperna som spelarlistan och jämförelsen visar som kolumner. Spara olika uppsättningar som profiler.",
+    "shown": "{count, number} visas"
+  },
+  "colours": {
+    "intro": "Värdet en egenskap (1 till 20) behöver för varje färg. Färgerna följer det ljusa eller mörka temat.",
+    "band": "Nivå",
+    "minValue": "Lägsta värde",
+    "preview": "Förhandsvisning, 1 till 20",
+    "bands": {
+      "excellent": "Lysande egenskap",
+      "good": "Bra egenskap",
+      "average": "Medelgod egenskap",
+      "low": "Låg egenskap"
+    },
+    "minValueLabel": "Lägsta värde för {band}",
+    "below": "Under <b>{value, number}</b>"
+  }
+}

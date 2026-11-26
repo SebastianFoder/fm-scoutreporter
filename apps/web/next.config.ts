@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 /** The monorepo root: shared packages live outside this app, so tracing and Turbopack must see the whole repo. */
 const repoRoot = path.join(__dirname, "..", "..");
@@ -42,4 +43,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+/* The language comes from a cookie / Accept-Language, not the URL: see i18n/request.ts. */
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+
+export default withNextIntl(nextConfig);

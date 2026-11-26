@@ -30,6 +30,7 @@
     "screenshots": "node scripts/screenshots/screenshots.mjs"
   },
   "devDependencies": {
+    "@formatjs/icu-messageformat-parser": "^3.5.23",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/exec": "^7.1.0",

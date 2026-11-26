@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { RotateCcw } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { usePlayersData, type PlayerWithGroups } from "@scoutreporter/ui/components/PlayersDataProvider";
 import { useSquadData } from "@scoutreporter/ui/components/SquadDataProvider";
 import { ImportPanel, NoImport, STORAGE_FULL_MESSAGE } from "@scoutreporter/ui/components/ImportPanel";
@@ -88,6 +89,7 @@ export default function SquadClient() {
   const scouting = usePlayersData();
   const profiles = useWeightProfiles();
   const { players, caModels, fields, columns } = squad.state;
+  const t = useTranslations("squad");
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
@@ -157,7 +159,7 @@ export default function SquadClient() {
     return findUpgrades(analysis, scoreSlots(scoutPool, settings.slots, roles, basis));
   }, [analysis, scoutPool, settings.slots, roles, basis]);
 
-  const name = (id: string) => byId.get(id)?.raw.player ?? "Unknown";
+  const name = (id: string) => byId.get(id)?.raw.player ?? t("unknownPlayer");
   const age = (id: string) => byId.get(id)?.raw.age ?? 0;
 
   const scoutingCount = scouting.state.players.length;
@@ -165,26 +167,25 @@ export default function SquadClient() {
   return (
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
-        <PageHeader title="Squad analysis">
-          Import your squad, pick the formation you play, and see your first and second eleven, where
-          the squad is thin or weak, who is ageing out and which youngsters can step up.
-        </PageHeader>
+        <PageHeader title={t("title")}>{t("intro")}</PageHeader>
 
         <ImportPanel
-          title={players.length > 0 ? `${players.length} players in your squad` : "Import your squad"}
+          title={players.length > 0 ? t("import.titleCount", { count: players.length }) : t("import.title")}
           description={
             <>
-              Export your squad screen with the{" "}
-              <a href={VIEW_SQUAD.href} className="link">
-                Squad
-              </a>{" "}
-              or{" "}
-              <a href={VIEW_SQUAD_HIDDEN.href} className="link">
-                Squad Hidden Attributes
-              </a>{" "}
-              view (adds potential). Kept separate from your scouting import.
-              {columns && !Object.values(columns).some(Boolean) &&
-                " This import has no squad columns, so loans, injuries, squad status and the team sheet are not checked."}
+              {t.rich("import.description", {
+                squad: (chunks) => (
+                  <a href={VIEW_SQUAD.href} className="link">
+                    {chunks}
+                  </a>
+                ),
+                hidden: (chunks) => (
+                  <a href={VIEW_SQUAD_HIDDEN.href} className="link">
+                    {chunks}
+                  </a>
+                ),
+              })}
+              {columns && !Object.values(columns).some(Boolean) && ` ${t("import.noColumns")}`}
             </>
           }
           testFixture="squad-hidden"
@@ -197,17 +198,17 @@ export default function SquadClient() {
         />
 
         {players.length === 0 && (
-          <NoImport desktop={<>No squad yet. Every scan reads your own club&apos;s players too.</>}>
-            <p>No squad imported yet. Choose your squad CSV above, or load the test data to look around.</p>
+          <NoImport desktop={t("noImport.desktop")}>
+            <p>{t("noImport.web")}</p>
             {scoutingCount > 0 && scouting.state.csvText && (
               <p className="mt-2">
-                Already exported your squad as the player import?{" "}
+                {t("noImport.usePlayerImportPrompt")}{" "}
                 <button
                   type="button"
                   className="link"
                   onClick={() => void squad.importCsv(scouting.state.csvText!)}
                 >
-                  Use the player import ({scoutingCount} players) as your squad
+                  {t("noImport.usePlayerImport", { count: scoutingCount })}
                 </button>
               </p>
             )}
@@ -219,7 +220,7 @@ export default function SquadClient() {
             <section aria-labelledby="squad-setup" className="panel">
               <div className="flex items-center justify-between border-b border-line px-4 py-3">
                 <h2 id="squad-setup" className="section-title">
-                  Setup
+                  {t("setup.title")}
                 </h2>
                 <Button
                   color="alt"
@@ -228,7 +229,7 @@ export default function SquadClient() {
                   icon={<RotateCcw className="h-3.5 w-3.5" aria-hidden />}
                   onClick={() => setSettings(DEFAULTS)}
                 >
-                  Reset
+                  {t("setup.reset")}
                 </Button>
               </div>
               <div className="px-4 py-3.5">
@@ -236,25 +237,25 @@ export default function SquadClient() {
                   value={basis}
                   onChange={(b) => update({ basis: b })}
                   potentialAvailable={Boolean(caModels)}
-                  hiddenViewName="Squad Hidden Attributes view"
+                  hiddenViewName="Squad Hidden Attributes"
                 />
                 {(columns?.playingTime || columns?.injury) && (
                   <fieldset className="mt-3.5 flex flex-col gap-2">
-                    <legend className="mb-1 text-[13px] text-muted">Availability</legend>
+                    <legend className="mb-1 text-[13px] text-muted">{t("setup.availability")}</legend>
                     {columns.playingTime && (
                       <Checkbox
                         checked={settings.includeLoans}
                         onChange={(includeLoans) => update({ includeLoans })}
-                        label="Count players out on loan"
-                        hint={`${loanCount} out on loan at other clubs.`}
+                        label={t("setup.includeLoans")}
+                        hint={t("setup.loanHint", { count: loanCount })}
                       />
                     )}
                     {columns.injury && (
                       <Checkbox
                         checked={settings.excludeInjured}
                         onChange={(excludeInjured) => update({ excludeInjured })}
-                        label="Leave out injured players"
-                        hint={`${injuredCount} injured now. On: the elevens you can pick today.`}
+                        label={t("setup.excludeInjured")}
+                        hint={t("setup.injuredHint", { count: injuredCount })}
                       />
                     )}
                   </fieldset>
@@ -271,10 +272,12 @@ export default function SquadClient() {
 
             <div className="flex min-w-0 flex-col gap-4">
               {analysis.firstXi.filled < settings.slots.length && (
-                <Notice title="Your squad cannot fill this formation.">
-                  Nobody plays{" "}
-                  {[...new Set(analysis.slots.flatMap((r, i) => (r.starter ? [] : [SLOT_LABEL[settings.slots[i].slot]])))].join(", ")}{" "}
-                  as a natural position, so the eleven is short. Only natural positions from the export count.
+                <Notice title={t("cannotFill.title")}>
+                  {t("cannotFill.body", {
+                    positions: [
+                      ...new Set(analysis.slots.flatMap((r, i) => (r.starter ? [] : [SLOT_LABEL[settings.slots[i].slot]]))),
+                    ].join(", "),
+                  })}
                 </Notice>
               )}
 
@@ -318,10 +321,7 @@ export default function SquadClient() {
               />
 
               <p className="max-w-3xl text-[13px] leading-relaxed text-muted">
-                Each position is scored on its role (1–20, with the S++ to F grade) and only counts
-                players who list it as a natural position. The first eleven has the highest total
-                score; the second eleven is the best eleven from everyone left, so each player covers
-                one position.
+                {t("footnote")}
               </p>
             </div>
           </div>

@@ -1,13 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { LINK_BUTTON_CLASS } from "@scoutreporter/ui/components/Button";
 import { SegmentedControl } from "@scoutreporter/ui/components/SegmentedControl";
 import { VIEW_HIDDEN, VIEW_STANDARD } from "@scoutreporter/core/view-files";
 import { GRADE_SCALE, PRIME_GRADE } from "@scoutreporter/core/grades";
 import { GradeBadge } from "@scoutreporter/ui/components/GradeStamp";
+import { useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
+
+/** Inline markup shared by the guides' messages: <b>, <sb> (semibold) and <code>. */
+const TAGS = {
+  b: (c: ReactNode) => <span className="font-bold">{c}</span>,
+  sb: (c: ReactNode) => <span className="font-semibold">{c}</span>,
+  code: (c: ReactNode) => <code className="font-semibold">{c}</code>,
+};
+
+/** A <link> tag for a page of this site. */
+function internal(href: string) {
+  return function internalLink(c: ReactNode) {
+    return (
+      <Link href={href} className="link">
+        {c}
+      </Link>
+    );
+  };
+}
+
+/** A tag for an external link, opened in a new tab. */
+function external(href: string) {
+  return function externalLink(c: ReactNode) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className="link">
+        {c}
+      </a>
+    );
+  };
+}
 
 /** Collapsible documentation section. Numbered only where the steps are a sequence. */
 function Step({
@@ -23,6 +54,7 @@ function Step({
 }) {
   const [open, setOpen] = useState(Boolean(defaultOpen));
   const numbered = /^\d+$/.test(index);
+  const t = useTranslations("howTo.step");
 
   return (
     <div className="border-b border-line last:border-0">
@@ -46,7 +78,7 @@ function Step({
           className={`h-4 w-4 shrink-0 text-muted transition-transform duration-150 ${open ? "rotate-180" : ""}`}
           aria-hidden
         />
-        <span className="sr-only">{open ? "Collapse" : "Expand"}</span>
+        <span className="sr-only">{open ? t("collapse") : t("expand")}</span>
       </button>
 
       <div
@@ -95,42 +127,32 @@ function InfoBox({
   );
 }
 
+/** The view files, by their key in howTo.views. */
 const VIEW_OPTIONS = [
-  {
-    view: VIEW_HIDDEN,
-    label: "Recommended",
-    detail:
-      "Every attribute plus the hidden Professionalism, CA and PA. Unlocks Potential scores, for finding wonderkids.",
-  },
-  {
-    view: VIEW_STANDARD,
-    label: "Attributes only",
-    detail: "Every visible attribute. Enough for the player list and Best XI.",
-  },
+  { view: VIEW_HIDDEN, key: "hidden" },
+  { view: VIEW_STANDARD, key: "standard" },
 ] as const;
 
 /** Download cards for both view files, with what each one unlocks. */
 function ViewDownloads() {
+  const t = useTranslations("howTo.views");
   return (
     <div>
       <div className="grid gap-2 sm:grid-cols-2">
-        {VIEW_OPTIONS.map(({ view, label, detail }) => (
+        {VIEW_OPTIONS.map(({ view, key }) => (
           <div key={view.href} className="rounded-md px-3 py-3 ring-1 ring-line">
             <div className="flex items-baseline justify-between gap-2">
-              <h3 className="font-semibold">{view.name}</h3>
-              <span className="text-xs text-muted">{label}</span>
+              <h3 className="font-semibold">{t(`${key}.name`)}</h3>
+              <span className="text-xs text-muted">{t(`${key}.label`)}</span>
             </div>
-            <p className="mt-1 text-sm text-ink/85">{detail}</p>
+            <p className="mt-1 text-sm text-ink/85">{t(`${key}.detail`)}</p>
             <a href={view.href} className={`${LINK_BUTTON_CLASS} mt-3`}>
-              Download {view.name}
+              {t("download", { name: t(`${key}.name`) })}
             </a>
           </div>
         ))}
       </div>
-      <p className="mt-2 text-sm text-muted">
-        Both views export the same attributes, so imports from either work everywhere. You can
-        install both and switch between them in FM.
-      </p>
+      <p className="mt-2 text-sm text-muted">{t("both")}</p>
     </div>
   );
 }
@@ -143,13 +165,14 @@ const EXPORTER_RELEASES_URL = `${EXPORTER_URL}/releases`;
 /** Exporter setup for FM27 and FM26. Both guides stay in the page; the toggle only hides one. */
 export function SetupGuide() {
   const [version, setVersion] = useState<GameVersion>("fm27");
+  const t = useTranslations("howTo.setup");
 
   return (
     <div>
       <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-        <span className="text-sm text-muted">Game version</span>
+        <span className="text-sm text-muted">{t("gameVersion")}</span>
         <SegmentedControl
-          label="Game version"
+          label={t("gameVersion")}
           size="sm"
           value={version}
           onChange={setVersion}
@@ -166,62 +189,69 @@ export function SetupGuide() {
   );
 }
 
+/** "Install the View": the view downloads and the game's views folder. */
+function InstallViewStep({ index, viewsFolder }: { index: string; viewsFolder: string }) {
+  const t = useTranslations("howTo.setup.installView");
+  return (
+    <Step index={index} title={t("title")}>
+      <p className="mb-2">{t("download")}</p>
+      <ViewDownloads />
+      <p className="mt-3">{t("moveTo")}</p>
+      <pre className="codeblock mt-2">{viewsFolder}</pre>
+    </Step>
+  );
+}
+
+/** The CSV import step: this site's importer, then the exporter's output folder. */
+function ImportCsvStep({ index, folder, pick }: { index: string; folder: string; pick: ReactNode }) {
+  const t = useTranslations("howTo.setup.importCsv");
+  return (
+    <Step index={index} title={t("title")}>
+      <p>{t.rich("goTo", { ...TAGS, link: internal("/players") })}</p>
+      <p className="mt-2">{t("navigateTo")}</p>
+      <pre className="codeblock mt-2">{folder}</pre>
+      <p className="mt-2">{pick}</p>
+      <p className="mt-3 font-semibold text-ink">{t("done")}</p>
+    </Step>
+  );
+}
+
 function Fm27SetupGuide() {
+  const t = useTranslations("howTo.setup");
+  const releases = external(EXPORTER_RELEASES_URL);
+
   return (
     <div>
-      <Step index="01" title="Install FM View Exporter" defaultOpen>
-        <p>
-          We recommend{" "}
-          <a href={EXPORTER_URL} target="_blank" rel="noreferrer" className="link">
-            FM View Exporter
-          </a>
-          . It exports any player list in FM27 (squad, player database or shortlist) to CSV
-          with one key press, and it ships with BepInEx, so there is nothing else to install.
-          It needs FM27 on Steam and Windows 10 or 11.
-        </p>
+      <Step index="01" title={t("fm27.install.title")} defaultOpen>
+        <p>{t.rich("fm27.install.intro", { link: external(EXPORTER_URL) })}</p>
 
-        <MiniStep title="1.1 Option A: Setup program (recommended)">
+        <MiniStep title={t("fm27.install.setupTitle")}>
           <ol className="list-decimal space-y-1 pl-5">
             <li>
-              Download <code className="font-semibold">FMViewExporter-…-setup.exe</code> from
-              the{" "}
-              <a href={EXPORTER_RELEASES_URL} target="_blank" rel="noreferrer" className="link">
-                Releases page
-              </a>{" "}
-              and run it.
+              {t.rich("fm27.install.setupDownload", {
+                ...TAGS,
+                file: "FMViewExporter-…-setup.exe",
+                link: releases,
+              })}
             </li>
-            <li>
-              It finds FM27 in your Steam libraries. If it doesn&apos;t, pick the folder that
-              contains <code className="font-semibold">fm.exe</code>.
-            </li>
-            <li>
-              Keep the output format on CSV and the CSV style on the default comma separator,
-              then click <span className="font-bold">Install</span>.
-            </li>
+            <li>{t.rich("fm27.install.setupFind", { ...TAGS, file: "fm.exe" })}</li>
+            <li>{t.rich("fm27.install.setupInstall", TAGS)}</li>
           </ol>
-          <p className="mt-2 text-sm text-muted">
-            To update later, run the new setup and click Update. Your settings are kept.
-          </p>
+          <p className="mt-2 text-sm text-muted">{t("fm27.install.setupUpdate")}</p>
         </MiniStep>
 
-        <MiniStep title="1.2 Option B: Manual install">
+        <MiniStep title={t("fm27.install.manualTitle")}>
           <p className="mb-2">
-            Download <code className="font-semibold">FMViewExporter-…-komplettpaket.zip</code>{" "}
-            from the{" "}
-            <a href={EXPORTER_RELEASES_URL} target="_blank" rel="noreferrer" className="link">
-              Releases page
-            </a>{" "}
-            and open your FM27 installation folder:
+            {t.rich("fm27.install.manualDownload", {
+              ...TAGS,
+              file: "FMViewExporter-…-komplettpaket.zip",
+              link: releases,
+            })}
           </p>
           <div className="codeblock">
-            <div className="text-ink/80">
-              Steam: Right-click FM27 → Manage → Browse local files
-            </div>
+            <div className="text-ink/80">{t("fm27.install.manualSteam")}</div>
           </div>
-          <p className="mt-3">
-            Extract the contents of the ZIP (not the ZIP itself) into that folder. It should
-            look like:
-          </p>
+          <p className="mt-3">{t("fm27.install.manualExtract")}</p>
           <pre className="codeblock mt-2">
             {`.../Steam/steamapps/common/Football Manager 27/
 ├── BepInEx/
@@ -232,100 +262,40 @@ function Fm27SetupGuide() {
           </pre>
         </MiniStep>
 
-        <MiniStep title="1.3 First launch">
-          <p>
-            Start FM27. The first launch takes a few minutes while BepInEx sets itself up;
-            later starts are normal speed. To check the plugin loaded, open this file in the
-            game folder and look for a line mentioning{" "}
-            <span className="font-semibold">FM View Exporter</span>:
-          </p>
+        <MiniStep title={t("fm27.install.firstLaunchTitle")}>
+          <p>{t.rich("fm27.install.firstLaunch", TAGS)}</p>
           <pre className="codeblock mt-2">{`BepInEx\\LogOutput.log`}</pre>
         </MiniStep>
       </Step>
 
-      <Step index="02" title="Install the View">
-        <p className="mb-2">Download one or both view files:</p>
-        <ViewDownloads />
-        <p className="mt-3">Move them to:</p>
-        <pre className="codeblock mt-2">
-          {`Documents\\Sports Interactive\\Football Manager 27\\views\\`}
-        </pre>
-      </Step>
+      <InstallViewStep index="02" viewsFolder={`Documents\\Sports Interactive\\Football Manager 27\\views\\`} />
 
-      <Step index="03" title="Export Players from FM27">
+      <Step index="03" title={t("export.title", { game: "FM27" })}>
         <ol className="list-decimal space-y-2 pl-5">
-          <li>
-            Open your FM27 save and go to{" "}
-            <span className="font-bold">Recruitment → Player Database</span> (a squad or
-            shortlist works too)
-          </li>
-          <li>
-            Right-click any column header and select{" "}
-            <span className="font-bold">Import View</span>
-          </li>
-          <li>Import the view you downloaded in Step 2 (Hidden Attributes or Standard)</li>
-          <li>
-            Select that view from the{" "}
-            <span className="font-bold">Custom Views</span> dropdown
-            (top-right of the player list)
-          </li>
-          <li>
-            Filter the list down to the players you want. The exporter takes every row in the
-            list, not just the ones on screen.
-          </li>
-          <li>
-            Press <span className="font-semibold">F9</span> and don&apos;t click anything until
-            it finishes. The plugin scrolls the list itself; large searches can take a few
-            minutes.
-          </li>
+          <li>{t.rich("fm27.export.open", TAGS)}</li>
+          <li>{t.rich("export.importView", TAGS)}</li>
+          <li>{t("export.importDownloaded", { step: 2 })}</li>
+          <li>{t.rich("export.selectView", TAGS)}</li>
+          <li>{t("fm27.export.filter")}</li>
+          <li>{t.rich("fm27.export.press", TAGS)}</li>
         </ol>
       </Step>
 
-      <Step index="04" title="Import the CSV">
-        <p>
-          Go to{" "}
-          <Link
-            href="/players"
-            className="link"
-          >
-            this site&apos;s importer
-          </Link>{" "}
-          and click <span className="font-bold">Choose CSV file</span>.
-        </p>
-        <p className="mt-2">Navigate to:</p>
-        <pre className="codeblock mt-2">
-          {`Documents\\Sports Interactive\\FM View Exporter\\`}
-        </pre>
-        <p className="mt-2">
-          Pick the newest file, e.g.{" "}
-          <code className="font-semibold">player-database_20261030_192739.csv</code>, and
-          import.
-        </p>
-        <p className="mt-3 font-semibold text-ink">
-          You&apos;re done. Enjoy your scouting data!
-        </p>
-      </Step>
+      <ImportCsvStep
+        index="04"
+        folder={`Documents\\Sports Interactive\\FM View Exporter\\`}
+        pick={t.rich("fm27.pickFile", { ...TAGS, file: "player-database_20261030_192739.csv" })}
+      />
 
-      <Step index="Help" title="Troubleshooting">
-        <InfoBox label="F9 does nothing">
-          <p>
-            Check <code className="font-semibold">BepInEx\LogOutput.log</code> in the game
-            folder. &ldquo;No player list found&rdquo; means no player table was open when you
-            pressed F9.
-          </p>
+      <Step index="Help" title={t("fm27.help.title")}>
+        <InfoBox label={t("fm27.help.f9Title")}>
+          <p>{t.rich("fm27.help.f9", { ...TAGS, file: "BepInEx\\LogOutput.log" })}</p>
         </InfoBox>
-        <InfoBox label="The game won't start">
-          <p>
-            Rename or delete <code className="font-semibold">winhttp.dll</code> in the game
-            folder to start without mods, or uninstall with the setup program. Your saves are
-            not affected.
-          </p>
+        <InfoBox label={t("fm27.help.startTitle")}>
+          <p>{t.rich("fm27.help.start", { ...TAGS, file: "winhttp.dll" })}</p>
         </InfoBox>
-        <InfoBox label="Antivirus warning">
-          <p>
-            Some virus scanners flag the setup because it isn&apos;t code-signed yet and
-            installs BepInEx. Use the manual ZIP install if you prefer.
-          </p>
+        <InfoBox label={t("fm27.help.antivirusTitle")}>
+          <p>{t("fm27.help.antivirus")}</p>
         </InfoBox>
       </Step>
     </div>
@@ -333,35 +303,27 @@ function Fm27SetupGuide() {
 }
 
 function Fm26SetupGuide() {
+  const t = useTranslations("howTo.setup");
+
   return (
     <div>
-      <Step index="01" title="Install BepInEx" defaultOpen>
-        <MiniStep title="1.1 Download BepInEx">
+      <Step index="01" title={t("fm26.bepinex.title")} defaultOpen>
+        <MiniStep title={t("fm26.bepinex.downloadTitle")}>
           <p>
-            Go to{" "}
-            <a
-              href="https://new.thunderstore.io/c/football-manager-26/p/BepInEx/BepInExPack_FootballManager26/"
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
-              BepInExPack_FootballManager26
-            </a>
-            , click Download, and unzip the file.
+            {t.rich("fm26.bepinex.download", {
+              link: external(
+                "https://new.thunderstore.io/c/football-manager-26/p/BepInEx/BepInExPack_FootballManager26/",
+              ),
+            })}
           </p>
         </MiniStep>
 
-        <MiniStep title="1.2 Copy files to your FM26 folder">
-          <p className="mb-2">Open your FM26 installation folder.</p>
+        <MiniStep title={t("fm26.bepinex.copyTitle")}>
+          <p className="mb-2">{t("fm26.bepinex.openFolder")}</p>
           <div className="codeblock">
-            <div className="text-ink/80">
-              Steam: Right-click FM26 → Properties → Installed Files →
-              Browse
-            </div>
+            <div className="text-ink/80">{t("fm26.bepinex.steam")}</div>
           </div>
-          <p className="mt-3">
-            Paste the unzipped files there. Your folder should look like:
-          </p>
+          <p className="mt-3">{t("fm26.bepinex.paste")}</p>
           <pre className="codeblock mt-2">
             {`.../Steam/steamapps/common/Football Manager 26/
 ├── BepInEx/
@@ -374,273 +336,133 @@ function Fm26SetupGuide() {
           </pre>
         </MiniStep>
 
-        <MiniStep title="1.3 Linux only: set launch options">
-          <p className="mb-2">
-            Right-click FM26 in Steam → Properties → Launch Options, and
-            paste:
-          </p>
+        <MiniStep title={t("fm26.bepinex.linuxTitle")}>
+          <p className="mb-2">{t("fm26.bepinex.linux")}</p>
           <pre className="codeblock">
             {`WINEDLLOVERRIDES="winhttp=n,b" %command%`}
           </pre>
         </MiniStep>
 
-        <MiniStep title="1.4 First launch">
-          <p>
-            Launch FM26 once so BepInEx can initialize. Confirm that the{" "}
-            <code className="font-semibold">BepInEx/plugins/</code> folder now
-            exists before continuing.
-          </p>
+        <MiniStep title={t("fm26.bepinex.firstLaunchTitle")}>
+          <p>{t.rich("fm26.bepinex.firstLaunch", { ...TAGS, folder: "BepInEx/plugins/" })}</p>
         </MiniStep>
       </Step>
 
-      <Step index="02" title="Install the Plugin">
+      <Step index="02" title={t("fm26.plugin.title")}>
         <p>
-          Download the plugin from{" "}
-          <a
-            href="https://www.fmscout.com/a-fm26-player-csv-export.html"
-            target="_blank"
-            rel="noreferrer"
-            className="link"
-          >
-            FM26 Player CSV Export
-          </a>
-          .
+          {t.rich("fm26.plugin.download", {
+            link: external("https://www.fmscout.com/a-fm26-player-csv-export.html"),
+          })}
         </p>
-        <p className="mt-2">
-          Copy <code className="font-semibold">FMDataExport.dll</code> from the
-          ZIP into:
-        </p>
+        <p className="mt-2">{t.rich("fm26.plugin.copy", { ...TAGS, file: "FMDataExport.dll" })}</p>
         <pre className="codeblock mt-2">
           {`.../Steam/steamapps/common/Football Manager 26/BepInEx/plugins/`}
         </pre>
       </Step>
 
-      <Step index="03" title="Install the View">
-        <p className="mb-2">Download one or both view files:</p>
-        <ViewDownloads />
-        <p className="mt-3">Move them to:</p>
-        <pre className="codeblock mt-2">
-          {`Documents\\Sports Interactive\\Football Manager 26\\views\\`}
-        </pre>
-      </Step>
+      <InstallViewStep index="03" viewsFolder={`Documents\\Sports Interactive\\Football Manager 26\\views\\`} />
 
-      <Step index="04" title="Export Players from FM26">
+      <Step index="04" title={t("export.title", { game: "FM26" })}>
         <ol className="list-decimal space-y-2 pl-5">
-          <li>
-            Open your FM26 save and go to{" "}
-            <span className="font-bold">
-              Recruitment → Player Database
-            </span>
-          </li>
-          <li>
-            Right-click any column header and select{" "}
-            <span className="font-bold">Import View</span>
-          </li>
-          <li>Import the view you downloaded in Step 3 (Hidden Attributes or Standard)</li>
-          <li>
-            Select that view from the{" "}
-            <span className="font-bold">Custom Views</span> dropdown
-            (top-right of the player list)
-          </li>
-          <li>Select the players you want to export</li>
-          <li>
-            Press <span className="font-semibold">F9</span> to export
-          </li>
+          <li>{t.rich("fm26.export.open", TAGS)}</li>
+          <li>{t.rich("export.importView", TAGS)}</li>
+          <li>{t("export.importDownloaded", { step: 3 })}</li>
+          <li>{t.rich("export.selectView", TAGS)}</li>
+          <li>{t("fm26.export.select")}</li>
+          <li>{t.rich("fm26.export.press", TAGS)}</li>
         </ol>
       </Step>
 
-      <Step index="05" title="Import the CSV">
-        <p>
-          Go to{" "}
-          <Link
-            href="/players"
-            className="link"
-          >
-            this site&apos;s importer
-          </Link>{" "}
-          and click <span className="font-bold">Choose CSV file</span>.
-        </p>
-        <p className="mt-2">Navigate to:</p>
-        <pre className="codeblock mt-2">
-          {`Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
-        </pre>
-        <p className="mt-2">Select your exported file and import.</p>
-        <p className="mt-3 font-semibold text-ink">
-          You&apos;re done. Enjoy your scouting data!
-        </p>
-      </Step>
+      <ImportCsvStep
+        index="05"
+        folder={`Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
+        pick={t("fm26.selectFile")}
+      />
     </div>
   );
 }
 
 export function AttributeGuide() {
+  const t = useTranslations("howTo.players");
+  const formatNumber = useFormatNumber();
+  const oneDecimal = (n: number) => formatNumber(n, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
   return (
     <div>
-      <Step index="Use" title="How to use the player list" defaultOpen>
-        <p>
-          Players lets you import a player export and instantly rank players by
-          a weighted average of their FM26 attributes. No baseline required: just
-          import and score.
-        </p>
+      <Step index="Use" title={t("use.title")} defaultOpen>
+        <p>{t("use.intro")}</p>
 
-        <MiniStep title="1. Download a view">
-          <p className="mb-2">
-            Download a view and place it in your FM26 or FM27 views folder:
-          </p>
+        <MiniStep title={t("use.download.title")}>
+          <p className="mb-2">{t("use.download.intro")}</p>
           <ViewDownloads />
           <p className="mt-2 text-sm text-muted">
-            See the{" "}
-            <Link href="/how-to-use" className="link">
-              setup guide
-            </Link>{" "}
-            for full exporter install instructions for each game version.
+            {t.rich("use.download.more", { link: internal("/how-to-use") })}
           </p>
         </MiniStep>
 
-        <MiniStep title="2. Export players from FM">
+        <MiniStep title={t("use.export.title")}>
           <ol className="list-decimal space-y-1 pl-5">
-            <li>
-              Open your save and go to{" "}
-              <span className="font-bold">Recruitment → Player Database</span>
-            </li>
-            <li>
-              Right-click a column header → <span className="font-bold">Import View</span> and
-              load the view
-            </li>
-            <li>Select the view from the Custom Views dropdown</li>
-            <li>Select the players you want, then press <span className="font-semibold">F9</span></li>
+            <li>{t.rich("use.export.open", TAGS)}</li>
+            <li>{t.rich("use.export.importView", TAGS)}</li>
+            <li>{t("use.export.selectView")}</li>
+            <li>{t.rich("use.export.press", TAGS)}</li>
           </ol>
         </MiniStep>
 
-        <MiniStep title="3. Import the CSV">
-          <p>
-            Go to{" "}
-            <Link
-              href="/players"
-              className="link"
-            >
-              Players
-            </Link>
-            , click <span className="font-bold">Choose CSV file</span>, and navigate to your
-            exporter&apos;s output folder:
-          </p>
+        <MiniStep title={t("use.import.title")}>
+          <p>{t.rich("use.import.goTo", { ...TAGS, link: internal("/players") })}</p>
           <pre className="codeblock mt-2">
             {`FM27: Documents\\Sports Interactive\\FM View Exporter\\
 FM26: Documents\\Sports Interactive\\Football Manager 26\\FM26PlayerExport by vinteset\\Exports CSV\\`}
           </pre>
-          <p className="mt-2">
-            Players are scored and sorted immediately after import.
-          </p>
+          <p className="mt-2">{t("use.import.after")}</p>
         </MiniStep>
 
-        <MiniStep title="4. Tune weights and columns">
-          <p>
-            Click <span className="font-bold">Weights</span> to open Settings at the weights and set how
-            much each attribute counts. The player list re-ranks live next to it. Click{" "}
-            <span className="font-bold">Columns</span> to choose which attributes are highlighted
-            in the table. Both, and the attribute colours, are also under the{" "}
-            <span className="font-bold">Settings</span> button at the top.
-          </p>
+        <MiniStep title={t("use.tune.title")}>
+          <p>{t.rich("use.tune.body", TAGS)}</p>
         </MiniStep>
 
-        <MiniStep title="5. Compare players">
-          <p>
-            Tick two or more players in the list and click{" "}
-            <span className="font-bold">Compare selected</span> to open a side-by-side attribute
-            breakdown view.
-          </p>
+        <MiniStep title={t("use.compare.title")}>
+          <p>{t.rich("use.compare.body", TAGS)}</p>
         </MiniStep>
       </Step>
 
-      <Step index="Math" title="How players are scored" defaultOpen>
-        <p>
-          Scout Reporter scores players using a weighted average of their raw FM26
-          attribute values (1–20 scale), then normalises that average to a 100-point scale.
-        </p>
+      <Step index="Math" title={t("math.title")} defaultOpen>
+        <p>{t("math.intro")}</p>
 
-        <InfoBox label="Weighted attribute average">
-          <p>
-            For each attribute you assign a weight (0 = ignore, higher = more important).
-            The score is the weighted mean of all attribute values across every attribute
-            with a non-zero weight. Each profile picks a weighting:
-          </p>
+        <InfoBox label={t("math.weighted.title")}>
+          <p>{t("math.weighted.body")}</p>
           <pre className="codeblock mt-2">
             {`Linear:      weighted_avg = Σ(attr × weight)  / Σ(weight)
 Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
           </pre>
+          <p className="mt-2">{t.rich("math.weighted.modes", TAGS)}</p>
+        </InfoBox>
+
+        <InfoBox label={t("math.benchmarks.title")}>
+          <p>
+            {t.rich("math.benchmarks.body", {
+              study: external(
+                "https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md",
+              ),
+              arena: external(
+                "https://fm-arena.com/threads/attribute-importance-by-position-in-fm27-a-test-on-my-own-tactic.125/",
+              ),
+              scoring: external("https://github.com/jamiebolden/fm-scoring"),
+            })}
+          </p>
+        </InfoBox>
+
+        <InfoBox label={t("math.vsAge.title")}>
+          <p>{t.rich("math.vsAge.vsAge", TAGS)}</p>
           <p className="mt-2">
-            <span className="font-bold">Linear</span> is how the FM27 benchmarks were calibrated
-            and is the default for new profiles. <span className="font-bold">Emphasized</span>{" "}
-            squares weights so doubling a weight more than doubles its influence; profiles made
-            before this option keep it.
+            {t.rich("math.vsAge.potential", { ...TAGS, link: internal("/how-to-use/wonderkids") })}
           </p>
         </InfoBox>
 
-        <InfoBox label="FM27 benchmark profiles">
-          <p>
-            The weights come with six role profiles (Centre-back, Full-back / Wing-back, Defensive /
-            Central midfielder, Attacker / Winger (10), Striker (9) and Goalkeeper) built from{" "}
-            <a
-              href="https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/13b-value-by-position-random.md"
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
-              FM Match Lab&apos;s Study 13b
-            </a>
-            , which measured what one level of each attribute is worth in each position over 50,000 FM27
-            matches. Each role keeps the attributes the study confirms, scaled so the most valuable one
-            weighs 10: pace and acceleration everywhere, jumping reach mostly for centre-backs and
-            strikers, finishing and strength for forwards, agility and reflexes for keepers. Most
-            technical and mental attributes barely register in the study, so the roles leave them out.
-            Purity&apos;s{" "}
-            <a
-              href="https://fm-arena.com/threads/attribute-importance-by-position-in-fm27-a-test-on-my-own-tactic.125/"
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
-              FM-Arena position test
-            </a>{" "}
-            on another tactic finds the same pattern. Before v1.24 the roles used{" "}
-            <a
-              href="https://github.com/jamiebolden/fm-scoring"
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
-              fm-scoring
-            </a>
-            &apos;s FM27 weights, which still supply the vs Age table. Edit them freely;
-            &ldquo;Reset to benchmark&rdquo; restores the originals.
-          </p>
-        </InfoBox>
-
-        <InfoBox label="vs Age and Potential">
-          <p>
-            <span className="font-bold">vs Age</span> divides the weighted average by the FM27
-            benchmark for the player&apos;s age (10.3 at 15 up to 13.8 at 24+). 100% means on track
-            to be a high-end Championship / low-end Premier League player in their prime.
-          </p>
-          <p className="mt-2">
-            With a Hidden Attributes export a <span className="font-bold">Potential</span> column appears: the
-            same score using attributes projected to PA.{" "}
-            <Link href="/how-to-use/wonderkids" className="link">
-              How the potential estimate works
-            </Link>{" "}
-            explains the projection.
-          </p>
-        </InfoBox>
-
-        <InfoBox label="Grades">
-          <p>
-            Every score gets a letter stamp, FM-style from A+ down to F, plus S, S+ and S++ above A+ for
-            the truly elite. Grades read the weighted average on the 1–20 scale and step every 0.5.
-            The prime benchmark (13.8, a high-end Championship / low-end Premier League player in their
-            prime) is a {PRIME_GRADE}. Young players grade low on Now and high on Potential, so compare
-            them with the Potential stamp or vs Age.
-          </p>
-          <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-2" aria-label="Grade scale">
+        <InfoBox label={t("math.grades.title")}>
+          <p>{t("math.grades.body", { grade: PRIME_GRADE })}</p>
+          <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-2" aria-label={t("math.grades.scale")}>
             {GRADE_SCALE.map((g, i) => {
               const above = GRADE_SCALE[i - 1];
               return (
@@ -649,9 +471,9 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
                   <span className="text-muted">
                     {Number.isFinite(g.min)
                       ? above
-                        ? `${g.min.toFixed(1)}–${above.min.toFixed(1)}`
-                        : `${g.min.toFixed(1)}+`
-                      : `under ${GRADE_SCALE[i - 1].min.toFixed(1)}`}
+                        ? `${oneDecimal(g.min)}–${oneDecimal(above.min)}`
+                        : `${oneDecimal(g.min)}+`
+                      : t("math.grades.under", { value: oneDecimal(GRADE_SCALE[i - 1].min) })}
                   </span>
                 </li>
               );
@@ -659,35 +481,19 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
           </ul>
         </InfoBox>
 
-        <InfoBox label="100-point normalisation">
-          <p>
-            The weighted average sits on the FM 1–20 attribute scale. It is normalised so
-            that a weighted average of <span className="font-semibold">13</span> (considered
-            a solid professional) maps to exactly <span className="font-semibold">100</span>.
-            Scores above 100 indicate above-average players for your weight profile; below 100
-            means below average.
-          </p>
+        <InfoBox label={t("math.normalisation.title")}>
+          <p>{t.rich("math.normalisation.body", TAGS)}</p>
           <pre className="codeblock mt-2">
             {`score = (weighted_avg / 13) × 100`}
           </pre>
         </InfoBox>
 
-        <InfoBox label="Attribute categories">
-          <p>
-            Attributes are grouped into four categories (Technical, Mental, Physical and
-            Goalkeeping), matching FM26&apos;s own groupings. You can weight attributes from any
-            category in the same profile, so a goalkeeper weight set can include physical
-            and mental attributes alongside GK-specific ones.
-          </p>
+        <InfoBox label={t("math.categories.title")}>
+          <p>{t("math.categories.body")}</p>
         </InfoBox>
 
-        <InfoBox label="Player detail & comparison">
-          <p>
-            Clicking a player opens their full attribute sheet with colour-coded values
-            (excellent / good / average / low) based on your theme settings. The compare view
-            places two or more players side-by-side with differences highlighted, making it
-            easy to spot where one player outperforms another for your specific role needs.
-          </p>
+        <InfoBox label={t("math.detail.title")}>
+          <p>{t("math.detail.body")}</p>
         </InfoBox>
       </Step>
     </div>
@@ -695,77 +501,36 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
 }
 
 export function WonderkidGuide() {
+  const t = useTranslations("howTo.wonderkids");
+
   return (
     <div>
-      <Step index="Use" title="How to find wonderkids" defaultOpen>
-        <MiniStep title="1. Export with the Hidden Attributes view">
-          <p>
-            Import the Hidden Attributes view in FM and export as usual. It adds the hidden{" "}
-            <span className="font-bold">Professionalism</span>, <span className="font-bold">CA</span>{" "}
-            and <span className="font-bold">PA</span>. Standard view exports, or players without CA/PA, are
-            still scored on their current attributes.
-          </p>
+      <Step index="Use" title={t("use.title")} defaultOpen>
+        <MiniStep title={t("use.export.title")}>
+          <p>{t.rich("use.export.body", TAGS)}</p>
         </MiniStep>
-        <MiniStep title="2. Import and sort">
-          <p>
-            Import it on{" "}
-            <Link
-              href="/players"
-              className="link"
-            >
-              Players
-            </Link>{" "}
-            and sort by <span className="font-bold">Potential</span> (the score at full potential on
-            the weight profile you picked) or <span className="font-bold">vs Age</span> (how far ahead of
-            their age they are now).
-          </p>
+        <MiniStep title={t("use.import.title")}>
+          <p>{t.rich("use.import.body", { ...TAGS, link: internal("/players") })}</p>
         </MiniStep>
-        <MiniStep title="3. Inspect a prospect">
-          <p>
-            Click a player and switch to <span className="font-bold">Full potential</span> to see
-            the estimated attributes at PA, with the gain per attribute. The{" "}
-            <span className="font-bold">Development plan</span> below suggests the individual focus,
-            training role, development sessions and coaches that get the most out of them.
-          </p>
+        <MiniStep title={t("use.inspect.title")}>
+          <p>{t.rich("use.inspect.body", TAGS)}</p>
         </MiniStep>
       </Step>
 
-      <Step index="Math" title="How the full-potential estimate works" defaultOpen>
-        <InfoBox label="CA is a cost-weighted attribute sum">
-          <p>
-            Each attribute point costs a position-specific amount of CA (fm-scoring&apos;s FM27 CA
-            cost table, e.g. Decisions 10 and Agility 8 for a keeper). On a Hidden Attributes export of 109
-            keepers, CA fits the cost-weighted sum almost exactly (r = 0.99, error ≈ 2.5 CA). The
-            fit is recalibrated on every import that has CA.
-          </p>
+      <Step index="Math" title={t("math.title")} defaultOpen>
+        <InfoBox label={t("math.ca.title")}>
+          <p>{t("math.ca.body")}</p>
           <pre className="codeblock mt-2">
             {`A       = Σ(cost × attr) / Σ(cost)
 CA      ≈ slope × A + intercept
 A at PA = A + (PA − CA) / slope`}
           </pre>
         </InfoBox>
-        <InfoBox label="Spreading the growth">
-          <p>
-            The extra points are spread over attributes that can still grow, each in proportion
-            to its room below 20 and to how fast it grew in harvestgreen22&apos;s FM27 training test
-            (an 18-year-old training for a season, collected in fm-scoring). Defenders, wing-backs
-            and DMs grow like the defensive ball work schedules, central midfielders like a mix,
-            and wide players, AMs and strikers like the attacking ball work schedules. Keepers
-            weren&apos;t tested: their goalkeeping-coached attributes grow at the outfield coached rate.
-            Physicals slow down after 21 (¾ rate to 24, then 0.4), three years later for keepers.
-            Determination, Aggression, Bravery and the keeper tendencies stay put, and outfielders
-            never grow goalkeeping attributes. Multi-position players use the average cost and
-            growth of their positions.
-          </p>
+        <InfoBox label={t("math.growth.title")}>
+          <p>{t("math.growth.body")}</p>
         </InfoBox>
-        <InfoBox label="Reading the numbers">
-          <p>
-            <span className="font-bold">Now</span> and <span className="font-bold">Potential</span>{" "}
-            are the best FM27 benchmark role score (1–20). <span className="font-bold">vs Prime</span>{" "}
-            compares the potential score to 13.8, the fully developed benchmark. It is an estimate
-            of the ceiling: professionalism, minutes and training decide how much of PA a player
-            reaches.
-          </p>
+        <InfoBox label={t("math.reading.title")}>
+          <p>{t.rich("math.reading.body", TAGS)}</p>
         </InfoBox>
       </Step>
     </div>

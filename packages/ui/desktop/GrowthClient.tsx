@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { PageHeader } from "@scoutreporter/ui/components/PageHeader";
@@ -9,10 +10,9 @@ import { Notice } from "@scoutreporter/ui/components/Notice";
 import { Button } from "@scoutreporter/ui/components/Button";
 import type { GrowthSort } from "@scoutreporter/core/scan/growth";
 import type { GrowthPage } from "@scoutreporter/core/desktop/bridge";
-import { attributeLabel } from "@scoutreporter/core/fm27/development";
-import type { AttributeKey } from "@scoutreporter/core/types/weights";
 import { usePlayersData } from "@scoutreporter/ui/components/PlayersDataProvider";
-import { scanLabel, useDesktop } from "./DesktopProvider";
+import { useAttributeLabel, useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
+import { useScanLabel, useDesktop } from "./DesktopProvider";
 
 const PAGE = 100;
 
@@ -28,9 +28,11 @@ function useDebounced<T>(value: T, ms: number): T {
 
 const optionalNumber = (v: string): number | undefined => (v.trim() === "" || !Number.isFinite(Number(v)) ? undefined : Number(v));
 
-function signed(n: number): string {
-  return n > 0 ? `+${n}` : String(n);
-}
+const scansLink = (chunks: ReactNode) => (
+  <Link href="/desktop" className="link">
+    {chunks}
+  </Link>
+);
 
 function changeClass(n: number): string {
   return n > 0 ? "text-positive font-semibold" : n < 0 ? "text-red font-semibold" : "text-muted";
@@ -42,6 +44,13 @@ function changeClass(n: number): string {
  */
 export function GrowthClient() {
   const desktop = useDesktop();
+  const t = useTranslations("desktop.growth");
+  const tFm = useTranslations("fm.terms");
+  const formatNumber = useFormatNumber();
+  const attributeLabel = useAttributeLabel();
+  const scanLabel = useScanLabel();
+  /** "+3", "-2", "0" in the current language. */
+  const signed = (n: number) => formatNumber(n, { signDisplay: "exceptZero" });
   const { state: playersState } = usePlayersData();
   const snapshots = useMemo(() => desktop?.snapshots ?? [], [desktop?.snapshots]);
   const [baseId, setBaseId] = useState<string>("");
@@ -102,7 +111,7 @@ export function GrowthClient() {
   if (!desktop) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-10 text-ink">
-        <PageHeader title="Growth">Growth compares stored scans and is part of the Scout Reporter desktop app.</PageHeader>
+        <PageHeader title={t("title")}>{t("notDesktop")}</PageHeader>
       </div>
     );
   }
@@ -126,92 +135,85 @@ export function GrowthClient() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-4 px-5 py-6 text-ink">
-      <PageHeader title="Growth">
-        How much every player improved between two scans of your save. Scan regularly (every few in-game months) to follow
-        your youngsters and spot breakout players worldwide.
-      </PageHeader>
+      <PageHeader title={t("title")}>{t("intro")}</PageHeader>
 
       {snapshots.length < 2 ? (
-        <Notice title="Two scans needed">
-          Growth compares two scans. You have {snapshots.length}. <Link href="/desktop" className="link">Scan</Link> again later in your
-          save.
+        <Notice title={t("twoNeeded.title")}>
+          {t.rich("twoNeeded.body", { count: snapshots.length, link: scansLink })}
         </Notice>
       ) : (
         <>
           <div className="panel flex flex-wrap items-end gap-4 px-4 py-3 text-sm">
             <label className="flex flex-col gap-1">
-              <span className="font-semibold">From</span>
+              <span className="font-semibold">{t("from")}</span>
               <select className="rounded-md border border-line bg-surface px-2 py-1" value={base} onChange={(e) => { setBaseId(e.target.value); setLimit(PAGE); }}>
                 {snapshots.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {scanLabel(s)} ({s.players.toLocaleString("en-GB")} players)
+                    {t("option", { label: scanLabel(s), count: s.players })}
                   </option>
                 ))}
               </select>
             </label>
             <label className="flex flex-col gap-1">
-              <span className="font-semibold">To</span>
+              <span className="font-semibold">{t("to")}</span>
               <select className="rounded-md border border-line bg-surface px-2 py-1" value={current} onChange={(e) => { setCurrentId(e.target.value); setLimit(PAGE); }}>
                 {snapshots.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {scanLabel(s)} ({s.players.toLocaleString("en-GB")} players)
+                    {t("option", { label: scanLabel(s), count: s.players })}
                   </option>
                 ))}
               </select>
             </label>
             {!hide && (
               <label className="flex flex-col gap-1">
-                <span className="font-semibold">Gained at least</span>
+                <span className="font-semibold">{t("gainedAtLeast")}</span>
                 <span className="flex items-center gap-1">
-                  <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={minCaGain} placeholder="any" onChange={(e) => { setMinCaGain(e.target.value); setLimit(PAGE); }} />
-                  <span className="text-muted">CA</span>
+                  <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={minCaGain} placeholder={t("any")} onChange={(e) => { setMinCaGain(e.target.value); setLimit(PAGE); }} />
+                  <span className="text-muted">{t("ca")}</span>
                 </span>
               </label>
             )}
             <label className="flex flex-col gap-1">
-              <span className="font-semibold">Max age</span>
-              <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={maxAge} placeholder="any" onChange={(e) => { setMaxAge(e.target.value); setLimit(PAGE); }} />
+              <span className="font-semibold">{t("maxAge")}</span>
+              <input type="number" className="w-20 rounded-md border border-line bg-surface px-2 py-1" value={maxAge} placeholder={t("any")} onChange={(e) => { setMaxAge(e.target.value); setLimit(PAGE); }} />
             </label>
             <label className="flex min-w-48 flex-1 flex-col gap-1">
-              <span className="font-semibold">Search</span>
-              <input type="search" className="rounded-md border border-line bg-surface px-2 py-1" value={query} placeholder="Player or club" onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }} />
+              <span className="font-semibold">{t("search")}</span>
+              <input type="search" className="rounded-md border border-line bg-surface px-2 py-1" value={query} placeholder={t("searchPlaceholder")} onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }} />
             </label>
           </div>
 
           {searchScans && base !== current && (
-            <p className="text-[13px] text-muted">
-              A scan of your FM search holds the players from that search and your own club, so Growth covers the players that are in
-              both scans. Your own club is in every scan. To follow every player in the save, choose The whole save under What a scan
-              keeps on the <Link href="/desktop" className="link">Scans page</Link>.
-            </p>
+            <p className="text-[13px] text-muted">{t.rich("searchScans", { link: scansLink })}</p>
           )}
-          {base === current && <Notice title="Same scan twice">Pick two different scans.</Notice>}
-          {error && <Notice title="Could not compare the scans">{error}</Notice>}
-          {loading && !report && <p className="text-sm text-muted" role="status">Comparing scans…</p>}
+          {base === current && <Notice title={t("sameScan.title")}>{t("sameScan.body")}</Notice>}
+          {error && <Notice title={t("compareError")}>{error}</Notice>}
+          {loading && !report && <p className="text-sm text-muted" role="status">{t("comparing")}</p>}
 
           {report && (
-            <section className="panel" aria-label="Growth" aria-busy={loading}>
+            <section className="panel" aria-label={t("title")} aria-busy={loading}>
               <p className="border-b border-line px-4 py-2.5 text-[13px] text-muted">
-                {report.total.toLocaleString("en-GB")} players
-                {report.days !== null && ` over ${report.days} in-game days`}
-                {report.newPlayers > 0 &&
-                  (searchScans
-                    ? `, plus ${report.newPlayers.toLocaleString("en-GB")} players who are only in the later scan`
-                    : `, plus ${report.newPlayers.toLocaleString("en-GB")} new players (youth intakes or newly loaded leagues) with no earlier scan`)}
-                .{loading && " Updating…"}
+                {t("summary", {
+                  total: report.total,
+                  hasDays: report.days !== null ? "yes" : "no",
+                  days: report.days ?? 0,
+                  newPlayers: report.newPlayers > 0 ? (searchScans ? "search" : "full") : "none",
+                  newCount: report.newPlayers,
+                })}
+                {loading && ` ${t("updating")}`}
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm tabular-nums">
                   <thead className="bg-paper text-[12px] text-muted">
                     <tr>
-                      {header("name", "Player")}
-                      {header("age", "Age")}
-                      <th scope="col" className="px-3 py-2 font-semibold">Club</th>
-                      {!hide && header("ca", "CA")}
-                      {!hide && header("caChange", "CA change")}
-                      {!hide && header("paChange", "PA change")}
-                      {header("attributeChange", "Attributes")}
-                      <th scope="col" className="px-3 py-2 font-semibold">Biggest changes</th>
+                      {header("name", tFm("player"))}
+                      {header("age", tFm("age"))}
+                      <th scope="col" className="px-3 py-2 font-semibold">{tFm("club")}</th>
+                      {!hide && header("ca", t("columns.ca"))}
+                      {!hide && header("caChange", t("columns.caChange"))}
+                      {!hide && header("paChange", t("columns.paChange"))}
+                      {header("attributeChange", tFm("attributes"))}
+                      <th scope="col" className="px-3 py-2 font-semibold">{t("columns.biggestChanges")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-line">
@@ -231,7 +233,7 @@ export function GrowthClient() {
                         {!hide && <td className={`px-3 py-1.5 ${changeClass(r.paChange)}`}>{signed(r.paChange)}</td>}
                         <td className={`px-3 py-1.5 ${changeClass(r.attributeChange)}`}>{signed(r.attributeChange)}</td>
                         <td className="px-3 py-1.5 text-[13px] text-muted">
-                          {r.changes.slice(0, 4).map((c) => `${attributeLabel(c.key as AttributeKey)} ${signed(c.to - c.from)}`).join(", ")}
+                          {r.changes.slice(0, 4).map((c) => `${attributeLabel(c.key)} ${signed(c.to - c.from)}`).join(", ")}
                         </td>
                       </tr>
                     ))}
@@ -241,7 +243,9 @@ export function GrowthClient() {
               {report.total > rows.length && (
                 <div className="border-t border-line px-4 py-2.5">
                   <Button color="alt" variant="outline" size="md" disabled={loading || limit >= 1000} onClick={() => setLimit(Math.min(1000, limit + PAGE))}>
-                    {limit >= 1000 ? "Showing the first 1,000: narrow the filters to see others" : `Show ${Math.min(PAGE, report.total - rows.length)} more`}
+                    {limit >= 1000
+                      ? t("firstOnly", { max: 1000 })
+                      : t("showMore", { count: Math.min(PAGE, report.total - rows.length) })}
                   </Button>
                 </div>
               )}

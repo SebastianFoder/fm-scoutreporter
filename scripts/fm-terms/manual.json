@@ -1,0 +1,88 @@
+{
+  "fr": [
+    "staffRoles.performance-analyst",
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "de": [
+    "attributeGroups.mental",
+    "attributeGroups.goalkeeping",
+    "staffAttributes.authority",
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.wonderkids",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "es": [
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "it": [
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "da": [
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "sv": [
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "nb": [
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget"
+  ],
+  "ko": [
+    "attributeGroups.mental",
+    "staffAttributes.negotiating",
+    "fm27Roles.fm27-10",
+    "backroomSets.full",
+    "terms.wonderkid",
+    "terms.backroom",
+    "terms.forward",
+    "terms.budget",
+    "staffAttributeAbbr.attacking",
+    "staffAttributeAbbr.defending",
+    "staffAttributeAbbr.fitness",
+    "staffAttributeAbbr.goalkeeping",
+    "staffAttributeAbbr.possession",
+    "staffAttributeAbbr.setPieces",
+    "staffAttributeAbbr.tacticalCoaching",
+    "staffAttributeAbbr.technical",
+    "staffAttributeAbbr.workingWithYoungsters",
+    "staffAttributeAbbr.adaptability",
+    "staffAttributeAbbr.determination",
+    "staffAttributeAbbr.authority",
+    "staffAttributeAbbr.manManagement",
+    "staffAttributeAbbr.motivating",
+    "staffAttributeAbbr.judgingCurrentAbility",
+    "staffAttributeAbbr.judgingPotentialAbility",
+    "staffAttributeAbbr.judgingStaffAbility",
+    "staffAttributeAbbr.negotiating",
+    "staffAttributeAbbr.tacticalKnowledge",
+    "staffAttributeAbbr.analysingData",
+    "staffAttributeAbbr.physiotherapy",
+    "staffAttributeAbbr.sportsScience"
+  ]
+}

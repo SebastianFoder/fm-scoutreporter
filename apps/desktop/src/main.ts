@@ -459,7 +459,10 @@ async function main() {
     applyCsp(server.origin);
   } else {
     pageOrigin = APP_ORIGIN;
-    serveAppScheme(server.origin, contentSecurityPolicy());
+    serveAppScheme(server.origin, contentSecurityPolicy(), {
+      language: () => settings.language,
+      systemLanguages: () => app.getPreferredSystemLanguages(),
+    });
   }
   applyHotkey();
   // An installer left from the last update has done its work.

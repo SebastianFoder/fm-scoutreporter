@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Scout Reporter forside",
+  "mainNav": "Hovedmeny",
+  "nav": {
+    "players": "Spillere",
+    "squad": "Tropp",
+    "staff": "Støtteapparat",
+    "howToUse": "Slik bruker du",
+    "desktopApp": "Skrivebordsapp",
+    "scans": "Skanninger",
+    "growth": "Vekst"
+  },
+  "playerCount": {
+    "title": "Importerte spillere, delt mellom begge modusene",
+    "imported": "{hasTotal, select, yes {{shown} av {total}} other {{shown}}} {count, plural, one {spiller} other {spillere}} importert",
+    "scanned": "{hasTotal, select, yes {{shown} av {total}} other {{shown}}} {count, plural, one {spiller} other {spillere}} skannet"
+  },
+  "language": {
+    "title": "Språk",
+    "label": "Språk: {language}"
+  },
+  "footer": {
+    "setupGuide": "Oppsettguide",
+    "faq": "Vanlige spørsmål"
+  }
+}

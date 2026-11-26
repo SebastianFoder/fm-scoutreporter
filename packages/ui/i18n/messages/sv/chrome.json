@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Scout Reporter startsida",
+  "mainNav": "Huvudmeny",
+  "nav": {
+    "players": "Spelare",
+    "squad": "Trupp",
+    "staff": "Personal",
+    "howToUse": "Så använder du",
+    "desktopApp": "Datorapp",
+    "scans": "Skanningar",
+    "growth": "Utveckling"
+  },
+  "playerCount": {
+    "title": "Importerade spelare, delas av båda lägena",
+    "imported": "{hasTotal, select, yes {{shown} av {total}} other {{shown}}} {count, plural, one {spelare} other {spelare}} importerade",
+    "scanned": "{hasTotal, select, yes {{shown} av {total}} other {{shown}}} {count, plural, one {spelare} other {spelare}} skannade"
+  },
+  "language": {
+    "title": "Språk",
+    "label": "Språk: {language}"
+  },
+  "footer": {
+    "setupGuide": "Installationsguide",
+    "faq": "Vanliga frågor"
+  }
+}

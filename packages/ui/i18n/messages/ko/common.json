@@ -1,0 +1,35 @@
+{
+  "close": "닫기",
+  "cancel": "취소",
+  "save": "저장",
+  "reset": "초기화",
+  "delete": "삭제",
+  "duplicate": "복제",
+  "import": "가져오기",
+  "export": "내보내기",
+  "loading": "불러오는 중…",
+  "modal": {
+    "close": "창 닫기"
+  },
+  "pagination": {
+    "range": "{total, number}개 중 <b>{from, number}–{to, number}</b>",
+    "rows": "행",
+    "all": "전체",
+    "goTo": "이동할 페이지",
+    "go": "이동",
+    "first": "처음",
+    "prev": "이전",
+    "next": "다음",
+    "last": "마지막"
+  },
+  "grade": {
+    "label": "등급 {grade}",
+    "title": "등급 {grade} (1–20 척도 기준 {score})",
+    "titleWithLabel": "{label}: 등급 {grade} (1–20 척도 기준 {score})"
+  },
+  "estimated": {
+    "ranged": "추정 점수: {ranged, number}개는 스카우트 범위 기준(중간값 사용)",
+    "unknown": "추정 점수: {unknown, number}개는 알 수 없음(0으로 계산)",
+    "both": "추정 점수: {ranged, number}개는 스카우트 범위 기준(중간값 사용), {unknown, number}개는 알 수 없음(0으로 계산)"
+  }
+}

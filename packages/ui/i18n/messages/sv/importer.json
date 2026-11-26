@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "Importera",
+    "clear": "Rensa import",
+    "loadTestData": "Ladda testdata",
+    "chooseFile": "Välj CSV-fil"
+  },
+  "messages": {
+    "storageFull": "Importen finns bara i den här fliken: webbläsarens lagring är full eller blockerad. Frigör utrymme eller tillåt lagring för att behålla data mellan flikar och besök.",
+    "testDataFailed": "Det gick inte att ladda testdata.",
+    "parseFailed": "Det gick inte att läsa CSV-filen. Kontrollera filformatet.",
+    "noStaffColumns": "Inga personalegenskaper hittades i filen. Exportera den från en personalsökning med vyn Scout Reporter Staff (spelarexporter hör hemma under Spelare).",
+    "noSquadPlayers": "Inga spelare med positioner hittades i filen. Exportera din trupp med vyn Scout Reporter Standard eller Hidden Attributes.",
+    "noScanSquad": "Inga spelare från din klubb hittades i den här skanningen."
+  },
+  "players": {
+    "title": "Importera spelar-CSV",
+    "imported": "{count, plural, one {# spelare} other {# spelare}} importerade",
+    "description": "Export från FM26 (<code>;</code>) eller FM27 (<code>,</code>) med Scout Reporter-vyn. Kolumner matchas efter namn. Vyfil: <standard>Standard</standard> eller <hidden>Hidden Attributes</hidden> (lägger till {professionalism}, NF, PF)."
+  },
+  "staff": {
+    "title": "Importera personal-CSV",
+    "imported": "{count, plural, one {# i personalen} other {# i personalen}} importerade",
+    "description": "Exportera en personalsökning med <link>vyn Scout Reporter Staff</link>. Kolumner matchas efter namn; både FM26:s ord och siffror 1–20 fungerar. Hålls separat från din spelarimport."
+  }
+}

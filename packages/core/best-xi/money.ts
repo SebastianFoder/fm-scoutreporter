@@ -87,16 +87,21 @@ export function currencyPrefix(text: string | null): string | null {
   return m ? m[1] : null;
 }
 
-export function formatMoney(amount: number, prefix = "€"): string {
+/**
+ * An amount the way FM shortens it ("€2.5M", "€750K"). `locale` (a BCP 47 tag) sets the decimal
+ * separator for display ("€2,5M" in French); without it the number is written as stored data is.
+ */
+export function formatMoney(amount: number, prefix = "€", locale?: string): string {
   const abs = Math.abs(amount);
   const short = (n: number) => {
-    const digits = n >= 100 ? 0 : n >= 10 ? 1 : 2;
-    return String(Number(n.toFixed(digits)));
+    const digits = Math.abs(n) >= 100 ? 0 : Math.abs(n) >= 10 ? 1 : 2;
+    const rounded = Number(n.toFixed(digits));
+    return locale ? rounded.toLocaleString(locale, { maximumFractionDigits: digits, useGrouping: false }) : String(rounded);
   };
   if (abs >= 1e9) return `${prefix}${short(amount / 1e9)}B`;
   if (abs >= 1e6) return `${prefix}${short(amount / 1e6)}M`;
   if (abs >= 1e3) return `${prefix}${short(amount / 1e3)}K`;
-  return `${prefix}${Math.round(amount)}`;
+  return `${prefix}${short(Math.round(amount))}`;
 }
 
 /**

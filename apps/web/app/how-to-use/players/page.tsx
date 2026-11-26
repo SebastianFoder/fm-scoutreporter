@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { HowToShell } from "@scoutreporter/ui/features/how-to-use/HowToShell";
 import { AttributeGuide } from "@scoutreporter/ui/features/how-to-use/guides";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
@@ -11,7 +12,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/how-to-use/players",
 });
 
-export default function AttributeGuidePage() {
+export default async function AttributeGuidePage() {
+  const t = await getTranslations("howToPages.players");
   return (
     <>
       <JsonLd
@@ -21,9 +23,9 @@ export default function AttributeGuidePage() {
         ])}
       />
       <HowToShell
-        title="Players"
-        description="Score and rank players by a weighted average of their attributes. No baseline needed: import and go."
-        link={{ href: "/players", label: "Go to Players" }}
+        title={t("title")}
+        description={t("description")}
+        link={{ href: "/players", label: t("link") }}
       >
         <AttributeGuide />
       </HowToShell>

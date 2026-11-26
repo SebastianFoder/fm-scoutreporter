@@ -18,7 +18,6 @@ import {
   getPlayerAttributeValue,
   scaleScore,
 } from "@scoutreporter/core/scoring";
-import { attributeLabel } from "@scoutreporter/core/attribute-labels";
 import { ageBenchmark } from "@scoutreporter/core/fm27/benchmarks";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
 import { EstimatedMark } from "@scoutreporter/ui/components/EstimatedMark";
@@ -41,6 +40,8 @@ import { compareNames } from "@scoutreporter/core/text";
 import { transferValueSortKey } from "@scoutreporter/core/best-xi/money";
 import { PlayerLink } from "@scoutreporter/ui/components/PlayerPanel";
 import { useDesktopBridge } from "@scoutreporter/ui/desktop/DesktopProvider";
+import { useTranslations } from "next-intl";
+import { useAttributeLabel, useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
 
 interface Props {
   players: PlayerWithGroups[];
@@ -297,14 +298,15 @@ function SortableTh({
 }
 
 function NewTabPlayerLink({ uniqueId, name }: { uniqueId: string; name: string }) {
+  const t = useTranslations("players.list");
   return (
     <Link
       href={`/players/${uniqueId}`}
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex shrink-0 rounded p-1 text-muted/70 hover:bg-ink/6 hover:text-ink"
-      aria-label={`Open ${name} in new tab`}
-      title="Open in new tab"
+      aria-label={t("openPlayerInNewTab", { name })}
+      title={t("openInNewTab")}
     >
       <ExternalLink className="h-3.5 w-3.5" aria-hidden />
     </Link>
@@ -317,6 +319,10 @@ function PlayersListClientInner({
   selectedIds = [],
   onToggleSelect,
 }: Props) {
+  const t = useTranslations("players.list");
+  const tFm = useTranslations("fm.terms");
+  const attributeLabel = useAttributeLabel();
+  const formatNumber = useFormatNumber();
   const highlighted = useHighlightedAttributes();
   const { weights, emphasis } = useActiveWeightProfile();
   const profile = useActiveAttributeProfile();
@@ -507,10 +513,10 @@ function PlayersListClientInner({
   return (
     <div className="text-ink">
       <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="section-title">Players</h2>
+        <h2 className="section-title">{tFm("players")}</h2>
 
         <label className="relative block w-full sm:w-96">
-          <span className="sr-only">Search players by name</span>
+          <span className="sr-only">{t("searchLabel")}</span>
           <Search
             className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
             aria-hidden
@@ -519,7 +525,7 @@ function PlayersListClientInner({
             type="text"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Search name: first, middle or last"
+            placeholder={t("searchPlaceholder")}
             className="field h-9 w-full py-1.5 pl-8 pr-8 text-sm"
           />
           {draft && (
@@ -527,7 +533,7 @@ function PlayersListClientInner({
               type="button"
               onClick={() => setDraft("")}
               className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:bg-ink/6 hover:text-ink"
-              aria-label="Clear search"
+              aria-label={t("clearSearch")}
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -537,7 +543,7 @@ function PlayersListClientInner({
 
       {searchQuery && total === 0 && (
         <p className="px-4 pb-3 text-sm text-muted">
-          No players match &ldquo;{searchQuery}&rdquo;
+          {t("noMatch", { query: searchQuery })}
         </p>
       )}
 
@@ -547,11 +553,11 @@ function PlayersListClientInner({
             <tr>
               {selectable && (
                 <th className="w-10 px-3 py-2 text-left">
-                  <span className="sr-only">Select</span>
+                  <span className="sr-only">{t("select")}</span>
                 </th>
               )}
               <SortableTh
-                label="Player"
+                label={tFm("player")}
                 align="left"
                 columnSort="player"
                 listSort={listSort}
@@ -559,7 +565,7 @@ function PlayersListClientInner({
                 onSort={() => onColumnSort("player")}
               />
               <SortableTh
-                label="Pos"
+                label={t("columns.position")}
                 align="left"
                 columnSort="position"
                 listSort={listSort}
@@ -567,7 +573,7 @@ function PlayersListClientInner({
                 onSort={() => onColumnSort("position")}
               />
               <SortableTh
-                label="Age"
+                label={tFm("age")}
                 align="right"
                 columnSort="age"
                 listSort={listSort}
@@ -575,7 +581,7 @@ function PlayersListClientInner({
                 onSort={() => onColumnSort("age")}
               />
               <SortableTh
-                label="Score"
+                label={t("columns.score")}
                 align="right"
                 columnSort="score"
                 listSort={listSort}
@@ -583,7 +589,7 @@ function PlayersListClientInner({
                 onSort={() => onColumnSort("score")}
               />
               <SortableTh
-                label={<span title="Weighted average vs the FM27 benchmark for the player's age">vs Age</span>}
+                label={<span title={t("columns.vsAgeTitle")}>{t("columns.vsAge")}</span>}
                 align="right"
                 columnSort="vsAge"
                 listSort={listSort}
@@ -592,7 +598,7 @@ function PlayersListClientInner({
               />
               {hasPotential && (
                 <SortableTh
-                  label={<span title="Score with attributes projected to PA (Hidden Attributes export)">Potential</span>}
+                  label={<span title={t("columns.potentialTitle")}>{tFm("potential")}</span>}
                   align="right"
                   columnSort="potential"
                   listSort={listSort}
@@ -601,7 +607,7 @@ function PlayersListClientInner({
                 />
               )}
               <SortableTh
-                label={<span title="FM's transfer value range (sorted by its middle)">Value</span>}
+                label={<span title={t("columns.valueTitle")}>{tFm("value")}</span>}
                 align="right"
                 columnSort="value"
                 listSort={listSort}
@@ -632,7 +638,7 @@ function PlayersListClientInner({
                     <input
                       type="checkbox"
                       className="h-4 w-4 cursor-pointer"
-                      aria-label={`Select ${p.raw.player}`}
+                      aria-label={t("selectPlayer", { name: p.raw.player })}
                       checked={selectedIds.includes(p.raw.uniqueId)}
                       onChange={() => onToggleSelect?.(p.raw.uniqueId)}
                     />
@@ -652,9 +658,9 @@ function PlayersListClientInner({
                   <span className="inline-flex items-center justify-end gap-2">
                     <span>
                       <EstimatedMark player={p.raw} />
-                      {score.toFixed(2)}
+                      {formatNumber(score, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
-                    <GradeStamp score={avg} label="Score" />
+                    <GradeStamp score={avg} label={t("columns.score")} />
                   </span>
                 </td>
                 <td
@@ -662,7 +668,7 @@ function PlayersListClientInner({
                     vsAge >= 1 ? "font-semibold text-positive" : "text-muted"
                   }`}
                 >
-                  {Math.round(vsAge * 100)}%
+                  {formatNumber(vsAge, { style: "percent", maximumFractionDigits: 0 })}
                 </td>
                 {hasPotential && (
                   <td className="px-3 py-2 text-right font-semibold">
@@ -670,8 +676,8 @@ function PlayersListClientInner({
                       "–"
                     ) : (
                       <span className="inline-flex items-center justify-end gap-2">
-                        {potential.toFixed(2)}
-                        <GradeStamp score={potentialAvg} label="Potential" />
+                        {formatNumber(potential, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        <GradeStamp score={potentialAvg} label={tFm("potential")} />
                       </span>
                     )}
                   </td>
@@ -713,11 +719,12 @@ function PlayersListClientInner({
 }
 
 export default function PlayersListClient(props: Props) {
+  const t = useTranslations("players.list");
   return (
     <Suspense
       fallback={
         <div className="px-4 py-6 text-sm text-muted">
-          Loading table…
+          {t("loading")}
         </div>
       }
     >

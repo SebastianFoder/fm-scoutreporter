@@ -1,0 +1,70 @@
+{
+  "title": "Innstillinger",
+  "tabs": {
+    "weights": "Vekter",
+    "columns": "Kolonner",
+    "look": "Utseende",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Tema",
+    "attributeColours": "Ferdighetsfarger"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Lyst",
+    "dark": "Mørkt",
+    "system": "System"
+  },
+  "profiles": {
+    "profile": "Profil",
+    "name": "Navn",
+    "namePlaceholder": "Profilnavn",
+    "createNew": "Opprett ny",
+    "default": "Standard",
+    "newName": "Ny profil",
+    "copyName": "{name} kopi"
+  },
+  "weights": {
+    "intro": "Hvor mye hver ferdighet teller i spillerens poengsum. Poengene oppdateres mens du skriver. FM27-rolleprofilene er kalibrert mot posisjonsstudien til FM Match Lab (13b).",
+    "weighted": "{count, number} vektet",
+    "weighting": "Vekting",
+    "linear": "Lineær (FM27-referanse)",
+    "emphasized": "Forsterket (vekter i andre)",
+    "benchmark": "FM27-rollevekter kalibrert mot referanse (FM Match Lab <link>Study 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "FM27-referanse fra FM Match Lab (<link>Study 13b</link>): midtstoppere.",
+      "fm27-wb": "FM27-referanse fra FM Match Lab (<link>Study 13b</link>): backer og wingbacker.",
+      "fm27-dm": "FM27-referanse fra FM Match Lab (<link>Study 13b</link>): defensive midtbanespillere, brukes også for sentrale midtbanespillere.",
+      "fm27-10": "FM27-referanse fra FM Match Lab (<link>Study 13b</link>): offensive midtbanespillere og vinger.",
+      "fm27-9": "FM27-referanse fra FM Match Lab (<link>Study 13b</link>): spisser.",
+      "fm27-gk": "FM27-referanse fra FM Match Lab (<link>Study 13b</link>): keepere."
+    },
+    "resetToBenchmark": "Tilbakestill til referanse",
+    "linearNote": "Lineær samsvarer med hvordan FM27-referansene og «vs alder» er kalibrert.",
+    "json": {
+      "title": "Importer / eksporter JSON",
+      "label": "Profil-JSON",
+      "placeholder": "Eksportert profil-JSON vises her. Lim inn JSON her for å importere.",
+      "invalid": "Ugyldig profil-JSON"
+    }
+  },
+  "columns": {
+    "intro": "Ferdighetene spillerlisten og sammenligningen viser som kolonner. Lagre ulike sett som profiler.",
+    "shown": "{count, number} vist"
+  },
+  "colours": {
+    "intro": "Verdien en ferdighet (1 til 20) trenger for hver farge. Fargene følger lyst eller mørkt tema.",
+    "band": "Nivå",
+    "minValue": "Minsteverdi",
+    "preview": "Forhåndsvisning, 1 til 20",
+    "bands": {
+      "excellent": "Utmerket ferdighet",
+      "good": "God ferdighet",
+      "average": "Gjennomsnittlig ferdighet",
+      "low": "Lav ferdighet"
+    },
+    "minValueLabel": "Minsteverdi for {band}",
+    "below": "Under <b>{value, number}</b>"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "panel": {
+    "label": "Importer",
+    "clear": "Effacer l’import",
+    "loadTestData": "Charger des données test",
+    "chooseFile": "Choisir un fichier CSV"
+  },
+  "messages": {
+    "storageFull": "Import chargé dans cet onglet uniquement : le stockage du navigateur est plein ou bloqué. Libérez de l’espace ou autorisez le stockage pour garder les données entre onglets et visites.",
+    "testDataFailed": "Impossible de charger les données test.",
+    "parseFailed": "Impossible de lire le CSV. Vérifiez le format du fichier.",
+    "noStaffColumns": "Aucun attribut de staff dans ce fichier. Exportez-le depuis une recherche de staff avec la vue Scout Reporter Staff (les exports de joueurs vont dans Joueurs).",
+    "noSquadPlayers": "Aucun joueur avec un poste dans ce fichier. Exportez votre effectif avec la vue Scout Reporter Standard ou Hidden Attributes.",
+    "noScanSquad": "Aucun joueur de votre club dans ce scan."
+  },
+  "players": {
+    "title": "Importer un CSV de joueurs",
+    "imported": "{count, plural, one {# joueur importé} other {# joueurs importés}}",
+    "description": "Export FM26 (<code>;</code>) ou FM27 (<code>,</code>) de la vue Scout Reporter. Les colonnes sont reconnues par leur nom. Fichier de vue : <standard>Standard</standard> ou <hidden>Hidden Attributes</hidden> (ajoute {professionalism}, NA, Pot.)."
+  },
+  "staff": {
+    "title": "Importer un CSV de staff",
+    "imported": "{count, plural, one {# membre du staff importé} other {# membres du staff importés}}",
+    "description": "Exportez une recherche de staff avec la <link>vue Scout Reporter Staff</link>. Les colonnes sont reconnues par leur nom ; les appréciations en mots de FM26 et les notes de 1 à 20 fonctionnent. Séparé de votre import de joueurs."
+  }
+}

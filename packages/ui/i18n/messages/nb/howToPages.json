@@ -1,0 +1,17 @@
+{
+  "setup": {
+    "title": "Oppsettguide",
+    "description": "Følg disse stegene for å eksportere en spillerliste fra Football Manager 27 eller 26 og importere den hit.",
+    "link": "Gå til importen"
+  },
+  "players": {
+    "title": "Spillere",
+    "description": "Gi spillere poeng og ranger dem etter et vektet snitt av ferdighetene deres. Ingen referanse trengs: importer og sett i gang.",
+    "link": "Gå til Spillere"
+  },
+  "wonderkids": {
+    "title": "Vidunderbarn",
+    "description": "Estimer ferdighetene ved fullt potensial fra en eksport med visningen Hidden Attributes (NF, PF, Profesjonalitet) og ranger talenter på FM27-roller kalibrert mot referanser.",
+    "link": "Gå til Spillere"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "intro": "Poängsätt, ranka och jämför spelare från en spelarexport ur Football Manager 27 eller 26. Allt körs i din webbläsare; CSV-filen lämnar aldrig din dator.",
+  "desktop": {
+    "title": "Datorapp för Windows",
+    "body": "Hoppa över exporten: appen läser spelarna i din spelarsökning i FM direkt från spelet, med riktig NF och PF.",
+    "cta": "Ladda ner"
+  },
+  "sections": {
+    "title": "Delar",
+    "section": "Del",
+    "whatItDoes": "Vad den gör",
+    "needs": "Kräver",
+    "open": "Öppna"
+  },
+  "modes": {
+    "players": {
+      "name": "Spelare",
+      "blurb": "Poängsätt och ranka spelare efter dina egna egenskapsvikter eller FM27-rollerna, jämför dem och hitta underbarn: med NF och PF får varje spelare en Potential-poäng vid full potential. Bästa elva väljer den starkaste elvan för en uppställning inom en budget.",
+      "needs": "Vyn Standard eller Hidden Attributes",
+      "cta": "Öppna Spelare"
+    },
+    "squad": {
+      "name": "Truppanalys",
+      "blurb": "Importera din egen trupp och välj uppställning för att se din första och andra elva, tunna eller svaga positioner, åldrande startspelare, unga spelare redo att ta steget, problem med truppstatus och förstärkningar från din scoutingimport.",
+      "needs": "Vyn Squad eller Squad Hidden Attributes",
+      "cta": "Öppna Truppanalys"
+    },
+    "staff": {
+      "name": "Personal",
+      "blurb": "Ranka tränare, scouter, analytiker och chefer i alla personalroller, med FM26:s betyg i ord omräknade till 1–20. Bästa ledarstab väljer den starkaste uppsättningen personal för rollerna du behöver, ingen används två gånger.",
+      "needs": "Vyn Staff",
+      "cta": "Öppna Personal"
+    }
+  },
+  "screens": {
+    "players": "Spelare",
+    "bestXi": "Bästa elva",
+    "staff": "Personal",
+    "backroom": "Bästa ledarstab"
+  },
+  "moreScreens": "Fler skärmar",
+  "screenshots": {
+    "open": "Öppna {title}",
+    "alt": "{title}: {caption}",
+    "squad": {
+      "title": "Truppanalys",
+      "caption": "Din första och andra elva, tunn bredd, svaga länkar och vem som borde starta."
+    },
+    "players": {
+      "title": "Spelarlista",
+      "caption": "Alla spelare poängsatta efter dina vikter eller en FM27-roll, med betyg, mot ålder och värde."
+    },
+    "bestXi": {
+      "title": "Bästa elva",
+      "caption": "Den bästa elvan för valfri uppställning, inom en övergångsbudget."
+    },
+    "player": {
+      "title": "Spelarpanel",
+      "caption": "Klicka på en spelare för profil, NF, PF och egenskaper i en sidopanel."
+    },
+    "staff": {
+      "title": "Personal",
+      "caption": "Tränare, scouter och chefer poängsatta i 17 personalroller."
+    },
+    "backroom": {
+      "title": "Bästa ledarstab",
+      "caption": "Personalen att anställa för varje roll, ingen används två gånger."
+    }
+  },
+  "start": {
+    "title": "Få ut spelare ur FM",
+    "exporter": "Installera en exportör: FM View Exporter för FM27, eller BepInEx med pluginet FM26 Player CSV Export.",
+    "view": "Importera Scout Reporter-vyn i FM:s Spelardatabas (högerklicka på en kolumnrubrik och välj Importera vy).",
+    "export": "Markera spelare och tryck <kbd>F9</kbd> för att exportera en CSV.",
+    "import": "Importera CSV-filen under Spelare.",
+    "guide": "Fullständig installationsguide",
+    "faq": "Vanliga frågor"
+  },
+  "views": {
+    "title": "Vyfiler (.fmf)",
+    "hidden": {
+      "name": "Vyn Hidden Attributes",
+      "summary": "Vyn Standard plus dolda Professionalism, NF och PF. Rekommenderas."
+    },
+    "standard": {
+      "name": "Vyn Standard",
+      "summary": "Alla synliga spelaregenskaper."
+    },
+    "squadHidden": {
+      "name": "Vyn Squad Hidden Attributes",
+      "summary": "Vyn Squad plus dolda Professionalism, NF och PF."
+    },
+    "squad": {
+      "name": "Vyn Squad",
+      "summary": "Din truppskärm: alla egenskaper plus laguttagning, truppstatus, skador och tränarens stjärnor. För Truppanalys."
+    },
+    "staff": {
+      "name": "Vyn Staff",
+      "summary": "Alla personalegenskaper, föredraget jobb, klubb och personlighet. För läget Personal."
+    }
+  }
+}

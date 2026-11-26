@@ -8,6 +8,8 @@ import {
 } from "@scoutreporter/ui/components/AttributeColorConfig";
 import type { AttributeKey } from "@scoutreporter/core/types/weights";
 import { getGroupedAttributeValue } from "@scoutreporter/core/grouped-attribute-value";
+import { useTranslations } from "next-intl";
+import { useAttributeLabel, useIntlLocale } from "@scoutreporter/ui/i18n/hooks";
 
 interface Props {
   grouped: GroupedAttributes;
@@ -17,32 +19,14 @@ interface Props {
 }
 
 function Delta({ value, base }: { value: number; base: number | undefined }) {
+  const t = useTranslations("players.attributes");
   if (base === undefined || value <= base) return null;
   return (
-    <span className="mr-1.5 text-[12px] font-semibold text-positive" title={`+${value - base} from current`}>
+    <span className="mr-1.5 text-[12px] font-semibold text-positive" title={t("deltaTitle", { delta: value - base })}>
       +{value - base}
     </span>
   );
 }
-
-const LABEL_OVERRIDES: Partial<Record<AttributeKey, string>> = {
-  rushingOutTendency: "Rushing Out (Tendency)",
-  oneOnOnes: "One On Ones",
-  commandOfArea: "Command Of Area",
-  offTheBall: "Off The Ball",
-  freeKickTaking: "Free Kick Taking",
-  penaltyTaking: "Penalty Taking",
-  naturalFitness: "Natural Fitness",
-  aerialReach: "Aerial Reach",
-  firstTouch: "First Touch",
-  longThrows: "Long Throws",
-  longShots: "Long Shots",
-  jumpingReach: "Jumping Reach",
-  teamWork: "Teamwork",
-  workRate: "Work Rate",
-  // FM-style labels
-  punching: "Punching (Tendency)",
-};
 
 const GK_PANEL_KEYS: AttributeKey[] = [
   "aerialReach",
@@ -68,20 +52,6 @@ const GK_TECHNICAL_KEYS: AttributeKey[] = [
 
 function getValueByKey(grouped: GroupedAttributes, key: AttributeKey): number {
   return getGroupedAttributeValue(grouped, key);
-}
-
-function prettyLabel(key: AttributeKey) {
-  const override = LABEL_OVERRIDES[key];
-  if (override) return override;
-  const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
-  return withSpaces
-    .split(" ")
-    .map((word) =>
-      word.length > 0
-        ? word[0].toUpperCase() + word.slice(1).toLowerCase()
-        : "",
-    )
-    .join(" ");
 }
 
 /** One FM-style attribute line: label left, banded value cell right. */
@@ -111,34 +81,28 @@ function AttrRow({
 
 export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Props) {
   const profile = useActiveAttributeProfile();
+  const tGroup = useTranslations("fm.attributeGroups");
+  const attributeLabel = useAttributeLabel();
+  const locale = useIntlLocale();
+  // FM lists attributes alphabetically by their name, which depends on the language.
+  const byLabel = (a: string, b: string) => attributeLabel(a).localeCompare(attributeLabel(b), locale);
 
   const renderColumn = (
     title: string,
     attributes: Record<string, number>,
     compact?: boolean,
   ) => {
-    const entries = Object.entries(attributes).sort(([a], [b]) =>
-      a.localeCompare(b),
-    );
+    const entries = Object.entries(attributes).sort(([a], [b]) => byLabel(a, b));
 
     return (
       <div>
         <h2 className="section-title mb-1.5">{title}</h2>
         <dl className={compact ? "text-[13px] @lg:grid @lg:grid-cols-3 @lg:gap-x-6" : "text-sm"}>
           {entries.map(([key, value]) => {
-            const withSpaces = key.replace(/([a-z])([A-Z])/g, "$1 $2");
-            const pretty = withSpaces
-              .split(" ")
-              .map((word) =>
-                word.length > 0
-                  ? word[0].toUpperCase() + word.slice(1).toLowerCase()
-                  : "",
-              )
-              .join(" ");
             return (
               <AttrRow
                 key={key}
-                label={pretty}
+                label={attributeLabel(key)}
                 value={value}
                 band={getBandForValue(value, profile.thresholds)}
                 base={baseline ? getValueByKey(baseline, key as AttributeKey) : undefined}
@@ -155,7 +119,7 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
     keys: AttributeKey[],
     compact?: boolean,
   ) => {
-    const sorted = [...keys].sort((a, b) => a.localeCompare(b));
+    const sorted = [...keys].sort(byLabel);
     return (
       <div>
         <h2 className="section-title mb-1.5">{title}</h2>
@@ -165,7 +129,7 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
             return (
               <AttrRow
                 key={key}
-                label={prettyLabel(key)}
+                label={attributeLabel(key)}
                 value={value}
                 band={getBandForValue(value, profile.thresholds)}
                 base={baseline ? getValueByKey(baseline, key) : undefined}
@@ -182,22 +146,22 @@ export function PlayerAttributesClient({ grouped, isGoalkeeper, baseline }: Prop
     <div className="panel @container space-y-5 px-4 py-4">
       {isGoalkeeper ? (
         <div className="grid gap-x-6 gap-y-5 @lg:grid-cols-3">
-          {renderKeyColumn("Goalkeeping", GK_PANEL_KEYS)}
-          {renderColumn("Mental", grouped.mental)}
+          {renderKeyColumn(tGroup("goalkeeping"), GK_PANEL_KEYS)}
+          {renderColumn(tGroup("mental"), grouped.mental)}
           <div className="space-y-5">
-            {renderColumn("Physical", grouped.physical)}
-            {renderKeyColumn("Technical", GK_TECHNICAL_KEYS, true)}
+            {renderColumn(tGroup("physical"), grouped.physical)}
+            {renderKeyColumn(tGroup("technical"), GK_TECHNICAL_KEYS, true)}
           </div>
         </div>
       ) : (
         <>
           <div className="grid gap-x-6 gap-y-5 @lg:grid-cols-3">
-            {renderColumn("Technical", grouped.technical)}
-            {renderColumn("Mental", grouped.mental)}
-            {renderColumn("Physical", grouped.physical)}
+            {renderColumn(tGroup("technical"), grouped.technical)}
+            {renderColumn(tGroup("mental"), grouped.mental)}
+            {renderColumn(tGroup("physical"), grouped.physical)}
           </div>
           <div className="border-t border-line pt-4">
-            {renderColumn("Goalkeeping", grouped.goalkeeping, true)}
+            {renderColumn(tGroup("goalkeeping"), grouped.goalkeeping, true)}
           </div>
         </>
       )}

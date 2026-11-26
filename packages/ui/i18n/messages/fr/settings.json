@@ -1,0 +1,70 @@
+{
+  "title": "Paramètres",
+  "tabs": {
+    "weights": "Pondérations",
+    "columns": "Colonnes",
+    "look": "Apparence",
+    "app": "Appli"
+  },
+  "look": {
+    "theme": "Thème",
+    "attributeColours": "Couleurs des attributs"
+  },
+  "theme": {
+    "label": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "profiles": {
+    "profile": "Profil",
+    "name": "Nom",
+    "namePlaceholder": "Nom du profil",
+    "createNew": "Nouveau",
+    "default": "Par défaut",
+    "newName": "Nouveau profil",
+    "copyName": "{name} (copie)"
+  },
+  "weights": {
+    "intro": "Le poids de chaque attribut dans le score d’un joueur. Les scores se mettent à jour pendant la saisie. Les profils de rôles FM27 sont étalonnés sur l’étude des postes de FM Match Lab (13b).",
+    "weighted": "{count, plural, one {# pondéré} other {# pondérés}}",
+    "weighting": "Pondération",
+    "linear": "Linéaire (référence FM27)",
+    "emphasized": "Accentuée (poids au carré)",
+    "benchmark": "Poids des rôles FM27 étalonnés (FM Match Lab, <link>étude 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "Référence FM27 de FM Match Lab (<link>étude 13b</link>) : défenseurs centraux.",
+      "fm27-wb": "Référence FM27 de FM Match Lab (<link>étude 13b</link>) : arrières latéraux et latéraux offensifs.",
+      "fm27-dm": "Référence FM27 de FM Match Lab (<link>étude 13b</link>) : milieux défensifs, aussi utilisée pour les milieux axiaux.",
+      "fm27-10": "Référence FM27 de FM Match Lab (<link>étude 13b</link>) : milieux offensifs et ailiers.",
+      "fm27-9": "Référence FM27 de FM Match Lab (<link>étude 13b</link>) : buteurs.",
+      "fm27-gk": "Référence FM27 de FM Match Lab (<link>étude 13b</link>) : gardiens de but."
+    },
+    "resetToBenchmark": "Revenir à la référence",
+    "linearNote": "Le mode linéaire correspond à l’étalonnage des références FM27 et de « vs âge ».",
+    "json": {
+      "title": "Importer / exporter en JSON",
+      "label": "JSON du profil",
+      "placeholder": "Le JSON du profil exporté apparaîtra ici. Collez du JSON ici pour l’importer.",
+      "invalid": "JSON de profil invalide"
+    }
+  },
+  "columns": {
+    "intro": "Les attributs affichés en colonnes dans la liste des joueurs et la comparaison. Enregistrez différents ensembles comme profils.",
+    "shown": "{count, plural, one {# affiché} other {# affichés}}"
+  },
+  "colours": {
+    "intro": "La valeur qu’un attribut (de 1 à 20) doit atteindre pour chaque couleur. Les couleurs suivent le thème clair ou sombre.",
+    "band": "Palier",
+    "minValue": "Valeur min.",
+    "preview": "Aperçu, de 1 à 20",
+    "bands": {
+      "excellent": "Attribut excellent",
+      "good": "Bon attribut",
+      "average": "Attribut moyen",
+      "low": "Attribut faible"
+    },
+    "minValueLabel": "{band} : valeur minimale",
+    "below": "Sous <b>{value, number}</b>"
+  }
+}

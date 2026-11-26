@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowRight, Columns3, GitCompareArrows, SlidersHorizontal } from "lucide-react";
 import PlayersListClient from "@scoutreporter/ui/features/attribute/players/PlayerListClient";
 import { useActiveWeightProfile } from "./WeightConfig";
@@ -14,6 +15,7 @@ import { useSettings } from "./Settings";
 import { CsvImportPanel } from "./CsvImportPanel";
 import { PageHeader } from "./PageHeader";
 import { NoImport } from "./ImportPanel";
+import { useProfileName } from "../i18n/hooks";
 
 export default function AttributeModeHome() {
   const { state } = usePlayersData();
@@ -32,49 +34,54 @@ export default function AttributeModeHome() {
   const { openSettings } = useSettings();
   const router = useRouter();
   const weightProfile = useActiveWeightProfile();
+  const t = useTranslations("players");
+  const tFm = useTranslations("fm");
+  const profileName = useProfileName();
 
   return (
     <div className="text-ink">
       <main className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-6 md:py-8">
         <PageHeader
-          title="Players"
+          title={tFm("terms.players")}
           aside={
             <Link href="/players/best-xi" className="btn h-9 border border-line bg-surface px-3 text-sm hover:bg-paper">
-              Best XI <ArrowRight className="h-4 w-4" aria-hidden />
+              {tFm("terms.bestXi")} <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
           }
         >
-          Score, rank and compare players. With CA and PA (a scan, or a Hidden Attributes export),
-          Potential and vs Age find the wonderkids: sort by Potential to see who could become the best. FM27
-          role profiles (benchmarked on FM Match Lab&apos;s position study) are included under Weights.
+          {t("home.intro")}
         </PageHeader>
 
         <CsvImportPanel testFixture="attribute-fm27-hidden" onImported={() => setSelectedIds([])} />
 
         {players && players.length > 0 && (
-          <section aria-label="Players" className="panel">
+          <section aria-label={tFm("terms.players")} className="panel">
             <div className="flex flex-col gap-3 border-b border-line px-4 py-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted">
-                Scored with{" "}
-                <button type="button" onClick={() => openSettings("weights")} className="link">
-                  {weightProfile.name}
-                </button>
+                {t.rich("home.scoredWith", {
+                  profile: profileName(weightProfile),
+                  link: (chunks) => (
+                    <button type="button" onClick={() => openSettings("weights")} className="link">
+                      {chunks}
+                    </button>
+                  ),
+                })}
                 {selectedIds.length > 0 && (
                   <>
                     {" "}
-                    · <span className="font-semibold text-ink">{selectedIds.length} selected</span>
+                    · <span className="font-semibold text-ink">{t("selectedCount", { count: selectedIds.length })}</span>
                   </>
                 )}
               </p>
               {mine > 0 && (
-                <label className="flex items-center gap-2 text-sm md:mr-auto md:ml-4" title="Your players are the ones in your squad import">
+                <label className="flex items-center gap-2 text-sm md:mr-auto md:ml-4" title={t("home.myPlayersTitle")}>
                   <input
                     type="checkbox"
                     checked={showMine}
                     onChange={(e) => setShowMine(e.target.checked)}
                     className="h-4 w-4 accent-accent"
                   />
-                  Show my players ({mine})
+                  {t("home.showMyPlayers", { count: mine })}
                 </label>
               )}
               <div className="flex flex-wrap items-center gap-2">
@@ -85,7 +92,7 @@ export default function AttributeModeHome() {
                   onClick={() => openSettings("weights")}
                   icon={<SlidersHorizontal className="h-4 w-4" aria-hidden />}
                 >
-                  Weights
+                  {t("home.weights")}
                 </Button>
                 <Button
                   color="alt"
@@ -94,7 +101,7 @@ export default function AttributeModeHome() {
                   onClick={() => openSettings("columns")}
                   icon={<Columns3 className="h-4 w-4" aria-hidden />}
                 >
-                  Columns
+                  {t("home.columns")}
                 </Button>
                 <Button
                   color="primary"
@@ -107,7 +114,7 @@ export default function AttributeModeHome() {
                     router.push(`/players/compare?ids=${encodeURIComponent(selectedIds.join(","))}`);
                   }}
                 >
-                  Compare selected ({selectedIds.length})
+                  {t("home.compareSelected", { count: selectedIds.length })}
                 </Button>
               </div>
             </div>
@@ -123,8 +130,14 @@ export default function AttributeModeHome() {
         )}
 
         {!players && (
-          <NoImport desktop={<>No players yet. In FM, open a Player Search and press <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">F9</kbd> or Scan search.</>}>
-            No CSV imported yet. Choose a CSV file above, or load the test data to look around.
+          <NoImport
+            desktop={t.rich("home.emptyDesktop", {
+              kbd: (chunks) => (
+                <kbd className="rounded border border-line bg-surface px-1.5 text-[12px] font-semibold text-ink">{chunks}</kbd>
+              ),
+            })}
+          >
+            {t("home.empty")}
           </NoImport>
         )}
       </main>

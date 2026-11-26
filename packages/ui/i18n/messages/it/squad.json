@@ -1,0 +1,232 @@
+{
+  "title": "Analisi rosa",
+  "intro": "Importa la tua rosa, scegli la formazione che usi e scopri il tuo primo e secondo undici, dove la rosa è corta o debole, chi sta invecchiando e quali giovani possono fare il salto.",
+  "import": {
+    "title": "Importa la tua rosa",
+    "titleCount": "{count, plural, one {# giocatore nella tua rosa} other {# giocatori nella tua rosa}}",
+    "description": "Esporta la schermata della tua rosa con la vista <squad>Squad</squad> o <hidden>Squad Hidden Attributes</hidden> (aggiunge il potenziale). Resta separata dalla tua importazione di osservati.",
+    "noColumns": "Questa importazione non ha le colonne della rosa, quindi prestiti, infortuni, stato rosa e formazione titolare non vengono controllati."
+  },
+  "noImport": {
+    "desktop": "Ancora nessuna rosa. Ogni scansione legge anche i giocatori della tua società.",
+    "web": "Nessuna rosa importata. Scegli qui sopra il CSV della tua rosa, oppure carica i dati di prova per dare un’occhiata.",
+    "usePlayerImportPrompt": "Hai già esportato la tua rosa come importazione di giocatori?",
+    "usePlayerImport": "Usa l’importazione di giocatori ({count, plural, one {# giocatore} other {# giocatori}}) come rosa"
+  },
+  "setup": {
+    "title": "Impostazioni",
+    "reset": "Ripristina",
+    "availability": "Disponibilità",
+    "includeLoans": "Conta i giocatori in prestito",
+    "loanHint": "{count} in prestito ad altre società.",
+    "excludeInjured": "Escludi gli infortunati",
+    "injuredHint": "{count} infortunati ora. Attivo: gli undici che puoi schierare oggi."
+  },
+  "cannotFill": {
+    "title": "La tua rosa non riesce a coprire questa formazione.",
+    "body": "Nessuno ha {positions} come ruolo naturale, quindi l’undici è incompleto. Contano solo i ruoli naturali dell’esportazione."
+  },
+  "footnote": "Ogni posizione è valutata sul suo ruolo (1–20, con il voto da S++ a F) e conta solo i giocatori che la indicano come ruolo naturale. Il primo undici ha il punteggio totale più alto; il secondo undici è il migliore possibile con tutti gli altri, quindi ogni giocatore copre una sola posizione.",
+  "unknownPlayer": "Sconosciuto",
+  "ageShort": "{age}a",
+  "nobody": "Nessuno",
+  "injured": "Infortunato",
+  "ability": "Abilità",
+  "stars": {
+    "label": "{hasLabel, select, yes {{label}: {value} stelle su 5} other {{value} stelle su 5}}",
+    "title": "{hasLabel, select, yes {{label}: {value} stelle} other {{value} stelle}}"
+  },
+  "days": {
+    "weeks": "{count} sett.",
+    "days": "{count} g"
+  },
+  "overview": {
+    "title": "Panoramica della rosa",
+    "firstXi": "Primo undici",
+    "firstXiAtPotential": "Primo undici al potenziale",
+    "firstXiAverage": "Media del primo undici",
+    "secondXi": "Secondo undici",
+    "secondXiAverage": "Media del secondo undici",
+    "averageAge": "età {age}",
+    "unfilled": "{count} scoperti",
+    "squadSize": "<num>{count}</num><text>{count, plural, one {giocatore} other {giocatori}}, età {age}{unavailable, plural, =0 {} other {, # non disponibili}}</text>",
+    "teamSheet": "Formazione titolare in FM",
+    "teamSheetMatch": "<num>{matching}</num><text>su {count} coincidono con questo undici</text>",
+    "pitchChoice": "Undici in campo",
+    "legend": {
+      "high": "Da sistemare",
+      "medium": "Da tenere d’occhio",
+      "click": "Clicca una posizione per vederne le note."
+    },
+    "notesAtPosition": "{count, plural, =0 {Niente da segnalare in questa posizione.} one {# nota in questa posizione} other {# note in questa posizione}}",
+    "showAll": "Mostra tutto",
+    "nothingToFix": "Niente da sistemare: ogni titolare è vicino alla media dell’undici e ha una riserva a meno di 1,5 di distanza.",
+    "groups": {
+      "fix": {
+        "title": "Sistema",
+        "blurb": "Le posizioni che ti costano già ora: buchi, anelli deboli e coperture scarse."
+      },
+      "manage": {
+        "title": "Gestisci",
+        "blurb": "Stato rosa che non corrisponde all’undici. Sistemalo al prossimo rinnovo di contratto."
+      },
+      "develop": {
+        "title": "Sviluppa",
+        "blurb": "Giovani che supereranno un titolare, e successori pronti a subentrare."
+      }
+    },
+    "pitchEntry": "{spot}: {hasPlayer, select, yes {{name}, {score}} other {nessuno}}{replacing, select, none {} other {, al posto di {replacing}}}{issue, select, high {, da sistemare} medium {, da tenere d’occhio} other {}}",
+    "stampLabel": "{name} in {spot}",
+    "injuredBadge": "INF",
+    "inBadge": "IN"
+  },
+  "findings": {
+    "headline": {
+      "empty": "Nessuno gioca qui",
+      "weak": "Anello debole",
+      "no-cover": "Nessuna copertura",
+      "drop-off": "Copertura scarsa",
+      "ageing": "Titolare in età avanzata",
+      "successor": "Successore pronto",
+      "prospect": "Promessa",
+      "status-benched": "Promesso un posto da titolare",
+      "status-starting": "Titolare con stato basso"
+    },
+    "severity": {
+      "high": "Alta",
+      "medium": "Media"
+    },
+    "empty": {
+      "evidence": "Nessun {position} naturale nella rosa{count, plural, one {} other {, # posti da coprire}}.",
+      "advice": "Ingaggiane uno, o fai allenare un giocatore in quel ruolo."
+    },
+    "weak": {
+      "evidence": "<delta></delta> rispetto alla media dell’undici",
+      "advice": "Il primo posto da rinforzare."
+    },
+    "noCover": {
+      "evidence": "nessuna riserva naturale",
+      "advice": "Un infortunio o una squalifica significa schierare qualcuno fuori ruolo."
+    },
+    "dropOff": {
+      "advice": "La riserva è un livello sotto. Vale la pena prendere un rinforzo per la profondità della rosa."
+    },
+    "ageing": {
+      "atPotential": "{score} al potenziale",
+      "adviceSuccessor": "{name} ha {age} anni; il successore è già vicino.",
+      "adviceNone": "{name} ha {age} anni e nessuno di 23 anni o meno si avvicina. Pianifica un successore."
+    },
+    "prospect": {
+      "vs": "vs",
+      "starsAdvice": "Il preparatore valuta il suo potenziale sopra l’abilità ({ability}★) e il potenziale ({potential}★) di {starter}. Dagli minuti.",
+      "projectedLabel": "Proiezione al pieno potenziale",
+      "atPotentialVs": "al potenziale, vs",
+      "starterAtPotential": "Titolare al suo potenziale",
+      "starterToday": "Titolare oggi",
+      "projectedAdvice": "Proiettato {gap} sopra {starter}{own, select, yes { al suo stesso potenziale} other {}}. Dagli minuti."
+    },
+    "statusBenched": {
+      "secondOnly": "solo nel secondo undici",
+      "neither": "in nessuno dei due undici",
+      "advice": "Il suo stato rosa, {status}, promette un posto da titolare. Fallo giocare di più, o abbassagli lo stato."
+    },
+    "statusStarting": {
+      "advice": "È titolare qui con uno stato basso. Alzalo al prossimo rinnovo di contratto."
+    }
+  },
+  "teamSheet": {
+    "title": "Modifiche alla tua formazione titolare in FM",
+    "summary": "{matching} dei tuoi titolari in FM mantengono il posto{moves, plural, =0 {} other {, # in un’altra posizione}}.",
+    "columns": {
+      "out": "Fuori: titolare in FM ora",
+      "in": "Dentro: questo undici",
+      "gain": "Guadagno in questa posizione"
+    },
+    "out": "Fuori",
+    "in": "Dentro",
+    "outDetail": "{picked, select, yes {{pickedAt} in FM} other {Titolare in FM}}{natural, select, no {, non è un {position} naturale} other {}}",
+    "extraStarter": "Nessuno: un titolare in più",
+    "replacedBy": "sostituito da",
+    "nobodyPlaysThere": "Nessuno in questo undici gioca lì",
+    "newPosition": "nuova posizione",
+    "alsoMoves": "Si spostano anche:",
+    "to": "in"
+  },
+  "depth": {
+    "title": "Profondità della rosa",
+    "intro": "Titolare e riserva in ogni posizione{potential, select, yes {, al pieno potenziale} other {}}. La riserva viene dal secondo undici, quindi nessuno copre due posti.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Titolare",
+      "cover": "Riserva",
+      "drop": "Calo",
+      "dropTitle": "Punteggio della riserva meno quello del titolare",
+      "alsoPlays": "Gioca anche qui",
+      "alsoPlaysTitle": "Altri giocatori naturali, dal migliore. XI: titolare altrove. 2°: riserva altrove."
+    },
+    "starterAt": "Titolare in {spot}",
+    "coverAt": "Riserva in {spot}",
+    "otherTitle": "{name}, {score}{xi, select, first {, titolare altrove} second {, riserva altrove} other {}}",
+    "firstBadge": "XI",
+    "secondBadge": "2°",
+    "more": "+{count}"
+  },
+  "rest": {
+    "title": "Resto della rosa",
+    "intro": "{count, plural, one {# giocatore} other {# giocatori}} in nessuno dei due undici, nella posizione in cui si avvicinano di più al titolare.",
+    "columns": {
+      "bestFit": "Ruolo migliore",
+      "score": "Punteggio",
+      "vsStarter": "vs titolare",
+      "vsStarterTitle": "Punteggio meno quello del titolare in quella posizione",
+      "potentialTitle": "Punteggio in quella posizione al pieno potenziale",
+      "coachRating": "Voto preparatore",
+      "coachRatingTitle": "Rapporto del preparatore: abilità attuale e potenziale, rispetto alla tua rosa",
+      "happiness": "Felicità",
+      "missed": "Assenze",
+      "missedTitle": "Tempo perso per infortunio"
+    },
+    "groups": {
+      "prospect": {
+        "title": "Promesse",
+        "blurb": "Supereranno un titolare. Dagli minuti."
+      },
+      "young": {
+        "title": "In crescita",
+        "blurb": "21 anni o meno. Mandali in prestito o tienili per l’allenamento."
+      },
+      "surplus": {
+        "title": "In esubero",
+        "blurb": "Oltre l’età di sviluppo e in nessuno dei due undici. Vendili o tienili come riserve."
+      },
+      "no-fit": {
+        "title": "Nessun ruolo qui",
+        "blurb": "Nessun ruolo naturale in questa formazione."
+      },
+      "away": {
+        "title": "Non disponibili",
+        "blurb": "Infortunati o in prestito."
+      }
+    },
+    "showAll": "Mostra tutti e {count}",
+    "showFewer": "Mostra meno",
+    "onLoan": "In prestito",
+    "scoreAt": "Punteggio in {spot}",
+    "score": "Punteggio",
+    "atFullPotential": "Al pieno potenziale"
+  },
+  "upgrades": {
+    "title": "Rinforzi dalla tua importazione di osservati",
+    "intro": "Giocatori osservati che superano di almeno 0,5 il tuo titolare più debole in ogni posizione, sullo stesso ruolo.",
+    "allInSquad": "Tutti i giocatori della tua importazione sono già nella rosa.",
+    "teaser": "Chi nella tua lista di osservati migliorerebbe l’undici.",
+    "importHint": "Importa un’esportazione di osservati (una ricerca giocatori) in <link>Giocatori</link> per vedere chi migliorerebbe ogni posizione.",
+    "columns": {
+      "pos": "Pos",
+      "starter": "Il tuo titolare",
+      "best": "Migliori rinforzi osservati"
+    },
+    "times": "×{count}",
+    "none": "Nessun rinforzo nella tua importazione per {positions}."
+  }
+}

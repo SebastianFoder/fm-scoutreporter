@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Assistenztrainer: Offensive – Taktisch",
+      "coach-attacking-technical": "Assistenztrainer: Offensive – Technisch",
+      "coach-defending-tactical": "Assistenztrainer: Defensive – Taktisch",
+      "coach-defending-technical": "Assistenztrainer: Defensive – Technisch",
+      "coach-possession-tactical": "Assistenztrainer: Ballbesitz – Taktisch",
+      "coach-possession-technical": "Assistenztrainer: Ballbesitz – Technisch"
+    },
+    "summaries": {
+      "manager": "Spieler beurteilen, Motivationsfähigkeit, Führungsqualitäten und taktische Kenntnisse, danach die Trainerattribute.",
+      "assistant-manager": "Spieler beurteilen, Motivationsfähigkeit und Führungsqualitäten für Berichte, Ansprachen und Tipps im Spiel.",
+      "director-of-football": "Spielerfähigkeiten und Spielerpotenzial beurteilen. Geschäftliches (zählt ebenfalls) ist verborgen und wird daher nicht bewertet.",
+      "head-of-youth": "Spielerfähigkeiten und Spielerpotenzial beurteilen sowie Nachwuchsarbeit. Seine verborgene Professionalität beeinflusst die der Jugendspieler: Prüfen Sie sie selbst.",
+      "coach-attacking-tactical": "Trainiert Nervenstärke, Kreativität und Ohne Ball.",
+      "coach-attacking-technical": "Trainiert Flanken, Abschluss und Weitschüsse.",
+      "coach-defending-tactical": "Trainiert Aggressivität, Konzentration und Stellungsspiel.",
+      "coach-defending-technical": "Trainiert Deckung und Tackling.",
+      "coach-possession-tactical": "Trainiert Antizipation, Entscheidungen, Teamwork und Übersicht.",
+      "coach-possession-technical": "Trainiert Dribbling, Ballannahme, Kopfballtechnik, Passspiel und Technik.",
+      "coach-goalkeeping": "Trainiert alle Torwartattribute, auch die nach Feldspielern benannten, die Torhüter nutzen.",
+      "coach-fitness": "Trainiert die Athletik-Attribute und Einsatzfreude, den größten Anteil am Gewicht jeder Position.",
+      "coach-set-pieces": "Trainiert Ecken, Freistöße, Weite Einwürfe und Elfmeter.",
+      "scout": "Spielerfähigkeiten und Spielerpotenzial beurteilen, danach taktische Kenntnisse.",
+      "performance-analyst": "Datenanalyse, danach Spieler beurteilen und taktische Kenntnisse.",
+      "physio": "Physiotherapie, unterstützt von Sportwissenschaft und den mentalen Attributen.",
+      "sports-scientist": "Sportwissenschaft, unterstützt von Athletik, Physiotherapie und den mentalen Attributen."
+    },
+    "groups": {
+      "management": "Leitung",
+      "recruitmentAndAnalysis": "Kaderplanung und Analyse"
+    }
+  },
+  "freeAgent": "Vertragslos",
+  "preferredJob": "Bevorzugter Job",
+  "bestRole": "Beste Rolle",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role}: {score} ({word})",
+    "partial": "{role}: {score} ({word}). {percent, number, percent} der Gewichtung dieser Rolle war im Export"
+  },
+  "noImport": {
+    "desktop": "Noch keine Mitarbeiter. Öffnen Sie in FM eine Personalsuche und drücken Sie <kbd>F9</kbd> oder „Suche scannen“."
+  },
+  "list": {
+    "title": "Mitarbeiter",
+    "bestBackroom": "Bester Mitarbeiterstab",
+    "intro": "Ordnen Sie Trainer, Scouts, Analysten und Direktoren aus einem FM26-Export der Personalsuche. Die Wort-Bewertungen aus FM26 werden auf die Skala 1–20 zurückgerechnet, und jeder Mitarbeiter wird für jede Mitarbeiterrolle bewertet.",
+    "noImport": "Noch keine Mitarbeiter importiert. Öffnen Sie in FM eine Personalsuche, importieren Sie die Ansicht Staff, wählen Sie die Mitarbeiter aus und exportieren Sie eine CSV. Importieren Sie diese dann oben.",
+    "filters": "Filter",
+    "rankBy": "Sortieren nach",
+    "allJobs": "Alle Jobs",
+    "search": "Suche",
+    "searchPlaceholder": "Name oder Verein",
+    "freeAgentsOnly": "Nur vertragslose",
+    "myClubTitle": "Mitarbeiter bei {club}",
+    "showMine": "Meine Mitarbeiter zeigen ({count, number})",
+    "ratingsAs": "Bewertungen als",
+    "words": "Wörter",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> von {total, number} Mitarbeitern",
+    "jobScoredAsOne": "<b>{job}:</b> bewertet als {role}.",
+    "jobScoredAsBest": "<b>{job}:</b> bewertet nach der besten Rolle aus {roles}.",
+    "jobShowingWeighted": "Angezeigt werden die {count, plural, one {# Attribut} other {# Attribute}}, die fm-scoring für diesen Job gewichtet.",
+    "jobBoldWeighted": "Fette Spalten sind die {count, plural, one {# Attribut} other {# Attribute}}, die fm-scoring für diesen Job gewichtet.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring hat für diesen Job keine Gewichte, daher werden alle Attribute angezeigt und Bevorzugter Job hat keine Wertung.",
+    "showAllAttributes": "Alle Attribute zeigen",
+    "rankRole": "<b>{role}:</b> {summary} Gewichtete Attribute sind fett.",
+    "name": "Name",
+    "job": "Job",
+    "scoreTitle": "Gewichtete Rollenwertung auf der Skala 1–20. * = einige Attribute der Rolle fehlten.",
+    "attributeWeight": "{label} (Gewicht {weight, number})",
+    "method": {
+      "title": "So werden Mitarbeiter bewertet",
+      "words": "FM26 zeigt Mitarbeiterattribute als Wörter. Jedes Wort deckt einen festen Bereich der alten Skala 1–20 ab und wird mit dessen Mitte bewertet (genaue Zahlen werden verwendet, wenn ein Export sie enthält):",
+      "roles": "Eine Rollenwertung ist das gewichtete Mittel der Attribute, die diese Rolle nutzt, mit den 17 Mitarbeiterrollen und Gewichten aus <link>fm-scoring</link>: ein Bewertungsraster der Community, für FM27 umbenannt und mit den Schlüsselattributen abgeglichen, die FM27 in Mitarbeiterprofilen hervorhebt. Assistenztrainer werden in die neun Trainingsbereiche von FM aufgeteilt, jeweils bewertet nach den beiden Trainerattributen des Bereichs plus Autorität, Zielstrebigkeit, Motivationsfähigkeit, Führungsqualitäten und Nachwuchsarbeit. Ein allgemeiner Assistenztrainer wird nach seinem besten Feldspielerbereich bewertet. Anpassungsfähigkeit, Mitarbeiterbeurteilung und Verhandlungsgeschick haben in keiner Rolle Gewicht. Wenn Sie nach bevorzugtem Job filtern, sehen Sie nur die Attribute, die für diesen Job gewichtet sind. Beste Rolle zählt nur Rollen, bei denen die meisten gewichteten Attribute im Export waren. Rollenwertungen bekommen dieselben Notenstempel von S++ bis F wie Spielerwertungen, in denselben Stufen auf der Skala 1–20."
+    }
+  },
+  "detail": {
+    "preferredJob": "Bevorzugter Job: {job}",
+    "age": "Alter {age, number}",
+    "preferredScore": "Bevorzugter Job: {role} {score}",
+    "preferred": "(bevorzugt)",
+    "barsNote": "Die Balken reichen von 0 bis 20. * bedeutet, dass einige Attribute der Rolle im Export fehlten.",
+    "notInExport": "Nicht im Export"
+  },
+  "backroom": {
+    "title": "Bester Mitarbeiterstab",
+    "staffList": "Mitarbeiterliste",
+    "intro": "Wählen Sie die benötigten Rollen und wie viele von jeder. Scout Reporter stellt die Kombination von Mitarbeitern mit der höchsten Gesamtwertung zusammen und setzt niemanden doppelt ein. Fixieren Sie Mitarbeiter, die Sie verpflichtet haben, und entfernen Sie alle, die absagen, um die nächstbeste Wahl für diesen Platz zu bekommen.",
+    "noImport": "Noch keine Mitarbeiter importiert. Wählen Sie oben eine Mitarbeiter-CSV oder laden Sie die Testdaten, um sich umzusehen.",
+    "reset": "Zurücksetzen",
+    "preset": "Vorlage",
+    "custom": "Eigene",
+    "oneFewer": "{role}: einer weniger",
+    "oneMore": "{role}: einer mehr",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "Nur Mitarbeiter, deren bevorzugter Job die Rolle ist",
+    "preferredJobOnlyHint": "In FM können Mitarbeiter andere Jobs ablehnen.",
+    "empty": {
+      "title": "Keine Rollen gewählt.",
+      "body": "Fügen Sie links mindestens eine Rolle hinzu oder wählen Sie eine Vorlage."
+    },
+    "short": {
+      "title": "Nicht genug Mitarbeiter für jede Rolle.",
+      "role": "{role}: {wanted, number} gesucht, {eligible, plural, one {# geeignet} other {# geeignet}}.",
+      "explain": "{filtered, select, yes {Mitarbeiter sind geeignet, wenn die meisten Attribute der Rolle im Export sind, sie die Filter erfüllen und nicht ausgeschlossen sind. Eine Person kann nur eine Rolle besetzen.} other {Mitarbeiter sind geeignet, wenn die meisten Attribute der Rolle im Export sind. Eine Person kann nur eine Rolle besetzen.}}"
+    },
+    "excluded": "Ausgeschlossen:",
+    "allowAgainTitle": "Diese Person wieder zulassen",
+    "allowAgain": "(wieder zulassen)",
+    "clearAll": "Alle entfernen",
+    "footer": "Jede Rolle wird mit den Mitarbeitergewichten von fm-scoring bewertet (siehe <link>Mitarbeiter</link>). Der gezeigte Mitarbeiterstab hat die höchste Gesamtwertung aller Möglichkeiten, die Rollen mit verschiedenen Personen zu besetzen. Ein starker Allrounder landet also dort, wo er am meisten bringt, und nicht in der ersten Rolle, die ihn will. Mitarbeiter, denen die meisten Attribute einer Rolle fehlen, werden dafür nicht berücksichtigt.",
+    "result": {
+      "title": "Ihr Mitarbeiterstab",
+      "summary": "{count, plural, one {# Mitarbeiter} other {# Mitarbeiter}} · Durchschnittliche Wertung",
+      "averageLabel": "Durchschnittliche Wertung des Mitarbeiterstabs",
+      "offJob": "· {count, plural, one {# in einer Rolle außerhalb des bevorzugten Jobs} other {# in einer Rolle außerhalb des bevorzugten Jobs}} (Job in Grau)",
+      "locked": "· {count, plural, one {# fixiert} other {# fixiert}}",
+      "unlockAll": "Alle lösen",
+      "score": "Wertung",
+      "scoreTitle": "Rollenwertung auf der FM-Skala 1–20",
+      "lockOrRemove": "Fixieren oder entfernen",
+      "offJobTitle": "Nicht der bevorzugte Job: Diese Rolle könnte abgelehnt werden",
+      "unlock": "{name} lösen",
+      "lockIn": "{name} fixieren",
+      "lockedTitle": "Fixiert: bleibt auf diesem Platz, wenn der Rest neu gewählt wird. Klicken zum Lösen.",
+      "lockTitle": "Fixieren: auf diesem Platz behalten (z. B. nach der Verpflichtung), wenn der Rest neu gewählt wird",
+      "exclude": "{name} ausschließen und neu wählen",
+      "excludeTitle": "Entfernen und neu wählen (z. B. wenn Vertragsverhandlungen gescheitert sind)"
+    }
+  }
+}

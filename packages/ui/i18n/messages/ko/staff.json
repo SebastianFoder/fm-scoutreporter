@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "공격 전술 코치",
+      "coach-attacking-technical": "공격 기술 코치",
+      "coach-defending-tactical": "수비 전술 코치",
+      "coach-defending-technical": "수비 기술 코치",
+      "coach-possession-tactical": "점유 전술 코치",
+      "coach-possession-technical": "공 점유 기술 코치"
+    },
+    "summaries": {
+      "manager": "선수 능력 평가, 동기 부여, 선수 관리, 전술 이해도를 우선 보고, 그다음 코칭 능력치를 봅니다.",
+      "assistant-manager": "보고서, 팀 대화, 경기 조언을 위한 선수 능력 평가, 동기 부여, 선수 관리.",
+      "director-of-football": "선수 능력 평가와 선수 잠재력 평가. 사업 수완(이것도 사용됨)은 숨은 능력치라 점수에 넣지 않습니다.",
+      "head-of-youth": "선수 능력 평가, 선수 잠재력 평가, 유소년 육성 능력. 이 스탭의 숨은 프로 의식이 유소년 입학생의 프로 의식에 영향을 주므로 직접 확인하십시오.",
+      "coach-attacking-tactical": "침착성, 천재성, 오프 더 볼을 훈련합니다.",
+      "coach-attacking-technical": "크로스, 골 결정력, 중거리 슛을 훈련합니다.",
+      "coach-defending-tactical": "적극성, 집중력, 수비 위치 선정을 훈련합니다.",
+      "coach-defending-technical": "일대일 마크와 태클을 훈련합니다.",
+      "coach-possession-tactical": "예측력, 판단력, 팀워크, 시야를 훈련합니다.",
+      "coach-possession-technical": "드리블, 퍼스트 터치, 헤더, 패스, 개인기를 훈련합니다.",
+      "coach-goalkeeping": "골키퍼가 쓰는 필드 플레이어 이름의 능력치를 포함해 모든 골키퍼 능력치를 훈련합니다.",
+      "coach-fitness": "신체적 능력과 활동량을 훈련하며, 이는 모든 포지션 가중치에서 가장 큰 비중을 차지합니다.",
+      "coach-set-pieces": "코너킥, 프리킥, 장거리 스로인, 페널티킥을 훈련합니다.",
+      "scout": "선수 능력 평가와 선수 잠재력 평가, 그다음 전술 이해도.",
+      "performance-analyst": "데이터 분석, 그다음 선수 능력 평가와 전술 이해도.",
+      "physio": "물리 치료, 그리고 이를 뒷받침하는 스포츠 과학 이해도와 정신적 능력치.",
+      "sports-scientist": "스포츠 과학 이해도, 그리고 이를 뒷받침하는 체력, 물리 치료, 정신적 능력치."
+    },
+    "groups": {
+      "management": "경영진",
+      "recruitmentAndAnalysis": "영입 및 분석"
+    }
+  },
+  "freeAgent": "자유 계약",
+  "preferredJob": "선호 직책",
+  "bestRole": "최적 직책",
+  "rating": {
+    "word": "{word}({range})",
+    "exact": "{value}({word})"
+  },
+  "score": {
+    "title": "{role}: {score}({word})",
+    "partial": "{role}: {score}({word}). 이 직책 가중치 중 {percent, number, percent}만 내보낸 파일에 있었습니다"
+  },
+  "noImport": {
+    "desktop": "아직 스탭이 없습니다. FM에서 스탭 검색을 열고 <kbd>F9</kbd> 또는 검색 스캔을 누르십시오."
+  },
+  "list": {
+    "title": "스탭",
+    "bestBackroom": "베스트 코치진",
+    "intro": "FM26 스탭 검색에서 내보낸 파일로 코치, 스카우트, 분석가, 디렉터의 순위를 매깁니다. FM26의 단어 평가는 1–20 척도로 되돌려 계산하며, 모든 스탭을 각 스탭 직책별로 평가합니다.",
+    "noImport": "아직 가져온 스탭이 없습니다. FM에서 스탭 검색을 열고 Staff 뷰를 가져온 후, 스탭을 선택해 CSV로 내보내고 위에서 가져오십시오.",
+    "filters": "필터",
+    "rankBy": "순위 기준",
+    "allJobs": "모든 직책",
+    "search": "검색",
+    "searchPlaceholder": "이름 또는 구단",
+    "freeAgentsOnly": "자유 계약만",
+    "myClubTitle": "{club} 소속 스탭",
+    "showMine": "내 스탭 보기({count, number})",
+    "ratingsAs": "평가 표시",
+    "words": "단어",
+    "numbers": "1–20",
+    "count": "스탭 {total, number}명 중 <b>{shown, number}</b>명",
+    "jobScoredAsOne": "<b>{job}:</b> {role} 기준으로 평가.",
+    "jobScoredAsBest": "<b>{job}:</b> {roles} 중 최고 점수로 평가.",
+    "jobShowingWeighted": "fm-scoring이 이 직책에 가중치를 두는 {count, plural, one {능력치 #개} other {능력치 #개}}를 표시합니다.",
+    "jobBoldWeighted": "굵은 열은 fm-scoring이 이 직책에 가중치를 두는 {count, plural, one {능력치 #개} other {능력치 #개}}입니다.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring에 이 직책의 가중치가 없어 모든 능력치를 표시하며, 선호 직책 점수는 없습니다.",
+    "showAllAttributes": "모든 능력치 보기",
+    "rankRole": "<b>{role}:</b> {summary} 가중치가 있는 능력치는 굵게 표시됩니다.",
+    "name": "이름",
+    "job": "직책",
+    "scoreTitle": "1–20 척도 기준 가중 직책 점수. * = 직책 능력치 일부가 빠짐.",
+    "attributeWeight": "{label}(가중치 {weight, number})",
+    "method": {
+      "title": "스탭 평가 방법",
+      "words": "FM26은 스탭 능력치를 단어로 보여 줍니다. 각 단어는 예전 1–20 척도의 고정된 범위에 해당하며, 그 범위의 중간값으로 계산합니다(내보낸 파일에 정확한 숫자가 있으면 그 값을 씁니다):",
+      "roles": "직책 점수는 그 직책이 쓰는 능력치의 가중 평균이며, 17개 스탭 직책과 가중치는 <link>fm-scoring</link>에서 가져왔습니다. 이는 커뮤니티의 스탭 평가표를 FM27에 맞게 이름을 바꾸고, FM27이 스탭 프로필에서 강조하는 핵심 능력치와 대조한 것입니다. 코치는 FM의 9개 코칭 그룹으로 나뉘며, 각 그룹은 해당 코칭 능력치 2개에 규율, 승부욕, 동기 부여, 선수 관리, 유소년 육성 능력을 더해 평가합니다. 일반 코치는 가장 좋은 필드 플레이어 그룹으로 평가합니다. 적응력, 스탭 능력 평가, 협상은 어떤 직책에서도 가중치가 없습니다. 선호 직책으로 필터링하면 그 직책에 가중치가 있는 능력치만 표시됩니다. 최적 직책은 가중치가 있는 능력치 대부분이 내보낸 파일에 있는 직책만 고려합니다. 직책 점수에는 선수 점수와 같은 1–20 단계로 S++부터 F까지 등급이 붙습니다."
+    }
+  },
+  "detail": {
+    "preferredJob": "선호 직책: {job}",
+    "age": "{age, number}세",
+    "preferredScore": "선호 직책: {role} {score}",
+    "preferred": "(선호)",
+    "barsNote": "막대는 0부터 20까지입니다. *는 직책 능력치 일부가 내보낸 파일에 없었다는 뜻입니다.",
+    "notInExport": "내보낸 파일에 없음"
+  },
+  "backroom": {
+    "title": "베스트 코치진",
+    "staffList": "스탭 목록",
+    "intro": "필요한 직책과 인원을 고르십시오. Scout Reporter가 한 사람을 두 번 쓰지 않으면서 직책 점수 합계가 가장 높은 스탭 조합을 고릅니다. 이미 계약한 스탭은 고정하고, 제안을 거절한 사람은 제거하면 그 자리에 다음으로 좋은 후보가 들어갑니다.",
+    "noImport": "아직 가져온 스탭이 없습니다. 위에서 스탭 CSV를 선택하거나 테스트 데이터를 불러와 둘러보십시오.",
+    "reset": "초기화",
+    "preset": "사전 설정",
+    "custom": "사용자 지정",
+    "oneFewer": "1명 줄이기: {role}",
+    "oneMore": "1명 늘리기: {role}",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "선호 직책이 해당 직책인 스탭만",
+    "preferredJobOnlyHint": "FM에서 스탭은 다른 직책 제안을 거절할 수 있습니다.",
+    "empty": {
+      "title": "선택한 직책이 없습니다.",
+      "body": "왼쪽에서 직책을 하나 이상 추가하거나 사전 설정을 고르십시오."
+    },
+    "short": {
+      "title": "모든 직책을 채울 스탭이 부족합니다.",
+      "role": "{role}: {wanted, number}명 필요, {eligible, plural, one {#명 적격} other {#명 적격}}.",
+      "explain": "{filtered, select, yes {직책 능력치 대부분이 내보낸 파일에 있고, 필터를 통과하며, 제외되지 않은 스탭이 적격이며, 한 사람은 한 직책만 맡을 수 있습니다.} other {직책 능력치 대부분이 내보낸 파일에 있는 스탭이 적격이며, 한 사람은 한 직책만 맡을 수 있습니다.}}"
+    },
+    "excluded": "제외됨:",
+    "allowAgainTitle": "이 사람 다시 허용",
+    "allowAgain": "(다시 허용)",
+    "clearAll": "모두 지우기",
+    "footer": "각 직책은 fm-scoring의 스탭 가중치로 평가합니다(<link>스탭</link> 참고). 표시된 코치진은 서로 다른 사람으로 직책을 채우는 모든 방법 중 총점이 가장 높으므로, 다재다능한 스탭은 처음 원하는 직책이 아니라 가장 크게 기여하는 직책에 배치됩니다. 직책 능력치 대부분이 없는 스탭은 그 직책 후보에서 빠집니다.",
+    "result": {
+      "title": "내 코치진",
+      "summary": "{count, plural, one {스탭 #명} other {스탭 #명}} · 평균 점수",
+      "averageLabel": "코치진 평균 점수",
+      "offJob": "· {count, plural, one {#명은 선호 직책이 아닌 직책에 배치} other {#명은 선호 직책이 아닌 직책에 배치}}(직책은 회색 표시)",
+      "locked": "· {count, plural, one {#명 고정} other {#명 고정}}",
+      "unlockAll": "모두 고정 해제",
+      "score": "점수",
+      "scoreTitle": "FM의 1–20 척도 기준 직책 점수",
+      "lockOrRemove": "고정 또는 제거",
+      "offJobTitle": "선호 직책이 아님: 이 직책을 거절할 수 있습니다",
+      "unlock": "고정 해제: {name}",
+      "lockIn": "고정: {name}",
+      "lockedTitle": "고정됨: 나머지를 다시 고를 때 이 자리에 유지됩니다. 클릭하면 고정이 해제됩니다.",
+      "lockTitle": "고정: 나머지를 다시 고를 때 이 자리에 유지합니다(예: 계약 완료 후)",
+      "exclude": "제외하고 다시 선택: {name}",
+      "excludeTitle": "제거하고 다시 선택(예: 계약 협상 실패)"
+    }
+  }
+}

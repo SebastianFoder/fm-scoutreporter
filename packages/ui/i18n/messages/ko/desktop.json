@@ -1,0 +1,171 @@
+{
+  "scanLabel": {
+    "sample": "샘플 스캔",
+    "dated": "스캔: {date}"
+  },
+  "scanButton": {
+    "group": "Football Manager 스캔",
+    "scanning": "스캔 중 {progress, number, percent}",
+    "search": "검색 스캔",
+    "searchTitle": "FM의 선수 검색 또는 스탭 검색 결과와 내 구단을 저장합니다(F9)",
+    "save": "세이브 스캔",
+    "saveTitle": "세이브의 모든 선수와 스탭을 저장합니다"
+  },
+  "counts": {
+    "players": "{count, plural, one {선수 #명} other {선수 #명}}",
+    "staff": "{count, plural, one {스탭 #명} other {스탭 #명}}",
+    "playersAndStaff": "{players, plural, one {선수 #명} other {선수 #명}}, {staff, plural, one {스탭 #명} other {스탭 #명}}"
+  },
+  "home": {
+    "notDesktop": {
+      "title": "데스크톱 앱",
+      "body": "이 페이지는 Football Manager 세이브를 직접 읽는 Scout Reporter 데스크톱 앱 전용입니다. 웹사이트에서는 CSV 내보내기를 가져오십시오. <link>설정 가이드</link>를 참고하십시오."
+    },
+    "title": "Football Manager 스캔",
+    "intro": "<b>검색 스캔</b>{hotkey, select, on {(또는 F9, FM 안에서도 작동)} other {(또는 단축키를 켠 후 F9, FM 안에서도 작동)}}: Football Manager에서 선수 검색이나 스탭 검색을 열고 필터를 설정하면, 앱이 FM이 찾은 인원과 내 구단을 가져옵니다. <b>세이브 스캔</b>: 검색 없이 세이브의 모든 선수와 스탭을 가져옵니다. 모든 화면(선수, 베스트 11, 선수단, 스탭)이 스캔 데이터로 작동합니다. 게임은 전혀 변경되지 않습니다. F9 키, 숨은 능력치, 업데이트는 <settings>설정</settings>에 있습니다.",
+    "phase": "{phase, select, importing {스캔 저장 중…} writing {스캔 기록 중…} clubs {구단 읽는 중…} people {인물 읽는 중…} other {메모리 읽는 중…}}",
+    "errors": {
+      "notRunning": "Football Manager가 실행 중이 아닙니다",
+      "noAccess": "Football Manager가 관리자 권한으로 실행 중입니다",
+      "notLoaded": "아직 불러온 세이브가 없습니다",
+      "nothingFound": "선수를 찾을 수 없습니다",
+      "tooMuchUnread": "스캔이 완료되지 않았습니다",
+      "noSearch": "Football Manager에서 검색을 찾을 수 없습니다",
+      "busy": "이미 스캔이 진행 중입니다",
+      "missingReader": "리더가 없습니다",
+      "failed": "스캔에 실패했습니다"
+    },
+    "scanWholeSave": "또는 <link>세이브 전체를 스캔</link>하십시오.",
+    "doneSearch": "<b>{players, plural, one {선수 #명} other {선수 #명}}</b>, {staff, plural, one {스탭 #명} other {스탭 #명}} 저장됨: FM 검색({search})과 내 구단{hasClub, select, yes {({club})} other {}}. <playersLink>선수</playersLink>, <squadLink>선수단</squadLink> 또는 <growthLink>성장</growthLink>을 여십시오.",
+    "doneFull": "<b>{players, plural, one {선수 #명} other {선수 #명}}</b>, {staff, plural, one {스탭 #명} other {스탭 #명}} 스캔됨{hasClub, select, yes {, 내 구단: {club}} other {}}. <playersLink>선수</playersLink>, <squadLink>선수단</squadLink> 또는 <growthLink>성장</growthLink>을 여십시오.",
+    "loading": "스캔을 화면에 불러오는 중…",
+    "partial": "화면을 빠르게 유지하기 위해 이 스캔의 {totalPlayers, plural, one {선수 #명} other {선수 #명}} 중 {players, number}명, {totalStaff, plural, one {스탭 #명} other {스탭 #명}} 중 {staff, number}명만 불러왔습니다: 내 구단과 {loadedFrom}, 현재 기량이 높은 순. 성장 화면은 항상 두 스캔의 모든 선수를 비교합니다.",
+    "loadedFrom": {
+      "playersSearch": "FM 선수 검색의 선수(찾은 수 {count, number})",
+      "playersBest": "스카우트할 가치가 있는 선수",
+      "staffSearch": "FM 스탭 검색의 스탭(찾은 수 {count, number})",
+      "staffBest": "영입할 가치가 있는 스탭"
+    },
+    "version": {
+      "title": "인식할 수 없는 Football Manager 버전",
+      "body": "이 스캔은 FM {version}에서 나왔지만 리더는 {game}용으로 만들어졌습니다. 숫자를 믿기 전에 몇몇 선수를 게임과 비교해 보고, Scout Reporter 업데이트를 확인하십시오.",
+      "unknown": "(알 수 없는 버전)"
+    },
+    "loadError": "스캔을 불러올 수 없습니다",
+    "stored": {
+      "title": "저장된 스캔",
+      "kept": "<link>성장</link> 비교를 위해 최근 {retention}개와 별표한 스캔이 보관됩니다.",
+      "disk": "디스크 사용량: {size}.",
+      "openFolder": "폴더 열기",
+      "loadSample": "샘플 스캔 불러오기",
+      "empty": "아직 스캔이 없습니다. 검색 스캔이나 세이브 스캔을 누르거나, 샘플 스캔을 불러와 둘러보십시오."
+    },
+    "details": {
+      "noClub": "구단 없음",
+      "scanned": "스캔 시각: {time}",
+      "search": "FM 검색({search})과 내 구단",
+      "wholeSave": "세이브 전체",
+      "fmSearch": "FM 검색: {search}"
+    },
+    "about": {
+      "title": "정보",
+      "version": "Scout Reporter 데스크톱 {version}. Windows에서 Steam, Epic 또는 Game Pass판 Football Manager 27(27.0)과 26(26.3)을 지원합니다.",
+      "reader": "리더는 Football Manager의 메모리를 읽기만 하며, 게임이나 세이브를 절대 변경하지 않습니다. mavarobli의 <link>FMSuperScout</link>(MIT 라이선스)를 바탕으로 만들었습니다. 감사합니다!",
+      "credits": "FM27 역할 가중치: <matchLab>FM Match Lab</matchLab>. 나이 기준값, 현재 기량 비용, 스탭 가중치: <scoring>jamiebolden/fm-scoring</scoring>. 훈련 연구: harvestgreen22."
+    }
+  },
+  "scanRow": {
+    "star": "별표: {label}",
+    "unstar": "별표 해제: {label}",
+    "starredTitle": "별표됨: 새 스캔을 위한 공간 확보 시 삭제되지 않습니다",
+    "starTitle": "별표: 새 스캔을 위한 공간 확보 시 이 스캔을 삭제하지 않습니다",
+    "rename": "이름 바꾸기: {label}",
+    "renameTitle": "이름 바꾸기",
+    "inUse": "사용 중",
+    "versionDiffers": "버전 다름",
+    "nameFor": "이름: {label}",
+    "use": "사용",
+    "delete": "삭제: {label}"
+  },
+  "settings": {
+    "loading": "설정 불러오는 중…",
+    "scanning": "스캔",
+    "hidden": {
+      "title": "현재 기량, 잠재 기량, 숨은 능력치 사용",
+      "body": "켜기: 화면에 모든 선수의 현재 기량, 잠재 기량, 프로 의식이 들어가며, 잠재력 점수에 필요합니다. 끄기: 일반 FM 내보내기처럼 빠지며, 성장 화면에는 능력치 변화만 표시됩니다."
+    },
+    "hotkey": {
+      "title": "어디서든 F9로 검색 스캔",
+      "body": "앱이 실행되는 동안 F9를 누르면 FM 안에서도 검색 스캔을 합니다. 그동안 다른 앱은 F9를 받지 못합니다."
+    },
+    "database": "데이터베이스",
+    "databases": {
+      "men": "남자",
+      "women": "여자",
+      "both": "모두"
+    },
+    "keep": "보관",
+    "keepSuffix": "개 스캔",
+    "retentionNote": "별표한 스캔은 이와 별도로 보관되며, 공간 확보를 위해 삭제되지 않습니다. 검색 스캔은 몇 MB, 세이브 전체는 약 140 MB입니다.",
+    "updates": "업데이트",
+    "checkUpdates": {
+      "title": "업데이트 확인",
+      "body": "앱 시작 시와 몇 시간마다 GitHub에 최신 버전을 확인합니다. 사용자나 세이브에 관한 정보는 전송하지 않습니다. 업데이트해도 설정, 스캔, 가중치, 포메이션은 유지됩니다."
+    },
+    "checking": "확인 중…",
+    "checkNow": "지금 확인",
+    "updateAvailable": "새 버전 출시: {latest}(현재 {current}). 상단 막대를 확인하십시오.",
+    "upToDate": "최신 버전({current})을 사용 중입니다.",
+    "version": "버전 {current}.",
+    "privacy": "개인정보",
+    "usageStats": {
+      "title": "익명 사용 통계 보내기",
+      "body": "어떤 기능이 쓰이는지 알기 위해 열린 화면 수를 셉니다. 개발자의 자체 통계 서버로 전송되며, 쿠키를 사용하지 않고, 세이브, 스캔, 선수나 사용자를 식별할 수 있는 정보는 절대 포함하지 않습니다."
+    }
+  },
+  "update": {
+    "installing": "Scout Reporter {version} 설치 중. 앱이 닫혔다가 곧 다시 열립니다.",
+    "downloading": "Scout Reporter {version} 다운로드 중… {progress, number, percent}",
+    "available": "Scout Reporter {version} 출시",
+    "availableDetail": "(현재 {current}). 업데이트해도 설정, 스캔, 가중치, 포메이션은 유지됩니다.",
+    "updateNow": "지금 업데이트",
+    "whatsNew": "새로운 기능",
+    "downloadYourself": "직접 다운로드",
+    "hide": "{version}보다 새 버전이 나올 때까지 숨기기"
+  },
+  "growth": {
+    "title": "성장",
+    "notDesktop": "성장은 저장된 스캔을 비교하며, Scout Reporter 데스크톱 앱의 기능입니다.",
+    "intro": "세이브의 두 스캔 사이에 모든 선수가 얼마나 성장했는지 보여 줍니다. 꾸준히(게임 내 몇 달마다) 스캔하면 어린 선수를 추적하고 전 세계의 급성장 선수를 찾을 수 있습니다.",
+    "twoNeeded": {
+      "title": "스캔 2개 필요",
+      "body": "성장은 두 스캔을 비교합니다. 현재 스캔 수: {count, number}. 세이브를 진행한 후 다시 <link>스캔</link>하십시오."
+    },
+    "from": "이전",
+    "to": "이후",
+    "option": "{label}({count, plural, one {선수 #명} other {선수 #명}})",
+    "gainedAtLeast": "최소 상승폭",
+    "ca": "현재 기량",
+    "any": "전체",
+    "maxAge": "최대 나이",
+    "search": "검색",
+    "searchPlaceholder": "선수 또는 구단",
+    "searchScans": "FM 검색 스캔에는 그 검색 결과의 선수와 내 구단만 들어 있으므로, 성장은 두 스캔에 모두 있는 선수를 다룹니다. 내 구단은 모든 스캔에 들어 있습니다. 세이브의 모든 선수를 추적하려면 <link>스캔 페이지</link>에서 세이브 스캔을 사용하십시오.",
+    "sameScan": {
+      "title": "같은 스캔을 두 번 선택함",
+      "body": "서로 다른 스캔 두 개를 고르십시오."
+    },
+    "compareError": "스캔을 비교할 수 없습니다",
+    "comparing": "스캔 비교 중…",
+    "summary": "{total, plural, one {선수 #명} other {선수 #명}}{hasDays, select, yes {, 게임 내 {days, plural, one {#일} other {#일}} 동안} other {}}{newPlayers, select, search {, 그리고 {newCount, plural, one {이후 스캔에만 있는 선수 #명} other {이후 스캔에만 있는 선수 #명}}} full {, 그리고 이전 스캔이 없는 {newCount, plural, one {신규 선수 #명(유소년 입학 또는 새로 불러온 리그)} other {신규 선수 #명(유소년 입학 또는 새로 불러온 리그)}}} other {}}.",
+    "updating": "업데이트 중…",
+    "columns": {
+      "ca": "현재 기량",
+      "caChange": "현재 기량 변화",
+      "paChange": "잠재 기량 변화",
+      "biggestChanges": "가장 큰 변화"
+    },
+    "firstOnly": "처음 {max, number}명만 표시합니다. 다른 선수를 보려면 필터를 좁히십시오",
+    "showMore": "{count, number}명 더 보기"
+  }
+}

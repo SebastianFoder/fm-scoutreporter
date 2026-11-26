@@ -1,0 +1,70 @@
+{
+  "title": "Impostazioni",
+  "tabs": {
+    "weights": "Pesi",
+    "columns": "Colonne",
+    "look": "Aspetto",
+    "app": "App"
+  },
+  "look": {
+    "theme": "Tema",
+    "attributeColours": "Colori delle qualità"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "system": "Sistema"
+  },
+  "profiles": {
+    "profile": "Profilo",
+    "name": "Nome",
+    "namePlaceholder": "Nome del profilo",
+    "createNew": "Crea nuovo",
+    "default": "Predefinito",
+    "newName": "Nuovo profilo",
+    "copyName": "{name} (copia)"
+  },
+  "weights": {
+    "intro": "Quanto conta ogni qualità nel punteggio di un giocatore. I punteggi si aggiornano mentre scrivi. I profili dei ruoli FM27 sono calibrati sullo studio per posizione di FM Match Lab (13b).",
+    "weighted": "{count, number} con peso",
+    "weighting": "Ponderazione",
+    "linear": "Lineare (riferimento FM27)",
+    "emphasized": "Accentuata (pesi al quadrato)",
+    "benchmark": "Pesi dei ruoli FM27 di riferimento (FM Match Lab <link>Study 13b</link>).",
+    "profileDescriptions": {
+      "fm27-cb": "Riferimento FM27 di FM Match Lab (<link>Study 13b</link>): difensori centrali.",
+      "fm27-wb": "Riferimento FM27 di FM Match Lab (<link>Study 13b</link>): terzini ed esterni.",
+      "fm27-dm": "Riferimento FM27 di FM Match Lab (<link>Study 13b</link>): mediani, usato anche per i centrocampisti centrali.",
+      "fm27-10": "Riferimento FM27 di FM Match Lab (<link>Study 13b</link>): centrocampisti offensivi e ali.",
+      "fm27-9": "Riferimento FM27 di FM Match Lab (<link>Study 13b</link>): punte.",
+      "fm27-gk": "Riferimento FM27 di FM Match Lab (<link>Study 13b</link>): portieri."
+    },
+    "resetToBenchmark": "Ripristina riferimento",
+    "linearNote": "Lineare corrisponde al modo in cui sono calibrati i riferimenti FM27 e “vs Età”.",
+    "json": {
+      "title": "Importa / esporta JSON",
+      "label": "JSON del profilo",
+      "placeholder": "Qui compare il JSON del profilo esportato. Incolla qui un JSON per importarlo.",
+      "invalid": "JSON del profilo non valido"
+    }
+  },
+  "columns": {
+    "intro": "Le qualità che l’elenco giocatori e il confronto mostrano come colonne. Salva set diversi come profili.",
+    "shown": "{count, number} visibili"
+  },
+  "colours": {
+    "intro": "Il valore che una qualità (da 1 a 20) deve raggiungere per ogni colore. I colori seguono il tema chiaro o scuro.",
+    "band": "Fascia",
+    "minValue": "Valore min.",
+    "preview": "Anteprima, da 1 a 20",
+    "bands": {
+      "excellent": "Qualità eccellente",
+      "good": "Qualità buona",
+      "average": "Qualità nella media",
+      "low": "Qualità bassa"
+    },
+    "minValueLabel": "Valore minimo per {band}",
+    "below": "Sotto <b>{value, number}</b>"
+  }
+}

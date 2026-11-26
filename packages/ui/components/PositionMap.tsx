@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { parsePositionSlots, SLOT_XY, type PositionSlot } from "@scoutreporter/core/position-slots";
 
 /** FM-style pitch with the player's positions marked. Purely derived from the position string. */
@@ -9,6 +10,7 @@ export function PositionMap({
   className?: string;
 }) {
   const slots = new Set(parsePositionSlots(position));
+  const t = useTranslations("players.positionMap");
 
   return (
     <figure className="shrink-0">
@@ -16,7 +18,7 @@ export function PositionMap({
         viewBox="0 0 68 100"
         className={className}
         role="img"
-        aria-label={`Positions: ${position}`}
+        aria-label={t("label", { position })}
       >
         <rect x="0.5" y="0.5" width="67" height="99" rx="2" fill="oklch(0.5 0.12 150)" />
         <g fill="none" stroke="white" strokeOpacity="0.55" strokeWidth="0.7">

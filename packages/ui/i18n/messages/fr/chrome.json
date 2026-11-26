@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Accueil Scout Reporter",
+  "mainNav": "Principal",
+  "nav": {
+    "players": "Joueurs",
+    "squad": "Effectif",
+    "staff": "Staff",
+    "howToUse": "Mode d’emploi",
+    "desktopApp": "Appli Windows",
+    "scans": "Scans",
+    "growth": "Progression"
+  },
+  "playerCount": {
+    "title": "Joueurs importés, communs aux deux modes",
+    "imported": "{hasTotal, select, yes {{shown} sur {total}} other {{shown}}} {count, plural, one {joueur importé} other {joueurs importés}}",
+    "scanned": "{hasTotal, select, yes {{shown} sur {total}} other {{shown}}} {count, plural, one {joueur scanné} other {joueurs scannés}}"
+  },
+  "language": {
+    "title": "Langue",
+    "label": "Langue : {language}"
+  },
+  "footer": {
+    "setupGuide": "Guide d’installation",
+    "faq": "FAQ"
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "roles": {
+    "names": {
+      "coach-attacking-tactical": "Træner: offensiv taktik",
+      "coach-attacking-technical": "Træner: offensiv teknik",
+      "coach-defending-tactical": "Træner: defensiv taktik",
+      "coach-defending-technical": "Træner: defensiv teknik",
+      "coach-possession-tactical": "Træner: boldbesiddelsestaktik",
+      "coach-possession-technical": "Træner: teknisk boldbesiddelse"
+    },
+    "summaries": {
+      "manager": "Vurdering af evner, motivering, personaleledelse og taktisk viden, derefter træneregenskaberne.",
+      "assistant-manager": "Vurdering af evner, motivering og personaleledelse til rapporter, teamtalks og kampråd.",
+      "director-of-football": "Vurdering af evner og potentiale. Forretning (bruges også) er skjult, så den indgår ikke i scoren.",
+      "head-of-youth": "Vurdering af evner og potentiale samt arbejde med ungdomsspillere. Deres skjulte Professionalisme påvirker ungdomsårgangens: tjek den selv.",
+      "coach-attacking-tactical": "Træner Selvbeherskelse, Flair og Bevægelse uden bold.",
+      "coach-attacking-technical": "Træner Indlæg, Afslutninger og Langskud.",
+      "coach-defending-tactical": "Træner Aggressivitet, Koncentration og Positionering.",
+      "coach-defending-technical": "Træner Markering og Tackling.",
+      "coach-possession-tactical": "Træner Forudseenhed, Beslutninger, Teamwork og Overblik.",
+      "coach-possession-technical": "Træner Driblinger, Førsteberøring, Hovedstød, Afleveringer og Teknik.",
+      "coach-goalkeeping": "Træner alle målmandsegenskaber, også dem med markspillernavne, som målmænd bruger.",
+      "coach-fitness": "Træner de fysiske egenskaber og Arbejdsindsats, den største del af vægten på alle positioner.",
+      "coach-set-pieces": "Træner Hjørnespark, Frispark, Lange kast og Straffespark.",
+      "scout": "Vurdering af spillerevner og spillerpotentiale, derefter taktisk viden.",
+      "performance-analyst": "Dataanalyse, derefter vurdering af evner og taktisk viden.",
+      "physio": "Fysioterapi, bakket op af sportsforskning og de mentale egenskaber.",
+      "sports-scientist": "Sportsforskning, bakket op af kondition, fysioterapi og de mentale egenskaber."
+    },
+    "groups": {
+      "management": "Ledelse",
+      "recruitmentAndAnalysis": "Rekruttering og analyse"
+    }
+  },
+  "freeAgent": "Fritstillet",
+  "preferredJob": "Foretrukket job",
+  "bestRole": "Bedste rolle",
+  "rating": {
+    "word": "{word} ({range})",
+    "exact": "{value} ({word})"
+  },
+  "score": {
+    "title": "{role}: {score} ({word})",
+    "partial": "{role}: {score} ({word}). {percent, number, percent} af rollens vægt var med i eksporten"
+  },
+  "noImport": {
+    "desktop": "Intet personale endnu. Åbn en Personalesøgning i FM, og tryk på <kbd>F9</kbd> eller Scan søgning."
+  },
+  "list": {
+    "title": "Personale",
+    "bestBackroom": "Bedste stab",
+    "intro": "Rangér trænere, talentspejdere, analytikere og direktører ud fra en eksport af en personalesøgning i FM26. FM26's vurderinger i ord omregnes til skalaen 1–20, og hver medarbejder får en score på hver personalerolle.",
+    "noImport": "Intet personale importeret endnu. Åbn en personalesøgning i FM, importér visningen Staff, vælg personalet, og eksportér en CSV. Importér den derefter ovenfor.",
+    "filters": "Filtre",
+    "rankBy": "Rangér efter",
+    "allJobs": "Alle job",
+    "search": "Søg",
+    "searchPlaceholder": "Navn eller klub",
+    "freeAgentsOnly": "Kun fritstillede",
+    "myClubTitle": "Personale i {club}",
+    "showMine": "Vis mit personale ({count, number})",
+    "ratingsAs": "Vurderinger som",
+    "words": "Ord",
+    "numbers": "1–20",
+    "count": "<b>{shown, number}</b> af {total, number} medarbejdere",
+    "jobScoredAsOne": "<b>{job}:</b> score som {role}.",
+    "jobScoredAsBest": "<b>{job}:</b> score som den bedste af {roles}.",
+    "jobShowingWeighted": "Viser de {count, plural, one {# egenskab} other {# egenskaber}}, fm-scoring vægter for dette job.",
+    "jobBoldWeighted": "Kolonner med fed er de {count, plural, one {# egenskab} other {# egenskaber}}, fm-scoring vægter for dette job.",
+    "jobNoWeights": "<b>{job}:</b> fm-scoring har ingen vægte for dette job, så alle egenskaber vises, og Foretrukket job har ingen score.",
+    "showAllAttributes": "Vis alle egenskaber",
+    "rankRole": "<b>{role}:</b> {summary} Vægtede egenskaber står med fed.",
+    "name": "Navn",
+    "job": "Job",
+    "scoreTitle": "Vægtet rollescore på skalaen 1–20. * = nogle af rollens egenskaber manglede.",
+    "attributeWeight": "{label} (vægt {weight, number})",
+    "method": {
+      "title": "Sådan får personalet score",
+      "words": "FM26 viser personaleegenskaber som ord. Hvert ord dækker et fast interval af den gamle skala 1–20 og får scoren i midten af det (præcise tal bruges, når en eksport har dem):",
+      "roles": "En rollescore er det vægtede gennemsnit af de egenskaber, rollen bruger, med de 17 personaleroller og vægte fra <link>fm-scoring</link>: et vurderingsskema for personale lavet af fællesskabet, omdøbt til FM27 og tjekket mod de nøgleegenskaber, FM27 fremhæver på personaleprofiler. Trænere deles op i FM's ni træningsgrupper, der hver får score på deres to træneregenskaber plus disciplin, beslutsomhed, motivering, personaleledelse og arbejde med ungdomsspillere. En almindelig Træner får score på sin bedste markspillergruppe. Tilpasningsevne, Vurdering af stabsevner og Forhandling vægter ikke i nogen rolle. Filtrerer du efter foretrukket job, vises kun de egenskaber, jobbet vægtes på. Bedste rolle tæller kun roller, hvor de fleste vægtede egenskaber var med i eksporten. Rollescorer får de samme karakterstempler fra S++ til F som spillerscorer, med de samme trin på skalaen 1–20."
+    }
+  },
+  "detail": {
+    "preferredJob": "Foretrukket job: {job}",
+    "age": "Alder {age, number}",
+    "preferredScore": "Foretrukket job: {role} {score}",
+    "preferred": "(foretrukket)",
+    "barsNote": "Søjlerne går fra 0 til 20. * betyder, at nogle af rollens egenskaber manglede i eksporten.",
+    "notInExport": "Ikke i eksporten"
+  },
+  "backroom": {
+    "title": "Bedste stab",
+    "staffList": "Personaleliste",
+    "intro": "Vælg de roller, du har brug for, og hvor mange af hver. Scout Reporter ansætter den kombination af personale, der har den højeste samlede rollescore, og bruger aldrig den samme person to gange. Lås personale, du har skrevet kontrakt med, og fjern dem, der siger nej, for at få det næstbedste valg til pladsen.",
+    "noImport": "Intet personale importeret endnu. Vælg en personale-CSV ovenfor, eller indlæs testdata for at se dig omkring.",
+    "reset": "Nulstil",
+    "preset": "Skabelon",
+    "custom": "Brugerdefineret",
+    "oneFewer": "Én {role} mindre",
+    "oneMore": "Én {role} mere",
+    "roleCount": "{role}: {count, number}",
+    "preferredJobOnly": "Kun personale, hvis foretrukne job er rollen",
+    "preferredJobOnlyHint": "Personale kan sige nej til andre job i FM.",
+    "empty": {
+      "title": "Ingen roller valgt.",
+      "body": "Tilføj mindst én rolle til venstre, eller vælg en skabelon."
+    },
+    "short": {
+      "title": "Ikke nok personale til alle roller.",
+      "role": "{role}: {wanted, number} ønsket, {eligible, plural, one {# kvalificerer sig} other {# kvalificerer sig}}.",
+      "explain": "{filtered, select, yes {Personale kvalificerer sig, når de fleste af rollens egenskaber er med i eksporten, de opfylder filtrene og ikke er udelukket, og én person kan kun udfylde én rolle.} other {Personale kvalificerer sig, når de fleste af rollens egenskaber er med i eksporten, og én person kan kun udfylde én rolle.}}"
+    },
+    "excluded": "Udelukket:",
+    "allowAgainTitle": "Tillad denne person igen",
+    "allowAgain": "(tillad igen)",
+    "clearAll": "Ryd alle",
+    "footer": "Hver rolle får score med fm-scorings personalevægte (se <link>Personale</link>). Den viste stab har den højeste samlede score af alle måder at besætte rollerne med forskellige personer på, så en stærk alrounder havner der, hvor vedkommende bidrager mest, og ikke i den første rolle, der vil have dem. Personale, der mangler de fleste af en rolles egenskaber, overvejes ikke til den.",
+    "result": {
+      "title": "Din stab",
+      "summary": "{count, plural, one {# medarbejder} other {# medarbejdere}} · Gennemsnitlig score",
+      "averageLabel": "Gennemsnitlig score for staben",
+      "offJob": "· {count, plural, one {# i en rolle, der ikke er deres foretrukne job} other {# i en rolle, der ikke er deres foretrukne job}} (job i gråt)",
+      "locked": "· {count, plural, one {# låst} other {# låst}}",
+      "unlockAll": "Lås alle op",
+      "score": "Score",
+      "scoreTitle": "Rollescore på FM's skala 1–20",
+      "lockOrRemove": "Lås eller fjern",
+      "offJobTitle": "Ikke deres foretrukne job: de kan sige nej til rollen",
+      "unlock": "Lås {name} op",
+      "lockIn": "Lås {name}",
+      "lockedTitle": "Låst: bliver på pladsen, når resten vælges igen. Klik for at låse op.",
+      "lockTitle": "Lås: behold på pladsen (f.eks. når kontrakten er skrevet under), når resten vælges igen",
+      "exclude": "Udeluk {name}, og vælg igen",
+      "excludeTitle": "Fjern og vælg igen (f.eks. hvis kontraktforhandlingerne slog fejl)"
+    }
+  }
+}

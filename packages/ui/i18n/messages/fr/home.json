@@ -1,0 +1,102 @@
+{
+  "intro": "Notez, classez et comparez des joueurs à partir d’un export de joueurs de Football Manager 27 ou 26. Tout tourne dans votre navigateur ; le CSV ne quitte jamais votre machine.",
+  "desktop": {
+    "title": "Appli pour Windows",
+    "body": "Plus besoin d’export : elle lit les joueurs de votre recherche de joueurs FM directement dans le jeu, avec le vrai NA et le vrai potentiel.",
+    "cta": "Télécharger"
+  },
+  "sections": {
+    "title": "Rubriques",
+    "section": "Rubrique",
+    "whatItDoes": "À quoi ça sert",
+    "needs": "Prérequis",
+    "open": "Ouvrir"
+  },
+  "modes": {
+    "players": {
+      "name": "Joueurs",
+      "blurb": "Notez et classez les joueurs selon vos propres pondérations d’attributs ou les rôles FM27, comparez-les et trouvez les jeunes prodiges : avec le NA et le potentiel, chaque joueur reçoit un score Potentiel à son potentiel maximum. Meilleur 11 choisit les onze plus forts pour une formation, dans les limites d’un budget.",
+      "needs": "Vue Standard ou Hidden Attributes",
+      "cta": "Ouvrir Joueurs"
+    },
+    "squad": {
+      "name": "Analyse de l’effectif",
+      "blurb": "Importez votre effectif et choisissez votre formation pour voir votre premier et votre deuxième onze, les postes trop justes ou faibles, les titulaires vieillissants, les jeunes prêts à franchir un cap, les problèmes de statut dans l’effectif et les renforts issus de votre import de recrutement.",
+      "needs": "Vue Squad ou Squad Hidden Attributes",
+      "cta": "Ouvrir l’analyse de l’effectif"
+    },
+    "staff": {
+      "name": "Staff",
+      "blurb": "Classez préparateurs, recruteurs, analystes et directeurs sportifs sur chaque rôle du staff, avec les appréciations en mots de FM26 reconverties sur 1–20. Meilleur staff choisit le meilleur ensemble de membres du staff pour les rôles dont vous avez besoin, sans utiliser deux fois la même personne.",
+      "needs": "Vue Staff",
+      "cta": "Ouvrir Staff"
+    }
+  },
+  "screens": {
+    "players": "Joueurs",
+    "bestXi": "Meilleur 11",
+    "staff": "Staff",
+    "backroom": "Meilleur staff"
+  },
+  "moreScreens": "Autres écrans",
+  "screenshots": {
+    "open": "Ouvrir {title}",
+    "alt": "{title} : {caption}",
+    "squad": {
+      "title": "Analyse de l’effectif",
+      "caption": "Votre premier et votre deuxième onze, les doublures trop justes, les maillons faibles et qui doit jouer."
+    },
+    "players": {
+      "title": "Liste des joueurs",
+      "caption": "Chaque joueur noté selon vos pondérations ou un rôle FM27, avec notes, vs âge et valeur."
+    },
+    "bestXi": {
+      "title": "Meilleur 11",
+      "caption": "Le meilleur onze pour n’importe quelle formation, dans les limites d’un budget transferts."
+    },
+    "player": {
+      "title": "Fiche joueur",
+      "caption": "Cliquez sur un joueur pour afficher son profil, son NA, son potentiel et ses attributs dans un panneau latéral."
+    },
+    "staff": {
+      "title": "Staff",
+      "caption": "Préparateurs, recruteurs et directeurs sportifs notés sur 17 rôles du staff."
+    },
+    "backroom": {
+      "title": "Meilleur staff",
+      "caption": "Le staff à recruter pour chaque rôle, sans utiliser deux fois la même personne."
+    }
+  },
+  "start": {
+    "title": "Sortir les joueurs de FM",
+    "exporter": "Installez un exporteur : FM View Exporter pour FM27, ou BepInEx avec le plugin FM26 Player CSV Export.",
+    "view": "Importez la vue Scout Reporter dans la Base de données du joueur de FM (clic droit sur un en-tête de colonne, puis Importer la vue).",
+    "export": "Sélectionnez des joueurs et appuyez sur <kbd>F9</kbd> pour exporter un CSV.",
+    "import": "Importez ce CSV dans Joueurs.",
+    "guide": "Guide d’installation complet",
+    "faq": "Questions fréquentes"
+  },
+  "views": {
+    "title": "Fichiers de vue (.fmf)",
+    "hidden": {
+      "name": "Vue Hidden Attributes",
+      "summary": "La vue Standard plus les attributs cachés Professionnalisme, NA et potentiel. Recommandée."
+    },
+    "standard": {
+      "name": "Vue Standard",
+      "summary": "Tous les attributs visibles des joueurs."
+    },
+    "squadHidden": {
+      "name": "Vue Squad Hidden Attributes",
+      "summary": "La vue Squad plus les attributs cachés Professionnalisme, NA et potentiel."
+    },
+    "squad": {
+      "name": "Vue Squad",
+      "summary": "Votre écran d’effectif : tous les attributs plus la feuille de match, le statut dans l’effectif, les blessures et les étoiles des préparateurs. Pour l’analyse de l’effectif."
+    },
+    "staff": {
+      "name": "Vue Staff",
+      "summary": "Tous les attributs du staff, le poste souhaité, le club et la personnalité. Pour le mode Staff."
+    }
+  }
+}

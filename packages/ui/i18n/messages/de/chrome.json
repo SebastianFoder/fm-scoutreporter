@@ -1,0 +1,26 @@
+{
+  "homeLabel": "Scout Reporter Startseite",
+  "mainNav": "Hauptmenü",
+  "nav": {
+    "players": "Spieler",
+    "squad": "Kader",
+    "staff": "Mitarbeiter",
+    "howToUse": "Anleitung",
+    "desktopApp": "Desktop-App",
+    "scans": "Scans",
+    "growth": "Fortschritt"
+  },
+  "playerCount": {
+    "title": "Importierte Spieler, für beide Modi gemeinsam",
+    "imported": "{hasTotal, select, yes {{shown} von {total}} other {{shown}}} {count, plural, one {Spieler} other {Spieler}} importiert",
+    "scanned": "{hasTotal, select, yes {{shown} von {total}} other {{shown}}} {count, plural, one {Spieler} other {Spieler}} gescannt"
+  },
+  "language": {
+    "title": "Sprache",
+    "label": "Sprache: {language}"
+  },
+  "footer": {
+    "setupGuide": "Einrichtungsanleitung",
+    "faq": "FAQ"
+  }
+}

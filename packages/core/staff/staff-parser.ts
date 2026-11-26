@@ -1,4 +1,5 @@
 import { csvLines, detectDelimiter, splitCsvLine } from "@scoutreporter/core/parser/csv-utils";
+import { englishExport } from "@scoutreporter/core/parser/export-locale";
 import {
   STAFF_ATTRIBUTES,
   parseStaffRating,
@@ -50,7 +51,8 @@ function normalizeHeader(h: string): string {
 
 /** Parse a Staff view CSV export (FM26 words or 1–20 numbers, `,` or `;` delimited). */
 export function parseStaffCsv(csv: string): StaffParseResult {
-  const lines = csvLines(csv);
+  // An export from FM in another language reads as the English one.
+  const lines = csvLines(englishExport(csv));
   if (lines.length === 0) return { staff: [], columns: [], isStaffExport: false, duplicates: 0 };
 
   const delimiter = detectDelimiter(lines[0]);

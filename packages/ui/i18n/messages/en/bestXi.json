@@ -1,0 +1,109 @@
+{
+  "intro": "Picks the highest-scoring eleven from your import for a formation, with an optional minimum and maximum on what the eleven costs in total.",
+  "noImport": {
+    "desktop": "No players yet. In FM, open a Player Search and press <kbd>F9</kbd> or Scan search.",
+    "web": "No CSV imported yet. Choose a CSV file above, or load the test data to look around."
+  },
+  "setup": {
+    "title": "Setup",
+    "reset": "Reset",
+    "minBudget": "Min budget ({currency})",
+    "maxBudget": "Max budget ({currency})",
+    "noMinimum": "No minimum",
+    "noLimit": "No limit",
+    "budgetInvalid": "Enter an amount like 15M, 750K or 2500000. Unreadable budgets are ignored.",
+    "budgetHint": "Total for the eleven. Type amounts like 15M or 750K.",
+    "valuation": "A player costs",
+    "valuations": {
+      "low": "Low end of range",
+      "mid": "Midpoint of range",
+      "high": "High end of range"
+    },
+    "includeFree": "Include players with no transfer value",
+    "includeFreeHint": "Mostly free agents. They count as {amount}."
+  },
+  "notices": {
+    "budgetsCross": {
+      "title": "The minimum budget is above the maximum.",
+      "body": "No eleven can cost at least {min} and at most {max}."
+    },
+    "slots": {
+      "title": "Not enough players to fill this formation.",
+      "body": "No eligible player left for: {positions}. Only natural positions from the export count.",
+      "leftOut": "Excluded players and players with no transfer value are left out."
+    },
+    "budget": {
+      "title": "No eleven fits this budget.",
+      "range": "With these settings the cheapest possible eleven costs {min} and the most expensive {max}.",
+      "wider": "Try a wider budget."
+    }
+  },
+  "excluded": {
+    "label": "Excluded:",
+    "allowAgain": "Allow this player again",
+    "allowAgainHidden": "(allow again)",
+    "clearAll": "Clear all"
+  },
+  "footnote": "Each position takes one player who lists it as a natural position, scored on that position's role (1–20). The eleven shown has the highest total score of every combination that fits the budget.",
+  "unpriced": "{count, plural, one {# player is} other {# players are}} left out because the export gives no price (for example \"Not for Sale\").",
+  "result": {
+    "title": "Best eleven",
+    "summary": "Average score <b>{average}</b>{basis, select, potential { at full potential} other {}} · Cost <b>{cost}</b>{budget, select, range { (budget {min} to {max})} max { of {max}} min { (at least {min})} other {}} · Wages <b>{wages} p/w</b>{unknownWages, plural, =0 {} one { (# without a contract)} other { (# without a contract)}}",
+    "notOptimal": "The search ran out of time before proving this is the very best eleven. A better one could add at most {gap} to the total score of {total}.",
+    "pitchLabel": "The eleven on the pitch",
+    "columns": {
+      "pos": "Pos",
+      "score": "Score",
+      "scoreTitle": "Role score on FM's 1–20 scale",
+      "valueTitle": "Transfer value in the export",
+      "counted": "Counted",
+      "countedTitle": "Counted against the budget: {valuation, select, low {low end of range} high {high end of range} other {midpoint of range}}",
+      "exclude": "Exclude"
+    },
+    "excludeLabel": "Exclude {name} and pick again",
+    "excludeTitle": "Exclude and pick again",
+    "total": "Total",
+    "perWeek": "{amount} p/w"
+  },
+  "formation": {
+    "custom": "Custom",
+    "yours": "Your formations",
+    "presets": "FM presets",
+    "moveTo": "Move {from} to {spot} ({position})",
+    "emptySpot": "Empty spot {spot} ({position})",
+    "moveHere": "Move {from} here",
+    "goalkeeperFixed": "Goalkeeper (fixed)",
+    "selected": "{spot} ({position}) selected: choose a spot to move it to, or press again to cancel",
+    "dragOrSelect": "{spot} ({position}): drag, or select to move",
+    "keeperStays": "The keeper stays in goal",
+    "dragTitle": "{position}: drag to another spot, or onto a position to swap",
+    "hint": {
+      "dropSwap": "Drop to swap {from} and {to}.",
+      "dropMove": "Drop to move {from} to {to}.",
+      "dropCancel": "Drop on a spot, or anywhere else to cancel.",
+      "moving": "Moving {spot}: click a spot (or another position to swap), or {spot} again to cancel.",
+      "idle": "Drag a position to another spot, or onto a position to swap them."
+    },
+    "delete": "Delete “{name}”",
+    "namePlaceholder": "Name this formation",
+    "myPlaceholder": "My {formation}",
+    "nameLabel": "Name for this formation",
+    "save": "Save",
+    "scoredAs": "Scored as",
+    "roleFor": "Role for {spot}, {position}",
+    "auto": "Auto: {role}",
+    "rolesFrom": "Roles are your weight profiles from <link>Players</link>."
+  },
+  "basis": {
+    "label": "Score players on",
+    "potential": "Full potential",
+    "potentialTitle": "Attributes projected at PA",
+    "needsTitle": "Needs CA and PA: export with the {view} view",
+    "needs": "Full potential needs the {view} view."
+  },
+  "pitch": {
+    "nobody": "Nobody",
+    "nobodyTitle": "{spot}: nobody in the squad plays {position}",
+    "entryTitle": "{name}, {spot} ({position}), {score}"
+  }
+}

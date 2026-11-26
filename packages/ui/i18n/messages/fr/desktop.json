@@ -1,0 +1,171 @@
+{
+  "scanLabel": {
+    "sample": "Scan d’exemple",
+    "dated": "Scan du {date}"
+  },
+  "scanButton": {
+    "group": "Scanner Football Manager",
+    "scanning": "Scan en cours {progress, number, percent}",
+    "search": "Scanner la recherche",
+    "searchTitle": "Garder les personnes de la Recherche de joueur ou de la Recherche de staff de FM, plus votre club (F9)",
+    "save": "Scanner la sauvegarde",
+    "saveTitle": "Garder tous les joueurs et membres du staff de la sauvegarde"
+  },
+  "counts": {
+    "players": "{count, plural, one {# joueur} other {# joueurs}}",
+    "staff": "{count, plural, one {# membre du staff} other {# membres du staff}}",
+    "playersAndStaff": "{players, plural, one {# joueur} other {# joueurs}} et {staff, plural, one {# membre du staff} other {# membres du staff}}"
+  },
+  "home": {
+    "notDesktop": {
+      "title": "Appli Windows",
+      "body": "Cette page fait partie de l’appli Windows Scout Reporter, qui lit directement votre sauvegarde Football Manager. Sur le site, importez plutôt un export CSV : voir le <link>guide d’installation</link>."
+    },
+    "title": "Scanner Football Manager",
+    "intro": "<b>Scanner la recherche</b> {hotkey, select, on {(ou F9, aussi dans FM)} other {(ou F9 une fois le raccourci activé, aussi dans FM)}} : ouvrez la Recherche de joueur ou la Recherche de staff dans Football Manager, réglez vos filtres, et l’appli récupère les personnes trouvées par FM plus votre propre club. <b>Scanner la sauvegarde</b> : tous les joueurs et membres du staff de la sauvegarde, sans recherche. Tous les écrans (Joueurs, Meilleur 11, Effectif, Staff) fonctionnent avec le scan. Rien n’est modifié dans votre partie. La touche F9, les attributs cachés et les mises à jour se règlent dans les <settings>Paramètres</settings>.",
+    "phase": "{phase, select, importing {Enregistrement du scan…} writing {Écriture du scan…} clubs {Lecture des clubs…} people {Lecture des personnes…} other {Lecture de la mémoire…}}",
+    "errors": {
+      "notRunning": "Football Manager n’est pas lancé",
+      "noAccess": "Football Manager tourne en administrateur",
+      "notLoaded": "Aucune sauvegarde chargée",
+      "nothingFound": "Aucun joueur trouvé",
+      "tooMuchUnread": "Scan incomplet",
+      "noSearch": "Aucune recherche trouvée dans Football Manager",
+      "busy": "Un scan est déjà en cours",
+      "missingReader": "Lecteur manquant",
+      "failed": "Le scan a échoué"
+    },
+    "scanWholeSave": "Ou <link>scannez toute la sauvegarde</link> à la place.",
+    "doneSearch": "<b>{players, plural, one {# joueur} other {# joueurs}}</b> et {staff, plural, one {# membre du staff} other {# membres du staff}} conservés : votre recherche FM ({search}) plus votre club{hasClub, select, yes {, {club}} other {}}. Ouvrez <playersLink>Joueurs</playersLink>, <squadLink>Effectif</squadLink> ou <growthLink>Progression</growthLink>.",
+    "doneFull": "<b>{players, plural, one {# joueur} other {# joueurs}}</b> et {staff, plural, one {# membre du staff} other {# membres du staff}} scannés{hasClub, select, yes {, votre club : {club}} other {}}. Ouvrez <playersLink>Joueurs</playersLink>, <squadLink>Effectif</squadLink> ou <growthLink>Progression</growthLink>.",
+    "loading": "Chargement du scan dans les écrans…",
+    "partial": "Les écrans contiennent {players, number} sur {totalPlayers, plural, one {# joueur} other {# joueurs}} et {staff, number} sur {totalStaff, plural, one {# membre du staff} other {# membres du staff}} de ce scan : votre club plus {loadedFrom}, meilleur NA en premier, pour garder des écrans rapides. Progression compare toujours tous les joueurs présents dans les deux scans.",
+    "loadedFrom": {
+      "playersSearch": "les joueurs de la recherche de joueurs FM ({count, number} trouvés)",
+      "playersBest": "les joueurs qui valent d’être supervisés",
+      "staffSearch": "le staff de la recherche de staff FM ({count, number} trouvés)",
+      "staffBest": "les membres du staff qui valent d’être recrutés"
+    },
+    "version": {
+      "title": "Version de Football Manager non reconnue",
+      "body": "Ce scan vient de FM {version}, mais le lecteur a été conçu pour {game}. Vérifiez quelques joueurs dans le jeu avant de vous fier aux chiffres, et cherchez une mise à jour de Scout Reporter.",
+      "unknown": "(version inconnue)"
+    },
+    "loadError": "Impossible de charger le scan",
+    "stored": {
+      "title": "Scans enregistrés",
+      "kept": "Les {retention} plus récents sont conservés, plus les favoris, pour que <link>Progression</link> puisse les comparer.",
+      "disk": "Ils occupent {size} sur le disque.",
+      "openFolder": "Ouvrir le dossier",
+      "loadSample": "Charger le scan d’exemple",
+      "empty": "Aucun scan pour l’instant. Appuyez sur Scanner la recherche ou Scanner la sauvegarde, ou chargez le scan d’exemple pour découvrir l’outil."
+    },
+    "details": {
+      "noClub": "sans club",
+      "scanned": "scanné {time}",
+      "search": "votre recherche FM ({search}) et votre club",
+      "wholeSave": "toute la sauvegarde",
+      "fmSearch": "Recherche FM : {search}"
+    },
+    "about": {
+      "title": "À propos",
+      "version": "Scout Reporter pour Windows {version}. Compatible avec Football Manager 27 (27.0) et 26 (26.3) sous Windows, version Steam, Epic ou Game Pass.",
+      "reader": "Le lecteur se contente de lire la mémoire de Football Manager ; il ne modifie jamais votre partie ni votre sauvegarde. Il est adapté de <link>FMSuperScout</link> par mavarobli (licence MIT). Merci !",
+      "credits": "Poids des rôles FM27 de <matchLab>FM Match Lab</matchLab> ; références par âge, coûts en NA et poids du staff de <scoring>jamiebolden/fm-scoring</scoring> ; recherches sur l’entraînement par harvestgreen22."
+    }
+  },
+  "scanRow": {
+    "star": "Mettre {label} en favori",
+    "unstar": "Retirer {label} des favoris",
+    "starredTitle": "Favori : jamais supprimé pour faire de la place aux nouveaux scans",
+    "starTitle": "Favori : ne jamais supprimer ce scan pour faire de la place aux nouveaux",
+    "rename": "Renommer {label}",
+    "renameTitle": "Renommer",
+    "inUse": "Utilisé",
+    "versionDiffers": "version différente",
+    "nameFor": "Nom de {label}",
+    "use": "Utiliser",
+    "delete": "Supprimer {label}"
+  },
+  "settings": {
+    "loading": "Chargement des paramètres…",
+    "scanning": "Scan",
+    "hidden": {
+      "title": "Utiliser le NA, le potentiel et les attributs cachés",
+      "body": "Activé : les écrans reçoivent le niveau actuel, le potentiel et le Professionnalisme de chaque joueur, nécessaires aux scores Potentiel. Désactivé : ils sont laissés de côté, comme dans un export FM normal, et Progression n’affiche que l’évolution des attributs."
+    },
+    "hotkey": {
+      "title": "F9 scanne votre recherche depuis n’importe où",
+      "body": "Tant que l’appli tourne, F9 lance Scanner la recherche, y compris dans FM. Les autres applis ne reçoivent plus F9 pendant ce temps."
+    },
+    "database": "Base de données",
+    "databases": {
+      "men": "Hommes",
+      "women": "Femmes",
+      "both": "Les deux"
+    },
+    "keep": "Conserver",
+    "keepSuffix": "scans",
+    "retentionNote": "Les scans favoris sont conservés en plus et jamais supprimés pour faire de la place. Un scan de recherche occupe quelques Mo, une sauvegarde complète environ 140 Mo.",
+    "updates": "Mises à jour",
+    "checkUpdates": {
+      "title": "Rechercher les mises à jour",
+      "body": "Demande à GitHub la dernière version au lancement de l’appli puis toutes les quelques heures. Rien sur vous ni sur votre sauvegarde n’est envoyé. La mise à jour conserve vos paramètres, scans, pondérations et formations."
+    },
+    "checking": "Vérification…",
+    "checkNow": "Vérifier",
+    "updateAvailable": "La version {latest} est sortie (vous avez la {current}) : voir la barre en haut.",
+    "upToDate": "Vous avez la dernière version ({current}).",
+    "version": "Version {current}.",
+    "privacy": "Confidentialité",
+    "usageStats": {
+      "title": "Envoyer des statistiques d’utilisation anonymes",
+      "body": "Compte les écrans ouverts, pour savoir ce qui sert. Les données vont au serveur de statistiques du développeur, sans cookie, et n’incluent jamais votre sauvegarde, vos scans, vos joueurs ni quoi que ce soit qui vous identifie."
+    }
+  },
+  "update": {
+    "installing": "Installation de Scout Reporter {version}. L’appli se ferme et se rouvre dans un instant.",
+    "downloading": "Téléchargement de Scout Reporter {version}… {progress, number, percent}",
+    "available": "Scout Reporter {version} est disponible",
+    "availableDetail": "(vous avez la {current}). La mise à jour conserve vos paramètres, scans, pondérations et formations.",
+    "updateNow": "Mettre à jour",
+    "whatsNew": "Nouveautés",
+    "downloadYourself": "Télécharger manuellement",
+    "hide": "Masquer jusqu’à une version plus récente que la {version}"
+  },
+  "growth": {
+    "title": "Progression",
+    "notDesktop": "Progression compare des scans enregistrés et fait partie de l’appli Windows Scout Reporter.",
+    "intro": "La progression de chaque joueur entre deux scans de votre sauvegarde. Scannez régulièrement (tous les quelques mois de jeu) pour suivre vos jeunes et repérer les joueurs qui explosent dans le monde entier.",
+    "twoNeeded": {
+      "title": "Deux scans nécessaires",
+      "body": "Progression compare deux scans. Vous en avez {count, number}. <link>Scannez</link> à nouveau plus tard dans votre partie."
+    },
+    "from": "Du",
+    "to": "Au",
+    "option": "{label} ({count, plural, one {# joueur} other {# joueurs}})",
+    "gainedAtLeast": "Gain minimum",
+    "ca": "NA",
+    "any": "tous",
+    "maxAge": "Âge max.",
+    "search": "Rechercher",
+    "searchPlaceholder": "Joueur ou club",
+    "searchScans": "Un scan de votre recherche FM contient les joueurs de cette recherche et votre propre club : Progression couvre donc les joueurs présents dans les deux scans. Votre club est dans chaque scan. Pour suivre tous les joueurs de la sauvegarde, utilisez Scanner la sauvegarde sur la <link>page Scans</link>.",
+    "sameScan": {
+      "title": "Deux fois le même scan",
+      "body": "Choisissez deux scans différents."
+    },
+    "compareError": "Impossible de comparer les scans",
+    "comparing": "Comparaison des scans…",
+    "summary": "{total, plural, one {# joueur} other {# joueurs}}{hasDays, select, yes { sur {days, plural, one {# jour de jeu} other {# jours de jeu}}} other {}}{newPlayers, select, search {, plus {newCount, plural, one {# joueur présent uniquement dans le scan le plus récent} other {# joueurs présents uniquement dans le scan le plus récent}}} full {, plus {newCount, plural, one {# nouveau joueur (arrivée de jeunes ou championnat nouvellement chargé)} other {# nouveaux joueurs (arrivées de jeunes ou championnats nouvellement chargés)}} sans scan antérieur} other {}}.",
+    "updating": "Mise à jour…",
+    "columns": {
+      "ca": "NA",
+      "caChange": "Évol. NA",
+      "paChange": "Évol. Pot.",
+      "biggestChanges": "Plus fortes évolutions"
+    },
+    "firstOnly": "Affichage des {max, number} premiers : affinez les filtres pour voir les autres",
+    "showMore": "Afficher {count, number} de plus"
+  }
+}

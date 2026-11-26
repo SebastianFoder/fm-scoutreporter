@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "FM27-Rollen",
+    "scale": "Wertung 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: jetzt {current}, Potenzial {potential}} other {{role}: jetzt {current}}}",
+    "legend": "Legende",
+    "now": "Jetzt",
+    "ageBenchmark": "Benchmark für Alter {age}: {value}",
+    "prime": "Zenit {value}",
+    "vsAge": "vs. Alter",
+    "potentialVsPrime": "Potenzial vs. Zenit"
+  },
+  "plan": {
+    "title": "Entwicklungsplan",
+    "builtFor": "{atPa, select, yes {Ausgelegt auf die beste Rolle bei PA: {role} ({score})} other {Ausgelegt auf die beste Rolle: {role} ({score})}}",
+    "focusLabel": "Fokus individuelles Training",
+    "focus": {
+      "quickness": "Schnelligkeit",
+      "goalkeeperReason": "Beweglichkeit und Reflexe zählen bei Torhütern am meisten. Ein Tester des FM27-Trainingscodes fand diesen kombinierten Fokus am besten für Torhüter, bei denen sie Vorrang haben.",
+      "quicknessReason": "Schnelligkeit und Antritt gehören in jeder Feldspielerrolle zu den stärksten Gewichten. Im Test von harvestgreen22 brachte der Fokus sie von etwa +1,6 auf +2,7 pro Saison. Aktuell Schnelligkeit {pace}, Antritt {acceleration}.",
+      "attributeReason": "Schnelligkeit und Antritt liegen schon bei {pace} und {acceleration}, daher bringt der Fokus Schnelligkeit kaum noch etwas. Bei {attribute} kann die Wertung als {role} am meisten zulegen.",
+      "quicknessFallbackReason": "Schnelligkeit und Antritt gehören in jeder Feldspielerrolle zu den stärksten Gewichten."
+    },
+    "trainingRoleLabel": "Trainingsrolle",
+    "trainingRole": {
+      "goalkeeper": "Beide Trainingsrollen unbesetzt lassen",
+      "goalkeeperReason": "Ein Tester des FM27-Trainingscodes erzielte bei Torhütern das meiste Wachstum ohne Rolle und mit dem kombinierten Fokus oben.",
+      "outfield": "{role, select, defensive {Def. Mittelfeldspieler ohne Ball, nichts mit Ball} other {Off. Mittelfeldspieler ohne Ball, nichts mit Ball}}",
+      "outfieldReason": "Ein Tester des FM27-Trainingscodes erzielte das stärkste CA-Wachstum bei jungen Feldspielern allein mit einer Rolle ohne Ball, zusammen mit Schnelligkeit: Def. Mittelfeldspieler für Verteidiger, Flügelverteidiger und DMs, Off. Mittelfeldspieler für alle anderen. Antizipation wuchs am stärksten. Das stammt aus kontrollierten Durchläufen eines einzelnen Testers."
+    },
+    "sessions": {
+      "title": "Entwicklungseinheiten für die Wertung als {role}",
+      "more": "mehr {attributes}",
+      "nothingExtra": "nichts zusätzlich",
+      "barLabel": "{session}: {percent} der besten Einheit",
+      "note": "Wachstum der Rollenwertung durch jede Einheit im FM27-Test von harvestgreen22, angewandt auf die Attribute dieses Spielers, als Anteil an der besten. „Mehr“ nennt, was eine Einheit über die durchschnittliche Entwicklungseinheit hinaus aufbaut.",
+      "goalkeeper": "Torhüter waren nicht Teil des Einheitentests. Der Torwarttrainer trainiert das meiste, was ein Torhüter braucht, setzen Sie also Ihren besten ein."
+    },
+    "coaching": {
+      "title": "Das wichtigste Training",
+      "subtitle": "Anteil des verbleibenden Wachstums als {role}, den jeder Trainingsbereich abdeckt",
+      "coach": "Trainer: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Hinweise",
+    "items": {
+      "role": {
+        "title": "Als {role} entwickeln",
+        "detail": "Die beste Rolle ist heute {bestRole} ({bestScore}), aber die Attribute bei PA passen besser zu {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Nah an der Obergrenze",
+        "detail": "Nur {gap} CA zwischen CA {ca} und PA {pa}. Das Training entscheidet jetzt vor allem, wohin die CA geht, nicht wie viel es gibt, also richten Sie es auf die Attribute aus, die die Rolle braucht."
+      },
+      "gapUnlikely": {
+        "title": "Erreicht PA wohl nicht",
+        "detail": "Noch {gap} CA offen im Alter von {age}, und nach {endAge} wachsen Attribute kaum noch. Bewerten Sie den Spieler eher nach seiner derzeitigen Fähigkeit."
+      },
+      "gapLeft": {
+        "title": "Noch {gap} CA Luft nach oben",
+        "detail": "{goalkeeper, select, yes {CA {ca} auf dem Weg zu PA {pa}, mit etwa {seasons, plural, one {# Saison} other {# Saisons}} echter Entwicklung vor sich (bei Torhütern bremst das Wachstum nach {endAge} stark ab).} other {CA {ca} auf dem Weg zu PA {pa}, mit etwa {seasons, plural, one {# Saison} other {# Saisons}} echter Entwicklung vor sich (das Wachstum bremst nach {endAge} stark ab).}}"
+      },
+      "minutesPeak": {
+        "title": "Beste Entwicklungsjahre",
+        "detail": "Zwischen 16 und 18 wachsen Attribute am schnellsten. Spielminuten und die Stärke der Gegner fördern beide das CA-Wachstum, daher schlagen Einsätze bei den Profis oder auf Leihbasis den Jugendfußball, sobald der Spieler mithalten kann. Für die U18 nutzt der Autor von fm-scoring den minimalen Trainingsplan (ohne taktische Einheiten)."
+      },
+      "minutesSenior": {
+        "title": "Braucht Profi-Einsätze",
+        "detail": "Spielminuten und die Stärke der Gegner bestimmen, wie viel CA ein Spieler gewinnt. Wenn er bei Ihnen keinen Stammplatz bekommt, verleihen Sie ihn an den stärksten Verein, bei dem er spielt."
+      },
+      "minutesPast": {
+        "title": "Entwicklungsphase vorbei",
+        "detail": "Nach {endAge} wachsen Attribute kaum noch. Training formt ab jetzt vor allem um, was schon da ist."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "Laut den Notizen von fm-scoring ist Professionalität das verborgene Attribut, das für das Wachstum am meisten zählt. Dieser Wert hilft einem Spieler, das Beste aus seiner PA zu machen."
+      },
+      "profLow": {
+        "title": "{level, select, low {{attribute}: niedrig ({value})} other {{attribute}: durchschnittlich ({value})}}",
+        "detail": "Laut den Notizen von fm-scoring ist Professionalität das verborgene Attribut, das für das Wachstum am meisten zählt. Mentoring ist der Weg, wie FM die Persönlichkeit ändert: Stecken Sie den Spieler in eine Mentoringgruppe mit erfahrenen Spielern mit hoher Professionalität (fm-scoring enthält einen Filter für die Spielersuche nach Mentoren)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "Training verändert Zielstrebigkeit nie. Mentoring ist der Weg, die Persönlichkeit zu ändern. Exportieren Sie mit der Ansicht Hidden Attributes, um Professionalität zu sehen."
+      },
+      "schedule": {
+        "title": "Entwicklungseinheiten auf einen Tag legen",
+        "detail": "Nur Ballbesitzarbeit, Angriffsspiel mit Ball, Defensivarbeit mit Ball, Kondition, Hartes Konditionstraining und Individuelle Entwicklung lassen Attribute wachsen. Keine andere Einheit brachte mehr CA als Ruhe, und eine Einheit zu wiederholen bringt wenig. Ein Tester legte die Entwicklungseinheiten auf einen Tag, um volle Ruhetage zu behalten, an denen es keine Prüfung auf Trainingsverletzungen gibt. Das senkte das Verletzungsrisiko im Training von 13,8 % auf 4,0 % bei fast gleichem Wachstum."
+      }
+    },
+    "source": "Aus der FM27-Trainingsforschung, gesammelt in <link>fm-scoring</link>: der Trainingstest von harvestgreen22, die eigenen Trainingsplan-Tests des Autors von fm-scoring und ein Tester, der den Trainingscode von FM27 durchgegangen ist.",
+    "younger": "Das meiste gilt für jüngere Spieler.",
+    "odds": "Das Wachstum schwankt von Monat zu Monat zufällig, sehen Sie dies also als Wahrscheinlichkeit, nicht als Versprechen."
+  }
+}

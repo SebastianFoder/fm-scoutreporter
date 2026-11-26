@@ -1,0 +1,171 @@
+{
+  "scanLabel": {
+    "sample": "Sample scan",
+    "dated": "Scan of {date}"
+  },
+  "scanButton": {
+    "group": "Scan Football Manager",
+    "scanning": "Scanning {progress, number, percent}",
+    "search": "Scan search",
+    "searchTitle": "Keep the people in FM's Player Search or Staff Search, plus your club (F9)",
+    "save": "Scan save",
+    "saveTitle": "Keep every player and staff member in the save"
+  },
+  "counts": {
+    "players": "{count, plural, one {# player} other {# players}}",
+    "staff": "{count, plural, one {# staff} other {# staff}}",
+    "playersAndStaff": "{players, plural, one {# player} other {# players}} and {staff, plural, one {# staff} other {# staff}}"
+  },
+  "home": {
+    "notDesktop": {
+      "title": "Desktop app",
+      "body": "This page belongs to the Scout Reporter desktop app, which reads your Football Manager save directly. On the website, import a CSV export instead: see the <link>setup guide</link>."
+    },
+    "title": "Scan Football Manager",
+    "intro": "<b>Scan search</b> {hotkey, select, on {(or F9, also inside FM)} other {(or F9 once the hotkey is on, also inside FM)}}: open Player Search or Staff Search in Football Manager, set your filters, and the app takes the people FM found plus your own club. <b>Scan save</b>: every player and staff member in the save, no search needed. Every screen (Players, Best XI, Squad, Staff) works on the scan. Nothing in your game is changed. The F9 key, hidden attributes and updates are under <settings>Settings</settings>.",
+    "phase": "{phase, select, importing {Saving the scan…} writing {Writing the scan…} clubs {Reading clubs…} people {Reading people…} other {Reading memory…}}",
+    "errors": {
+      "notRunning": "Football Manager is not running",
+      "noAccess": "Football Manager runs as administrator",
+      "notLoaded": "No save loaded yet",
+      "nothingFound": "No players found",
+      "tooMuchUnread": "Scan incomplete",
+      "noSearch": "No search found in Football Manager",
+      "busy": "A scan is already running",
+      "missingReader": "Reader missing",
+      "failed": "The scan failed"
+    },
+    "scanWholeSave": "Or <link>scan the whole save</link> instead.",
+    "doneSearch": "<b>{players, plural, one {# player} other {# players}}</b> and {staff, plural, one {# staff} other {# staff}} kept: your FM search ({search}) plus your club{hasClub, select, yes {, {club}} other {}}. Open <playersLink>Players</playersLink>, <squadLink>Squad</squadLink> or <growthLink>Growth</growthLink>.",
+    "doneFull": "<b>{players, plural, one {# player} other {# players}}</b> and {staff, plural, one {# staff} other {# staff}} scanned{hasClub, select, yes {, your club: {club}} other {}}. Open <playersLink>Players</playersLink>, <squadLink>Squad</squadLink> or <growthLink>Growth</growthLink>.",
+    "loading": "Loading the scan into the screens…",
+    "partial": "The screens hold {players, number} of {totalPlayers, plural, one {# player} other {# players}} and {staff, number} of {totalStaff, plural, one {# staff} other {# staff}} from this scan: your club plus {loadedFrom}, best CA first, to keep the screens quick. Growth always compares every player in both scans.",
+    "loadedFrom": {
+      "playersSearch": "players from FM's player search ({count, number} found)",
+      "playersBest": "the players worth scouting",
+      "staffSearch": "staff from FM's staff search ({count, number} found)",
+      "staffBest": "the staff worth hiring"
+    },
+    "version": {
+      "title": "Unrecognised Football Manager version",
+      "body": "This scan came from FM {version}, but the reader was made for {game}. Check a few players against the game before trusting the numbers, and look for a Scout Reporter update.",
+      "unknown": "(unknown version)"
+    },
+    "loadError": "Could not load the scan",
+    "stored": {
+      "title": "Stored scans",
+      "kept": "The newest {retention} are kept, plus starred ones, so <link>Growth</link> can compare them.",
+      "disk": "They use {size} on disk.",
+      "openFolder": "Open folder",
+      "loadSample": "Load sample scan",
+      "empty": "No scans yet. Press Scan search or Scan save, or load the sample scan to look around."
+    },
+    "details": {
+      "noClub": "no club",
+      "scanned": "scanned {time}",
+      "search": "your FM search ({search}) and your club",
+      "wholeSave": "whole save",
+      "fmSearch": "FM search: {search}"
+    },
+    "about": {
+      "title": "About",
+      "version": "Scout Reporter desktop {version}. Supports Football Manager 27 (27.0) and 26 (26.3) on Windows, from Steam, Epic or Game Pass.",
+      "reader": "The reader only reads Football Manager's memory; it never changes your game or save. It is adapted from <link>FMSuperScout</link> by mavarobli (MIT licence). Thank you!",
+      "credits": "FM27 role weights from <matchLab>FM Match Lab</matchLab>; age benchmarks, CA costs and staff weights from <scoring>jamiebolden/fm-scoring</scoring>; training research by harvestgreen22."
+    }
+  },
+  "scanRow": {
+    "star": "Star {label}",
+    "unstar": "Unstar {label}",
+    "starredTitle": "Starred: never deleted to make room for new scans",
+    "starTitle": "Star: never delete this scan to make room for new ones",
+    "rename": "Rename {label}",
+    "renameTitle": "Rename",
+    "inUse": "In use",
+    "versionDiffers": "version differs",
+    "nameFor": "Name for {label}",
+    "use": "Use",
+    "delete": "Delete {label}"
+  },
+  "settings": {
+    "loading": "Loading the settings…",
+    "scanning": "Scanning",
+    "hidden": {
+      "title": "Use CA, PA and hidden attributes",
+      "body": "On: the screens get every player's current and potential ability and Professionalism, which the Potential scores need. Off: they are left out, as in a normal FM export, and Growth shows attribute changes only."
+    },
+    "hotkey": {
+      "title": "F9 scans your search from anywhere",
+      "body": "While the app runs, F9 does Scan search, also inside FM. Other apps do not get F9 meanwhile."
+    },
+    "database": "Database",
+    "databases": {
+      "men": "Men",
+      "women": "Women",
+      "both": "Both"
+    },
+    "keep": "Keep",
+    "keepSuffix": "scans",
+    "retentionNote": "Starred scans are kept on top of these and never deleted to make room. A search scan takes a few MB, a whole save about 140 MB.",
+    "updates": "Updates",
+    "checkUpdates": {
+      "title": "Check for updates",
+      "body": "Asks GitHub for the newest version when the app starts and every few hours. Nothing about you or your save is sent. Updating keeps your settings, scans, weights and formations."
+    },
+    "checking": "Checking…",
+    "checkNow": "Check now",
+    "updateAvailable": "Version {latest} is out (you have {current}): see the bar at the top.",
+    "upToDate": "You have the newest version ({current}).",
+    "version": "Version {current}.",
+    "privacy": "Privacy",
+    "usageStats": {
+      "title": "Send anonymous usage stats",
+      "body": "Counts which screens are opened, to see what gets used. It goes to the developer's own stats server, sets no cookies, and never includes your save, scans, players or anything that identifies you."
+    }
+  },
+  "update": {
+    "installing": "Installing Scout Reporter {version}. The app closes and opens again in a moment.",
+    "downloading": "Downloading Scout Reporter {version}… {progress, number, percent}",
+    "available": "Scout Reporter {version} is out",
+    "availableDetail": "(you have {current}). Updating keeps your settings, scans, weights and formations.",
+    "updateNow": "Update now",
+    "whatsNew": "What's new",
+    "downloadYourself": "Download it yourself",
+    "hide": "Hide until a version newer than {version}"
+  },
+  "growth": {
+    "title": "Growth",
+    "notDesktop": "Growth compares stored scans and is part of the Scout Reporter desktop app.",
+    "intro": "How much every player improved between two scans of your save. Scan regularly (every few in-game months) to follow your youngsters and spot breakout players worldwide.",
+    "twoNeeded": {
+      "title": "Two scans needed",
+      "body": "Growth compares two scans. You have {count, number}. <link>Scan</link> again later in your save."
+    },
+    "from": "From",
+    "to": "To",
+    "option": "{label} ({count, plural, one {# player} other {# players}})",
+    "gainedAtLeast": "Gained at least",
+    "ca": "CA",
+    "any": "any",
+    "maxAge": "Max age",
+    "search": "Search",
+    "searchPlaceholder": "Player or club",
+    "searchScans": "A scan of your FM search holds the players from that search and your own club, so Growth covers the players that are in both scans. Your own club is in every scan. To follow every player in the save, use Scan save on the <link>Scans page</link>.",
+    "sameScan": {
+      "title": "Same scan twice",
+      "body": "Pick two different scans."
+    },
+    "compareError": "Could not compare the scans",
+    "comparing": "Comparing scans…",
+    "summary": "{total, plural, one {# player} other {# players}}{hasDays, select, yes { over {days, plural, one {# in-game day} other {# in-game days}}} other {}}{newPlayers, select, search {, plus {newCount, plural, one {# player who is only in the later scan} other {# players who are only in the later scan}}} full {, plus {newCount, plural, one {# new player (youth intake or newly loaded league)} other {# new players (youth intakes or newly loaded leagues)}} with no earlier scan} other {}}.",
+    "updating": "Updating…",
+    "columns": {
+      "ca": "CA",
+      "caChange": "CA change",
+      "paChange": "PA change",
+      "biggestChanges": "Biggest changes"
+    },
+    "firstOnly": "Showing the first {max, number}: narrow the filters to see others",
+    "showMore": "Show {count, number} more"
+  }
+}

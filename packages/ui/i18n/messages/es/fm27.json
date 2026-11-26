@@ -1,0 +1,96 @@
+{
+  "roles": {
+    "title": "Roles de FM27",
+    "scale": "puntuación 0–20",
+    "barTitle": "{hasPotential, select, yes {{role}: ahora {current}, potencial {potential}} other {{role}: ahora {current}}}",
+    "legend": "Leyenda",
+    "now": "Ahora",
+    "ageBenchmark": "Referencia a los {age} años: {value}",
+    "prime": "Plenitud {value}",
+    "vsAge": "vs. edad",
+    "potentialVsPrime": "Potencial vs. plenitud"
+  },
+  "plan": {
+    "title": "Plan de desarrollo",
+    "builtFor": "{atPa, select, yes {Pensado para el mejor rol con su CP: {role} ({score})} other {Pensado para el mejor rol: {role} ({score})}}",
+    "focusLabel": "Objetivo del entrenamiento individual",
+    "focus": {
+      "quickness": "Rapidez",
+      "goalkeeperReason": "Agilidad y Reflejos son lo que más pesa en los porteros. Alguien que analizó el código de entrenamiento de FM27 vio que este objetivo combinado era el mejor para porteros que los priorizan.",
+      "quicknessReason": "Velocidad y Aceleración están entre los pesos más altos de todos los roles de campo. En la prueba de harvestgreen22, este objetivo los subió de unos +1,6 a +2,7 por temporada. Velocidad actual {pace}, Aceleración {acceleration}.",
+      "attributeReason": "Velocidad y Aceleración ya están en {pace} y {acceleration}, así que Rapidez tiene poco que aportar. {attribute} es donde más puede ganar la puntuación de {role}.",
+      "quicknessFallbackReason": "Velocidad y Aceleración están entre los pesos más altos de todos los roles de campo."
+    },
+    "trainingRoleLabel": "Rol de entrenamiento",
+    "trainingRole": {
+      "goalkeeper": "Deja sin asignar los dos roles de entrenamiento",
+      "goalkeeperReason": "Alguien que analizó el código de entrenamiento de FM27 logró el mayor crecimiento en porteros sin rol y con el objetivo combinado de arriba.",
+      "outfield": "{role, select, defensive {Mediocentro sin posesión, nada con posesión} other {Mediapunta sin posesión, nada con posesión}}",
+      "outfieldReason": "Alguien que analizó el código de entrenamiento de FM27 logró el mayor crecimiento de CA en jugadores de campo jóvenes solo con un rol sin posesión, junto con Rapidez: Mediocentro para defensas, carrileros y mediocentros, Mediapunta para el resto. Anticipación fue lo que más creció. Esto sale de las pruebas controladas de una sola persona."
+    },
+    "sessions": {
+      "title": "Sesiones de desarrollo para la puntuación de {role}",
+      "more": "más {attributes}",
+      "nothingExtra": "nada extra",
+      "barLabel": "{session}: {percent} de la mejor sesión",
+      "note": "Crecimiento de la puntuación de rol con cada sesión en la prueba de FM27 de harvestgreen22, aplicado a los atributos de este jugador, como proporción de la mejor. «Más» indica lo que una sesión desarrolla por encima de la sesión de desarrollo media.",
+      "goalkeeper": "Los porteros no entraron en la prueba de sesiones. El entrenador de porteros entrena casi todo lo que necesita un portero, así que asígnale el mejor que tengas."
+    },
+    "coaching": {
+      "title": "Los preparadores que más importan",
+      "subtitle": "Parte del crecimiento restante de {role} que entrena cada grupo de preparación",
+      "coach": "preparador: {attributes}",
+      "barLabel": "{group}: {percent}"
+    },
+    "notes": "Notas",
+    "items": {
+      "role": {
+        "title": "Desarrollar como {role}",
+        "detail": "Su mejor rol hoy es {bestRole} ({bestScore}), pero sus atributos con la CP encajan mejor como {potentialRole} ({potentialScore})."
+      },
+      "gapClose": {
+        "title": "Cerca de su techo",
+        "detail": "Solo hay {gap} de CA entre CA {ca} y CP {pa}. A estas alturas el entrenamiento decide sobre todo adónde va la CA, no cuánta hay, así que oriéntalo a los atributos que necesita el rol."
+      },
+      "gapUnlikely": {
+        "title": "Difícil que alcance su CP",
+        "detail": "Le quedan {gap} de CA por ganar con {age} años, y los atributos crecen poco después de los {endAge}. Valora al jugador más cerca de su calidad actual."
+      },
+      "gapLeft": {
+        "title": "Le quedan {gap} de CA por crecer",
+        "detail": "{goalkeeper, select, yes {CA {ca} hacia CP {pa}, con unas {seasons, plural, one {# temporada} other {# temporadas}} de desarrollo real por delante (en los porteros el crecimiento se frena mucho después de los {endAge}).} other {CA {ca} hacia CP {pa}, con unas {seasons, plural, one {# temporada} other {# temporadas}} de desarrollo real por delante (el crecimiento se frena mucho después de los {endAge}).}}"
+      },
+      "minutesPeak": {
+        "title": "Años clave de desarrollo",
+        "detail": "Entre los 16 y los 18 es cuando más rápido crecen los atributos. Los minutos y el nivel de los rivales alimentan el crecimiento de la CA, así que los minutos en el primer equipo o cedido valen más que el fútbol juvenil en cuanto el jugador pueda ganarse un puesto. Para el Sub-18, el autor de fm-scoring usa el programa mínimo (sin sesiones tácticas)."
+      },
+      "minutesSenior": {
+        "title": "Necesita minutos en el primer equipo",
+        "detail": "Los minutos jugados y el nivel de los rivales determinan cuánta CA gana un jugador. Si no tiene sitio de titular en tu club, cédelo al club más fuerte que vaya a ponerlo de titular."
+      },
+      "minutesPast": {
+        "title": "Fuera de la etapa de desarrollo",
+        "detail": "Los atributos crecen poco después de los {endAge}. A partir de aquí, el entrenamiento sobre todo redistribuye lo que ya tiene."
+      },
+      "profHigh": {
+        "title": "{attribute} {value}",
+        "detail": "Las notas de fm-scoring señalan la Profesionalidad como el atributo oculto que más importa para crecer. Este nivel ayuda a un jugador a sacar el máximo de su CP."
+      },
+      "profLow": {
+        "title": "{level, select, low {{attribute} baja ({value})} other {{attribute} normal ({value})}}",
+        "detail": "Las notas de fm-scoring señalan la Profesionalidad como el atributo oculto que más importa para crecer. El aprendizaje es la forma en que FM cambia la personalidad: mete al jugador en un grupo de aprendizaje con veteranos de Profesionalidad alta (fm-scoring incluye un filtro de búsqueda de jugador para mentores)."
+      },
+      "det": {
+        "title": "{attribute} {value}",
+        "detail": "El entrenamiento nunca cambia la Determinación. El aprendizaje es la forma de cambiar la personalidad. Exporta con la vista Hidden Attributes para ver la Profesionalidad."
+      },
+      "schedule": {
+        "title": "Pon las sesiones de desarrollo en un solo día",
+        "detail": "Solo Trabajo de posesión, ofensivo y defensivo con balón, Puesta a punto, Acondicionamiento intenso y Desarrollo individual hacen crecer los atributos. El resto de sesiones no subieron la CA más que el descanso, y repetir una sesión aporta poco. Un probador concentró las sesiones de desarrollo en un día para dejar días completos de Descanso, que no tienen riesgo de lesión en el entrenamiento. Así redujo el riesgo de lesión en el entrenamiento del 13,8 % al 4,0 % con casi el mismo crecimiento."
+      }
+    },
+    "source": "De la investigación sobre entrenamiento en FM27 recopilada en <link>fm-scoring</link>: la prueba de entrenamiento de harvestgreen22, las pruebas de programas del propio autor de fm-scoring y alguien que analizó el código de entrenamiento de FM27.",
+    "younger": "Casi todo se aplica a jugadores más jóvenes.",
+    "odds": "El crecimiento es aleatorio de un mes a otro, así que tómalo como probabilidades, no como una promesa."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "title": "Vanlige spørsmål",
+  "intro": "Eksport fra FM27 og FM26, personvern og hvordan poengene fungerer. Står du fortsatt fast? <link>Oppsettguiden</link> går gjennom hvert steg.",
+  "groups": {
+    "start": "Kom i gang",
+    "privacy": "Personvern",
+    "scores": "Poeng og karakterer",
+    "wonderkids": "Vidunderbarn, Beste 11 og tropper",
+    "staff": "Støtteapparat"
+  },
+  "items": {
+    "what": {
+      "q": "Hva er Scout Reporter?",
+      "a": "Scout Reporter er et gratis speidingsverktøy for Football Manager. Du importerer en CSV-eksport av en spillerliste fra FM27 eller FM26, og verktøyet gir hver spiller poeng ut fra vektede ferdigheter, setter karakter fra S++ til F, sammenligner dem side om side, estimerer ferdighetene til vidunderbarn ved fullt potensial og velger en Beste 11 innenfor et budsjett."
+    },
+    "versions": {
+      "q": "Fungerer det med FM27 og FM26?",
+      "a": "Ja. Begge spillene eksporterer de samme ferdighetene gjennom Scout Reporter-visningene, så importer fra begge fungerer i alle moduser. FM27 eksporterer med FM View Exporter; FM26 eksporterer med BepInEx og utvidelsen FM26 Player CSV Export. Poengprofilene og vekstestimatene er kalibrert på data fra FM27.",
+      "more": "Oppsettguide for begge versjonene"
+    },
+    "export": {
+      "q": "Hvordan eksporterer jeg spillere fra Football Manager til CSV?",
+      "a": "Installer en eksportutvidelse (FM View Exporter for FM27, eller BepInEx med utvidelsen FM26 Player CSV Export), last ned en Scout Reporter-visningsfil og legg den i visningsmappen til FM. I Spiller database høyreklikker du en kolonneoverskrift, velger Importer visning, velger visningen, filtrerer spillerne du vil ha og trykker F9. Importer så CSV-filen her.",
+      "more": "Steg-for-steg-guide til eksport"
+    },
+    "view": {
+      "q": "Hvilken visningsfil bør jeg bruke?",
+      "a": "Visningen Hidden Attributes anbefales: den eksporterer alle ferdigheter pluss de skjulte Profesjonalitet, Nåværende nivå (NF) og Potensielt nivå (PF), som låser opp Potensial-poeng for å finne vidunderbarn. Visningen Standard eksporterer bare de synlige ferdighetene, noe som holder for spillerlisten og Beste 11."
+    },
+    "platforms": {
+      "q": "Fungerer det på Mac eller Linux?",
+      "a": "Nettsiden kjører i alle moderne nettlesere. Eksporten skjer inne i Football Manager: FM View Exporter for FM27 krever Steam-versjonen på Windows 10 eller 11, og FM26-guiden har med startvalget i Steam som trengs for å kjøre BepInEx under Linux."
+    },
+    "free": {
+      "q": "Er Scout Reporter gratis?",
+      "a": "Ja. Det er gratis å bruke, har ingen konto eller registrering, og kildekoden er offentlig på GitHub."
+    },
+    "upload": {
+      "q": "Blir CSV-filen eller det lagrede spillet mitt lastet opp noe sted?",
+      "a": "Nei. CSV-filen leses og får poeng i nettleseren din og sendes aldri til en server. Den siste importen lagres i nettleserens lokale lagring slik at den overlever en ny innlasting, sammen med profilene dine for vekter, uthevinger og terskler. En ny fil erstatter den, og å tømme nettstedsdata fjerner den."
+    },
+    "analytics": {
+      "q": "Samler dere inn statistikk?",
+      "a": "Bare anonyme sidevisninger, sendt til en selvdrevet Umami-server: hvilke sider som åpnes, nettstedet du kom fra, og nettleser, operativsystem og land. Ingen informasjonskapsler settes, og ingenting fra CSV-filen, skanningene eller spillerne dine blir noen gang tatt med. I skrivebordsappen kan du slå dette av under Innstillinger, App, Send anonym bruksstatistikk."
+    },
+    "scoring": {
+      "q": "Hvordan får spillerne poeng?",
+      "a": "Hver ferdighet får en vekt. Spillerens poengsum er det vektede snittet av ferdighetene på FMs skala fra 1 til 20, og 100-poengsummen deler det snittet på 13 (en solid profesjonell spiller) og ganger med 100. Endre vektene, og listen rangeres på nytt med en gang.",
+      "more": "Slik får spillerne poeng"
+    },
+    "benchmarks": {
+      "q": "Hva er FM27-referanseprofilene for roller?",
+      "a": "Seks vektprofiler, Midtstopper, Back / Wingback, Defensiv midtbane / Sentral midtbane, Angriper / Ving (10), Spiss (9) og Keeper, bygd på Study 13b fra FM Match Lab, som målte hva hver ferdighet er verdt i hver posisjon over 50 000 FM27-kamper. Fart og akselerasjon topper overalt, spenst teller mest for midtstoppere og spisser, smidighet og reflekser for keepere, og de fleste tekniske og mentale ferdighetene gir knapt utslag. Du kan redigere dem og tilbakestille dem til referansen når som helst. Tabellen for vs alder kommer fortsatt fra fm-scoring, som appen tidligere hentet rollevektene sine fra."
+    },
+    "grades": {
+      "q": "Hva betyr karakterene fra S++ til F?",
+      "a": "Karakterene leser det vektede snittet på skalaen fra 1 til 20 og øker for hver 0,5: S++ begynner på {top}, {lowestGrade} på {lowest}, og alt lavere er F. Toppnivåreferansen på {prime}, en spiller fra toppen av Championship eller bunnen av Premier League i sin beste alder, gir {primeGrade}."
+    },
+    "vsAge": {
+      "q": "Hva betyr vs alder?",
+      "a": "vs alder deler spillerens poengsum på FM27-referansen for alderen hans eller hennes, fra {youngestBenchmark} ved {youngestAge} opp til {prime} ved 24 og eldre. 100 % betyr at spilleren er på vei til å bli en spiller fra toppen av Championship eller bunnen av Premier League i sin beste alder, så det er den mest rettferdige måten å sammenligne unge spillere med hverandre på."
+    },
+    "wonderkids": {
+      "q": "Hvordan finner Scout Reporter vidunderbarn?",
+      "a": "Med en eksport fra Hidden Attributes tilpasser Scout Reporter NF som en posisjonsvektet sum av ferdighetene, regner ut hvor mange ferdighetspoeng avstanden mellom NF og PF gir, og fordeler dem på ferdighetene som fortsatt kan vokse, etter hvor raskt hver av dem vokste i en FM27-treningstest. Deretter rangeres talentene på FM27-rollene ved fullt potensial. Filtrer på alder, profesjonalitet og beste rolle.",
+      "more": "Slik fungerer potensialestimatet"
+    },
+    "potential": {
+      "q": "Vil en spiller faktisk nå potensialet som vises?",
+      "a": "Ikke nødvendigvis. Estimatet er taket hvis spilleren når PF. Profesjonalitet, spilletid, trening og trenere avgjør hvor mye av det spilleren når, og derfor har hver spillerside en utviklingsplan med individuelt fokus, treningsrolle og øktene som betyr mest."
+    },
+    "bestXi": {
+      "q": "Hvordan fungerer Beste 11-velgeren?",
+      "a": "Velg en av {formationCount} ferdige FM-formasjoner, eller bygg din egen på en taktikkbane i FM-stil og lagre den, så velger Scout Reporter de elleve spillerne fra importen din med høyest samlet poengsum, der hver posisjon får poeng etter en vektprofil du velger (FM27-referanserollene som standard). Du kan sette en minste og største samlet overgangsverdi, og utelukke spillere for å se det nest beste alternativet.",
+      "more": "Åpne Beste 11"
+    },
+    "squad": {
+      "q": "Hvordan fungerer Troppsanalyse?",
+      "a": "Importer Scout Reporter-visningen Squad (eller Squad Hidden Attributes) på troppsskjermen din, eksporter den og importer CSV-filen i Troppsanalyse. Den lagres atskilt fra spillerimporten din, så speidingslisten din forblir lastet. Velg formasjonen din, så bygger den den sterkeste elleveren din, deretter den sterkeste elleveren av alle som er igjen som reserver, og markerer posisjoner ingen spiller, startspillere godt under lagets snitt, posisjoner uten reserve eller med stort fall ned til reserven, og startspillere som er 31 eller eldre (34 for keepere). Squad-visningen eksporterer også lagoppstillingen din, status i tropp, skader og trenerens stjernevurderinger: spillere som er ute på lån holdes utenfor (skadde også, om du vil), spillere som er lovet en plass i startelleveren men ikke er med, og spillere med lav status som starter, blir markert, FM-startelleveren din sammenlignes med den foreslåtte, og unge spillere som treneren vurderer godt over en startspiller, blir trukket fram. Med den skjulte visningen kommer disse talentene i stedet fra framskrevne ferdigheter. Hvis spillerimporten din inneholder speidingsmål, lister den opp dem som ville slått den svakeste startspilleren din i hver posisjon.",
+      "more": "Åpne Troppsanalyse"
+    },
+    "staffScouting": {
+      "q": "Hvordan speider jeg støtteapparat?",
+      "a": "Importer Scout Reporter-visningen Staff i et ansattsøk i FM (høyreklikk en kolonneoverskrift, deretter Importer visning), velg de ansatte og eksporter en CSV på samme måte som for spillere. Importer den CSV-filen under Støtteapparat. Den lagres atskilt fra spillerimporten din, så begge kan være lastet samtidig.",
+      "more": "Åpne Støtteapparat"
+    },
+    "staffWords": {
+      "q": "FM26 viser ferdighetene til støtteapparatet som ord. Hvordan får de poeng?",
+      "a": "Hvert ord dekker et fast intervall på den gamle skalaen fra 1 til 20: Uegnet 1 til 3, Brukbar 4 til 6, Kompetent 7 til 9, Gjennomsnittlig 10 til 11, Bra 12 til 14, Veldig bra 15 til 17, Fremragende 18 til 19 og Elite 20. Scout Reporter gir hvert ord poeng midt i intervallet, og bruker eksakte tall når en eksport har dem."
+    },
+    "staffRoles": {
+      "q": "Hvordan regnes rollepoengene for støtteapparatet ut?",
+      "a": "Hver rolle er et vektet snitt av ferdighetene sine, med de 17 rollene og vektene for støtteapparatet fra fm-scoring, kontrollert mot nøkkelferdighetene FM27 framhever på profilene til støtteapparatet. Trenerne er delt inn i FMs ni treningsgrupper (hver med poeng etter sine to treningsferdigheter pluss Disiplin, Målbevissthet, Motiverende, Personalbehandling og Arbeide med juniorspillere), ved siden av manager, assisterende manager, sportsdirektør, sjef for ungdomsutvikling, speider, prestasjonsanalytiker, fysio og idrettsforsker. Alle rollepoeng får det samme karakterstempelet fra S++ til F som spillerpoeng. Filtrer på foretrukket stilling for å se bare ferdighetene den stillingen er vektet på, eller åpne en ansatt for å se alle rollene rangert."
+    },
+    "backroom": {
+      "q": "Hvordan velger Beste støtteapparat de ansatte mine?",
+      "a": "Velg hvor mange du trenger av hver rolle i støtteapparatet, eller start fra en ferdig mal (hele støtteapparatet, trenere, rekrutteringsteam, medisinsk team). Beste støtteapparat fyller hver rolle fra importen din av støtteapparatet med kombinasjonen som har høyest samlet rollepoengsum, uten å bruke én person to ganger, så en allrounder havner der han eller hun gir mest. Du kan begrense det til ansatte uten kontrakt, til ansatte som har rollen som foretrukket stilling, og utelukke hvem som helst for å se det nest beste valget.",
+      "more": "Åpne Beste støtteapparat"
+    }
+  }
+}
