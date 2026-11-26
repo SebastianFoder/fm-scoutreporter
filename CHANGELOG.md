@@ -1,3 +1,10 @@
+## [1.28.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.0...v1.28.1) (2026-11-26)
+
+
+### Bug Fixes
+
+* **web:** address SEO and answer-engine audit findings ([#19](https://github.com/SebastianFoder/fm-scoutreporter/issues/19)) ([3e0a283](https://github.com/SebastianFoder/fm-scoutreporter/commit/3e0a283f1709784be513cb61e26e2de42696c8e8))
+
 # [1.28.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.27.0...v1.28.0) (2026-11-26)
 
 
