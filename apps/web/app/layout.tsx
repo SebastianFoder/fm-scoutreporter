@@ -16,6 +16,7 @@ import { PlayerPanelProvider } from "@scoutreporter/ui/components/PlayerPanel";
 import { SettingsProvider } from "@scoutreporter/ui/components/Settings";
 import { DESKTOP_BUILD } from "@scoutreporter/ui/desktop/target";
 import { DesktopAnalytics } from "@scoutreporter/ui/desktop/DesktopAnalytics";
+import { UMAMI_BEFORE_SEND, UMAMI_BEFORE_SEND_SCRIPT, UMAMI_SRC, UMAMI_WEBSITE_ID } from "@scoutreporter/core/analytics/umami";
 import {
   AUTHOR,
   SITE_DESCRIPTION,
@@ -147,11 +148,16 @@ export default function RootLayout({
         </AttributeColorProvider>
         {/* Self-hosted Umami analytics for the website (the desktop app's is DesktopAnalytics). data-domains
             skips localhost and Vercel previews; client-side navigations are tracked by the script itself. */}
+        {/* Both builds: before every send, player IDs in the URL become [id] (one /players/[id] row). */}
+        <Script id="umami-before-send" strategy="beforeInteractive">
+          {UMAMI_BEFORE_SEND_SCRIPT}
+        </Script>
         {!DESKTOP_BUILD && (
           <Script
-            src="https://stats.sebastianfoder.com/app.js"
-            data-website-id="465aa84c-1243-4e51-9bc5-b7b3691f71ce"
+            src={UMAMI_SRC}
+            data-website-id={UMAMI_WEBSITE_ID}
             data-domains="fmscouting.sebastianfoder.com"
+            data-before-send={UMAMI_BEFORE_SEND}
             strategy="afterInteractive"
           />
         )}
