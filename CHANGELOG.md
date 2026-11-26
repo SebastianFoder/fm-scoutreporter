@@ -1,3 +1,10 @@
+## [1.28.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.1...v1.28.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* **web:** serve /favicon.ico (16, 32 and 48 px from the logo) ([b4acd77](https://github.com/SebastianFoder/fm-scoutreporter/commit/b4acd77d5fab18fda7f88559bd820a20a16b56d7))
+
 ## [1.28.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.0...v1.28.1) (2026-11-26)
 
 
