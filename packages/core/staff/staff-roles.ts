@@ -10,6 +10,13 @@ import type { StaffMember } from "./staff-parser";
  *
  * fm-scoring's "Judging Player Ability / Potential" are FM26's Judging Current / Potential Ability (JCA / JPA),
  * and its "People Management" is FM26's Man Management.
+ *
+ * One change from fm-scoring: the head of youth development's Judging Current Ability is 2, not 4. LightningFlik's
+ * reading of the FM24 code (FM-Arena, "Summary of recent findings for optimal play in FM24", page 2 posts #36-40,
+ * page 3 posts #41-45) sets the youth intake's staff bonus from the HoYD's Judging Player Potential and Working With
+ * Youngsters (plus the youth coaches' Judging Player Potential); Judging Player Ability only makes the intake
+ * preview more exact. fmsave's HoYD preset (Working With Youngsters 40, Potential 35, Ability 25) points the same
+ * way. This is FM24 code and hasn't been checked on FM27.
  */
 
 export type StaffRoleGroup = "Management" | "Coaching" | "Recruitment and analysis" | "Medical";
@@ -116,9 +123,9 @@ export const STAFF_ROLES: StaffRole[] = [
     name: "Head of youth development",
     group: "Management",
     summary:
-      "Judging ability and potential and working with youngsters. Their hidden Professionalism shifts the intake's: check it by hand.",
+      "Judging potential and working with youngsters set the intake's quality (FM24 code). Judging ability only makes the intake preview more exact. Their hidden Professionalism shifts the intake's: check it by hand.",
     weights: {
-      judgingCurrentAbility: 4,
+      judgingCurrentAbility: 2,
       judgingPotentialAbility: 4,
       workingWithYoungsters: 4,
       attacking: 1,

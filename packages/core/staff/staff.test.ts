@@ -119,3 +119,16 @@ test("scoreStaffRole ignores unknown attributes and reports coverage", () => {
   assert.equal(r.coverage, 6 / 16);
   assert.equal(scoreStaffRole(staff[0], STAFF_ROLE_BY_ID.physio)?.coverage, 2 / 12);
 });
+
+test("head of youth development: potential and working with youngsters outweigh judging ability", () => {
+  // FM24 code: the intake's staff bonus comes from the HoYD's JPP and WwY; JPA only sharpens the preview.
+  const hoyd = STAFF_ROLE_BY_ID["head-of-youth"];
+  assert.equal(hoyd.weights.judgingPotentialAbility, 4);
+  assert.equal(hoyd.weights.workingWithYoungsters, 4);
+  assert.equal(hoyd.weights.judgingCurrentAbility, 2);
+  const { staff } = parseStaffCsv(
+    "Person,UID,JCA,JPA,Yng\nAbility Judge,1,Outstanding,Competent,Competent\nYouth Developer,2,Competent,Outstanding,Outstanding\n",
+  );
+  const [judge, developer] = staff.map((s) => scoreStaffRole(s, hoyd)!.score);
+  assert.ok(developer > judge, `${developer} > ${judge}`);
+});
