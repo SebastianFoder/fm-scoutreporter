@@ -448,6 +448,12 @@ Emphasized:  weighted_avg = Σ(attr × weight²) / Σ(weight²)`}
               arena: external(
                 "https://fm-arena.com/threads/attribute-importance-by-position-in-fm27-a-test-on-my-own-tactic.125/",
               ),
+              tactics: external(
+                "https://fm-arena.com/threads/attribute-test-of-meta-tactic-chatgpt-2-1-4-3-sseulitob-25-11-2026.456/",
+              ),
+              update: external(
+                "https://github.com/caiograco289/Fm-Match-Lab/blob/main/docs/studies/30-game-update-27-1.md",
+              ),
               scoring: external("https://github.com/jamiebolden/fm-scoring"),
             })}
           </p>
