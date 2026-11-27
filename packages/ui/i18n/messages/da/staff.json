@@ -84,6 +84,7 @@
     "preferredJob": "Foretrukket job: {job}",
     "age": "Alder {age, number}",
     "preferredScore": "Foretrukket job: {role} {score}",
+    "bestScore": "Bedste rolle: {role} {score}",
     "preferred": "(foretrukket)",
     "barsNote": "Søjlerne går fra 0 til 20. * betyder, at nogle af rollens egenskaber manglede i eksporten.",
     "notInExport": "Ikke i eksporten"

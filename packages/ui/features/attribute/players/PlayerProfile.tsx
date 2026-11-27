@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import type { PlayerWithGroups } from "@scoutreporter/core/players";
 import { groupPlayerAttributes } from "@scoutreporter/core/parser/attribute-grouper";
-import { isGoalkeeperPosition } from "@scoutreporter/core/fm27/benchmarks";
+import { isGoalkeeperPosition, type RoleScore } from "@scoutreporter/core/fm27/benchmarks";
 import { fm27PlayerScores } from "@scoutreporter/core/fm27/player-scores";
 import { GradeStamp } from "@scoutreporter/ui/components/GradeStamp";
 import { EstimatedMark } from "@scoutreporter/ui/components/EstimatedMark";
@@ -12,7 +12,17 @@ import { PlayerAttributesClient } from "./PlayerAttributesClient";
 import { Fm27RolePanel } from "@scoutreporter/ui/features/fm27/Fm27RolePanel";
 import { DevelopmentPlanPanel } from "@scoutreporter/ui/features/fm27/DevelopmentPlanPanel";
 import { useTranslations } from "next-intl";
-import { useFormatNumber } from "@scoutreporter/ui/i18n/hooks";
+import { useFormatNumber, useProfileName } from "@scoutreporter/ui/i18n/hooks";
+import { useActiveWeightProfile } from "@scoutreporter/ui/components/WeightConfig";
+import { computeWeightedAverage, computeWeightedAverageOf, scaleScore } from "@scoutreporter/core/scoring";
+
+/**
+ * What the grades at the top follow. "fm27": the player's best FM27 role. "profile": the active weight
+ * profile, as the players table and Compare score them, so the panel shows the same numbers.
+ */
+export type PlayerScoring = "fm27" | "profile";
+
+type Grade = { name: string; value: string; score: number };
 
 /**
  * Everything about one player: grades, facts, attributes (current or at full potential), FM27
@@ -23,8 +33,11 @@ export function PlayerProfile({
   player,
   layout = "page",
   headingId,
+  scoring = "fm27",
 }: {
   player: PlayerWithGroups;
+  /** Defaults to the best FM27 role; the role scores further down always show every FM27 role. */
+  scoring?: PlayerScoring;
   /** "panel": one column for the side panel, with a smaller heading. */
   layout?: "page" | "panel";
   /** id for the player's name, so a surrounding dialog or panel can be labelled by it. */
@@ -35,6 +48,32 @@ export function PlayerProfile({
   const tFm = useTranslations("fm");
   const [view, setView] = useState<"current" | "potential">("current");
   const scores = useMemo(() => fm27PlayerScores(player), [player]);
+  const formatNumber = useFormatNumber();
+  const profileName = useProfileName();
+  const profile = useActiveWeightProfile();
+  const { weights, emphasis } = profile;
+  const grades = useMemo((): { now: Grade; potential: Grade | null } | null => {
+    // A profile with no weights scores everyone 0: show the best FM27 role instead.
+    if (scoring === "profile" && Object.values(weights).some((w) => (w ?? 0) > 0)) {
+      const name = profileName(profile);
+      const grade = (avg: number): Grade => ({
+        name,
+        value: formatNumber(scaleScore(avg), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        score: avg,
+      });
+      return {
+        now: grade(computeWeightedAverage(player, weights, emphasis)),
+        potential: player.potential ? grade(computeWeightedAverageOf(player.potential.attributes, weights, emphasis)) : null,
+      };
+    }
+    if (!scores) return null;
+    const grade = (r: RoleScore): Grade => ({
+      name: r.role,
+      value: formatNumber(r.score, { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+      score: r.score,
+    });
+    return { now: grade(scores.best), potential: scores.bestPotential ? grade(scores.bestPotential) : null };
+  }, [scoring, weights, emphasis, profile, profileName, formatNumber, player, scores]);
   const potentialGrouped = useMemo(
     () => (player.potential ? groupPlayerAttributes({ ...player.raw, ...player.potential.attributes }) : null),
     [player],
@@ -59,17 +98,10 @@ export function PlayerProfile({
             {t("subtitle", { position: raw.position, age: raw.age, eu: raw.euNational ? "yes" : "no" })}
           </p>
 
-          {scores && (
+          {grades && (
             <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" aria-label={t("grades")}>
-              <GradeLine
-                label={t("now")}
-                role={scores.best.role}
-                score={scores.best.score}
-                mark={<EstimatedMark player={raw} />}
-              />
-              {scores.bestPotential && (
-                <GradeLine label={tFm("terms.potential")} role={scores.bestPotential.role} score={scores.bestPotential.score} />
-              )}
+              <GradeLine label={t("now")} grade={grades.now} mark={<EstimatedMark player={raw} />} />
+              {grades.potential && <GradeLine label={tFm("terms.potential")} grade={grades.potential} />}
             </div>
           )}
 
@@ -140,18 +172,17 @@ export function PlayerProfile({
   );
 }
 
-function GradeLine({ label, role, score, mark }: { label: string; role: string; score: number; mark?: ReactNode }) {
-  const formatNumber = useFormatNumber();
+function GradeLine({ label, grade, mark }: { label: string; grade: Grade; mark?: ReactNode }) {
   return (
     <div className="flex items-center gap-2.5">
-      <GradeStamp score={score} size="lg" label={label} />
+      <GradeStamp score={grade.score} size="lg" label={label} />
       <div className="leading-tight">
         <p className="text-[12px] text-muted">{label}</p>
         <p className="text-sm font-semibold">
-          {role}{" "}
+          {grade.name}{" "}
           <span className="font-normal text-muted">
             {mark}
-            {formatNumber(score, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+            {grade.value}
           </span>
         </p>
       </div>

@@ -77,7 +77,8 @@ export default function BackroomClient() {
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
-  const [openId, setOpenId] = useState<string | null>(null);
+  // The staff member in the detail panel, and the role they were picked for.
+  const [opened, setOpened] = useState<{ id: string; role: string } | null>(null);
 
   /* eslint-disable react-hooks/set-state-in-effect -- post-SSR localStorage hydration */
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function BackroomClient() {
     const ids = new Set(settings.excluded);
     return staff.filter((s) => ids.has(s.uniqueId));
   }, [staff, settings.excluded]);
-  const open = openId ? staff.find((s) => s.uniqueId === openId) ?? null : null;
+  const open = opened ? staff.find((s) => s.uniqueId === opened.id) ?? null : null;
 
   const labelClass = "flex flex-col gap-1 text-[13px] text-muted";
 
@@ -299,7 +300,7 @@ export default function BackroomClient() {
                   picks={result.picks}
                   totalScore={result.totalScore}
                   wanted={wanted}
-                  onOpen={setOpenId}
+                  onOpen={(id, role) => setOpened({ id, role })}
                   onExclude={exclude}
                   onToggleLock={toggleLock}
                   onUnlockAll={() => update({ locked: [] })}
@@ -346,9 +347,10 @@ export default function BackroomClient() {
         <StaffDetailModal
           member={open}
           scores={scoreStaff(open)}
+          rankBy={opened?.role}
           mode="words"
           open
-          onClose={() => setOpenId(null)}
+          onClose={() => setOpened(null)}
         />
       )}
     </div>
@@ -367,7 +369,7 @@ function BackroomResultPanel({
   picks: BackroomPick[];
   totalScore: number;
   wanted: number;
-  onOpen: (id: string) => void;
+  onOpen: (id: string, role: string) => void;
   onExclude: (id: string) => void;
   onToggleLock: (role: string, id: string) => void;
   onUnlockAll: () => void;
@@ -441,7 +443,7 @@ function BackroomResultPanel({
                         <td className="px-2.5 py-1.5">
                           <button
                             type="button"
-                            onClick={() => onOpen(p.member.uniqueId)}
+                            onClick={() => onOpen(p.member.uniqueId, p.role.id)}
                             className="cursor-pointer text-left font-semibold hover:text-accent hover:underline"
                           >
                             {p.member.name}

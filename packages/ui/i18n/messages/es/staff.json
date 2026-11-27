@@ -84,6 +84,7 @@
     "preferredJob": "Trabajo preferido: {job}",
     "age": "Edad {age, number}",
     "preferredScore": "Trabajo preferido: {role} {score}",
+    "bestScore": "Mejor rol: {role} {score}",
     "preferred": "(preferido)",
     "barsNote": "Las barras van de 0 a 20. * significa que faltaban en la exportación algunos atributos del rol.",
     "notInExport": "No está en la exportación"

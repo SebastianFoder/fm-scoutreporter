@@ -84,6 +84,7 @@
     "preferredJob": "Poste souhaité : {job}",
     "age": "{age, number} ans",
     "preferredScore": "Poste souhaité : {role} {score}",
+    "bestScore": "Meilleur rôle : {role} {score}",
     "preferred": "(souhaité)",
     "barsNote": "Les barres vont de 0 à 20. * signifie que certains attributs du rôle manquaient dans l’export.",
     "notInExport": "Absent de l’export"

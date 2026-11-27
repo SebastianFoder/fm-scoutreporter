@@ -9,14 +9,14 @@ import { useTranslations } from "next-intl";
 import type { PlayerWithGroups } from "@scoutreporter/core/players";
 import { usePlayersData } from "./PlayersDataProvider";
 import { useSquadData } from "./SquadDataProvider";
-import { PlayerProfile } from "@scoutreporter/ui/features/attribute/players/PlayerProfile";
+import { PlayerProfile, type PlayerScoring } from "@scoutreporter/ui/features/attribute/players/PlayerProfile";
 
 type PlayerPanelValue = {
   /**
    * Show a player in the side panel. Returns false when the player is in neither the player nor
    * the squad import (the caller then lets its link open the player page as usual).
    */
-  openPlayer: (id: string, opener?: HTMLElement | null) => boolean;
+  openPlayer: (id: string, opener?: HTMLElement | null, scoring?: PlayerScoring) => boolean;
   close: () => void;
   /** The player in the panel, or null. */
   openId: string | null;
@@ -35,7 +35,7 @@ export function PlayerPanelProvider({ children }: { children: React.ReactNode })
   const { state: squadState } = useSquadData();
   const pathname = usePathname();
   // The panel belongs to the page it was opened on: on another page it is closed.
-  const [opened, setOpened] = useState<{ id: string; path: string } | null>(null);
+  const [opened, setOpened] = useState<{ id: string; path: string; scoring: PlayerScoring } | null>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const openId = opened && opened.path === pathname ? opened.id : null;
 
@@ -46,10 +46,10 @@ export function PlayerPanelProvider({ children }: { children: React.ReactNode })
   );
 
   const openPlayer = useCallback(
-    (id: string, opener?: HTMLElement | null) => {
+    (id: string, opener?: HTMLElement | null, scoring: PlayerScoring = "fm27") => {
       if (!find(id)) return false;
       openerRef.current = opener ?? null;
-      setOpened({ id, path: pathname });
+      setOpened({ id, path: pathname, scoring });
       return true;
     },
     [find, pathname],
@@ -68,7 +68,7 @@ export function PlayerPanelProvider({ children }: { children: React.ReactNode })
   return (
     <PlayerPanelContext.Provider value={value}>
       {children}
-      {player && <PlayerSidePanel player={player} onClose={close} />}
+      {player && opened && <PlayerSidePanel player={player} scoring={opened.scoring} onClose={close} />}
     </PlayerPanelContext.Provider>
   );
 }
@@ -78,7 +78,15 @@ export function usePlayerPanel(): PlayerPanelValue | null {
   return useContext(PlayerPanelContext);
 }
 
-function PlayerSidePanel({ player, onClose }: { player: PlayerWithGroups; onClose: () => void }) {
+function PlayerSidePanel({
+  player,
+  scoring,
+  onClose,
+}: {
+  player: PlayerWithGroups;
+  scoring: PlayerScoring;
+  onClose: () => void;
+}) {
   const ref = useRef<HTMLElement | null>(null);
   const headingId = useId();
   const id = player.raw.uniqueId;
@@ -133,7 +141,7 @@ function PlayerSidePanel({ player, onClose }: { player: PlayerWithGroups; onClos
         </div>
       </div>
       <div data-panel-body className="flex-1 overflow-y-auto px-4 py-4">
-        <PlayerProfile key={id} player={player} layout="panel" headingId={headingId} />
+        <PlayerProfile key={id} player={player} layout="panel" headingId={headingId} scoring={scoring} />
       </div>
     </aside>,
     document.body,
@@ -147,10 +155,13 @@ function PlayerSidePanel({ player, onClose }: { player: PlayerWithGroups; onClos
  */
 export function PlayerLink({
   id,
+  scoring,
   className,
   children,
 }: {
   id: string;
+  /** How the panel grades the player; pass "profile" where the page scores with the weight profile. */
+  scoring?: PlayerScoring;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -163,7 +174,7 @@ export function PlayerLink({
       aria-current={open ? "true" : undefined}
       onClick={(e) => {
         if (!panel || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        if (panel.openPlayer(id, e.currentTarget)) e.preventDefault();
+        if (panel.openPlayer(id, e.currentTarget, scoring)) e.preventDefault();
       }}
     >
       {children}

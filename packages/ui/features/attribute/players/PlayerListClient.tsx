@@ -646,7 +646,7 @@ function PlayersListClientInner({
                 )}
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-1 whitespace-nowrap">
-                    <PlayerLink id={p.raw.uniqueId} className="font-semibold hover:text-accent hover:underline">
+                    <PlayerLink id={p.raw.uniqueId} scoring="profile" className="font-semibold hover:text-accent hover:underline">
                       {p.raw.player}
                     </PlayerLink>
                     {!desktop && <NewTabPlayerLink uniqueId={p.raw.uniqueId} name={p.raw.player} />}

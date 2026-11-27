@@ -84,6 +84,7 @@
     "preferredJob": "Bevorzugter Job: {job}",
     "age": "Alter {age, number}",
     "preferredScore": "Bevorzugter Job: {role} {score}",
+    "bestScore": "Beste Rolle: {role} {score}",
     "preferred": "(bevorzugt)",
     "barsNote": "Die Balken reichen von 0 bis 20. * bedeutet, dass einige Attribute der Rolle im Export fehlten.",
     "notInExport": "Nicht im Export"

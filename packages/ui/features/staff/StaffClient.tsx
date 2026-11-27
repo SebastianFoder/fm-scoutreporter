@@ -28,7 +28,7 @@ import {
   type StaffRoleScore,
   type StaffScores,
 } from "@scoutreporter/core/staff/staff-roles";
-import { StaffDetailModal } from "./StaffDetailModal";
+import { StaffDetailModal, type StaffRankBy } from "./StaffDetailModal";
 import { StaffImportPanel } from "./StaffImportPanel";
 import { NoImport } from "@scoutreporter/ui/components/ImportPanel";
 import { RatingCell, ScoreCell, useFormatScore, useStaffRoleText, type ValueMode } from "./StaffCells";
@@ -36,8 +36,7 @@ import { compareNames } from "@scoutreporter/core/text";
 
 type Row = { s: StaffMember; scores: StaffScores };
 
-/** "best" = each person's best role, "preferred" = their FM preferred job, otherwise a role id. */
-type RankBy = "best" | "preferred" | string;
+type RankBy = StaffRankBy;
 type SortKey = "name" | "score" | "best" | StaffAttributeKey;
 
 function rankedScore(r: Row, rankBy: RankBy): StaffRoleScore | null {
@@ -522,6 +521,7 @@ export default function StaffClient() {
         <StaffDetailModal
           member={openRow.s}
           scores={openRow.scores}
+          rankBy={rankBy}
           mode={mode}
           open
           onClose={() => setOpenId(null)}
