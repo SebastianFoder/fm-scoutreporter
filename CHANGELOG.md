@@ -1,3 +1,10 @@
+## [1.29.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.29.0...v1.29.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* hide players your club has out on loan when "Show my club" is off ([#22](https://github.com/SebastianFoder/fm-scoutreporter/issues/22)) ([4a4b664](https://github.com/SebastianFoder/fm-scoutreporter/commit/4a4b66427464b6485d288e9a12433e1eb5c3bfeb))
+
 # [1.29.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.3...v1.29.0) (2026-11-27)
 
 
