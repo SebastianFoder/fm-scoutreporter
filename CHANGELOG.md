@@ -1,3 +1,10 @@
+## [1.29.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.29.1...v1.29.2) (2026-11-27)
+
+
+### Bug Fixes
+
+* **desktop:** keep the taskbar pin when installing an in-app update ([#23](https://github.com/SebastianFoder/fm-scoutreporter/issues/23)) ([c55f53e](https://github.com/SebastianFoder/fm-scoutreporter/commit/c55f53e1dfa67148d3289beaa4aeaebf3c115b2c))
+
 ## [1.29.1](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.29.0...v1.29.1) (2026-11-27)
 
 
