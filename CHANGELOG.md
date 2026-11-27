@@ -1,3 +1,10 @@
+## [1.28.3](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.2...v1.28.3) (2026-11-27)
+
+
+### Bug Fixes
+
+* weight mismatches from the research log (Strength reason, weight caveats, HoYD) ([#20](https://github.com/SebastianFoder/fm-scoutreporter/issues/20)) ([68eeb99](https://github.com/SebastianFoder/fm-scoutreporter/commit/68eeb995f04c5b277168e87cd0c68d127b4b9424)), closes [#64](https://github.com/SebastianFoder/fm-scoutreporter/issues/64)
+
 ## [1.28.2](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.1...v1.28.2) (2026-11-26)
 
 
