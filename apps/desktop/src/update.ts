@@ -81,8 +81,17 @@ export async function downloadInstaller(
   return file;
 }
 
+/**
+ * The installer's arguments for an update, as electron-updater passes them. `/S`: no wizard.
+ * `--updated`: this is an update, not a fresh install. Without it the old version's uninstaller
+ * removes the shortcuts and the app's AppUserModelID, which unpins the app from the taskbar and Start
+ * (the installer keeps shortcuts only on updates, because the install folder can be changed).
+ * `--force-run`: start the app again when it is done.
+ */
+export const INSTALLER_UPDATE_ARGS = ["/S", "--updated", "--force-run"] as const;
+
 /** Start the installer silently, detached, so it can replace the app once the app has closed. */
 export function startInstaller(file: string, spawnImpl: typeof spawn = spawn) {
-  const child = spawnImpl(file, ["/S", "--force-run"], { detached: true, stdio: "ignore" });
+  const child = spawnImpl(file, [...INSTALLER_UPDATE_ARGS], { detached: true, stdio: "ignore" });
   child.unref();
 }

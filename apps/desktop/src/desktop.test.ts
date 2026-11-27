@@ -9,7 +9,7 @@ import { scanToLines } from "@scoutreporter/core/scan/db/write";
 import type { ScanFile } from "@scoutreporter/core/scan/schema";
 import { compareScanFiles, importJsonFile, importLinesFile, loadScanFile, scanMeta } from "./db-ops";
 import { ReaderOutput } from "./reader";
-import { downloadInstaller, findLatestRelease } from "./update";
+import { downloadInstaller, findLatestRelease, startInstaller } from "./update";
 import { SCAN_FILE, SnapshotStore, snapshotId } from "./snapshots";
 
 const sampleFile = join(import.meta.dirname, "..", "..", "..", "packages", "core", "fixtures", "scan-sample.json");
@@ -327,4 +327,18 @@ test("the language setting is a short language code or null (follow Windows)", (
   assert.equal(normaliseSettings({ language: "fr" }).language, "fr");
   assert.equal(normaliseSettings({ language: "fr; path=/" }).language, null);
   assert.equal(normaliseSettings({ language: 5 }).language, null);
+});
+
+test("starts the installer as an update, so it keeps the shortcuts and taskbar pin", () => {
+  const calls: { file: string; args: readonly string[]; opts: unknown }[] = [];
+  let unrefed = false;
+  const spawnImpl = ((file: string, args: readonly string[], opts: unknown) => {
+    calls.push({ file, args, opts });
+    return { unref: () => (unrefed = true) };
+  }) as unknown as Parameters<typeof startInstaller>[1];
+  startInstaller("C:/temp/Scout-Reporter-Setup-0.3.0.exe", spawnImpl);
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0].args, ["/S", "--updated", "--force-run"]);
+  assert.deepEqual(calls[0].opts, { detached: true, stdio: "ignore" });
+  assert.ok(unrefed);
 });
