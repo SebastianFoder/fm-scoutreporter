@@ -20,7 +20,7 @@ import type {
   SnapshotPatch,
   UpdateState,
 } from "@scoutreporter/core/desktop/bridge";
-import { SCAN_STAFF_COLUMNS, scanPlayers, scanStaff } from "@scoutreporter/core/scan/convert";
+import { SCAN_STAFF_COLUMNS, scanLoanedOut, scanPlayers, scanStaff } from "@scoutreporter/core/scan/convert";
 import type { PlayerAttributes } from "@scoutreporter/core/types/player-attributes";
 import type { ImportSource } from "@scoutreporter/core/storage/stored-records";
 import { useRouter } from "next/navigation";
@@ -202,8 +202,10 @@ function DesktopProviderInner({ bridge, children }: { bridge: DesktopBridge; chi
         const hide = (await bridge.getSettings()).hideHidden === true;
         const strip = (list: PlayerAttributes[]) => (hide ? list.map(withoutHidden) : list);
         if (stale()) return;
+        const myClub = scan.meta.myClub;
         await players.importRecords(strip(scanPlayers(scan)), {
           ...source,
+          ...(myClub && { loanedOut: scanLoanedOut(scan, myClub) }),
           total: scan.totalPlayers,
           ...(scan.bySearch.players && { search: scan.searchPlayers }),
         });

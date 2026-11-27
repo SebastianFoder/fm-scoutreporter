@@ -12,6 +12,7 @@ import {
   fmDate,
   positionString,
   preferredJobName,
+  scanLoanedOut,
   scanPlayerToAttributes,
   scanPlayers,
   scanStaffToMember,
@@ -68,6 +69,15 @@ test("filters players by club for squad mode", () => {
   const squad = scanPlayers(sample, { club });
   assert.ok(squad.length > 0 && squad.length < sample.players.length);
   assert.equal(scanPlayers(sample).length, sample.players.length);
+});
+
+test("lists the players a club has out on loan, which its squad leaves out", () => {
+  const club = sample.players[0].club!;
+  const loanee = sample.players.find((p) => p.club !== club)!;
+  const scan = { players: sample.players.map((p) => (p === loanee ? { ...p, ownerClub: club } : p)) };
+  assert.deepEqual(scanLoanedOut(scan, club), [String(loanee.uid)]);
+  assert.ok(!scanPlayers(scan, { club }).some((p) => p.uniqueId === String(loanee.uid)));
+  assert.deepEqual(scanLoanedOut(sample, club), []);
 });
 
 test("converts scanned staff with exact ratings and a preferred job", () => {
