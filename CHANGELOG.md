@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.3...v1.29.0) (2026-11-27)
+
+
+### Features
+
+* match player and staff detail scores to the table's ranking ([#21](https://github.com/SebastianFoder/fm-scoutreporter/issues/21)) ([1d09672](https://github.com/SebastianFoder/fm-scoutreporter/commit/1d096720392c11c12b6f0ab3379e40409de9e0d1))
+
 ## [1.28.3](https://github.com/SebastianFoder/fm-scoutreporter/compare/v1.28.2...v1.28.3) (2026-11-27)
 
 
