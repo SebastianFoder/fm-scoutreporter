@@ -40,7 +40,10 @@ export const XPTS_BY_POSITION: Partial<Record<AttributeKey, PositionRow>> = {
 
 /**
  * 13b "Goal difference": goals for minus against per season, +1 level in one player. Only used for the two
- * attributes the study says work through conversion (goals at the same xG), which expected points can't show.
+ * attributes the study confirms on goal difference but not on expected points. Finishing acts at the shot, which the
+ * engine's xG model doesn't read. For Strength the study's "conversion" reading has been withdrawn (FM-Arena post
+ * #64, 25 November 2026: the engine reads it in body contests, with Balance, and for kick power), but the
+ * goal-difference values themselves stand; see the `benchmarks.ts` header for why they are kept.
  */
 export const GOAL_DIFF_BY_POSITION: Partial<Record<AttributeKey, PositionRow>> = {
   strength:  { ST: [0.16, true], AM: [0.14, true], DM: [0.15, true], FB: [0.09, false], CB: [0.17, true] },
@@ -75,8 +78,8 @@ export const GK_MIN_T = 2;
 
 /**
  * The value each attribute has for an outfield position, before the cut-offs: xPts per season, except Strength and
- * Finishing, which use goal difference × 0.6 points per goal (13b: "Finishing and Strength work through conversion,
- * not chances, so expected points don't show them").
+ * Finishing, which use goal difference × 0.6 points per goal: 13b confirms both on goal difference, where expected
+ * points don't show them.
  */
 export function matchLabValues(pos: MatchLabPosition): { key: AttributeKey; value: number; confirmed: boolean }[] {
   const out: { key: AttributeKey; value: number; confirmed: boolean }[] = [];
