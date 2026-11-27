@@ -7,16 +7,28 @@ import type { StaffMember } from "@scoutreporter/core/staff/staff-parser";
 import type { StaffScores } from "@scoutreporter/core/staff/staff-roles";
 import { RatingCell, ScoreCell, useDescribeRating, useFormatScore, useStaffRoleText, type ValueMode } from "./StaffCells";
 
-/** Side panel for one staff member: every role ranked on a 0–20 axis, then all attributes by group. */
+/**
+ * What the staff were ranked by where the panel was opened: "best" = their best role, "preferred" =
+ * their FM preferred job, otherwise a role id.
+ */
+export type StaffRankBy = "best" | "preferred" | (string & {});
+
+/**
+ * Side panel for one staff member: the score they were ranked by, every role ranked on a 0–20 axis,
+ * then all attributes by group.
+ */
 export function StaffDetailModal({
   member,
   scores,
+  rankBy = "best",
   mode,
   open,
   onClose,
 }: {
   member: StaffMember;
   scores: StaffScores;
+  /** The headline score follows this, so it matches the score shown in the table it was opened from. */
+  rankBy?: StaffRankBy;
   mode: ValueMode;
   open: boolean;
   onClose: () => void;
@@ -26,6 +38,14 @@ export function StaffDetailModal({
   const roleText = useStaffRoleText();
   const formatScore = useFormatScore();
   const describeRating = useDescribeRating();
+  // Without a score for what they were ranked by (no weights for their job), fall back to the best role.
+  const ranked =
+    rankBy === "best" ? null : rankBy === "preferred" ? scores.preferred : (scores.byRole.get(rankBy) ?? null);
+  const headline = ranked ?? scores.best;
+  const headlineLabel = !ranked ? t("bestRole") : rankBy === "preferred" ? t("preferredJob") : tFm("terms.role");
+  const showBest = ranked && scores.best && scores.best.role.id !== ranked.role.id;
+  const showPreferred =
+    scores.preferred && headline && scores.preferred.role.id !== headline.role.id && rankBy !== "preferred";
   const facts = [
     member.preferredJob && t("detail.preferredJob", { job: member.preferredJob }),
     member.club || t("freeAgent"),
@@ -36,21 +56,29 @@ export function StaffDetailModal({
 
   return (
     <Modal open={open} onClose={onClose} placement="side" size="lg" title={member.name} description={facts.join(" · ")}>
-      {scores.best && (
+      {headline && (
         <div className="mb-4 flex items-center justify-between gap-4 rounded-md border border-line bg-paper px-3.5 py-2.5">
           <div className="min-w-0">
-            <p className="text-[13px] text-muted">{t("bestRole")}</p>
-            <p className="truncate font-semibold">{roleText.name(scores.best.role)}</p>
-            {scores.preferred && scores.preferred.role.id !== scores.best.role.id && (
+            <p className="text-[13px] text-muted">{headlineLabel}</p>
+            <p className="truncate font-semibold">{roleText.name(headline.role)}</p>
+            {showBest && (
+              <p className="text-[13px] text-muted">
+                {t("detail.bestScore", {
+                  role: roleText.name(scores.best!.role),
+                  score: formatScore(scores.best!.score),
+                })}
+              </p>
+            )}
+            {showPreferred && (
               <p className="text-[13px] text-muted">
                 {t("detail.preferredScore", {
-                  role: roleText.name(scores.preferred.role),
-                  score: formatScore(scores.preferred.score),
+                  role: roleText.name(scores.preferred!.role),
+                  score: formatScore(scores.preferred!.score),
                 })}
               </p>
             )}
           </div>
-          <ScoreCell score={scores.best} size="lg" />
+          <ScoreCell score={headline} size="lg" />
         </div>
       )}
 

@@ -260,6 +260,7 @@ export default function CompareClient({
                         <th key={p.raw.uniqueId} className="px-3 py-2 text-right align-bottom">
                           <PlayerLink
                             id={p.raw.uniqueId}
+                            scoring="profile"
                             className="block font-sans text-sm font-semibold text-ink hover:text-accent hover:underline"
                           >
                             {p.raw.player}

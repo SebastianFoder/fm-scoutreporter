@@ -84,6 +84,7 @@
     "preferredJob": "Föredraget jobb: {job}",
     "age": "Ålder {age, number}",
     "preferredScore": "Föredraget jobb: {role} {score}",
+    "bestScore": "Bästa roll: {role} {score}",
     "preferred": "(föredraget)",
     "barsNote": "Staplarna går från 0 till 20. * betyder att några av rollens egenskaper saknades i exporten.",
     "notInExport": "Inte i exporten"

@@ -38,7 +38,7 @@ export default function AttributePlayerPage() {
       <Link href="/players" className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink">
         <ArrowLeft className="h-4 w-4" aria-hidden /> {tFm("terms.players")}
       </Link>
-      <PlayerProfile player={player} />
+      <PlayerProfile player={player} scoring="profile" />
     </div>
   );
 }
