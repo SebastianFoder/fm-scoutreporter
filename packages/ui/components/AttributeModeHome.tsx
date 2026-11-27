@@ -18,14 +18,19 @@ import { useProfileName } from "../i18n/hooks";
 
 export default function AttributeModeHome() {
   const { state } = usePlayersData();
-  // Your own players are the ones in your squad import: your club from a scan, or your squad CSV.
+  // Your own players are the ones in your squad import (your club from a scan, or your squad CSV),
+  // plus, from a scan, the players your club has out on loan (the scan's squad import leaves them out).
   const { state: squadState } = useSquadData();
-  const squadIds = useMemo(() => new Set(squadState.players.map((p) => p.raw.uniqueId)), [squadState.players]);
-  const mine = useMemo(() => state.players.filter((p) => squadIds.has(p.raw.uniqueId)).length, [state.players, squadIds]);
+  const loanedOut = state.source?.loanedOut;
+  const mineIds = useMemo(
+    () => new Set([...squadState.players.map((p) => p.raw.uniqueId), ...(loanedOut ?? [])]),
+    [squadState.players, loanedOut],
+  );
+  const mine = useMemo(() => state.players.filter((p) => mineIds.has(p.raw.uniqueId)).length, [state.players, mineIds]);
   const [showMine, setShowMine] = useStoredToggle("playersShowMyClub", true);
   const shown = useMemo(
-    () => (showMine || mine === 0 ? state.players : state.players.filter((p) => !squadIds.has(p.raw.uniqueId))),
-    [state.players, showMine, mine, squadIds],
+    () => (showMine || mine === 0 ? state.players : state.players.filter((p) => !mineIds.has(p.raw.uniqueId))),
+    [state.players, showMine, mine, mineIds],
   );
   const players = state.players.length > 0 ? shown : null;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

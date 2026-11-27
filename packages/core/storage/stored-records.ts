@@ -19,6 +19,11 @@ export interface ImportSource {
   search?: number;
   /** Your club in the save the scan came from (for "show my club" on the staff list). */
   myClub?: string | null;
+  /**
+   * Unique IDs of players your club owns who are out on loan elsewhere. The squad import only has
+   * the players at your club, so "show my club" on the players list reads these too.
+   */
+  loanedOut?: string[];
 }
 
 export interface StoredPlayerRecords {

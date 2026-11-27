@@ -156,6 +156,11 @@ export function scanPlayers(scan: Pick<ScanFile, "players">, filter: ScanFilter 
   return players.map(scanPlayerToAttributes);
 }
 
+/** Unique IDs of the players `club` owns who are out on loan at another club. */
+export function scanLoanedOut(scan: Pick<ScanFile, "players">, club: string): string[] {
+  return scan.players.filter((p) => p.ownerClub === club && p.club !== club).map((p) => String(p.uid));
+}
+
 export function scanStaff(scan: Pick<ScanFile, "staff">): StaffMember[] {
   return scan.staff.map(scanStaffToMember);
 }
