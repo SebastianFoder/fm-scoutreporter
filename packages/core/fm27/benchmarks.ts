@@ -7,8 +7,8 @@ import type { AttributeKey, AttributeWeights, WeightProfile } from "@scoutreport
  *
  * Rule (recomputed from the study's numbers in `match-lab.ts` by `fm27.test.ts`):
  * 1. value = expected points per season for +1 level in one player of the position; Strength and Finishing, which
- *    work through conversion rather than chances, use goal difference × 0.6 points per goal; the keeper uses points
- *    (his shot-stopping changes goals, not xG);
+ *    13b confirms on goal difference but not on expected points, use goal difference × 0.6 points per goal (see
+ *    "Strength and Finishing" below); the keeper uses points (his shot-stopping changes goals, not xG);
  * 2. keep cells the study confirms (|t| > 2 in both random halves; for the keeper, |t| > 2) worth at least 0.04;
  * 3. scale each position so its top attribute = 10, round half up.
  * Study positions map to roles: CB → CB, FB → WB, DM → DM, AM → 10, ST → 9, GK → GK.
@@ -26,7 +26,25 @@ import type { AttributeKey, AttributeWeights, WeightProfile } from "@scoutreport
  * Marking, Positioning, Decisions, Composure, First Touch, Off the Ball, Work Rate, ...) is within ±0.04 in every
  * position in the study, so no role weights it.
  *
- * Caveats from the studies: one tactic (Gegenpress with two strikers; a Catenaccio run is pending), averages over
+ * Strength and Finishing. Finishing acts at the shot, and the engine's xG model reads no attributes (distance, angle
+ * and blockers only), so its value shows in goals, not xG; a paired retest by the study's author used it as a control
+ * and found the effect again. Strength is confirmed on goal difference (both random halves) for ST, AM, DM and CB,
+ * and the Catenaccio run repeats it for the forwards, but its expected points are confirmed nowhere. The study first
+ * put this down to conversion. The author has since withdrawn a larger, separate claim ("+0.5 goals a game above xG
+ * from 1 to 20"): the retest of +5 Strength gave +0.07 goals above xG, not significant, and he reads Strength in the
+ * engine only in body contests (with Balance) and for kick power (FM-Arena, "FM27 match engine: what we know so
+ * far", page 4, post #64, 25 November 2026). That retest doesn't contradict 13b: read per game for the whole team,
+ * 13b's own forward cells predict about +0.07 for +5, and for one player less. Goal difference also counts goals
+ * against, where body contests in defence act. So Strength keeps its goal-difference value because 13b measures it,
+ * not because of a known conversion mechanism; revisit it if a study re-measures Strength's goal difference.
+ *
+ * Caveats from the studies: the weights come from the Gegenpress run (two strikers). 13b's Catenaccio run (a deep
+ * 5-2-2-1, 34,340 matches) has the same leaders (correlation 0.85), but its centre-backs gain less from Pace,
+ * Acceleration and Jumping Reach and its central attacking midfielders more from Pace. harvestgreen22's cross-tactic
+ * test (FM-Arena, 25 November 2026, 1.05 million matches over four tactics) ranks attributes nearly the same in
+ * every tactic except Pace, Stamina and Agility, which depend on the shape, so one weight set serves every formation.
+ * Match Lab Study 30 found that 27.1 barely changed results (points -0.12 a game, within noise), so the 27.0.1
+ * studies stand; passing and shooting attributes, Finishing among them, "may shift a little". Averages over
  * ±5 around levels of 6-18; Study 12 shows Work Rate is a floor (costly below 9, worth nothing above) and Jumping
  * Reach pays little below 9 and most from 12 to 18, which a linear weight can't express. Study 14b found the same
  * values in every English league tier. Purity's FM-Arena test on a 3-4-2-1 (200,000 matches) correlates 0.80 with
